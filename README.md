@@ -79,19 +79,6 @@ For detailed instructions and alternatives see [documentation](http://phppe.org/
     $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
     ```
 
-Testing
--------
-
-Unit tests (over 100) and source are included in the Developer package
-
-    $ composer require "phppe/Developer=*"
-
-or
-
-    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
-
-Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
-
 Content Management
 ------------------
 
@@ -117,6 +104,24 @@ or
     $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
 
 This will give you the standard webadmin feeling you're used to, but unlike the competition, works in a secure way.
+
+Testing
+-------
+
+Unit tests (over 100) and source are included in the Developer package
+
+    $ composer require "phppe/Developer=*"
+
+or
+
+    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
+
+Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
+You can also use [Packagist](https://packagist.org/packages/bztphp/phppe) to install the whole development environment:
+
+    $ composer create-project "bztphp/phppe:dev-master"
+
+Please note that this will install all the core extensions as well, including latest tarballs.
 
 License
 -------
