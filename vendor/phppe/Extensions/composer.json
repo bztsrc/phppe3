@@ -1,0 +1,27 @@
+{
+	"name": "phppe/Extensions",
+	"name_en": "PHPPE Extension Manager",
+	"name_hu": "PHPPE Bővítmény Kezelő",
+	"name_ru": "PHPPE менеджер расширений",
+	"name_de": "PHPPE Erweiterung Manager",
+	"name_es": "PHPPE Extensión Gerente",
+	"name_fr": "PHPPE Extension Directeur",
+	"name_ch": "PHPPE 延期管理",
+	"description": "Web interface to install and remove PHPPE Extensions remotely.",
+	"description_hu": "Webes felület a PHPPE Kiegészítők távoli telepítéséhez.",
+	"version": "3.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_extmgr.tgz" },
+	"conf": { "host":"string(localhost)", "port":"integer(1,65535,22)", "user":"string", "path":"string(/var/www/localhost)", "identity":"textarea" },
+	"conf_en": { "host":"Hostname", "port":"Port", "user":"Username", "path":"ProjectRoot", "identity":"Private key" },
+	"conf_hu": { "host":"Gépnév", "port":"Port", "user":"Felhasználó", "path":"Projekt mappa", "identity":"Privát kulcs" },
+
+	"version_normalized": "3.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

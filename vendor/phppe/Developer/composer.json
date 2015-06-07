@@ -1,0 +1,24 @@
+{
+	"name": "phppe/Developer",
+	"name_en": "PHPPE Developer",
+	"name_hu": "PHPPE Fejlesztő",
+	"name_ru": "PHPPE разработчик",
+	"name_de": "PHPPE Entwickler",
+	"name_es": "PHPPE Revelador",
+	"name_fr": "PHPPE Développateur",
+	"name_ch": "PHPPE 開發人員",
+	"description": "Source and tests for PHPPE framework developers.",
+	"description_hu": "Forrás és tesztkörnyezet a PHPPE keretrendszerhez.",
+	"version": "3.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_devel.tgz" },
+
+	"version_normalized": "3.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

@@ -1,0 +1,27 @@
+{
+	"name": "phppe/CMS",
+	"name_en": "PHPPE Content Editor",
+	"name_hu": "PHPPE Tartalomszerkesztő",
+	"name_ru": "PHPPE редактор контент",
+	"name_de": "PHPPE Inhalts Editor",
+	"name_es": "PHPPE Editor de Contenido",
+	"name_fr": "PHPPE Éditeur de Contenu",
+	"name_ch": "PHPPE 内容编辑器",
+	"description": "Content Management System for PHPPE Content Servers.",
+	"description_hu": "Tartalomszerkesztő a PHPPE Tartalom Szerver adatbázisához.",
+	"version": "3.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_cms.tgz" },
+	"conf": { "expert":"select(false=off,true=on)","revert":"select(false=on,true=off)", "purge":"select(false=on,true=off)" },
+	"conf_en": { "expert":"Expert", "revert":"Keep history", "purge":"Purge saved history" },
+	"conf_hu": { "expert":"Haladó", "revert":"Vátozáskövetés", "purge":"Verziótakarítás" ,"on":"be","off":"ki"},
+
+	"version_normalized": "3.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

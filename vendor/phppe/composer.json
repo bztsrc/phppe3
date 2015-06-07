@@ -1,0 +1,30 @@
+{
+	"name": "phppe",
+	"name_en": "PHPPE Pack",
+	"name_hu": "PHPPE Pakk",
+	"name_ru": "PHPPE пакет",
+	"name_de": "PHPPE Paket",
+	"name_es": "PHPPE Paquete",
+	"name_fr": "PHPPE Paquet",
+	"name_ch": "PHPPE 包",
+	"description": "Minimalistic, single file framework. Ideal on RPI. This ~64k package will add extra files to it.",
+	"description_hu": "Minimalista, egy fájlból álló keretrendszer. Idális RPI-n. Ez a kb 64k-s csomag extra fájlokat telepít hozzá.",
+	"version": "3.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_pack.tgz" },
+	"conf": { "site":"string", "db":"string(mysql:host=localhost;dbname=test@user:pass)", "cache":"string(localhost:11211)","noaggr":"select(false=on,true=off)","masterpasswd":"string(80,$2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO)","runlevel":"select(0=production,1=testing,2=development,3=debug)","maintenance":"select(false=off,true=on)","mailer":"string"},
+	"conf_en": { "site":"Site", "db":"Datasource","cache":"Cache","noaggr":"Aggregation","masterpasswd":"Master password","runlevel":"Run level","maintenance":"Maintenance mode","mailer":"Mailer backend" },
+	"conf_hu": { "site":"Oldal", "db":"Adatforrás","cache":"Gyorsítótár","noaggr":"Aggregálás","masterpasswd":"Mester jelszó","runlevel":"Futási szint","maintenance":"Karbantartás","mailer":"Levélküldő", "production":"éles üzem","testing":"tesztelés","development":"fejlesztés","debug":"hibakeresés","on":"be","off":"ki" },
+
+	"version_normalized": "3.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"autoload": {
+		"files": "public/index.php"
+	},
+	"support": {
+		"source": "http://phppe.org/phppe3_devel.tgz",
+		"wiki": "http://phppe.org/phppe3.html"
+	},
+	"maintainer": { "name": "bzt" }
+}

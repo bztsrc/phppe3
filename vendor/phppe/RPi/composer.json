@@ -1,0 +1,19 @@
+{
+	"name": "phppe/RPi",
+	"name_en": "Raspberry Pi Interface",
+
+	"description": "Web interface for Raspberry Pi.",
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_rpi.tgz" },
+	"conf": { "pins":"string" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

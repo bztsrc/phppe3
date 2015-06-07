@@ -1,0 +1,14 @@
+TH {
+    background:#D0D0D0;
+    text-align:left;
+    padding:2px 2px 2px 2px !important;
+}
+TD {
+    padding:2px 2px 2px 2px !important;
+}
+TD.row0 {
+    background:#E8E8E8;
+}
+TD.row1 {
+    background:#F0F0F0;
+}

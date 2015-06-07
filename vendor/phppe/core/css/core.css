@@ -1,0 +1,89 @@
+BODY,TD,DIV,#content {font-family:sans-serif;font-size:14px;}
+TABLE {border-spacing:2px;border-collapse:separate;}
+TH {background:#D0D0D0;text-align:left;padding:2px 2px 2px 2px !important;}
+TD {padding:2px 2px 2px 2px !important;}
+TD.row0 {background:#E8E8E8;}
+TD.row1 {background:#F8F8F8;}
+
+/* PE Panel */
+#pe_p {
+}
+/* PE Panel: menu */
+#pe_p .menu {
+}
+/* PE Panel: inactive menu item */
+#pe_p .menu_i {
+}
+/* PE Panel: active menu item */
+#pe_p .menu_a {
+}
+/* PE Panel: drop down submenu */
+#pe_p .sub {
+}
+/* PE Panel: menu item in submenu */
+#pe_p LI {
+}
+/* PE Panel: selected menu item */
+#pe_p LI:hover {
+}
+/* PE Panel: dock */
+#pe_p .dock {
+}
+
+/* Table of Contents */
+.toc {
+    float:right;
+    margin:5px;
+    padding:5px;
+    border:#808080 solid 1px;
+    background-color:#fff;
+    opacity:0.8;
+}
+
+/* Calendar classes */
+.calendar_div {
+    background: #ffffff;
+    border: solid 1px #808080;
+    padding: 3px 3px 3px 3px;
+    box-shadow: 3px 3px 8px #000000;
+    text-align:center;
+}
+.calendar_table {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+.calendar_bg {
+    background:#808080;
+    opacity: 0.2;
+}
+.calendar_headerbg {
+}
+.calendar_header {
+    background:#A0A0A0;
+}
+.calendar_footer {
+    background:#F0F0F0;
+}
+.calendar_empty {
+    background:#F0F0F0;
+    border:solid 1px transparent;
+}
+.calendar_workday {
+    background:#D0D0D0;
+    border:solid 1px transparent;
+}
+.calendar_today {
+    border:solid 1px #FF0000 !important;
+}
+.calendar_selected {
+    border:solid 1px transparent;
+    background:#8080FF;
+}
+.calendar_weekend {
+    border:solid 1px transparent;
+    background:#D0B0B0;
+}
+.calendar_week {
+    color:#A0A0A0;
+    font-style:italic;
+}
