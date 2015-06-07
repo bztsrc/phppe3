@@ -130,10 +130,10 @@ class Extensions {
 		{
 			$p=array();
 			$list = [ "https://raw.githubusercontent.com/bztphp/phppe3/master/", "http://phppe.org/" ];
-			if(!empty(PHPPE::$core->repos)) $list+=PHPPE::$core->repos;
+			if(!empty(PHPPE::$core->repos)) $list=array_merge(PHPPE::$core->repos,$list);
 			foreach($list as $r)
 			{
-				$d = json_decode(PHPPE::get($r."/packages.json?lang=".PHPPE::$client->lang),true);
+				$d = json_decode(PHPPE::get($r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang),true);
 				if(!empty($d) && !empty($d['packages'])) {
 					foreach($d['packages'] as $pkg=>$ver) {
 						//get latest
