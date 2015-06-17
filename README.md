@@ -37,15 +37,15 @@ This 64k bytes of PHP code will give you:
 - Thumbnail generation and image manipulation support (with libGD)
 - Built-in Content Server for CMS support
 - WYSIWYG web-based interface (editor available as an Extension)
-- Uses View layer to detect Models (flexibility on top)
+- Uses View layer to detect Models (flexibility you've never seen)
 
 Requirements
 ------------
 
 At least PHP 5.5 (5.6 recommended). If you also install Pack and CMS Extensions, no more than 256k disk space needed.
 
-Installation
-------------
+Installation without Packagist
+------------------------------
 
 For detailed instructions and alternatives see [documentation](http://phppe.org/phppe3.html#install).
 
@@ -79,12 +79,26 @@ For detailed instructions and alternatives see [documentation](http://phppe.org/
     $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
     ```
 
+Installation with Packagist
+---------------------------
+1. Create a new project
+
+    ``` sh
+    $ composer create-project "bztphp/phppe"
+    ```
+
+2. If you want additional features, install PHPPE Pack (~80kb) with
+
+    ``` sh
+    $ composer require "phppe"
+    ```
+
 Content Management
 ------------------
 
 This single file also serves as a Content Server. You can install the CMS Content Editor as an extension
 
-    $ composer require "phppe/CMS=*"
+    $ composer require "phppe/CMS"
 
 or
 
@@ -97,7 +111,7 @@ Extensions
 
 If you want a web based interface for extension management, install
 
-    $ composer require "phppe/Extensions=*"
+    $ composer require "phppe/Extensions"
 
 or
 
@@ -110,7 +124,7 @@ Testing
 
 Unit tests (over 100) and source are included in the Developer package
 
-    $ composer require "phppe/Developer=*"
+    $ composer require "phppe/Developer"
 
 or
 
