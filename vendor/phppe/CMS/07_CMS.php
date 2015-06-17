@@ -38,7 +38,7 @@ class CMS
 			L("Lists") ."@siteadm" => "cms/lists",
 			L("Layouts") ."@siteadm" => "cms/layouts",
 			L("Attachments") ."@siteadm" => "cms/attachments",
-			L("Sitebuild") ."@siteadm" => "cms/sitebuild",
+			PHPPE::isinst("CMSLT")? L("TimeLine") ."@siteadm" : "" => "cms/timeline",
 		]);
 		if(PHPPE::$core->app=="cms") {
 			filter_loggedin();
@@ -56,11 +56,13 @@ class CMS
 	}
 
 	function dock() {
-		if(PHPPE::$user->has("panel"))
-		if(PHPPE::$core->action=="pages")
-			return PHPPE::template("cms_pagepanel");
-		else
-			return PHPPE::template("cms_layoutpanel");
+		if(PHPPE::$user->has("panel")) {
+			if(PHPPE::$core->action=="pages")
+				return PHPPE::template("cms_pagepanel");
+			else
+			if(PHPPE::$core->action=="layouts")
+				return PHPPE::template("cms_layoutpanel");
+		}
 	}
 
 	function icon($arg)

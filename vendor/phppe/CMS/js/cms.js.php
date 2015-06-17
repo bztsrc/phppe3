@@ -168,8 +168,11 @@ function cms_addons(wwid,tag)
 {
     var t="",key;
     for(key in cms_alladdon){
-        t+="<img class='wysiwyg_icon' alt='<!"+tag+" "+key+">' id='"+wwid+":addons_"+key+"' title='"+htmlspecialchars(cms_alladdon[key].name)+"' data-search='"+htmlspecialchars(key+" "+cms_alladdon[key].name)+"' data-conf='"+htmlspecialchars(cms_alladdon[key].conf)+"' src='js/wysiwyg.js?txt2img="+escape("<!")+tag+" "+escape(key+">")+"'>";
+        t+="<img class='wysiwyg_icon' alt='<!"+tag+" "+key+">' id='"+wwid+":addons_"+key+"' title='"+htmlspecialchars(cms_alladdon[key].name)+"' data-search='"+htmlspecialchars(key+" "+cms_alladdon[key].name)+"' data-conf='"+htmlspecialchars(cms_alladdon[key].conf)+"' src='js/wysiwyg.js/"+escape("<!")+tag+" "+escape(key+">").replace(/\//g,"!2F!").replace(/\+/g,"!2B!")+"'>";
     }
+    <?php if(!PHPPE::lib("CMS")->expert) { ?>
+    t+="<small style='display:block;position:fixed;bottom:20px;color:#fff;'>"+L("help_templater")+"</small>";
+    <?php } ?>
     return t.replace("\n","");
 }
 function cms_addonoptions(wwid)
@@ -189,7 +192,7 @@ function cms_templater(wwid)
             "L"=>"label",
             "date"=>"expression",
             "time"=>"expression",
-            "datediff"=>"expression",
+            "difftime"=>"expression",
             "/form"=>"variable [url [onsubmitjs",
             "/if"=>"expression",
             "else"=>"",
@@ -205,11 +208,13 @@ function cms_templater(wwid)
             ] as $k=>$v) {
             if($k[0]=="/") {
                 $K=substr($k,1);
-                $t.="<img class='wysiwyg_icon' alt='<!".$K.">' id='\"+wwid+\":templater_".($K=="="?"eval":$K)."' title='".htmlspecialchars($K)."' data-search='".htmlspecialchars($K)."' data-conf='".htmlspecialchars($v)."' src='js/wysiwyg.js?txt2img=".urlencode("<!").urlencode($K.">")."'>";
-                $t.="<img class='wysiwyg_icon' alt='<!".$k.">' id='\"+wwid+\":templater_".($k=="="?"eval":$k)."_close' title='".htmlspecialchars($k)."' src='js/wysiwyg.js?txt2img=".urlencode("<!").urlencode($k.">")."'>";
+                $t.="<img class='wysiwyg_icon' alt='<!".$K.">' id='\"+wwid+\":templater_".($K=="="?"eval":$K)."' data-search='".htmlspecialchars($K)."' data-conf='".htmlspecialchars($v)."' src='js/wysiwyg.js/".urlencode("<!".$K.">")."'>";
+                $t.="<img class='wysiwyg_icon' alt='<!".$k.">' id='\"+wwid+\":templater_".($k=="="?"eval":$k)."_close' src='js/wysiwyg.js/".urlencode("<!!2F!".$K.">")."' data-search='".htmlspecialchars($K)."'>";
             } else
-                $t.="<img class='wysiwyg_icon' alt='<!".$k.">' id='\"+wwid+\":templater_".($k=="="?"eval":$k)."' title='".htmlspecialchars($k=="="?L("Evaluate"):$k)."' data-search='".htmlspecialchars($k)."' data-conf='".htmlspecialchars($v)."' src='js/wysiwyg.js?txt2img=".urlencode("<!").urlencode($k.">")."'>";
+                $t.="<img class='wysiwyg_icon' alt='<!".$k.">' id='\"+wwid+\":templater_".($k=="="?"eval":$k)."' data-search='".htmlspecialchars($k)."' data-conf='".htmlspecialchars($v)."' src='js/wysiwyg.js/".urlencode("<!".$k.">")."'>";
         }
+        if(!PHPPE::lib("CMS")->expert)
+            $t.="<small style='display:block;position:fixed;bottom:20px;color:#fff;'>".L("help_templater")."</small>";
     ?>
     return "<?=str_replace("\n","\\n",$t)?>";
 }
@@ -247,11 +252,11 @@ function cms_wysiwyg(wwid,val,conf,w,h)
     t+="<input type='text' id='"+wwid+":tools_searchinp' value='' onfocus='cms_tools_search(this,\""+wwid+"\");' onkeyup='cms_tools_search(this,\""+wwid+"\");' style='color:#000;width:100px;'></div>";
     t+="<div id='"+wwid+":tools_container' style='display:none;'>";
     t+="<div id='"+wwid+":tools_templater' style='display:none;width:200px;height:"+h+"px;overflow:auto;'>";
-    t+="<img class='wysiwyg_icon' alt='<!=>' id='"+wwid+":templater_eval' title='"+L("Expression")+"' data-search='=' data-conf='expression' src='js/wysiwyg.js?txt2img="+escape("<!=>")+"'>";
-    t+="<img class='wysiwyg_icon' alt='<!L>' id='"+wwid+":templater_L' title='"+L("Translation")+"' data-search='L' data-conf='label' src='js/wysiwyg.js?txt2img="+escape("<!L>")+"'>";
-    t+="<img class='wysiwyg_icon' alt='<!date>' id='"+wwid+":templater_date' title='"+L("Localized date")+"' data-search='date' data-conf='expression' src='js/wysiwyg.js?txt2img="+escape("<!date>")+"'>";
-    t+="<img class='wysiwyg_icon' alt='<!time>' id='"+wwid+":templater_time' title='"+L("Localized time")+"' data-search='time' data-conf='expression' src='js/wysiwyg.js?txt2img="+escape("<!time>")+"'>";
-    t+="<img class='wysiwyg_icon' alt='<!datediff>' id='"+wwid+":templater_date' title='"+L("Human readable date difference")+"' data-search='datediff' data-conf='expression' src='js/wysiwyg.js?txt2img="+escape("<!datediff>")+"'>";
+    t+="<img class='wysiwyg_icon' alt='<!=>' id='"+wwid+":templater_eval' title='"+L("Expression")+"' data-search='=' data-conf='expression' src='js/wysiwyg.js/"+escape("<!=>")+"'>";
+    t+="<img class='wysiwyg_icon' alt='<!L>' id='"+wwid+":templater_L' title='"+L("Translation")+"' data-search='L' data-conf='label' src='js/wysiwyg.js/"+escape("<!L>")+"'>";
+    t+="<img class='wysiwyg_icon' alt='<!date>' id='"+wwid+":templater_date' title='"+L("Localized date")+"' data-search='date' data-conf='expression' src='js/wysiwyg.js/"+escape("<!date>")+"'>";
+    t+="<img class='wysiwyg_icon' alt='<!time>' id='"+wwid+":templater_time' title='"+L("Localized time")+"' data-search='time' data-conf='expression' src='js/wysiwyg.js/"+escape("<!time>")+"'>";
+    t+="<img class='wysiwyg_icon' alt='<!difftime>' id='"+wwid+":templater_date' title='"+L("Human readable time difference")+"' data-search='difftime' data-conf='expression' src='js/wysiwyg.js/"+escape("<!difftime>")+"'>";
     t+="</div>";
     t+="<div id='"+wwid+":tools_guide' style='display:"+(g!=''?"block":"none")+";width:100%;height:"+h+"px;overflow:auto;color:#fff;'></div>";
     t+="<div id='"+wwid+":tools_fields' style='display:none;width:200px;height:"+h+"px;overflow:auto;'>"+cms_addons(wwid,"var")+"</div>";
@@ -279,6 +284,12 @@ function cms_generateguide(wwid)
         div.setAttribute('style','cursor:pointer;');
         dst.appendChild(div);
     }
+    <?php if(!PHPPE::lib("CMS")->expert) {?>
+    var sm=document.createElement('small');
+    sm.innerHTML=L('help_guide');
+    sm.setAttribute('style','display:block;position:fixed;bottom:20px;');
+    dst.appendChild(sm);
+    <?php } ?>
     document.getElementById(wwid+':tools_guide_').style.display='block';
 }
 function cms_insertguide(wwid,i)
@@ -332,6 +343,15 @@ function cms_tools_search(inp,wwid)
     }
     if(res.firstChild==null) res.innerHTML='<small style="color:#808080;">'+L('No results')+'</small>';
 }
+function cms_objfld(obj,wwid)
+{
+    var s=obj.value;
+    if(!s.match(/^[a-zA-Z\_][a-zA-Z\_0-9]*\.[a-zA-Z\_][a-zA-Z\_0-9]*/))
+        obj.style.background='<?=PHPPE::$ec?>';
+    else
+        obj.style.background='';
+    cms_setattr(obj,wwid);
+}
 function cms_setattr(obj,wwid)
 {
     if(cms_configure==null||cms_configure.alt==null) return;
@@ -341,7 +361,7 @@ function cms_setattr(obj,wwid)
         if(cms_conf[i]=="(") { p=1; inp.push("("); }
         if(cms_conf[i+1]==")"&&p) { for(j=inp.length-1;j>0&&(inp[j]==""||inp[j]==",");j--) inp.pop(); p=0; inp.push(")"); }
         if(form.rows[i]==null||form.rows[i].cells[1]==null||form.rows[i].cells[1].firstChild==null) continue;
-        inp.push(form.rows[i].cells[1].firstChild.value!=''?form.rows[i].cells[1].firstChild.value:(p?"":"-"));
+        inp.push(form.rows[i].cells[1].firstChild.value!=''||form.rows[i].cells[1].firstChild.type=="checkbox"?(form.rows[i].cells[1].firstChild.type=="checkbox"?(form.rows[i].cells[1].firstChild.checked?"1":""):form.rows[i].cells[1].firstChild.value):(p?"":"-"));
         if(p) inp.push(",");
     }
     for(i=inp.length-1;i>0&&inp[i]=="-";i--) inp.pop();
@@ -349,7 +369,7 @@ function cms_setattr(obj,wwid)
     cms_configure.alt="<"+"!"+alt+">";
     var d=alt.split(' ');
     var url=(d[1]==null?d[0]:d[0]+' '+(d[1].match(/^[a-z]+=['"]/)?d[1].substring(d[1].indexOf('=')+2,d[1].length-1):d[1]))+(d[2]!=null?' '+d[2]:'');
-    cms_configure.src=cms_configure.src.replace(/txt2img\=.*$/,"txt2img="+escape("<"+"!"+url+">"));
+    cms_configure.src=cms_configure.src.replace(/wysiwyg\.js\/.*$/,"wysiwyg.js/"+escape("<"+"!"+url+">").replace(/\//g,"!2F!").replace(/\+/g,"!2B!"));
 }
 function cms_confhook(evt,wwid,conf)
 {
@@ -368,7 +388,8 @@ function cms_confhook(evt,wwid,conf)
     }
     cfg=cfg.replace(/[\(]/g,"( ").replace(/[\)]/g," )").replace(/[\,]/g," ").replace(/[\[]/g," [").replace(/[\[][\ \t]+/g,"[").replace(/[\]]/g,"").replace(/[\ \t]+/g," ");
     if(t[0]=='var'||t[0]=="field"||t[0]=="widget"||t[0]=="cms") item=t[1]; else item=t[0];
-    var r="<b>"+L(item=="="?"Evaluate":(LANG['addon_'+item]!=null?'addon_':'')+item)+"</b><table id='"+wwid+":cfgform'>";
+    if(item==null) item="";
+    var r="<b>"+L(t[0]=="="?"Evaluate":'addon_'+(item!=''?item:t[0]))+"</b><table id='"+wwid+":cfgform'>";
     var i,j=0,idx=0,c=cfg.split(' ');
     cms_configure=evt.target;
     cms_conf=new Array(t[0]).concat(c);
@@ -388,7 +409,7 @@ function cms_confhook(evt,wwid,conf)
         if(n=="("||n==")")
             r+=(n=="("||idx>=0?n:'');
         else
-            r+=L((LANG['arg_'+n]!=null?'arg_':'')+n);
+            r+=L('arg_'+n);
         r+="</td><td>";
         if(c[i]!="("&&c[i]!=")") {
             if(n=="addon"){
@@ -414,12 +435,16 @@ function cms_confhook(evt,wwid,conf)
             if(n.substr(0,2)=="is"){
                 r+="<input type='checkbox' value='1' onchange='cms_setattr(this,\""+wwid+"\");' "+(t[j]!=null&&t[j]=="1"?" checked":"")+"'>";
             } else
-            r+="<input type='text' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
+            if(n=="obj.field") {
+                r+="<input type='text' onchange='cms_objfld(this,\""+wwid+"\");' onkeyup='cms_objfld(this,\""+wwid+"\");' value='"+htmlspecialchars(t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
+            } else
+                r+="<input type='text' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
         }
         r+="</td></tr>";
         if(c[i]=="(") idx++;
         j++;
     }
+    if(item=="") item="noaddon";
     return r+'</table><?=(!PHPPE::lib("CMS")->expert?"<small>'+L(\"help_addon_\"+(item==\"=\"?\"eval\":(item.substr(0,1)==\"/\"?item.substr(1):item)))+'</small>":"")?>';
 }
 function cms_imghook(evt,wwid,conf)

@@ -9,5 +9,7 @@
 <span style='padding-right:10px;'><!cms pagerevert Revert_page></span>
 <!/if>
 <span style='padding-right:10px;'><!cms pagedelete Delete_page></span>
-<!/if>
+<span style='padding-right:10px;'><!cms pageadd Clone_page></span>
+<!else>
 <span style='padding-right:10px;'><!cms pageadd Add_new_page></span>
+<!/if>

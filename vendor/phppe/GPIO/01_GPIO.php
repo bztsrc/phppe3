@@ -95,7 +95,7 @@ class GPIO
     static public function RPi()
     {
         $cpuinfo = @file_get_contents('/proc/cpuinfo');
-        if (preg_match('/^Revision[^0-9a-fA-F]+([0-9a-fA-F]+)/', $l, $m))
+        if (preg_match('/^Revision[^0-9a-fA-F]+([0-9a-fA-F]+)/', $cpuinfo, $m))
             return hexdec($m[1]);
         return 0;
     }

@@ -13,6 +13,7 @@ class CMS_Ctrl extends \PHPPE\App {
 	function __construct()
 	{
 		PHPPE::$core->nocache = true;
+		PHPPE::$core->needframe = false;
 		PHPPE::$core->site = L("CMS Layouts");
 		if(PHPPE::lib("CMS")->expert)
 			$this->quickhelp=false;

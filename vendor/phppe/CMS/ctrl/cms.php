@@ -31,6 +31,7 @@ class CMS_Ctrl extends \PHPPE\App {
 
 	function action($item)
 	{
+		PHPPE::$core->nopanel = true;
 		PHPPE::$core->template="cms_".PHPPE::$core->action;
 		switch(PHPPE::$core->action){
 			case "layoutdelete":

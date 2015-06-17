@@ -130,12 +130,11 @@ or
 
     $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
 
-Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
-You can also use [Packagist](https://packagist.org/packages/bztphp/phppe) to install the whole development environment:
+You can also use [Packagist](https://packagist.org/packages/bztphp/phppe) to install the whole development environment from ground up (including core extensions and tarballs):
 
     $ composer create-project "bztphp/phppe:dev-master"
 
-Please note that this will install all the core extensions as well, including latest tarballs.
+Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
 
 License
 -------

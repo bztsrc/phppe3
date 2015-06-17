@@ -15,6 +15,7 @@ class CMS_Ctrl extends \PHPPE\App {
 	{
 		PHPPE::$core->nocache = true;
 		PHPPE::$core->needframe = false;
+		PHPPE::$core->nopanel = true;
 		PHPPE::jslib("cms.js","cms_init();");
 		PHPPE::css("cms.css");
 	}

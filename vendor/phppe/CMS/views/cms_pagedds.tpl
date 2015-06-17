@@ -9,7 +9,7 @@ B {
 </style>
 <div class='confpanel'>
 <!form page>
-<h2><!=L("Page Dynamic Data Sets")></h2>
+<h2><!=L("Dynamic Data Sets")></h2>
 <b><!=L('Global')></b><br/>
 <!field cmsdds frame.dds><br/>
 <b><!=L('Local')></b><br/>

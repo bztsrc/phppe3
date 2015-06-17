@@ -1,4 +1,4 @@
-<h1><!L CMS Lists></h1>
+<h1><!L Lists></h1>
 <!if core.item>
 <a href='<!=url(core.app,core.action)>'><!L Main menu></a>
 <!if !empty(parentparent)>

@@ -1,12 +1,36 @@
 <?php
+/**
+ *  PHP Portal Engine v3.0.0
+ *  https://github.com/bztphp/phppe3/
+ *
+ *  Copyright LGPL 2015 bzt
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published
+ *  by the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *   <http://www.gnu.org/licenses/>
+ *
+ * @file vendor/phppe/wysiwyg/js/wysiwyg.js.php
+ * @author bzt@phppe.org
+ * @date 1 Jan 2015
+ * @brief HTML5 compatible WYSIWYG Editor
+ */
 use PHPPE\Core as PHPPE;
 
-if(isset($_REQUEST['txt2img'])){
+//! convert text to image (neat trick that makes the whole tag draggable in edit mode)
+if(!empty(PHPPE::$core->item)){
     header( "Content-Type: image/gif" );
     header( "Pragma:cache" );
     header( "Cache-Control:cache,public,max-age=86400" );
     header( "Connection:close");
-    $str=str_replace(array("!2F!","!2B!"),array("/","+"),urldecode(stripslashes($_REQUEST['txt2img'])));
+    $str=str_replace(array("!2F!","!2B!","!2f!","!2b!"),array("/","+","/","+"),urldecode(stripslashes(PHPPE::$core->item)));
     if(strtolower(substr($str,0,8))=="<!widget") {
         list($d)=explode(" ",trim(substr($str,9,strlen($str)-10)));
         list($d)=explode("(",$d);
@@ -27,7 +51,6 @@ if(isset($_REQUEST['txt2img'])){
     imagedestroy($im);
     die();
 }
-header("Content-type:text/javascript;charset=utf-8");
 ?>
 var wysiwyg_value=null;
 var wysiwyg_gecko=false;
@@ -207,7 +230,7 @@ function wysiwyg_togglesrc(id)
 	    var t=tmp.split(' ');
 	    var url=(t[1]==null?t[0]:t[0]+' '+(t[1].match(/^[a-z]+=['"]/)?t[1].substring(t[1].indexOf('=')+2,t[1].length-1):t[1]))+(t[2]!=null?' '+t[2]:'');
 //+(t[0].substr(1,5)=='field'||t[0].substr(1,3)=='var'&&t[2]!=null&&t[2]?' '+t[2]:''));
-	    output=output.replace(tags[i],"<img class='wysiwyg_icon' "+(url.substr(0,7)!="!widget"?"height='14' width='"+(url.length*8)+"'":"")+" src='js/wysiwyg.js?txt2img="+escape("<"+url.replace(/\//g,"!2F!").replace(/\+/g,"!2B!")+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
+	    output=output.replace(tags[i],"<img class='wysiwyg_icon' "+(url.substr(0,7)!="!widget"?"height='14' width='"+(url.length*8)+"'":"")+" src='js/wysiwyg.js/"+escape("<"+url.replace(/\//g,"!2F!").replace(/\+/g,"!2B!")+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
 	}
         document.getElementById(id+':frame').innerHTML=output;
         if(output.match(/class=['"]toc/))   //'

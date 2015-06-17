@@ -1,15 +1,15 @@
 <!if empty(core.item)>
-<h1><!L CMS Pages></h1>
+<h1><!L Pages></h1>
 <table>
 	<tr>
-		<th>Layout</th>
+		<th><!L Layout></th>
 		<th>URL</th>
-		<th>Title</th>
-		<th>Filters</th>
-		<th>DDS</th>
-		<th>Modified by</th>
-		<th>Modified at</th>
-		<th>#versions</th>
+		<th><!L Title></th>
+		<th><!L Filters></th>
+		<th><!L DDS></th>
+		<th><!L Modified by></th>
+		<th><!L Modified at></th>
+		<th><!L #versions></th>
 	</tr>
 <!foreach _pages>
 <tr><td colspan='10'><b><!=L(KEY)></b></td></tr>
@@ -28,7 +28,7 @@
 <!/foreach>
 </table>
 <!else>
-<!if !user.has('panel')>
+<!if !empty(core.nopanel) || !user.has('panel')>
 <div id='cmspanel'>
 <!include cms_pagepanel>
 </div>

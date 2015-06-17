@@ -12,6 +12,8 @@ class CMS_Ctrl extends \PHPPE\App {
 	function __construct()
 	{
 		PHPPE::$core->nocache = true;
+		if(empty(PHPPE::$core->item))
+			PHPPE::$core->needframe = false;
 		PHPPE::$core->site = L("CMS Pages");
 		PHPPE::jslib("cms.js","cms_init();");
 	}

@@ -1,1 +1,1 @@
-<h1><!L CMS Attachments></h1>
+<h1><!L Attachments></h1>
