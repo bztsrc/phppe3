@@ -84,11 +84,12 @@ function toc_init() {
     var cnt=new Array(0,0,0,0);
     var sections=tocs[k].parentNode.getElementsByTagName("*")||[];
     tocs[k].style.position='relative';
+    tocs[k].style.float='right';
     tocs[k].style.display='inline';
     for(i=0;i<sections.length;i++) {
 		var tag=sections[i].tagName+"";
 		if(sections[i]==tocs[k]) { ok=1;continue; }
-		var t=tag.match(/^h([3-5])$/i);
+		var t=tag.match(/^[hH]([3-5])$/i);
 		if(!t || !ok) continue;
 		cnt[t[1]-2]++;
 		if(t[1]=='4') cnt[3]=0;

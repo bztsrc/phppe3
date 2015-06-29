@@ -6,7 +6,7 @@ class Extensions_Ctrl extends \PHPPE\App {
 	function __construct ($cfg)
 	{
 		if(!PHPPE::$user->has("install")) {
-			PHPPE::redirect("/login", true);
+			PHPPE::redirect("login", true);
 		}
 		//load global remote config if user specific not found
 		if( empty(PHPPE::$user->data['remote']['host']) ) {

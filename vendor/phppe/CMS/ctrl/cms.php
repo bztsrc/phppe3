@@ -21,7 +21,18 @@ class CMS_Ctrl extends \PHPPE\App {
 	{
 		PHPPE::$core->needframe = false;
 		$this->langs=[""=>L("Any")];
-		foreach($_SESSION['pe_ls'] as $k=>$v)
+		if(  !empty( $_SESSION[ 'pe_ls' ] ) )$d = $_SESSION[ 'pe_ls' ];
+		else {
+		    //if application has translations, use that list
+		    $D = @scandir( "app/lang" );
+		    //if not, fallback to core's translations
+		    if(!a($D)||empty($D)) $D = @scandir( P."lang" );
+		    $d = [];
+		    foreach( $D  as $f ) if(w($f,-4)==".php")
+			$d[ z( $f,0,u( $f ) - 4 ) ] = 1;
+		    $_SESSION[ 'pe_ls' ] = $d;
+		}
+		foreach($d as $k=>$v)
 			$this->langs[$k]=$k." ".L($k);
 		$this->quickhelp=!PHPPE::lib("CMS")->expert;
 

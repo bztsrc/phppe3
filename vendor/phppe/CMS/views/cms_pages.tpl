@@ -14,7 +14,7 @@
 <!foreach _pages>
 <tr><td colspan='10'><b><!=L(KEY)></b></td></tr>
 <!foreach VALUE>
-	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()><!=id>";'>
+	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()><!=urlencode(id)>";'>
 		<td></td>
 		<td class='row<!=ODD>'><!=id></td>
 		<td class='row<!=ODD>'><!=name></td>

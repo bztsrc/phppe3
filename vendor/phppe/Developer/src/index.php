@@ -430,12 +430,14 @@ namespace PHPPE {
 			//! construct base href
 			$c = $S[ 'SCRIPT_NAME' ];
 			$C = n($c);
+			if($C != "/")
+				$C .= "/";
 			$d = "SERVER_NAME";
-			$this->base = (! empty($this->base) ? $this->base : (! empty($S[ $d ]) ? $S[ $d ] : "localhost")) . (! empty($C) && $C[ 0 ] != "/" ? "/" : "") . $C;
+			$this->base = (! empty($this->base) ? $this->base : (! empty($S[ $d ]) ? $S[ $d ] : "localhost")) . ($C[ 0 ] != "/" ? "/" : "") . $C;
 			//! get application, action and item
 			list($d) = x("?", @ $S[ 'REQUEST_URI' ]);
 			foreach([ $c, n($c) ] as $C)
-				if(z($d, 0, u($C)) == $C) {
+				if($C != "/" && z($d, 0, u($C)) == $C) {
 					$d = w($d, u($C));
 					break;
 				}
@@ -448,7 +450,7 @@ namespace PHPPE {
 			//! a few basic security check
 			$c = $this->app . "_" . $this->action;
 			if(strpos($c, "..") !== false || strpos($c, "/") !== false || w($this->app, - 4) == PE || w($this->action, - 4) == PE)
-				$this->redirect("/403");
+				$this->redirect("403");
 			//! default template
 			$this->template = $c;
 			//! calculate upload max file size
@@ -482,7 +484,7 @@ namespace PHPPE {
  */
 		private function bootdiag()
 		{
-			ini_set("display_errors", 1);
+			//		ini_set( "display_errors", 1 );
 			header("Content-Type:text/plain");
 			//! extensions checks and webserver group id
 			if(! extension_loaded("posix") && y("dl"))
@@ -897,23 +899,24 @@ namespace PHPPE {
 					b($this->app, $d);
 				else
 				{
-					$a = N . "*/" . $this->app . "/" . s($this->action . ($this->item ? "/" . $this->item : ""), [ "*" => "", ".." => "" ]);
-					$c = @glob($a, GLOB_NOSORT)[ 0 ];
-					if($c && f($c) && w($c, - 4) != PE)
-						$d = g($c);
-					else
-					{
-						$c = @glob($a . PE, GLOB_NOSORT)[ 0 ];
+					foreach([ $this->action, $this->action . PE, $this->action . ($this->item ? "/" . $this->item : "") ] as $p) {
+						$a = N . "*/" . $this->app . "/" . s($p, [ "*" => "", ".." => "" ]);
+						$c = @glob($a, GLOB_NOSORT)[ 0 ];
 						if($c) {
-							ob_start();
-							i($c);
-							$d = o();
+							if(f($c) && w($c, - 4) != PE)
+								$d = g($c);
+							else
+							{
+								ob_start();
+								i($c);
+								$d = o();
+							}
 						}
-					}
-					if(! empty($d)) {
-						if(! empty(self::$mc) && empty($this->nocache))
-							self::$mc->set($N, $d, MEMCACHE_COMPRESSED, $this->cachettl);
-						b($this->app, $d);
+						if(! empty($d)) {
+							if(! empty(self::$mc) && empty($this->nocache))
+								self::$mc->set($N, $d, MEMCACHE_COMPRESSED, $this->cachettl);
+							b($this->app, $d);
+						}
 					}
 				}
 				$c = "404 Not Found";
@@ -1205,13 +1208,13 @@ namespace PHPPE {
 			//! output header
 			if(! empty($o)) {
 				if($o == "html") {
-					$P = $this->needframe && self::$user->has("panel");
+					$P = empty($this->nopanel) && self::$user->has("panel");
 					$O = "";
 					$I = m(__FILE__);
 					if($I == "index.php")
 						$I = "";
 					//! HTML5 header and title
-					$O .= "<!DOCTYPE HTML>\n<html>\n<head>\n<title>" . (! empty($this->site) ? $this->site : $this->id) . "</title>\n<base href='http" . ($this->sec ? "s" : "") . "://" . $this->base . "/'/>\n<meta charset='utf-8'/>\n<meta name='Generator' content='" . $this->id . "'/>\n";
+					$O .= "<!DOCTYPE HTML>\n<html><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='http" . ($this->sec ? "s" : "") . "://" . $this->base . "'/><meta charset='utf-8'/>\n<meta name='Generator' content='" . $this->id . "'/>\n";
 					foreach($this->meta as $k => $m)
 						$O .= "<meta name='$k' content='" . h($m) . "'/>\n";
 					//! favicon
@@ -1339,10 +1342,11 @@ namespace PHPPE {
 								if(a($L)) {
 									$O .= "<div id='pe_m$x'$H><ul>";
 									//						$X=0;
-									foreach($L as $t => $l) {
-										@list($Y, $A) = x("@", $t);
-										if(empty($A) || self::$user->has($A))
-											/*								if(a($l)) {
+									foreach($L as $t => $l)
+										if($t) {
+											@list($Y, $A) = x("@", $t);
+											if(empty($A) || self::$user->has($A))
+												/*								if(a($l)) {
 									$O.="<li onclick='return pe_p(\"m$x_$X\");'>".h(L($Y))."<div id='pe_m$x_$X'$H><ul>";
 									foreach( $L  as $k => $v ){
 										@list($Y,$A)=x("@",$k);
@@ -1351,9 +1355,9 @@ namespace PHPPE {
 									}
 									$O.="</div></li>";
 								} else */
-											$O .= "<li onclick=\"document.location.href='$l';\"><a href='$l'>" . h(L($Y)) . "</a></li>";
-										//							$X++;
-									}
+												$O .= "<li onclick=\"document.location.href='$l';\"><a href='$l'>" . h(L($Y)) . "</a></li>";
+												//							$X++;
+											}
 									$O .= "</ul></div><span class='menu_" . ($a ? "a" : "i") . "' onclick='return pe_p(\"m$x\");'>" . h(L($ti)) . "</span>";
 									$x++ ;
 								}
@@ -1415,7 +1419,7 @@ namespace PHPPE {
 						$c = "";
 						foreach($this->error as $v)
 							$c .= implode("\n", $v) . "\n";
-						echo("<script type='text/javascript'>\nalert('" . s(addslashes(r($c)), "\n", "\\n") . "');\n</script>\n");
+						echo("<script type='text/javascript'>\nalert('" . s(ad(r($c)), "\n", "\\n") . "');\n</script>\n");
 					}
 					echo("\n<!-- MONITORING: " . ($D > 0 ? "ERROR" : ($this->runlevel > 0 ? "WARNING" : "OK")) . ", page " . sprintf("%.4f sec, db %.4f sec, server %.4f sec, mem %.4f mb%s -->\n</body>\n</html>\n", microtime(1) - $T, self::$bill, $this->started - $T, memory_get_peak_usage() / 1024 / 1024, ! empty(self::$mc) ? ", mc" : ""));
 				}
@@ -1780,7 +1784,7 @@ namespace PHPPE {
 			//redirect user
 			header("HTTP/1.1 302 Found");
 			$f = m(__FILE__);
-			header("Location:" . (! empty($u) ? (strpos($u, "://") ? $u : "http" . (self::$core->sec ? "s" : "") . "://" . self::$core->base . ($f != "index" . PE ? "/" . $f : "") . ($u && $u[ 0 ] != "/" ? "/" : "") . $u) : self::url() . self::$core->item));
+			header("Location:" . (! empty($u) ? (strpos($u, "://") ? $u : "http" . (self::$core->sec ? "s" : "") . "://" . self::$core->base . ($f != "index" . PE ? $f . "/" : "") . ($u != "/" ? $u : "")) : self::url() . self::$core->item));
 			exit();
 		}
 /**
@@ -2009,7 +2013,7 @@ namespace PHPPE {
 			$d = Core::db();
 			foreach($o as $k => $v) {
 				if(! in_array($k, $s))
-					$r .= ($r ? $c : "") . $k . "=" . ($c == "," && ! empty($d) ? $d->quote($v) : "'" . str_replace([ "\r", "\n", "\t", "\x1a" ], [ "\\r", "\\n", "\\t", "\\x1a" ], addslashes($v)) . "'");
+					$r .= ($r ? $c : "") . $k . "=" . ($c == "," && ! empty($d) ? $d->quote($v) : "'" . str_replace([ "\r", "\n", "\t", "\x1a" ], [ "\\r", "\\n", "\\t", "\\x1a" ], ad($v)) . "'");
 			}
 			return $r;
 		}
@@ -2394,7 +2398,7 @@ namespace PHPPE {
 		static function js($f = "", $c = "", $a = 0)
 		{
 			//! add a javascript function to output
-			$C = r($c);
+			$C = minify($c, "js");
 			$C .= ($C[ u($C) - 1 ] != ";" ? ";" : "");
 			if($a) {
 				if(! isset(self::$core->js[ $f ]))
@@ -2487,8 +2491,9 @@ namespace PHPPE {
 			imagefill($N, 0, 0, $a);
 			imagecopyresampled($N, $i, 0, 0, $c, $d, $X, $Y, $e, $f);
 			//! tile watermark logo on image
-			if(! empty($W) && f("data/" . $W . ".png")) {
-				$g = imagecreatefrompng("data/" . $W . ".png");
+			$T = "data/" . $W . ".png";
+			if(! empty($W) && f($T)) {
+				$g = imagecreatefrompng($T);
 				$a = imagesx($g);
 				$b = imagesy($g);
 				for($y = 0; $y < $Y; $y += $a)
@@ -2574,7 +2579,7 @@ namespace PHPPE {
 							if(a($v))
 								return $v;
 							//! don't throw notice if non-scalar referenced by VALUE
-							@ $r .= "'" . $v . "'";
+							@ $r .= "'" . ad($v) . "'";
 							$i = $j;
 							break;
 							case "ODD" :
@@ -2599,7 +2604,7 @@ namespace PHPPE {
 								$v = self::$c[ $Y ]->VALUE[ $n ];
 							else 
 								$v = "";
-							$r .= "'" . $v . "'";
+							$r .= "'" . ad($v) . "'";
 							$i = $j;
 							break;
 							case "true" :
@@ -2607,11 +2612,11 @@ namespace PHPPE {
 							case "null" :
 							break;
 							default : if(isset(self::$c[ self::$n ]) && a(self::$c[ self::$n ]->VALUE)) {
-								@ $r .= "'" . self::$c[ self::$n ]->VALUE[ $v ] . "'";
+								@ $r .= "'" . ad(self::$c[ self::$n ]->VALUE[ $v ]) . "'";
 								$i = $j;
 							}
 							elseif(isset(self::$c[ self::$n ]->VALUE->$v)) {
-								@ $r .= "'" . self::$c[ self::$n ]->VALUE->$v . "'";
+								@ $r .= "'" . ad(self::$c[ self::$n ]->VALUE->$v) . "'";
 								$i = $j;
 							}
 							else
@@ -2769,7 +2774,7 @@ namespace PHPPE {
 			if($re >= 64)
 				return $L;
 			//check if we're in cms edit mode
-			$CM = self::$core->app == "cms" && q(C . "CMS", "icon");
+			$CM = self::$core->app == "cms" && self::$core->action == "pages" && q(C . "CMS", "icon");
 			//get tags
 			if(preg_match_all("/<!([^\[\-][^>]+)>[\r\n]*/ms", $x, $T, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
 				//get opening/closing pairs
@@ -2863,7 +2868,7 @@ namespace PHPPE {
 						case "time" :
 						case "date" :
 						$v = self::getval($A[ 0 ]);
-						$w = ! empty($v) ? date((! empty(self::$l[ 'dateformat' ]) ? self::$l[ 'dateformat' ] : "Y-m-d") . ($t == "time" ? " H:i:s" : ""), $v) : (! empty($A[ 1 ]) ? "" : L("Epoch"));
+						$w = ! empty($v) ? date((! empty(self::$l[ 'dateformat' ]) ? self::$l[ 'dateformat' ] : "Y-m-d") . ($t == "time" ? " H:i:s" : ""), $v + 0) : (! empty($A[ 1 ]) ? "" : L("Epoch"));
 						break;
 						case "difftime" :
 						$w = "";
@@ -2972,7 +2977,8 @@ namespace PHPPE {
 								break;
 							}
 						}
-						$w .= ($t == "cms" || ($t == "var" && empty($_SESSION[ 'pe_e' ])) ? (is_scalar($v) ? $v . "" : $v && json_encode($v)) : self::e("W", "UNKADDON", $f)) . ($t == "cms" ? "</span>" : "");
+						$w .= $t == "cms" || ($t == "var" && empty($_SESSION[ 'pe_e' ])) ? (is_scalar($v) ? $v . "" : $v && json_encode($v)) : self::e("W", "UNKADDON", $f);
+						$w .= ($t == "cms" ? "</span>" : "");
 						break;
 						default : $w = self::e("W", "UNKTAG", $t);
 					}
@@ -3110,7 +3116,7 @@ namespace PHPPE\AddOn {
 			if(y(C . "pass"))
 				return \PHPPE\pass($n, $v, $a, $t);
 			$r = p("/[0-9]/", $v) && p("/[a-z]/i", $v) && t($v) != $v && k($v) != $v && u($v) >= 6;
-			return[ $r, "not a valid password! [a-zA-Z0-9] * 6" ];
+			return[ $r, "not a valid password! [a-zA-Z0-9]*6" ];
 		}
 	}
 
@@ -3128,7 +3134,7 @@ namespace PHPPE\AddOn {
 		function edit()
 		{
 			Core::js("pe_on(e)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;o.style.background='';if(c==8||c==37||c==39||c==46)return true;c=String.fromCharCode(c);if(c.match(/[0-9\\b\\t\\r\\-\\.\\,]/)!=null)return true;else{o.style.background='" . Core::$ec . "';setTimeout(function(){o.style.background='';},200);return false;}");
-			return "<input" . @v($this->css, $this->attrs[ 1 ], "", $this->name, $this->attrs[ 0 ], $this->args) . " style='text-align:right;" . (! empty($this->err) ? "background:" . Core::$ec . ";" : "") . "' type='text' onkeypress='return pe_on(event);' onkeyup='this.value=this.value.replace(\",\",\".\");' onfocus='this.style.background=\"\";this.select();'" . (isset($this->args[ 3 ]) ? " onblur='if(this.value<" . $this->args[ 2 ] . ")this.value=" . $this->args[ 2 ] . ";if(this.value>" . $this->args[ 3 ] . ")this.value=" . $this->args[ 3 ] . ";'" : "") . " value=\"" . h(r($this->value)) . "\">";
+			return "<input" . @v($this->css, $this->attrs[ 1 ], "", $this->name, $this->attrs[ 0 ], $this->args) . " style='text-align:right;" . (! empty($this->err) ? "background:" . Core::$ec . ";" : "") . "' type='number' onkeypress='return pe_on(event);' onkeyup='this.value=this.value.replace(\",\",\".\");' onfocus='this.style.background=\"\";this.select();'" . (isset($this->args[ 3 ]) ? " onblur='if(this.value<" . $this->args[ 2 ] . ")this.value=" . $this->args[ 2 ] . ";if(this.value>" . $this->args[ 3 ] . ")this.value=" . $this->args[ 3 ] . ";'" : "") . " value=\"" . h(r($this->value)) . "\">";
 		}
 		static function validate($n, &$v, $a, $t)
 		{
@@ -3311,7 +3317,8 @@ namespace PHPPE\AddOn {
 		}
 		function edit2($time = 0)
 		{
-			Core::js("pe_cd(o,f)", "var d=new Date(Date.UTC(o[f+':y'].value,o[f+':m'].value-1,o[f+':d'].value,o[f+':h']?o[f+':h'].value:0,o[f+':i']?o[f+':i'].value:0,0));o[f+':y'].style.background='';o[f+':m'].style.background='';o[f+':d'].style.background='';if(o[f+':h'])o[f+':h'].style.background='';if(o[f+':i'])o[f+':i'].style.background='';if(!d||d.getUTCDate()!=o[f+':d'].value){o[f+':y'].style.background='" . Core::$ec . "';o[f+':m'].style.background='" . Core::$ec . "';o[f+':d'].style.background='" . Core::$ec . "';}");
+			Core::js("pe_cs(n,b)", "if(n!=null&&n.style!=null)n.style.background=b;");
+			Core::js("pe_cd(o,f)", "var d=new Date(Date.UTC(o[f+':y'].value,o[f+':m'].value-1,o[f+':d'].value,o[f+':h']?o[f+':h'].value:0,o[f+':i']?o[f+':i'].value:0,0));pe_cs(o[f+':y'],'');pe_cs(o[f+':m'],'');pe_cs(o[f+':d'],'');pe_cs(o[f+':h'],'');pe_cs(o[f+':i'],'');if(!d||d.getUTCDate()!=o[f+':d'].value){var e='" . COre::$ec . "';pe_cs(o[f+':y'],e);pe_cs(o[f+':m'],e);pe_cs(o[f+':d'],e);}");
 			$n = s($this->name, ".", "_");
 			$sel = "<select" . @v($this->css, $this->attrs[ 1 ], $this->err, "", "") . " onfocus='pe_cd(this.form,\"" . $n . "\");' onchange='pe_cd(this.form,\"" . $n . "\");" . (! empty($this->attrs[ 0 ]) && $this->attrs[ 0 ] != "-" ? $this->attrs[ 0 ] : "") . "' name='" . $n;
 			$d = x(",", date("Y,m,d,H,i,s", ! empty($this->value) ? $this->value : Core::$core->now));
@@ -3439,7 +3446,7 @@ namespace {
 		if(\PHPPE\Core::$user->id)
 			return true;
 		/* save request uri for returning after successful login */
-		\PHPPE\Core::redirect("/login", true);
+		\PHPPE\Core::redirect("login", 1);
 	}
 	function filter_csrf()
 	{
@@ -3485,8 +3492,9 @@ namespace {
 	}
 	function c($m)
 	{
-		header("Pragma:cache");
-		header("Cache-Control:cache,public,max-age=86400");
+		//header( "Pragma:cache" );
+		header("Cache-Control:cache,public,max-age=$m");
+		header("Expires:" . gmdate("r", time() + 86400));
 		header("Content-Type:" . $m . ";charset=utf-8");
 		header("Connection:close");
 	}
@@ -3554,6 +3562,10 @@ namespace {
 	{
 		return @json_decode($a, 1);
 	}
+	function ad($a)
+	{
+		return addslashes($a);
+	}
 	function ce($c)
 	{
 		return class_exists($c);
@@ -3563,7 +3575,7 @@ namespace {
 		return(ce($c) && is_subclass_of($c, C . "App")) || (ce($c . "_Ctrl") && is_subclass_of($c . "_Ctrl", C . "App"));
 	}
 
-/******** Bootstrap PHPPE **********/
+/******* Bootstrap PHPPE *******/
 	if(empty(\PHPPE\Core::$core))
 		new \PHPPE\Core(! empty(debug_backtrace()));
 	return \PHPPE\Core::$core;

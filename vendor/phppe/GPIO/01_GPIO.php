@@ -37,6 +37,8 @@ class GPIOException extends \Exception
 
 /**
  * Main class
+ *
+ * @usage $gpio=GPIO::mode(3,"out")->mode(4,"in"); $gpio->write(3,true);
  */
 class GPIO
 {
@@ -65,34 +67,38 @@ class GPIO
  */
 	public function __construct($cfg=[])
 	{
-		$rpi=self::RPi();
 		//! get configuration and fallback to hardcoded values
 		if(!empty($cfg['pins']))
 			$this->pins=PHPPE::str2arr($cfg['pins']);
 		if(empty($this->pins)) {
+            $rpi=self::RPiPCB();
 			if ($rpi < 16)
 				//! original GPIO without DNC
-            	$this->pins = [ 3,5,7,8,10,11,12,13,15,16,18,19,21,22,23,24,26 ];
+            	$this->pins = [ 2=>3,3=>5,4=>7,7=>26,8=>24,9=>21,10=>19,11=>23,17=>11,18=>12,22=>15,23=>16,24=>18,25=>22,27=>13 ];
 	        else
-    	        //! new GPIO layout (B+)
-            	$this->pins = [ 3,5,7,8,10,11,12,13,15,16,18,19,21,22,23,24,26,27,28,29,31,32,33,35,36,37,38,40 ];
+    	        //! new GPIO layout (B+ J8)
+                $this->pins = [ 2=>3,3=>5,4=>7,5=>29,6=>31,7=>26,8=>24,9=>21,10=>19,11=>23,12=>32,13=>33,14=>8,15=>10,16=>36,17=>11,18=>12,19=>35,20=>38,21=>40,22=>15,23=>16,24=>18,25=>22,26=>37,27=>13 ];
 		}
 	}
 
+/**
+ * reset all pins to out mode and unexport
+ */
 	function reset()
 	{
 		foreach($this->hdlr as $k=>$v) {
-			$this->mode($k,"out");
-			file_put_contents(self::PATH_UNEXPORT, $k);
+			$this->mode($k,"in");
+			@file_put_contents(self::PATH_UNEXPORT, $k);
 		}
 		$this->hdlr=[];
 	}
+
  /**
  * Get Raspberry Pi version
  *
  * @return numeric PCB version
  */
-    static public function RPi()
+    static public function RPiPCB()
     {
         $cpuinfo = @file_get_contents('/proc/cpuinfo');
         if (preg_match('/^Revision[^0-9a-fA-F]+([0-9a-fA-F]+)/', $cpuinfo, $m))
@@ -101,25 +107,13 @@ class GPIO
     }
 
  /**
- * Get load
- *
- * @return array of three samples (1,5,15 min)
- */
-    static public function CPU()
-    {
-        return sys_getloadavg();
-    }
-
- /**
  * Get CPU temperature
  *
- * @param true for fahrenheit, SI Celsius otherwise
- * @return float
+ * @return float, SI Celsius
  */
-    static public function temp($f = false)
+    static public function temp()
     {
-        $t = floatval(@file_get_contents('/sys/class/thermal/thermal_zone0/temp')/1000);
-		return ($f?1.8*$t+32:$t);
+        return floatval(@file_get_contents('/sys/class/thermal/thermal_zone0/temp')/1000);
     }
 
  /**
@@ -133,6 +127,20 @@ class GPIO
     }
 
 /**
+ * export interface to userland
+ *
+ * @param pin number
+ */
+    static public function export($pin)
+    {
+        $pin=intval($pin);
+        if(empty(self::$self->pins[$pin])) throw new GPIOException("bad pin");
+        if(!is_dir(self::PATH_GPIO.$pin)) {
+            // Export pin
+            @file_put_contents(self::PATH_EXPORT,$pin);
+        }
+    }
+/**
  * Setup pin for direction (in or out)
  *
  * @param pin number
@@ -141,15 +149,18 @@ class GPIO
  */
     static public function mode($pin, $dir="out")
     {
-    	if(!isset(array_keys(self::$self->pins)[$pin])) throw new \GPIOException("bad pin");
-    	if($dir!="in"&&$dir!="out") throw new \GPIOException("bad dir");
-        // if exported, unexport it first
-        if (!empty(self::$self->hdlr[$pin]))
- 	       file_put_contents(self::PATH_UNEXPORT,$pin);
-        // Export pin
-        file_put_contents(self::PATH_EXPORT,$pin);
-        file_put_contents(self::PATH_GPIO.$pin.'/direction', $dir);
-        self::$self->hdlr[$pin] = $dir;
+        $pin=intval($pin);
+    	if($dir!="in"&&$dir!="out") throw new GPIOException("bad dir");
+        try {
+            self::export($pin);
+            if(trim(@file_get_contents(self::PATH_GPIO.$pin.'/direction'))!=$dir){
+                @file_put_contents(self::PATH_GPIO.$pin.'/direction', $dir);
+    		@file_put_contents(self::PATH_GPIO.$pin.'/value',"1");
+	    }
+            self::$self->hdlr[$pin] = $dir;
+        } catch(\Exception $e) {
+            throw new GPIOException($e->getMessage());
+        }
         return self::$self;
     }
 
@@ -161,8 +172,9 @@ class GPIO
  */
     static public function read($pin)
     {
-    	if(!isset(array_keys(self::$self->pins)[$pin])||@self::$self->hdlr[$pin]!="in") throw new \GPIOException("bad pin");
-        return trim(@file_get_contents(self::PATH_GPIO.$pin.'/value'));
+        $pin=intval($pin);
+    	@self::export($pin);
+        return intval(@file_get_contents(self::PATH_GPIO.$pin.'/value'))==1?false:true;
     }
 
 /**
@@ -174,8 +186,10 @@ class GPIO
  */
     static public function write($pin,$value=true)
     {
-    	if(!isset(array_keys(self::$self->pins)[$pin])||@self::$self->hdlr[$pin]!="out") throw new \GPIOException("bad pin");
-        file_put_contents(self::PATH_GPIO.$pin.'/value',$value);
+        $pin=intval($pin);
+        if(empty(self::$self->pins[$pin])||@self::$self->hdlr[$pin]!="out") throw new GPIOException("bad pin");
+        @self::export($pin);
+        file_put_contents(self::PATH_GPIO.$pin.'/value',$value?"0":"1");
     }
 
 /**
@@ -183,6 +197,6 @@ class GPIO
  */
 	function __toString()
 	{
-		return __CLASS__."/RPi".self::RPi();
+		return __CLASS__."/RPi".self::RPiPCB();
 	}
 }

@@ -10,4 +10,5 @@ CREATE TABLE `views` (
   `modifyd` int(11) NOT NULL default 0,
   PRIMARY KEY  (`id`)
 );
-INSERT INTO `views` VALUES ('simple','','<div id="cmscontent"><!=app.body></div>','','','{"generator":"PHPPECMS"}',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO `views` VALUES ('frame','','<div id="header"><!cms wysiwyg app.header></div><br><div id="menu"><!cms pagelist mainmenu><ul><!foreach mainmenu><li><!=name></li><!/foreach></ul></div><br><div id="content"><!app></div>','','','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO `views` VALUES ('simple','','<!cms wysiwyg app.body></div>','','','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);

@@ -34,12 +34,6 @@ if( PHPPE::get(url("","http")."post",array("var1"=>"test1","var2"=>"test2")) != 
     return false;
 } else echo ("OK\n");
 
-echo("HTTP Timeout: ");
-if( PHPPE::get(url("","http")."timeout",null,1) != "" ) {
-    echo("failed!\n");
-    return false;
-} else echo ("OK\n");
-
 echo("HTTP Redirect: ");
 if( PHPPE::get(url("","http")."redirect") != "Redirected" ) {
     echo("failed!\n");
@@ -48,6 +42,12 @@ if( PHPPE::get(url("","http")."redirect") != "Redirected" ) {
 
 echo("HTTP Cookie change: ");
 if( PHPPE::get(url("","http")."cookie") != "OK" ) {
+    echo("failed!\n");
+    return false;
+} else echo ("OK\n");
+
+echo("HTTP Timeout: ");
+if( PHPPE::get(url("","http")."timeout",null,1) != "" ) {
     echo("failed!\n");
     return false;
 } else echo ("OK\n");

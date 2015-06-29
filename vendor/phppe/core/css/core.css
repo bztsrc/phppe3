@@ -1,7 +1,7 @@
 BODY,TD,DIV,#content {font-family:sans-serif;font-size:14px;}
 TABLE {border-spacing:2px;border-collapse:separate;}
-TH {background:#D0D0D0;text-align:left;padding:2px 2px 2px 2px !important;}
-TD {padding:2px 2px 2px 2px !important;}
+TH {background:#D0D0D0;text-align:left;padding:2px;}
+TD {padding:2px;}
 TD.row0 {background:#E8E8E8;}
 TD.row1 {background:#F8F8F8;}
 

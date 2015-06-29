@@ -57,10 +57,14 @@ class CMS
 
 	function dock() {
 		if(PHPPE::$user->has("panel")) {
-			if(PHPPE::$core->action=="pages")
+			$c=get_class(PHPPE::getval("app"));
+			if($c=="PHPPE\App" || $c=="PHPPE\Content")
+				return "<span style='padding-right:10px;'><a href='cms/pages/".urlencode(PHPPE::$core->app."/".(PHPPE::$core->action!="action"?PHPPE::$core->action:"").(PHPPE::$core->item?"/".PHPPE::$core->item:""))."'><img src='images/cms/edit.png' style='padding:3px;position:absolute;'></a></span>";
+			elseif(PHPPE::$core->app!="cms")
+				return "";
+			elseif(PHPPE::$core->action=="pages")
 				return PHPPE::template("cms_pagepanel");
-			else
-			if(PHPPE::$core->action=="layouts")
+			elseif(PHPPE::$core->action=="layouts")
 				return PHPPE::template("cms_layoutpanel");
 		}
 	}
