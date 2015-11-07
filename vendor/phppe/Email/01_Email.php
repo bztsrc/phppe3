@@ -34,6 +34,7 @@ class Email {
 	private static $user;
 	private static $pass;
 	private static $sender;
+	private static $forge;
 
 	//! email object properties
 	private $header;
@@ -73,6 +74,7 @@ class Email {
 			!empty($cfg["sender"]) ? $cfg["sender"] :
 			( !empty($cfg["path"]) ? $cfg["path"] :
 			"no-reply@".(!empty($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "localhost" ) );
+		self::$forge = !empty($cfg["forge"]) ? $cfg["forge"] : "";
 
 		//! load data from dumped object
 		$msg = @unserialize(preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'",$msg));
@@ -138,7 +140,7 @@ class Email {
 			//! mail queue in database
 			if( empty(Core::db()) )
 				throw new \Exception(L("DB queue backend without configured database!"));
-			PHPPE::exec("INERT INTO email_queue (data) VALUES (?);", [$this->get()] );
+			PHPPE::exec("INSERT INTO email_queue (data) VALUES (?);", [$this->get()] );
 			return true;
 		} elseif($this->via == "phpmailer") {
 			//! PHP Mailer
@@ -154,7 +156,7 @@ class Email {
 			foreach(["To", "Cc", "Bcc"] as $type)
 				foreach($this->header[$type] as $rcpt=>$full) {
 					list($name) = explode("<",$full);
-					$mail->SetAddress($rcpt, trim($name));
+					$mail->SetAddress(self::$forge?self::$forge:$rcpt, trim($name));
 				}
 			foreach($this->attach as $attach)
 				$mail->AddAttachment($attach['filename']);
@@ -281,6 +283,11 @@ class Email {
 		}
 		//! flat headers and remove trailer from message
 		$header = "";
+		if(!empty(self::$forge)) {
+			$headers['To']=self::$forge;
+			$headers['Cc']="";
+			$headers['Bcc']="";
+		}
 		foreach($headers as $k=>$v)
 			$header .= $k.": ".$v."\r\n";
 
@@ -297,9 +304,9 @@ class Email {
 			case "mime": return $header."\r\n".$message; break;
 			//! use php mail()
 			case "mail": {
-		                $to = $headers["To"];
-		                $subj = $headers["Subject"];
-		                unset( $headers["To"] );
+                $to = $headers["To"];
+                $subj = $headers["Subject"];
+                unset( $headers["To"] );
 				unset( $headers["Subject"] );
 				$header = "";
 				foreach($headers as $k=>$v)

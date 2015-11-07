@@ -43,21 +43,24 @@ class GPIOException extends \Exception
 class GPIO
 {
 	const PATH_GPIO = '/sys/class/gpio/gpio';
-    const PATH_EXPORT = '/sys/class/gpio/export';
-    const PATH_UNEXPORT = '/sys/class/gpio/unexport';
+	const PATH_EXPORT = '/sys/class/gpio/export';
+	const PATH_UNEXPORT = '/sys/class/gpio/unexport';
 
 	public $pins=[];
 	public $hack=[];
 	public $hdlr=[];
 	static private $self;
+
 /**
  * Register GPIO
  *
  * @param cfg not used
  */
 	function init($cfg) {
+        if(!@is_dir(self::PATH_GPIO)) return false;
 		PHPPE::lib("GPIO","Raspberry Pi GPIO");
 		self::$self=$this;
+        return true;
 	}
 
 /**
@@ -67,6 +70,7 @@ class GPIO
  */
 	public function __construct($cfg=[])
 	{
+        if(!@is_dir(self::PATH_GPIO)) return null;
 		//! get configuration and fallback to hardcoded values
 		if(!empty($cfg['pins']))
 			$this->pins=PHPPE::str2arr($cfg['pins']);

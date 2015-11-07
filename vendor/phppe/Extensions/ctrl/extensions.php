@@ -1,7 +1,8 @@
 <?php
+namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class Extensions_Ctrl extends \PHPPE\App {
+class Extensions extends \PHPPE\Ctrl {
 
 	function __construct ($cfg)
 	{

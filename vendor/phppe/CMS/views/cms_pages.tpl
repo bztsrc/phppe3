@@ -10,19 +10,21 @@
 		<th><!L Modified by></th>
 		<th><!L Modified at></th>
 		<th><!L #versions></th>
+		<th><!L Locked></th>
 	</tr>
 <!foreach _pages>
 <tr><td colspan='10'><b><!=L(KEY)></b></td></tr>
 <!foreach VALUE>
-	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()><!=urlencode(id)>";'>
+	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()><!=id>";'>
 		<td></td>
 		<td class='row<!=ODD>'><!=id></td>
 		<td class='row<!=ODD>'><!=name></td>
 		<td class='row<!=ODD>'><!=filter></td>
 		<td class='row<!=ODD>'><!if dds>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if username><!=username><!else><!if ownerid==-1>admin<!else>UNKNOWN<!/if><!/if></td>
-		<td class='row<!=ODD>'><!time created></td>
+		<td class='row<!=ODD>'><!if !modifyd><!difftime created ct><!else><!difftime modifyd ct><!/if></td>
 		<td class='row<!=ODD>' align='right'><!=versions></td>
+		<td class='row<!=ODD>' align='right'><a href='<!=url()>?unlock=<!=urlencode(id)>' style='text-decoration:none;color:#000;'><!difftime lockd ct></a></td>
 	</tr>
 <!/foreach>
 <!/foreach>

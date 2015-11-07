@@ -1,7 +1,8 @@
 <?php
+namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class Tests extends \PHPPE\App {
+class Tests extends \PHPPE\Ctrl {
 	public $testCases;
 	public $test_val2arr="a:b:c";
 	public $test_arr=["a","b","c"];
