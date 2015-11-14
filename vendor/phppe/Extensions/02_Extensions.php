@@ -136,7 +136,11 @@ class Extensions {
 		if( empty($pkgs) )
 		{
 			$p=array();
+<<<<<<< HEAD
 			$list = [ "http://phppe.org/", "https://raw.githubusercontent.com/bztsrc/phppe3/master/" ];
+=======
+			$list = [ "http://phppe.org/", "https://raw.githubusercontent.com/bztphp/phppe3/master/" ];
+>>>>>>> d64568715d8ef3eaccd311e54b2f593e18a4c6f7
 			if(!empty(PHPPE::$core->repos)) $list=array_merge(PHPPE::$core->repos,$list);
 			foreach($list as $r)
 			{
