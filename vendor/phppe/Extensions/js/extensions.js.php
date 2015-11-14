@@ -65,6 +65,16 @@ function extensions_search(str,installed)
 			if(extensions_pkgs[i].installed) {
 				t+="&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' onclick='if(confirm(\"<?=L("Are you sure?")?>\"))extensions_cmd(\"uninstall\","+i+");' value='<?=L("Remove")?>' style='background:#F0B0B0;'>";
 			}
+				try {
+					var j,k,l;
+					for(j=0;j<extensions_installed.length;j++) {
+						if(extensions_installed[j].id==null) continue;
+						var idx=extensions_pkgs[i].depends.indexOf(extensions_installed[j].id);
+						if(idx>-1) extensions_pkgs[i].depends.splice(idx,1);
+					}
+					if(extensions_pkgs[i].depends.length>0)
+						t+="<br><small"+(extensions_pkgs[i].installed?" style='color:red;'":"")+">"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small>";
+				} catch(e) {}
 		}
 		t+="<br><small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc:'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div>";
 	}
@@ -74,7 +84,7 @@ function extensions_search(str,installed)
 }
 function extensions_conf(i)
 {
-	var t="",p="",cfg=new Array(),was=new Array();
+	var t="",p="",cfg=new Array(),was=new Array(),wasinp=false;
 	if(i==-1 || extensions_pkgs[i].config=="") return;
 	var url="<?=url("/")?>extensions/getconf?item="+encodeURIComponent(extensions_pkgs[i].id);
 	if( window.XMLHttpRequest ) {
@@ -85,7 +95,7 @@ function extensions_conf(i)
 		else alert('HTTP-E: '+r.status);
 		} catch(e) {
 			if(r.responseText!=null&&r.responseText!=undefined)
-				alert(r.responseText);
+				alert(L('Error reading configuration')+':\n'+r.responseText);
 			cfg=new Array();
 		}
 	} else return;
@@ -95,28 +105,41 @@ function extensions_conf(i)
 		var a=m[2]!=null?m[2].split(','):new Array();
 		if(m[1]==null) continue;
 		was[p]=1;
-		t+="<tr><td>"+(extensions_pkgs[i].conf.hasOwnProperty(p)?extensions_pkgs[i].conf[p]:p)+":</td><td width='100%'>";
-		switch(m[1]) {
-			case "select":
-				t+="<select name='"+p+"'>";
-				for(var j=0;j < a.length;j++) {
-					var d = a[j].split("=");
-					var v = d[1]!=null?d[0]:a[j];
-					var n = d[1]!=null?d[1]:a[j];
-					t+="<option value='"+v+"'"+(cfg[p]!=null&&cfg[p]==v?" selected":"")+">"+(extensions_pkgs[i].conf.hasOwnProperty(n)?extensions_pkgs[i].conf[n]:n)+"</option>";
-				}
-				t+="</select>";
-				break;
-			case "textarea":
-				t+="<textarea name='"+p+"' style='width:98%' rows='3' wrap='virtual'>"+(cfg[p]!=null?cfg[p]:"")+"</textarea><br>";
-				break;
-			default:
-				t+="<input type='text' name='"+p+"' style='width:98%;' value='"+(cfg[p]!=null?cfg[p]:"")+"'>";
-				break;
-		};
+		if(m[1]=="section") {
+			t+="<tr class='confgroup'><td colspan=2><b>"+(extensions_pkgs[i].conf.hasOwnProperty(p)?extensions_pkgs[i].conf[p]:p)+"</b>";
+		} else {
+			wasinp=true;
+				t+="<tr><td>"+(extensions_pkgs[i].conf.hasOwnProperty(p)?extensions_pkgs[i].conf[p]:p)+":</td><td width='100%' title='"+(extensions_pkgs[i].help.hasOwnProperty(p)?extensions_pkgs[i].help[p]:'')+"'>";
+			switch(m[1]) {
+				case "select":
+					t+="<select name='"+p+"'>";
+					for(var j=0;j < a.length;j++) {
+						var d = a[j].split("=");
+						var v = d[1]!=null?d[0]:a[j];
+						var n = d[1]!=null?d[1]:a[j];
+						t+="<option value='"+v+"'"+(cfg[p]!=null&&cfg[p]==v?" selected":"")+">"+(extensions_pkgs[i].conf.hasOwnProperty(n)?extensions_pkgs[i].conf[n]:n)+"</option>";
+					}
+					t+="</select>";
+					break;
+				case "textarea":
+					t+="<textarea name='"+p+"' style='width:98%' rows='3' wrap='virtual'>"+(cfg[p]!=null?cfg[p]:"")+"</textarea><br>";
+					break;
+				case "string":
+					t+="<input type='text' name='"+p+"' style='width:98%;' value='"+(cfg[p]!=null?cfg[p]:"")+"' placeholder='"+m[2]+"'>";
+					break;
+				case "boolean":
+				case "notboolean":
+					var bv=(cfg[p]!=null?(Math.floor(cfg[p])==1||cfg[p]=="true"?"true":"false"):(Math.floor(a[0])==1||a[0]=="true"?"true":"false"));
+					t+=boolean_open(p,bv,m[1],a);
+					break;
+				default:
+					t+="<input type='text' name='"+p+"' style='width:98%;' value='"+(cfg[p]!=null?cfg[p]:"")+"'>";
+					break;
+			};
+		}
 		t+="</td></tr>\n";
 	}
-	if(t=="") return;
+	if(t==""||!wasinp) return;
 	t="<table width='95%'><tr><td colspan='2' align='center'><h2>"+extensions_pkgs[i].name+"</h2></td></tr>"+t+"<tr><td>";
 	for(p in cfg)
 		if(was[p]==null) t+="<input type='hidden' name='"+p+"' value='"+(cfg[p]!=null?cfg[p]:"")+"'>";
@@ -126,6 +149,7 @@ function extensions_conf(i)
 	document.getElementById('status').innerHTML=t;
 	extensions_lastcmd='conf';
 }
+
 function extensions_walk(n, f) {
 	f(n);
 	n = n.firstChild;
@@ -162,7 +186,7 @@ function extensions_saveconf(i)
 	document.getElementById('status').style.visibility='hidden';
 	document.getElementById('statusbg').style.visibility='hidden';
 	document.getElementById('status').innerHTML='';
-	alert(t);
+	if(t) alert(t);
 }
 function extensions_cmd(cmd,i)
 {
@@ -185,7 +209,7 @@ function extensions_cmd(cmd,i)
 			var r = new XMLHttpRequest();
 			r.open('GET', url, false); r.send(null);
 			t=r.status==200?r.responseText:'HTTP-E: '+r.status;
-			document.getElementById('status').style.color=(t.substr(0,7)!="PHPPE-I"?'#FF6060':'#60FF60');
+			document.getElementById('status').style.color=(t.substr(0,7)!="PHPPE-I"&&t.substr(0,5)!="DIAG-"?'#FF6060':'#60FF60');
 			document.getElementById('status').innerHTML=t;
 		} else
 			document.getElementById('status').src=url;

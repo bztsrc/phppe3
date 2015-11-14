@@ -80,14 +80,17 @@ namespace PHPPE {
 		//! }
 /**
  * field input or widget configuration form
- * @return xml output
+ * @return string output
  */
-		//! function edit() {}
+		//! function edit() {return "";}
 /**
  * display a field's value or show widget face
- * @return xml output
+ * @return string output
  */
-		//! function show() {}
+		function show()
+		{
+			return "";
+		}
 /**
  * value validator, returns boolean and a failure reason
  *
@@ -101,13 +104,13 @@ namespace PHPPE {
 		//! {
 		//!	return array(true, "Dummy validator that always pass");
 		//! }
+	}
+
 /**
- * this is required for dumping in runtime
+ * Filter prototype
  */
-		function __toString()
-		{
-			return __CLASS__;
-		}
+	class Filter
+	{
 	}
 
 /**
@@ -115,13 +118,13 @@ namespace PHPPE {
  */
 	class App
 	{
+	}
+
 /**
- * this is required for dumping in runtime
+ * Application controller prototype
  */
-		function __toString()
-		{
-			return __CLASS__;
-		}
+	class Ctrl extends App
+	{
 	}
 
 /**
@@ -186,20 +189,13 @@ namespace PHPPE {
 			foreach($this as $k => $v)
 				if($k[ 0 ] != '_' && ($f || $k != 'id') && $k != 'created')
 					$a[ $k ] = is_scalar($v) ? $v : json_encode($v);
-			if(! Core::exec(($this->id && ! $f ? "UPDATE " . static ::$_table . " SET " . implode("=?,", array_keys($a)) . "=? WHERE id=" . $d->quote($this->id) : "INSERT INTO " . static ::$_table . " (" . implode(",", array_keys($a)) . ") VALUES (?" . str_repeat(",?", count($a) - 1 . ) . ")"), array_values($a)))
+			if(! Core::exec(($this->id && ! $f ? "UPDATE " . static ::$_table . " SET " . implode("=?,", array_keys($a)) . "=? WHERE id=" . $d->quote($this->id) : "INSERT INTO " . static ::$_table . " (" . implode(",", array_keys($a)) . ") VALUES (?" . str_repeat(",?", count($a) - 1) . ")"), array_values($a)))
 				return false;
 			//save new id for inserts
 			if(! $this->id)
 				$this->id = $d->lastInsertId();
 			//return id
 			return $this->id;
-		}
-/**
- * this is required for dumping in runtime
- */
-		function __toString()
-		{
-			return __CLASS__;
 		}
 	}
 
@@ -214,13 +210,6 @@ namespace PHPPE {
 		public $tz;				//!< client's timezone
 		public $lang;				//!< client's prefered language
 		public $screen = [];			//!< screen dimensions
-/**
- * this is required for dumping in runtime
- */
-		function __toString()
-		{
-			return __CLASS__;
-		}
 	}
 
 /**
@@ -233,7 +222,7 @@ namespace PHPPE {
 		public $data = [];			//!< user preferences
 		// protected static $_table = "users";	//! set table name. This should be in Users class!
 		private $acl = [];			//!< Access Control List
-		// private remote = [];			//!< remote server configuration
+		// private remote = [];			//!< remote server configuration, added run-time
 /**
  * check access for an access control entry
  *
@@ -287,13 +276,6 @@ namespace PHPPE {
 				}
 			}
 		}
-/**
- * this is required for dumping in runtime
- */
-		function __toString()
-		{
-			return __CLASS__;
-		}
 	}
 
 /****** PHPPE Core ******/
@@ -310,7 +292,7 @@ namespace PHPPE {
  */
 	class Core
 	{
-		private $id;				//!< magic
+		private $id;				//!< magic, 'PHPPE'+VERSION
 		public $base;				//!< base url
 		public $site;				//!< title of the site
 		public $runlevel = 2;			//!< 0-production,1-test,2-development,3-debug
@@ -356,6 +338,7 @@ namespace PHPPE {
 		private static $bill;			//!< time consumed by data source queries
 		private static $w;			//!< boolean, true if REQUEST_METHOD not empty
 		private static $v;			//!< validator data
+		static $g;				//!< posix group
 /**
  * constructor. If you pass true as argument, it will build up PHPPE environment,
  * but won't run your application. For that you'll need to call \PHPPE\Core::$core->run()
@@ -421,7 +404,7 @@ namespace PHPPE {
 			//! patch php. this must be done _after_ config loaded
 			ini_set("display_errors", $this->runlevel > 1 ? 1 : 0);
 			$this->now = time();
-			$this->error = $this->js = $this->jslib = $this->css = [];
+			$this->error = $this->js = $this->jslib = $this->css = $this->libs = [];
 			$this->sec = (t(getenv("HTTPS")) == "on") ? 1 : 0;
 			//! set up some default values
 			self::$w = isset($S[ 'REQUEST_METHOD' ]) ? 1 : 0;
@@ -444,9 +427,8 @@ namespace PHPPE {
 			$D = "--dump";
 			$A = "argv";
 			$d = x("/", ! empty($d) ? $d : "//");
-			$this->app = ! empty($d[ 1 ]) ? t($d[ 1 ]) : (! empty($R[ 'app' ]) ? r(t($R[ 'app' ])) : (! self::$w && ! empty($S[ $A ][ 1 ]) && $S[ $A ][ 1 ] != $D ? r(t($S[ $A ][ 1 ])) : "index"));
-			$this->action = ! empty($d[ 2 ]) ? t($d[ 2 ]) : (! empty($R[ 'action' ]) ? r(t($R[ 'action' ])) : (! self::$w && ! empty($S[ $A ][ 2 ]) && $S[ $A ][ 2 ] != $D ? r(t($S[ $A ][ 2 ])) : "action"));
-			$this->item = ! empty($d[ 3 ]) ? t($d[ 3 ]) : (! empty($R[ 'item' ]) ? r($R[ 'item' ]) : (! self::$w && ! empty($S[ $A ][ 3 ]) && $S[ $A ][ 3 ] != $D ? r($S[ $A ][ 3 ]) : ""));
+			foreach([ 1 => "app", 2 => "action", 3 => "item" ] as $c => $v)
+				$this->$v = ! empty($d[ $c ]) ? t($d[ $c ]) : (! empty($R[ $v ]) ? r(t($R[ $v ])) : (! self::$w && ! empty($S[ $A ][ $c ]) && $S[ $A ][ $c ] != $D ? r(t($S[ $A ][ $c ])) : ($c < 3 ? ($c == 1 ? "index" : "action") : "")));
 			//! a few basic security check
 			$c = $this->app . "_" . $this->action;
 			if(strpos($c, "..") !== false || strpos($c, "/") !== false || w($this->app, - 4) == PE || w($this->action, - 4) == PE)
@@ -465,7 +447,57 @@ namespace PHPPE {
 				if(in_array("--version", $S[ $A ]))
 					die(VERSION . "\n");
 				if(in_array("--help", $S[ $A ]))
-					die("PHP Portal Engine " . VERSION . ", LGPL 2015 bzt\n\nphp " . m(__FILE__) . " (cmd | [application [action [item]]] ) [ $D ]\n\nCommands:\n --version\n --diag [--gid=x]\n\n");
+					die("PHP Portal Engine " . VERSION . ", LGPL 2015 bzt\n\nphp " . m(__FILE__) . " (cmd | [application [action [item]]] ) [ $D ]\n\nCommands:\n --version\n --diag [--gid=x]\n");
+			}
+			//! session restore may require models, so we have to
+			//! load all classes *before* session_start()
+			//
+			//! load function extensions, password checker and asset minifier
+			$v = "libs/pass";
+			$c = "app/$v" . PE;
+			if(f($c))
+				io($c);
+			else
+			{
+				$c = P . $v . PE;
+				if(f($c))
+					io($c);
+			}
+			$c = P . "libs/minify" . PE;
+			if(empty($this->nominify) && f($c))
+				io($c);
+			if(! y(C . "minify")) {
+				function minify($t, $T)
+				{
+					return $t;
+				}
+			}
+			//! PHP Composer autoload support
+			$c = M . "autoload" . PE;
+			if(f($c))
+				io($c);
+			//! autoload libraries in SysV style
+			self::$r = [];
+			$d = @glob(N . "*/*_*" . PE, GLOB_NOSORT);
+			//! we are aware that $d can be empty
+			usort($d, function($a, $b)
+			{
+				return strcmp(m($a), m($b)); 
+
+			});
+			foreach($d as $f) {
+				//!extra check on glob's output - first part must be numeric, second must match directory name
+				if(p("/([^\/]+)\/([0-9]{2}_([^\.]+)\.php)$/", $f, $m) && t($m[ 1 ]) == t($m[ 3 ])) {
+					$c = C . $m[ 1 ];
+					//we don't have session pe_l yet, don't use langInit
+					io($f);
+					if(ce($c) && t($c) != "\\" . t(__CLASS__)) {
+						$C = new $c();
+						//don't allow to overwrite DataSource layer
+						if($m[ 1 ] != "DS" && empty($this->libs[ $m[ 1 ] ]))
+							$this->libs[ $m[ 1 ] ] = $C;
+					}
+				}
 			}
 			//! detect bootstrap type
 			if(! self::$w && ((! f(P . "config" . PE) && ! $islib) || (! empty($S[ $A ][ 1 ]) && $S[ $A ][ 1 ] == "--diag")))
@@ -500,26 +532,27 @@ namespace PHPPE {
 					}
 				}
 			if(empty($g[ "g" ])) {
-				$g[ "g" ] = 33;
+				$this->g = 33;
 				echo("DIAG-W: Fallback to gid 33\n");
 			}
+			else 
+				self::$g = $g[ "g" ];	
 			//! helper function to create files
-			function i($c, $r, $g, $f = 0)
+			function i($c, $r, $f = 0)
 			{
 				if(! f($c) || $f) {
 					if(! f($c))
 						echo("DIAG-A: $c\n");
 					file_put_contents($c, $r);
 				}
-				if(f($c) && $g[ "r" ] && (! chgrp($c, $g[ "g" ]) || ! chown($c, fileowner(__FILE__))))
-					echo("DIAG-E: chown/chgrp " . $g[ "g" ] . " $c\n");
+				if(f($c) && (! chgrp($c, \PHPPE\Core::$g) || ! chown($c, fileowner(__FILE__))))
+					echo("DIAG-E: chown/chgrp " . \PHPPE\Core::$g . " $c\n");
 				return ! chmod($c, 0640);
 			}
-			$pe = "";
+			$E = "";
 			$C = 0750;
-			$g[ "r" ] = ! self::$w && y("posix_getuid") && posix_getuid() == 0;
-			if(! $g[ "r" ])
-				echo("DIAG-W: not root or no php-posix, chown/chgrp skipped!\n");
+			if(y("posix_getuid") && posix_getuid() != 0)
+				echo("DIAG-W: not root or no php-posix, chown/chgrp may fail!\n");
 			//! create directory structure
 			$o = umask(0);
 			//! hide errors here, target may not exists or the symlink may be already there
@@ -537,11 +570,11 @@ namespace PHPPE {
 				}
 				$p2 = fileperms($d) &0777;
 				if($p2 != $p) {
-					$pe .= sprintf("\t%03o?\t%03o ", $p2, $p) . "$d\n";
+					$E .= sprintf("\t%03o?\t%03o ", $p2, $p) . "$d\n";
 					@chmod($d, $p);
 				}
-				if($g[ "r" ] && (! chgrp($d, $g[ "g" ]) || ! chown($d, fileowner(__FILE__))))
-					echo("DIAG-E: chown/chgrp " . $g[ "g" ] . " $d\n");
+				if(! chgrp($d, self::$g) || ! chown($d, fileowner(__FILE__)))
+					echo("DIAG-E: chown/chgrp " . self::$g . " $d\n");
 			}
 			//! hide errors here, symlink may be already there
 			@symlink("../../app", N . "app");
@@ -552,31 +585,34 @@ namespace PHPPE {
 			}
 			//! create files
 			umask(0227);
-			i("app/config" . PE, "", $g);
+			i("app/config" . PE, "");
 			/*
 		$c = "public/.htaccess";
-		if (@i( $c,"RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n", $g, 1 ))
+		if (@i( $c,"RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n", 1 ))
 		{
 			$p = ( fileperms( $c ) &0777 );
-			if( ( $p &0222 ) != 0 )$pe .= sprintf( "\t%o?\t%4o ", $p,$p &0555 ) . "$c\n";
+			if( ( $p &0222 ) != 0 )$E .= sprintf( "\t%o?\t%4o ", $p,$p &0555 ) . "$c\n";
 		}
 */
 			umask(0027);
-			i("public/favicon.ico", "", $g);
-			i(P . "config" . PE, "", $g);
+			i("public/favicon.ico", "");
+			i(P . "config" . PE, "");
 			$U = "http://phppe.org/";
 			$D = P . "views/";
 			$e = ".tpl";
-			i($D . "403$e", "<h1>403</h1><!=L('Access denied')>", $g);
-			i($D . "404$e", "<h1>404</h1><!=L('Not found')>: <b><!=core.app></b>", $g);
-			i($D . "frame$e", "<div id='content'><!app></div>", $g);
-			i($D . "index$e", "<h1>PHPPE works!</h1>Next step: install <a href='" . $U . "phppe3.html#install:1024' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.istry()><div style='display:none;'><!dump core.req2arr('obj')></div><!/if><div style='font-weight:bold;background:#F0F0F0;padding:3px;'>Test form</div><!form obj>Text<!field text(6) obj.f0> Pass<!field pass(6) obj.f1> Num(100..999)<!field *num(6,6,100,999) obj.f2><!field check obj.f3 Check>  File<!field file obj.f4> <!field cancel>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td valign='top'><!dump core.req2arr('obj')></td></tr></table>\n", $g);
-			i($D . "login$e", "<!form login><!field text id><!field pass pass><!field submit></form>", $g);
-			i("composer.json", "{\n\t\"name\":\"No name\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n", $g);
-			i(".gitignore", ".tmp\nphppe\nvendor\n", $g);
+			$c = "<!dump core.req2arr('obj')>";
+			i($D . "403$e", "<h1>403</h1><!=L('Access denied')>");
+			i($D . "404$e", "<h1>404</h1><!=L('Not found')>: <b><!=core.app></b>");
+			i($D . "frame$e", "<div id='content'><!app></div>");
+			i($D . "index$e", "<h1>PHPPE works!</h1>Next step: install <a href='" . $U . "phppe3.html#install:1600' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.istry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text(6) obj.f0> Pass<!field pass(6) obj.f1> Num(100..999)<!field *num(6,6,100,999) obj.f2><!field check obj.f3 Check>  File<!field file obj.f4> <!field cancel>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td valign='top'>$c</td></tr></table>\n");
+			i($D . "login$e", "<!form login><!field text id><!field pass pass><!field submit></form>");
+			i("composer.json", "{\n\t\"name\":\"No name\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
+			i(".gitignore", ".tmp\nphppe\nvendor\n");
 			umask($o);
-			if($pe)
-				self::log("C", "Wrong permissions:\n$pe", "diag");
+			if($E)
+				self::log("E", "Wrong permissions:\n$E", "diag");
+			//! *** DIAG Event ***
+			$this->_eh("diag");
 			die("DIAG-I: OK\n");
 		}
 /**
@@ -593,62 +629,11 @@ namespace PHPPE {
 			//! normal bootstrap
 			$S = $_SERVER;
 			$R = $_REQUEST;
-			//! load function extensions, password checker and asset minifier
-			$v = "libs/pass";
-			$c = "app/$v" . PE;
-			if(f($c))
-				i($c);
-			else
-			{
-				$c = P . $v . PE;
-				if(f($c))
-					i($c);
-			}
-			$c = P . "libs/minify" . PE;
-			if(empty($this->nominify) && f($c))
-				i($c);
-			if(! y(C . "minify")) {
-				function minify($t, $T)
-				{
-					return $t;
-				}
-			}
-			//! session restore will require Users class (if installed)
-			//! at least and maybe other classes as well. So we have to
-			//! load all classes *before* session_start()
-			//
-			//! PHP Composer autoload support
-			$c = M . "autoload" . PE;
-			if(f($c))
-				i($c);
-			//! autoload libraries in SysV style
-			self::$r = [];
-			$d = @glob(N . "*/*_*" . PE, GLOB_NOSORT);
-			//! we are aware that $d can be empty
-			usort($d, function($a, $b)
-			{
-				return strcmp(m($a), m($b)); 
-
-			});
-			foreach($d as $f) {
-				//!extra check on glob's output - first part must be numeric, second must match directory name
-				if(p("/([^\/]+)\/([0-9]{2}_([^\.]+)\.php)$/", $f, $m) && $m[ 1 ] == $m[ 3 ]) {
-					$c = C . $m[ 1 ];
-					//we don't have session pe_l yet, don't use langInit
-					i($f);
-					if(ce($c) && t($c) != "\\" . t(__CLASS__)) {
-						$C = new $c();
-						//don't allow overwrite DataSource layer
-						if($m[ 1 ] != "DS" && empty($this->libs[ $m[ 1 ] ]))
-							$this->libs[ $m[ 1 ] ] = $C;
-					}
-				}
-			}
 			//! start user session
 			session_name(! empty($this->sessionvar) ? $this->sessionvar : "pe_sid");
 			session_start();
 			if(ini_get("session.use_cookies"))
-				setcookie(session_name(), session_id(), time() + $this->timeout, "/");
+				setcookie(session_name(), session_id(), time() + $this->timeout, "/", $S[ "SERVER_NAME" ], ! empty($this->secsession) ? 1 : 0, 1);
 			//! *** User ***
 			$c = C . "User";
 			$u = $c . "s";
@@ -775,13 +760,14 @@ namespace PHPPE {
 			self::$l = [];
 			LANG_INIT("core");
 			//! load autoloaded classes' dictionaries and initialize them
-			if(! empty($this->libs))
-				foreach($this->libs as $k => $v) {
-					LANG_INIT($k);
-					$c = N . "$k/config" . PE;
-					if(q($v, "init"))
-						$v->init(f($c) ? i($c) : []);
-					}
+			//! *** INIT Event ***
+			foreach($this->libs as $k => $v) {
+				LANG_INIT($k);
+				$c = N . "$k/config" . PE;
+				if(q($v, "init"))
+					if(! $v->init(f($c) ? io($c) : []))
+						unset($this->libs[ $k ]);
+			}
 			//! load application dictionary
 			LANG_INIT("app");
 			//! initialize memory caching if configured
@@ -849,7 +835,7 @@ namespace PHPPE {
  * @param application name, if not specified, url routing will choose
  * @param action name, if not specified, default action routing will apply
  */
-		function run($n = "", $a = "")
+		function run($n = "", $ac = "")
 		{
 			//! get path from request uri (cut off script name)
 			list($c) = x("?", @ $_SERVER[ 'REQUEST_URI' ]);
@@ -861,6 +847,7 @@ namespace PHPPE {
 				$u = z($u, 0, u($u) - 1);
 			//! built-in blobs - referenced as cached objects
 			$C = "cache";
+			$a = "action";
 			if(! empty($_GET[ $C ])) {
 				$d = r($_GET[ $C ]);
 				switch($d) {
@@ -872,7 +859,8 @@ namespace PHPPE {
 					c("text/css");
 					$p = "position:fixed;top:";
 					$s = "text-shadow:2px 2px 2px #FFF;";
-					die("#pe_p{" . $p . "0;z-index:99;left:0;width:100%;padding:0 2px 0 32px;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAgCAMAAADkO+IoAAAAOVBMVEW" . str_repeat("Ikr+", 17) . "Ikr8AAAAXX+LTAAAAEnRSTlP+9fvv49HFuauV6dzYoIh/d265+mQnAAAALElEQVQI1zXBhw3AIAAEsUvovew/LC8kbBaTQSdpI2pQr04rBas Zo9/967MPI5kA2rkqJuwAAAAASUVORK5CYII=') repeat-x center bottom;height:31px !important;font-family:helvetica;font-size:14px !important;line-height:20px !important;}#pe_p SPAN{margin:0 5px 0 0;cursor:pointer;}#pe_p UL{list-style-type:none;margin:3px;padding:0;}#pe_p IMG{border:0;vertical-align:middle;}#pe_p A{text-decoration:none;color:#000;" . $s . "}#pe_p .menu {position:fixed;top:8px;left:90px;}#pe_p .dock SPAN{" . $s . "}#pe_p LI{cursor:pointer;}#pe_p LI:hover{background:#F0F0F0;}#pe_p .dock{" . $p . "6px;right:48px;}#pe_p .sub{" . $p . "28px;display:inline;background:#FFF;border:solid 1px #808080;box-shadow:2px 2px 6px #000;}#pe_p .menu_i{padding:5px 6px 5px 6px;" . $s . "}#pe_p .menu_a{padding:4px 5px 5px 5px;border-top:solid #000 1px;border-left:solid #000 1px;border-right:solid #000 1px;background:#FFF;}@media print{#pe_p{display:none;}}");
+					die("#pe_p{" . $p . "0;z-index:99;left:0;width:100%;padding:0 2px 0 32px;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAgCAMAAADkO+IoAAAAOVBMVEW" . str_repeat("Ikr+", 17) . "Ikr8AAAAXX+LTAAAAEnRSTlP+9fvv49HFuauV6dzYoIh/d265+mQnAAAALElEQVQI1zXBhw3AIAAEsUvovew/LC8kbBaTQSdpI2pQr04rBas Zo9/967MPI5kA2rkqJuwAAAAASUVORK5CYII=') repeat-x center bottom" . //				"linear-gradient(rgba(136,146,191,0,8),#8892BF)".
+					";height:31px !important;font-family:helvetica;font-size:14px !important;line-height:20px !important;}#pe_p SPAN{margin:0 5px 0 0;cursor:pointer;}#pe_p UL{list-style-type:none;margin:3px;padding:0;}#pe_p IMG{border:0;vertical-align:middle;}#pe_p A{text-decoration:none;color:#000;" . $s . "}#pe_p .menu {position:fixed;top:8px;left:90px;}#pe_p .dock SPAN{" . $s . "}#pe_p LI{cursor:pointer;}#pe_p LI:hover{background:#F0F0F0;}#pe_p .dock{" . $p . "6px;right:48px;}#pe_p .sub{" . $p . "28px;display:inline;background:#FFF;border:solid 1px #808080;box-shadow:2px 2px 6px #000;}#pe_p .menu_i{padding:5px 6px 5px 6px;" . $s . "}#pe_p .menu_a{padding:4px 5px 5px 5px;border-top:solid #000 1px;border-left:solid #000 1px;border-right:solid #000 1px;background:#FFF;}@media print{#pe_p{display:none;}}");
 					default : //! serve real cache requests
 					if(! empty(self::$mc)) {
 						$c = self::$mc->get("c_$d");
@@ -884,7 +872,7 @@ namespace PHPPE {
 					die(k($C) . "-E: " . $d);
 				}
 			}
-			//! dynamic assets (vendor directory is not accessable by the webserver, only public dir)
+			//! proxy dynamic assets (vendor directory is not accessable by the webserver, only public dir)
 			if(in_array($this->app, [ "css", "js", "images" ])) {
 				function b($a, $b)
 				{
@@ -899,22 +887,22 @@ namespace PHPPE {
 					b($this->app, $d);
 				else
 				{
-					foreach([ $this->action, $this->action . PE, $this->action . ($this->item ? "/" . $this->item : "") ] as $p) {
-						$a = N . "*/" . $this->app . "/" . s($p, [ "*" => "", ".." => "" ]);
-						$c = @glob($a, GLOB_NOSORT)[ 0 ];
+					foreach([ $this->$a, $this->$a . PE, $this->$a . ($this->item ? "/" . $this->item : "") ] as $p) {
+						$A = N . "*/" . $this->app . "/" . s($p, [ "*" => "", ".." => "" ]);
+						$c = @glob($A, GLOB_NOSORT)[ 0 ];
 						if($c) {
 							if(f($c) && w($c, - 4) != PE)
 								$d = g($c);
 							else
 							{
 								ob_start();
-								i($c);
+								io($c);
 								$d = o();
 							}
 						}
 						if(! empty($d)) {
 							if(! empty(self::$mc) && empty($this->nocache))
-								self::$mc->set($N, $d, MEMCACHE_COMPRESSED, $this->cachettl);
+								$this->_ms($N, $d);
 							b($this->app, $d);
 						}
 					}
@@ -936,7 +924,7 @@ namespace PHPPE {
 			$w = 0;
 			if(! empty($n)) {
 				$this->app = $n;
-				$this->action = ! empty($a) ? $a : "action";
+				$this->$a = ! empty($ac) ? $ac : $a;
 				$f = "";
 			}
 			//! url routing
@@ -968,18 +956,20 @@ namespace PHPPE {
 			//! rotate security tokens
 			$R = $_REQUEST;
 			if(self::$w) {
-				$c = $this->app . "." . $this->action;
+				$c = $this->app . "." . $this->$a;
 				$S = ! empty($_SESSION[ "pe_s" ][ $c ]) ? $_SESSION[ "pe_s" ][ $c ] : "";
 				for($i = 1; $i <= 9; $i++ )
 					if(isset($R[ "pe_try" . $i ]) && ! empty($R[ "pe_s" ]) && $R[ "pe_s" ] == $S) {
 						$this->try = $i;
 						$this->form = ! empty($R[ 'pe_f' ]) ? r($R[ 'pe_f' ]) : "";
+						$_SESSION[ "pe_s" ][ $c ] = 0;
 						break;
 					}
-				$_SESSION[ "pe_s" ][ $c ] = sha1(uniqid() . $this->id);
+				if(empty($_SESSION[ "pe_s" ][ $c ]))
+					$_SESSION[ "pe_s" ][ $c ] = sha1(uniqid() . $this->id);
 			}
 			if(empty($f))
-				$f = "action_" . t($this->action);
+				$f = $a . "_" . t($this->$a);
 			//! handle admin login before Users login method gets called
 			if($this->app == "login" || $d == "login") {
 				$A = "admin";
@@ -1012,42 +1002,44 @@ namespace PHPPE {
 			//! load application
 			if(! cc($d)) {
 				//! application class should be already autoloaded. But if not
+				if($d[ 0 ] == "\\")
+					$d = w($d, 1);
 				$C = t($d);
 				$D = ucfirst($d);
-				$E = $this->action;
+				$E = $this->$a;
 				$F = t($E);
 				$G = ucfirst($E);
 				$P = "app/ctrl/";
 				$H = N . "*/ctrl/";
-				foreach([ "$P$d_$E" . PE, "$P$C_$F" . PE, "$P$D_$G" . PE, "$P$d" . PE, "$P$C" . PE, "$P$D" . PE, "$H$d_$E" . PE, "$H$C_$F" . PE, "$H$D_$G" . PE, "$H$d" . PE, "$H$C" . PE, "$H$D" . PE ] as $v) {
+				foreach(array_unique([ "$P$d_$E" . PE, "$P$C_$F" . PE, "$P$D_$G" . PE, "$P$d" . PE, "$P$C" . PE, "$P$D" . PE, "$H$d_$E" . PE, "$H$C_$F" . PE, "$H$D_$G" . PE, "$H$d" . PE, "$H$C" . PE, "$H$D" . PE ]) as $v) {
 					$c = @glob($v);
 					if(! empty($c[ 0 ])) {
-						i($c[ 0 ]);
+						io($c[ 0 ]);
 						self::$p = n(n($c[ 0 ]));
 						break;
 					}
 				}
 			}
+			$G = f(P . "sql/pages.sql");
 			$P = C . "App";
-			$D = "_Ctrl";
+			$D = "Ctrl\\";
 			$V = "pe_v";
 			//! add namespace if applicable
-			if(cc(C . $d) || cc(C . $d . $D))
+			if(cc(C . $d))
 				$d = C . $d;
-			//! this will only instantiate _Ctrl class, so you MUST call
-			//! parent constructor from every action class' constructor
-			if(cc($d . $D))
-				$d .= $D;
-			//! if still no application class
-			$D = [];
+			elseif(cc(C . $D . $d))
+				$d = C . $D . $d;
+			//! *** APP Event ***
+			list($d, $f) = $this->_eh("app", [ $d, $f ]);//! do we have a valid application or controller?
+			$D = $o = [];
 			if(! cc($d)) {
-				//! fail on CLI
+				//! no, fail on CLI
 				if(! self::$w)
-					die("PHPPE-C: " . L("action not found!") . "\n");
+					die("PHPPE-C: " . L($d . "_$a not found!") . "\n");
 				//! fallback to default application on CGI
 				$d = $P;
-				//! look for cms content from database - only for primary datasource
-				if(! empty(Core::db(0)) && f(P . "sql/pages.sql")) {
+				//! on web, look for cms content from database - only for primary datasource
+				if(! empty(Core::db(0)) && $G) {
 					try {
 						$T = "template";
 						//! if found in cache
@@ -1060,7 +1052,7 @@ namespace PHPPE {
 							Core::ds(0);
 							$D = Core::fetch("*", "pages", "(id=? OR ? LIKE id||'/%') AND (lang='' OR lang=?) AND pubd<=CURRENT_TIMESTAMP AND (expd=0 OR expd>CURRENT_TIMESTAMP)", "", "id DESC,created DESC", [ $u, $u, self::$client->lang ]);
 							if($A && ! empty($D[ $T ]))
-								self::$mc->set($C, $D, MEMCACHE_COMPRESSED, $this->cachettl);
+								$this->_ms($C, $D);
 						}
 						if(! empty($D[ $T ])) {
 							//check filters
@@ -1070,10 +1062,13 @@ namespace PHPPE {
 								throw new \Exception();
 							}
 							//! get optional content controller class
+							//! this loads further controllers generated by PHPPE CMS
 							$c = C . "Content";
 							if(ce($c)) {
+								array_unshift($X, $D);
 								$d = $c;
-								$f = $D[ $T ];
+								$f = $a;
+								//$D[$T];
 							}
 							//! set view for page
 							Core::$core->template = $D[ $T ];//! load application property overrides
@@ -1090,7 +1085,7 @@ namespace PHPPE {
 				}
 			}
 			//! get configuration array for Application
-			$p = s($d, [ "PHPPE\\" => "", "_Ctrl" => "" ]);
+			$p = s($d, [ "PHPPE\\App\\" => "", "PHPPE\\Ctrl\\" => "" ]);
 			foreach([ $p, ucfirst($p), $this->app, ucfirst($this->app) ] as $C) {
 				$c = @include(N . "$C/config" . PE);
 				if(a($c))
@@ -1102,9 +1097,10 @@ namespace PHPPE {
 			//! create Application object
 			self::$o[ "app" ] = $app = new $d(a($c) ? $c : []);
 			if(! q($app, $f))
-				$f = "action";
-			self::log("D", $this->app . "/" . $this->action . " ->$d::$f " . $this->template, "routes");
-			//! Application constructor may requested cache to be disabled
+				$f = $a;
+			//! Application constructor may alter template, so we have to log this after "new App"
+			self::log("D", $this->app . "/" . $this->$a . " ->$d::$f " . $this->template, "routes");
+			//! Application constructor may requested cache to be off
 			$A &= empty($this->nocache);
 			//! in maintenance mode only a view displayed
 			$m = "maintenance";
@@ -1125,37 +1121,54 @@ namespace PHPPE {
 				//! if it was not found in cache
 				//! application may request empty output by clearing $core->template
 				if(! $T) {
-					//! if we're serving Contents
-					if(! empty($D)) {
-						//! page local dynamic data sets
-						$d = "dds";
-						$l = "template";
-						$p = jd($D[ $d ]);//! load site global page lists
-						$e = Core::query("a.id as l,b.id,b.filter,b.$l,b.data,b.dds", "pages_list a left join pages b on a.page_id=b.id", "a.parent_id=''", "", "a.id,ordering");
+					//! get frame
+					$p = [];
+					$d = "dds";
+					$l = "template";
+					if($G) {
+						$F = self::fetch("*", "pages", "id='frame'");
+						$E = @jd($F[ 'data' ]);
+						self::$o[ 'frame' ] = $E;
+						//! load global dds
+						$E = @jd($F[ $d ]);
+						if(a($E))
+							$p += $E;
+						//! load site global page lists
+						$e = Core::query("a.id as l,b.*", "pages_list a left join pages b on a.page_id=b.id", "a.parent_id=''", "", "a.id,ordering");
 						foreach($e as $c)
 							if(self::_cf($c[ 'filter' ])) {
 								$v = @jd($c[ 'data' ]);
 								unset($v[ 'meta' ]);
 								$v[ 'id' ] = $c[ 'id' ];
+								$v[ 'name' ] = $c[ 'name' ];
 								$v[ $l ] = $c[ $l ];
 								$o[ $c[ 'l' ] ][] = $v;
-								//! add page global dds from frame page list
-								if($c[ 'l' ] == 'frame')
-									@ $p += jd($c[ $d ]);
-								}
-						//! load dynamic data sets into app properties
-						if(a($p)) {
-							foreach($p as $k => $c)
-								if($k != $d)
-									$o[ $k ] = Core::query($c[ 0 ], $c[ 1 ], @ $c[ 2 ], @ $c[ 3 ], @ $c[ 4 ], @ $c[ 5 ], @ $c[ 6 ]);
-						}
-						//! load property overrides
-						foreach($o as $k => $v)
-							if($k != $d)
-								$app->$k = $v;
+							}
+					}
+					//! if we're serving Contents
+					if(! empty($D)) {
+						//! page local dynamic data sets
+						$e = jd($D[ $d ]);
+						if(a($e))
+							$p += $e;
 						//! load site title
 						$this->site = $D[ 'name' ];
+						//! load application properties
+						foreach([ "id", "name", $l, "lang", "modifyd" ] as $v)
+							$o[ $v ] = $D[ $v ];
 					}
+					//! load dynamic data sets into app properties
+					if(a($p)) {
+						foreach($p as $k => $c)
+							if($k != $d)
+								$o[ $k ] = @Core::query($c[ 0 ], $c[ 1 ], @ $c[ 2 ], @ $c[ 3 ], @ $c[ 4 ], @ $c[ 5 ], @ $c[ 6 ]);
+					}
+					//! load property overrides
+					foreach($o as $k => $v)
+						if($k != $d)
+							$app->$k = $v;
+					//! *** CTRL Event (Controller action) ***
+					$this->_eh("ctrl", [ $d, $f ]);
 					//! call action method
 					if(q($app, $f))
 						! empty($X) ? call_user_func_array([ $app, $f ], $X) : $app->$f($this->item);
@@ -1180,7 +1193,7 @@ namespace PHPPE {
 					}
 					//save to cache
 					if($A && $T)
-						self::$mc->set($C, [ "m" => $this->meta, "c" => $this->css, "j" => $this->js, "J" => $this->jslib, "d" => $T ], MEMCACHE_COMPRESSED, $this->cachettl);
+						$this->_ms($C, [ "m" => $this->meta, "c" => $this->css, "j" => $this->js, "J" => $this->jslib, "d" => $T ]);
 				}
 			}
 			else
@@ -1192,16 +1205,18 @@ namespace PHPPE {
 			//! check dump argument here, by now all core properties are populated
 			if((@in_array("--dump", $_SERVER[ 'argv' ]) || isset($R[ '--dump' ])) && $this->runlevel > 1) {
 				c("text/plain");
-				foreach([ $_SERVER, self::$client, self::$user, $this, $app ] as $v)
-					print_r($v);
+				print_r($_SERVER);
+				print_r(self::$o);
 				die();
 			}
 			//! close all database connections before output
 			self::dbClose();
+			//! *** VIEW Event ***
+			$T = $this->_eh("view", $T);
 			//! ***** HTTP response *****
 			$o = isset($app->output) ? $app->output : $this->output;
 			if(self::$w) {
-				//header( "Pragma:no-cache" );
+				header("Pragma:no-cache");
 				header("Cache-Control:no-cache,no-store,private,must-revalidate,max-age=0");
 				header("Content-Type:" . (! empty($app->mimetype) ? $app->mimetype : "text/" . (! empty($o) ? $o : "html")) . ";charset=utf-8");
 			}
@@ -1213,18 +1228,19 @@ namespace PHPPE {
 					$I = m(__FILE__);
 					if($I == "index.php")
 						$I = "";
+					$B = "http" . ($this->sec ? "s" : "") . "://" . $this->base;
 					//! HTML5 header and title
-					$O .= "<!DOCTYPE HTML>\n<html><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='http" . ($this->sec ? "s" : "") . "://" . $this->base . "'/><meta charset='utf-8'/>\n<meta name='Generator' content='" . $this->id . "'/>\n";
+					$O .= "<!DOCTYPE HTML>\n<html><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='$B'/><meta charset='utf-8'/>\n<meta name='Generator' content='" . $this->id . "'/>\n";
 					foreach($this->meta as $k => $m)
-						$O .= "<meta name='$k' content='" . h($m) . "'/>\n";
+						if($m)
+							$O .= "<meta name='$k' content='" . h($m) . "'/>\n";
 					//! favicon
-					$O .= "<link rel='shortcut icon' href='favicon.ico' type='image/png'/>\n";
+					$O .= "<link rel='shortcut icon' href='favicon.ico'/>\n";
 					//! add style sheets (async)
-					$c = "css/" . (! empty(self::$user->skin) && f("css/" . self::$user->skin . ".css") ? self::$user->skin : "default") . ".css";
 					//			$d = "<link rel='stylesheet' type='text/css' href='%s' media='screen,print'/>\n";
 					$O .= "<style media='all'>\n";
 					$d = "@import url('%s');\n";
-					$N = $this->base . "_" . $this->app . "." . $this->action . "_" . self::$user->id . "_" . self::$client->lang;
+					$N = $this->base . "_" . $this->app . "." . $this->$a . "_" . self::$user->id . "_" . self::$client->lang;
 					//! admin css if user logged in and has access
 					if($P)
 						$O .= sprintf($d, "$I?cache=css");
@@ -1240,7 +1256,7 @@ namespace PHPPE {
 									if($v && w($v, - 3) != "php")
 										$da .= minify(r(g($v)), "css") . "\n";
 								//! save result to cache
-								self::$mc->set("c_$n", [ "m" => "text/css", "d" => $da ], MEMCACHE_COMPRESSED);
+								$this->_ms("c_$n", [ "m" => "text/css", "d" => $da ]);
 							}
 							$O .= sprintf($d, "$I?cache=$n");
 							//! add dynamic stylesheets, they were left out from aggregated cache above
@@ -1255,9 +1271,6 @@ namespace PHPPE {
 									$O .= sprintf($d, "css/$u");
 						}
 					}
-					//user skin (not aggregated with the rest)
-					if(f($c))
-						$O .= sprintf($d, $c);
 					$O .= "</style>\n";
 					//! add javascript libraries (async)
 					$d = "<script type='text/javascript'";
@@ -1273,7 +1286,7 @@ namespace PHPPE {
 								foreach($this->jslib as $u => $v)
 									if($v && w($v, - 3) != "php")
 										$da .= minify(r(g($v)), "js") . "\n";
-								self::$mc->set("c_$n", [ "m" => "text/javascript", "d" => $da ], MEMCACHE_COMPRESSED);
+								$this->_ms("c_$n", [ "m" => "text/javascript", "d" => $da ]);
 							}
 							$O .= "$d async src='$I?cache=$n'>$e";
 							//! add dynamic javascripts, they were left out from aggregated cache above
@@ -1351,26 +1364,26 @@ namespace PHPPE {
 									foreach( $L  as $k => $v ){
 										@list($Y,$A)=x("@",$k);
 										if(empty($A) || self::$user->has($A))
-										$O.= "<li onclick=\"document.location.href='$k';\"><a href='$k'>" . h( L($Y) ) . "</a></li>";
+										$O.= "<li onclick=\"document.location.href='".($I?$I."/":"")."$k';\"><a href='".($I?$I."/":"")."$k'>" . h( L($Y) ) . "</a></li>";
 									}
 									$O.="</div></li>";
 								} else */
-												$O .= "<li onclick=\"document.location.href='$l';\"><a href='$l'>" . h(L($Y)) . "</a></li>";
+												$O .= "<li onclick=\"document.location.href='" . ($I ? $I . "/" : "") . "$l';\"><a href='" . ($I ? $I . "/" : "") . "$l'>" . h(L($Y)) . "</a></li>";
 												//							$X++;
 											}
 									$O .= "</ul></div><span class='menu_" . ($a ? "a" : "i") . "' onclick='return pe_p(\"m$x\");'>" . h(L($ti)) . "</span>";
 									$x++ ;
 								}
 								else 
-									$O .= "<span class='menu_" . ($a ? "a" : "i") . "'><a href='$L'>" . h(L($ti)) . "</a></span>";
+									$O .= "<span class='menu_" . ($a ? "a" : "i") . "'><a href='" . ($I ? $I . "/" : "") . "$L'>" . h(L($ti)) . "</a></span>";
 							}
 						}
 						//! call modules dock hooks
 						$O .= "</div><div class='dock'>";
-						if(! empty($this->libs))
-							foreach($this->libs as $d)
-								if(q($d, "dock"))
-									$O .= "<span>" . $d->dock() . "</span>";
+						//! *** DOCK Event ***
+						foreach($this->libs as $d)
+							if(q($d, "dock"))
+								$O .= "<span>" . $d->dock() . "</span>";
 						//! language selector box
 						$O .= "<div id='pe_l'$H><ul>";
 						if(! empty($_SESSION[ 'pe_ls' ]))
@@ -1378,10 +1391,8 @@ namespace PHPPE {
 						else
 						{
 							//if application has translations, use that list
-							$D = @scandir("app/lang");
 							//if not, fallback to core's translations
-							if(! a($D) || empty($D))
-								$D = @scandir(P . "lang");
+							$D = array_unique(@scandir("app/lang") + @scandir(P . "lang"));
 							$d = [];
 							foreach($D as $f)
 								if(w($f, - 4) == ".php")
@@ -1404,7 +1415,7 @@ namespace PHPPE {
 				{
 					$c = @glob(N . "*/out/" . $o . "_header" . PE);
 					if(! empty($c[ 0 ]))
-						i($c[ 0 ]);
+						io($c[ 0 ]);
 				}
 			}
 			//! output application
@@ -1427,7 +1438,7 @@ namespace PHPPE {
 				{
 					$c = @glob(N . "*/out/" . $this->output . "_footer" . PE);
 					if(! empty($c[ 0 ]))
-						i($c[ 0 ]);
+						io($c[ 0 ]);
 				}
 			}
 			//! make sure to flush session
@@ -1455,7 +1466,7 @@ namespace PHPPE {
 			//! eg.: hu_HU, hu, en; en_US, en
 			foreach([ $L, $i[ 0 ], "en" ] as $l) {
 				if(f($c . $l . PE)) {
-					$la = i($c . $l . PE);
+					$la = io($c . $l . PE);
 					break;
 				}
 			}
@@ -1472,7 +1483,7 @@ namespace PHPPE {
  */
 		static function log($w, $m, $n = null)
 		{
-			if(self::$core->runlevel < 3 && $w == "D")
+			if(! is_string($m) || self::$core->runlevel < 3 && $w == "D")
 				return;
 			//! log a message of weight for a module
 			$w = k($w);
@@ -1588,7 +1599,7 @@ namespace PHPPE {
 				$d = @glob(N . "*/addons/*" . PE);
 				foreach($d as $f) {
 					$F = m($f);
-					$d = i($f);
+					$d = io($f);
 					$w = z($F, 0, u($F) - 4);
 					$W = A . $w;
 					if(ce($W)) {
@@ -1685,7 +1696,7 @@ namespace PHPPE {
  * @param regexp mask of url
  * @param class in which the app resides
  * @param method of the application action handler (if not given, default action routing applies)
- * @param filters comma separated list or array of filters (ACE has to be started with '@' or filter_*() will be used)
+ * @param filters comma separated list or array of filters (ACE has to be started with '@' or PHPPE\Filter\*::filter() will be used)
  */
 		static function route($u = "", $n = "", $a = "", $f = [])
 		{
@@ -1795,7 +1806,7 @@ namespace PHPPE {
  * @param timeout in sec
  * @return content
  */
-		static function get($u, $p = "", $T = 30, $l = 0)
+		static function get($u, $p = "", $T = 3, $l = 0)
 		{
 			static $C;			
 			//! check recursion maximum level
@@ -1855,11 +1866,13 @@ namespace PHPPE {
 				if($n && $n != $u)
 					return self::get($n, $p, $T, $l + 1);
 				//! receive data if there was a header (not timed out)
-				if($H)
+				if($H) {
 					while(! feof($f))
 						$d .= fread($f, 65535);
+					self::log("D", "$u " . strlen($d), "http");
+				}
 				else 
-					self::log("E", "$u. timed out $T", "http");
+					self::log("E", "$u timed out $T", "http");
 				fclose($f);
 				return $t ? s($d, "\r", "") : $d;
 			}
@@ -1964,7 +1977,7 @@ namespace PHPPE {
 					$d = w($k, u($p) + 1);
 					$K = $p . "." . $d;
 					if(isset($V[ $K ])) {
-						//multiple validators passed
+						//iterate on validators for this key
 						foreach($V[ $K ] as $T => $C) {
 							$t = A . $T;
 							if($T == "num")
@@ -1983,6 +1996,7 @@ namespace PHPPE {
 							}
 						}
 					}
+					$v = $v == "true" ? true : ($v == "false" ? false : $v);
 					if($a)
 						$o[ $d ] = $v;
 					else 
@@ -2011,6 +2025,8 @@ namespace PHPPE {
 			//! iterate on fields
 			$r = "";
 			$d = Core::db();
+			if(is_string($o))
+				$o = [ $o ];
 			foreach($o as $k => $v) {
 				if(! in_array($k, $s))
 					$r .= ($r ? $c : "") . $k . "=" . ($c == "," && ! empty($d) ? $d->quote($v) : "'" . str_replace([ "\r", "\n", "\t", "\x1a" ], [ "\\r", "\\n", "\\t", "\\x1a" ], ad($v)) . "'");
@@ -2117,6 +2133,7 @@ namespace PHPPE {
 				$d = &self::$db[ self::$sel ];
 				$d->id = count(self::$db);
 				$d->name = is_object($O) ? get_class($O) : $d->getAttribute(\PDO::ATTR_DRIVER_NAME);
+				$d->sqlrepl = @include(@glob(N . "*/libs/db_" . $d->name . PE)[ 0 ]);
 				//register database module
 				if(! isset(self::$core->libs[ "DS" ])) {
 					self::lib("DS", "DataSource");
@@ -2202,14 +2219,20 @@ namespace PHPPE {
 		static function exec($q, $a = [])
 		{
 			//common database handler
-			if(empty(self::$db[ self::$sel ]) || empty($q) || ! a($a))
-				throw new \Exception("Invalid ds");
 			self::log("D", $q . " " . json_encode($a), "db");
+			if(! a($a))
+				$a = [ $a ];
+			if(empty(self::$db[ self::$sel ]) || empty($q))
+				throw new \Exception("Invalid ds #" . self::$sel);
 			$t = microtime(1);
 			$r = null;
 			$h = self::$db[ self::$sel ];
 			try {
 				$i = t(z(r($q), 0, 6)) == "select";
+				$s = "sqlrepl";
+				if(a($h->$s))
+					foreach($h->$s as $k => $v)
+						$q = pr($k, $v, $q);
 				$s = $h->prepare($q);
 				$s->execute($a);
 				$r = $i ? $s->fetchAll(\PDO::FETCH_ASSOC) : $s->rowCount();
@@ -2670,23 +2693,25 @@ namespace PHPPE {
 			self::$o[ $n ] = &$o;
 		}
 
-/*** private helper functions for templater ***/
+/*** private helper functions ***/
 		//! application allowed to call them in special cases, but normally won't need any of them
 		//! so "private" keyword left out on purpose
 		static function _r()
 		{
 			//! save request uri, will be used later after successful login
+			//! called when redirect has true as second argument.
 			$_SESSION[ 'pe_r' ] = "http" . (self::$core->sec ? "s" : "") . "://" . $_SERVER[ "SERVER_NAME" ] . $_SERVER[ "REQUEST_URI" ];
 		}
 		static function _cf($c)
 		{
+			//! check filters
 			if(! a($c))
 				$c = x(",", $c);
 			if(! empty($c))
 				foreach($c as $F) {
 					$F = r($F);
-					$G = "filter_$F";
-					if(! empty($F) && (($F[ 0 ] == '@' && ! self::$user->has(w($F, 1))) || ($F[ 0 ] != '@' && (! y($G) || ! $G())))) {
+					$G = C . "Filter\\$F";
+					if(! empty($F) && (($F[ 0 ] == '@' && ! self::$user->has(w($F, 1))) || ($F[ 0 ] != '@' && ! @ $G::filter()))) {
 						return false;
 					}
 				}
@@ -2759,10 +2784,10 @@ namespace PHPPE {
 				$t = pr("/<!-.*?->[\r\n]*/ms", "", pr("/<\?.*?\?\>[\r\n]*/ms", "", $t));
 				//! save to cache
 				if(! empty(self::$mc) && ! empty($t))
-					self::$mc->set($C, [ "m" => $m, "d" => $t ], MEMCACHE_COMPRESSED);
+					$this->_ms($C, [ "m" => $m, "d" => $t ]);
 			}
 			//! append meta tags
-			self::$core->meta += $m;
+			self::$core->meta += a($m) ? $m : [ $m ];
 			//! return raw template
 			return $t;
 		}
@@ -2868,11 +2893,18 @@ namespace PHPPE {
 						case "time" :
 						case "date" :
 						$v = self::getval($A[ 0 ]);
-						$w = ! empty($v) ? date((! empty(self::$l[ 'dateformat' ]) ? self::$l[ 'dateformat' ] : "Y-m-d") . ($t == "time" ? " H:i:s" : ""), $v + 0) : (! empty($A[ 1 ]) ? "" : L("Epoch"));
+						$w = ! empty($v) ? date((! empty(self::$l[ 'dateformat' ]) ? self::$l[ 'dateformat' ] : "Y-m-d") . ($t == "time" ? " H:i:s" : ""), ts($v)) : (! empty($A[ 1 ]) ? "" : L("Epoch"));
 						break;
 						case "difftime" :
 						$w = "";
 						$v = self::getval($A[ 0 ]);
+						if(! empty($A[ 1 ])) {
+							if(! $v) {
+								$w = "-";
+								break;
+							}
+							$v -= ts(self::getval($A[ 1 ]));
+						}
 						if($v < 0) {
 							$w = "- ";
 							$v = - $v;
@@ -2960,7 +2992,7 @@ namespace PHPPE {
 							//find appropriate class for AddOn
 							$d = A . $f;
 							if(! ce($d) && $D = @glob(N . "*/addons/" . $f . PE)[ 0 ])
-								i($D);
+								io($D);
 							if(ce($d) && is_subclass_of($d, C . "AddOn")) {
 								//ok, got it
 								$F = new $d($a, $n, $v, $A, $R);
@@ -2978,7 +3010,7 @@ namespace PHPPE {
 							}
 						}
 						$w .= $t == "cms" || ($t == "var" && empty($_SESSION[ 'pe_e' ])) ? (is_scalar($v) ? $v . "" : $v && json_encode($v)) : self::e("W", "UNKADDON", $f);
-						$w .= ($t == "cms" ? "</span>" : "");
+						$w .= ($CM ? "</span>" : "");
 						break;
 						default : $w = self::e("W", "UNKTAG", $t);
 					}
@@ -2991,9 +3023,54 @@ namespace PHPPE {
 			}
 			return $x;
 		}
-		function __toString()
+		//! memcache set
+		function _ms($k, $v)
 		{
-			return __CLASS__;
+			self::$mc->set($k, $v, MEMCACHE_COMPRESSED, $this->cachettl);
+		}
+		//! event handler
+		function _eh($e, $c = [])
+		{
+			foreach($this->libs as $k => $v)
+				if(q($v, $e))
+					$c = $v->$e($c);
+			return $c;
+		}
+	}
+}
+
+/*** Common routing filters ***/
+namespace PHPPE\Filter {
+	use \PHPPE\Filter as X;
+	class get extends X
+	{
+		function filter()
+		{
+			return $_SERVER[ 'REQUEST_METHOD' ] == "GET";
+		}
+	}
+	class post extends X
+	{
+		function filter()
+		{
+			return $_SERVER[ 'REQUEST_METHOD' ] == "POST";
+		}
+	}
+	class loggedin extends X
+	{
+		function filter()
+		{
+			if(\PHPPE\Core::$user->id)
+				return true;
+			/* save request uri for returning after successful login */
+			\PHPPE\Core::redirect("login", 1);
+		}
+	}
+	class csrf extends X
+	{
+		function filter()
+		{
+			return \PHPPE\Core::isTry();
 		}
 	}
 }
@@ -3001,19 +3078,15 @@ namespace PHPPE {
 /*** Built-in fields ***/
 namespace PHPPE\AddOn {
 	use \PHPPE\Core as Core;
-	use \PHPPE\AddOn as AddOn;
+	use \PHPPE\AddOn as X;
 
 /**
  * hidden field element
  *
  * @usage obj.field
  */
-	class hidden extends AddOn
+	class hidden extends X
 	{
-		function show()
-		{
-			return "";
-		}
 		function edit()
 		{
 			return "<input type='hidden' name='" . s($this->name, ".", "_") . "' value='" . h(r($this->value)) . "'>";
@@ -3025,7 +3098,7 @@ namespace PHPPE\AddOn {
  *
  * @usage label onclickjs [cssclass]
  */
-	class button extends AddOn
+	class button extends X
 	{
 		function show()
 		{
@@ -3042,12 +3115,8 @@ namespace PHPPE\AddOn {
  *
  * @usage [label [onclickjs [cssclass]]]
  */
-	class update extends AddOn
+	class update extends X
 	{
-		function show()
-		{
-			return "";
-		}
 		function edit()
 		{
 			return "<input class='" . (! empty($this->attrs[ 1 ]) && $this->attrs[ 1 ] != "-" ? $this->attrs[ 1 ] : "button") . "' name='pe_try" . Core::_tc() . "' type='submit' value=\"" . h(L(! empty($this->name) ? $this->name : "Okay")) . "\"" . (! empty($this->attrs[ 0 ]) && $this->attrs[ 0 ] != "-" ? " onclick=\"return " . s($this->attrs[ 0 ], "\"", "\\\"") . "\"" : "") . ">";
@@ -3059,12 +3128,8 @@ namespace PHPPE\AddOn {
  *
  * @usage [label [cssclass]]
  */
-	class cancel extends AddOn
+	class cancel extends X
 	{
-		function show()
-		{
-			return "";
-		}
 		function edit()
 		{
 			return "<input class='" . (! empty($this->attrs[ 0 ]) && $this->attrs[ 0 ] != "-" ? $this->attrs[ 0 ] : "button") . "' name='pe_cancel' type='submit' value=\"" . h(L(! empty($this->name) ? $this->name : "Cancel")) . "\">";
@@ -3076,12 +3141,8 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,maxlen[,rows]]) obj.field [onkeyupjs [cssclass [fakevalue]]]
  */
-	class text extends AddOn
+	class text extends X
 	{
-		function show()
-		{
-			return h($this->value);
-		}
 		function edit()
 		{
 			$v = r($this->value);
@@ -3092,7 +3153,7 @@ namespace PHPPE\AddOn {
 					Core::js("pe_mt(e,m)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;return(c==8||c==46||o.value.length<=m);");
 				return "<textarea" . @v($this->css, $this->attrs[ 1 ], $this->err, $this->name, $this->attrs[ 0 ]) . ($this->args[ 0 ] > 0 ? " cols='" . $this->args[ 0 ] . "'" : "") . " rows='" . $this->args[ 2 ] . "'" . ($this->args[ 1 ] > 0 ? " onkeypress='return pe_mt(event," . $this->args[ 1 ] . ");'" : "") . " wrap='soft' onfocus='this.style.background=\"\";'>" . $v . "</textarea>";
 			}
-			return "<input" . @v($this->css, $this->attrs[ 1 ], $this->err, $this->name, $this->attrs[ 0 ], $this->args) . " type='text'" . (! empty($this->attrs[ 2 ]) && $this->attrs[ 2 ] != "-" ? " onkepup='" . $this->attrs[ 2 ] . "'" : "") . " onfocus='this.style.background=\"\";'" . (! empty($this->attrs[ 3 ]) ? " placeholder=\"" . h(r($this->attrs[ 3 ])) . "\"" : "") . "' value=\"" . h($v) . "\">";
+			return "<input" . @v($this->css, $this->attrs[ 1 ], $this->err, $this->name, $this->attrs[ 0 ], $this->args) . " type='text'" . (! empty($this->attrs[ 2 ]) && $this->attrs[ 2 ] != "-" ? " onkepup='" . $this->attrs[ 2 ] . "'" : "") . " onfocus='this.style.background=\"\";'" . (! empty($this->attrs[ 3 ]) ? " placeholder=\"" . h(r($this->attrs[ 3 ])) . "\"" : "") . " value=\"" . h($v) . "\">";
 		}
 	}
 
@@ -3101,7 +3162,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,maxlen]) obj.field [cssclass]
  */
-	class pass extends AddOn
+	class pass extends X
 	{
 		function show()
 		{
@@ -3125,7 +3186,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,maxlen[,min,max]]) obj.field [cssclass]
  */
-	class num extends AddOn
+	class num extends X
 	{
 		function show()
 		{
@@ -3133,8 +3194,10 @@ namespace PHPPE\AddOn {
 		}
 		function edit()
 		{
-			Core::js("pe_on(e)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;o.style.background='';if(c==8||c==37||c==39||c==46)return true;c=String.fromCharCode(c);if(c.match(/[0-9\\b\\t\\r\\-\\.\\,]/)!=null)return true;else{o.style.background='" . Core::$ec . "';setTimeout(function(){o.style.background='';},200);return false;}");
-			return "<input" . @v($this->css, $this->attrs[ 1 ], "", $this->name, $this->attrs[ 0 ], $this->args) . " style='text-align:right;" . (! empty($this->err) ? "background:" . Core::$ec . ";" : "") . "' type='number' onkeypress='return pe_on(event);' onkeyup='this.value=this.value.replace(\",\",\".\");' onfocus='this.style.background=\"\";this.select();'" . (isset($this->args[ 3 ]) ? " onblur='if(this.value<" . $this->args[ 2 ] . ")this.value=" . $this->args[ 2 ] . ";if(this.value>" . $this->args[ 3 ] . ")this.value=" . $this->args[ 3 ] . ";'" : "") . " value=\"" . h(r($this->value)) . "\">";
+			$t = "this.value";
+			$b = "o.style.background";
+			Core::js("pe_on(e)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;$b='';if(c==8||c==37||c==39||c==46)return true;c=String.fromCharCode(c);if(c.match(/[0-9\\b\\t\\r\\-\\.\\,]/)!=null)return true;else{{$b}='" . Core::$ec . "';setTimeout(function(){{$b}='';},200);return false;}");
+			return "<input" . @v($this->css, $this->attrs[ 1 ], "", $this->name, $this->attrs[ 0 ], $this->args) . " style='text-align:right;" . (! empty($this->err) ? "background:" . Core::$ec . ";" : "") . "' type='number' onkeypress='return pe_on(event);' onkeyup='$t=$t.replace(\",\",\".\");' onfocus='this.style.background=\"\";this.select();'" . (isset($this->args[ 3 ]) ? " onblur='if($t<" . $this->args[ 2 ] . ")$t=" . $this->args[ 2 ] . ";if($t>" . $this->args[ 3 ] . ")$t=" . $this->args[ 3 ] . ";'" : "") . " value=\"" . h(r($this->value)) . "\">";
 		}
 		static function validate($n, &$v, $a, $t)
 		{
@@ -3162,7 +3225,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]
  */
-	class select extends AddOn
+	class select extends X
 	{
 		function show()
 		{
@@ -3198,7 +3261,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (truevalue) obj.field [label [cssclass]]
  */
-	class check extends AddOn
+	class check extends X
 	{
 		function show()
 		{
@@ -3217,13 +3280,11 @@ namespace PHPPE\AddOn {
  *
  * @usage (value) obj.field [label [cssclass]]
  */
-	class radio extends AddOn
+	class radio extends X
 	{
 		function show()
 		{
-			if(empty(Core::$core->output) || Core::$core->output != "html")
-				return "(" . ($this->value == $this->args[ 0 ] ? "X" : " ") . ") " . (! empty($this->attrs[ 0 ]) ? L($this->attrs[ 0 ]) : $this->value);
-			return h($this->value);
+			return Core::$core->output != "html" ? ("(" . ($this->value == $this->args[ 0 ] ? "X" : " ") . ") " . (! empty($this->attrs[ 0 ]) ? L($this->attrs[ 0 ]) : $this->value)) : h($this->value);
 		}
 		function edit()
 		{
@@ -3236,7 +3297,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,maxlen]) obj.field [cssclass]
  */
-	class phone extends AddOn
+	class phone extends X
 	{
 		function show()
 		{
@@ -3244,7 +3305,8 @@ namespace PHPPE\AddOn {
 		}
 		function edit()
 		{
-			Core::js("pe_op(e)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;o.style.background='';if(c==8||c==37||c==39||c==46)return true;c=String.fromCharCode(c);if(c.match(/[0-9\\b\\t\\r\\-\\ \\+\\(\\)\\/]/)!=null)return true;else{o.style.background='" . Core::$ec . "';setTimeout(function(){o.style.background='';},200);return false;}");
+			$b = "o.style.background";
+			Core::js("pe_op(e)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;$b='';if(c==8||c==37||c==39||c==46)return true;c=String.fromCharCode(c);if(c.match(/[0-9\\b\\t\\r\\-\\ \\+\\(\\)\\/]/)!=null)return true;else{{$b}='" . Core::$ec . "';setTimeout(function(){{$b}='';},200);return false;}");
 			return "<input" . @v($this->css, $this->attrs[ 1 ], $this->err, $this->name, $this->attrs[ 0 ], $this->args) . " type='text' onfocus='this.style.background=\"\";' onkeypress='return pe_op(event);' value=\"" . h(r($this->value)) . "\">";
 		}
 		static function validate($n, &$v, $a, $t)
@@ -3259,7 +3321,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,maxlen]) obj.field [cssclass]
  */
-	class email extends AddOn
+	class email extends X
 	{
 		function show()
 		{
@@ -3269,12 +3331,13 @@ namespace PHPPE\AddOn {
 		}
 		function edit()
 		{
-			Core::js("pe_oe(o)", "o.style.background='';if(o.value!=''&&o.value.match(/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,3}|[0-9]{1,3})(\]?)$/)==null)o.style.background='" . Core::$ec . "';");
+			$b = "o.style.background";
+			Core::js("pe_oe(o)", "$b='';if(o.value!=''&&o.value.match(/^.+\@(\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?)$/i)==null)$b='" . Core::$ec . "';");
 			return "<input" . @v($this->css, $this->attrs[ 1 ], $this->err, $this->name, "", $this->args) . " type='text' onfocus='this.style.background=\"\";' onchange='pe_oe(this);" . (! empty($this->attrs[ 0 ]) && $this->attrs[ 0 ] != "-" ? $this->attrs[ 0 ] : "") . "' value=\"" . h(r($this->value)) . "\">";
 		}
 		static function validate($n, &$v, $a, $t)
 		{
-			$r = p("/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,3}|[0-9]{1,3})(\]?)$/", $v);
+			$r = p("/^.+\@(\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?)$/i", $v);
 			return[ $r, "invalid email address" ];
 		}
 	}
@@ -3284,12 +3347,8 @@ namespace PHPPE\AddOn {
  *
  * @usage (size[,maxlen]) obj.field [cssclass]
  */
-	class file extends AddOn
+	class file extends X
 	{
-		function show()
-		{
-			return "";
-		}
 		function edit()
 		{
 			return(! empty($this->err) ? "<span " . $this->err . ">" : "") . "<input" . @v($this->css, $this->attrs[ 0 ], "", $this->name, "", $this->args) . " type='file'>&nbsp;(" . round(Core::$fm / 1048576) . "Mb)" . (! empty($this->err) ? "</span>" : "");
@@ -3301,7 +3360,7 @@ namespace PHPPE\AddOn {
  *
  * @usage (yearsbefore[,yearsafter]) obj.field [cssclass]
  */
-	class date extends AddOn
+	class date extends X
 	{
 		function show()
 		{
@@ -3309,7 +3368,8 @@ namespace PHPPE\AddOn {
 		}
 		function show2($time = 0)
 		{
-			return ! empty($this->value) ? date((! empty(Core::$l[ 'dateformat' ]) ? Core::$l[ 'dateformat' ] : "Y-m-d") . ($time ? " H:i" : ""), $this->value) : (! empty($this->attrs[ 0 ]) ? "" : "Epoch");
+			$d = 'dateformat';
+			return ! empty($this->value) ? date((! empty(Core::$l[ $d ]) ? Core::$l[ $d ] : "Y-m-d") . ($time ? " H:i" : ""), $this->value) : (! empty($this->attrs[ 0 ]) ? "" : "Epoch");
 		}
 		function edit()
 		{
@@ -3360,7 +3420,7 @@ namespace PHPPE\AddOn {
 				$oh = $oi = $os = "";
 			if(f(P . "js/core.js" . PE)) {
 				list($o, $d) = x(".", $this->name);
-				$c = "&nbsp;<img src='images/calendar.png' class='calendar_icon' style='cursor:pointer;vertical-align:middle;' onclick='if(document.forms[\"" . $o . "\"])calendar_open(this,document.forms[\"" . $o . "\"],\"" . $o . "_" . $d . "\");' alt='[...]'>";
+				$c = "&nbsp;<img src='images/cal.png' class='cal_icon' style='cursor:pointer;vertical-align:middle;' onclick='if(document.forms[\"" . $o . "\"])cal_open(this,document.forms[\"" . $o . "\"],\"" . $o . "_" . $d . "\");' alt='[C]'>";
 			}
 			else 
 				$c = "";
@@ -3432,27 +3492,6 @@ namespace {
 		return \PHPPE\Core::url($m, $p);
 	}
 
-/*** Common routing filters ***/
-	function filter_get()
-	{
-		return $_SERVER[ 'REQUEST_METHOD' ] == "GET";
-	}
-	function filter_post()
-	{
-		return $_SERVER[ 'REQUEST_METHOD' ] == "POST";
-	}
-	function filter_loggedin()
-	{
-		if(\PHPPE\Core::$user->id)
-			return true;
-		/* save request uri for returning after successful login */
-		\PHPPE\Core::redirect("login", 1);
-	}
-	function filter_csrf()
-	{
-		return \PHPPE\Core::istry();
-	}
-
 /*** for compactness, widely used functions. This makes code a lot smaller ***/
 	function a($a)
 	{
@@ -3478,7 +3517,7 @@ namespace {
 	{
 		return f($f) ? file_get_contents($f) : "";
 	}
-	function i($f)
+	function io($f)
 	{
 		return include_once($f);
 	}
@@ -3492,15 +3531,16 @@ namespace {
 	}
 	function c($m)
 	{
-		//header( "Pragma:cache" );
-		header("Cache-Control:cache,public,max-age=$m");
-		header("Expires:" . gmdate("r", time() + 86400));
+		header("Pragma:cache");
+		$t = \PHPPE\Core::$core->cachettl;
+		header("Cache-Control:cache,public,max-age=$t");
+		header("Expires:" . gmdate("r", time() + $t));
 		header("Content-Type:" . $m . ";charset=utf-8");
 		header("Connection:close");
 	}
 	function d($n)
 	{
-		return debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)[ $n ][ 'file' ];
+		return debug_backtrace()[ $n ][ 'file' ];
 	}
 	function r($s)
 	{
@@ -3572,7 +3612,11 @@ namespace {
 	}
 	function cc($c)
 	{
-		return(ce($c) && is_subclass_of($c, C . "App")) || (ce($c . "_Ctrl") && is_subclass_of($c . "_Ctrl", C . "App"));
+		return ce($c) && is_subclass_of($c, C . "App");
+	}
+	function ts($v)
+	{
+		return p("|^[0-9]+$|", $v) ? $v : strtotime($v);
 	}
 
 /******* Bootstrap PHPPE *******/

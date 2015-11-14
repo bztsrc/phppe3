@@ -35,13 +35,13 @@ class CMS
 		PHPPE::lib("CMS","Content Editor", ["Core","wysiwyg"]);
 		PHPPE::menu( L("CMS"), [
 			L("Pages") ."@siteadm" => "cms/pages",
-			L("Lists") ."@siteadm" => "cms/lists",
 			L("Layouts") ."@siteadm" => "cms/layouts",
+			L("Lists") ."@siteadm" => "cms/lists",
 			L("Attachments") ."@siteadm" => "cms/attachments",
 			PHPPE::isinst("CMSLT")? L("TimeLine") ."@siteadm" : "" => "cms/timeline",
 		]);
 		if(PHPPE::$core->app=="cms") {
-			filter_loggedin();
+			\PHPPE\Filter\loggedin::filter();
 			if(!PHPPE::$user->has("siteadm"))
 				PHPPE::redirect("403");
 		}
@@ -53,13 +53,14 @@ class CMS
 			$this->revert=true;
 		if(!empty($cfg['purge']))
 			$this->purge=true;
+		return true;
 	}
 
 	function dock() {
 		if(PHPPE::$user->has("panel")) {
 			$c=get_class(PHPPE::getval("app"));
 			if($c=="PHPPE\App" || $c=="PHPPE\Content")
-				return "<span style='padding-right:10px;'><a href='cms/pages/".urlencode(PHPPE::$core->app."/".(PHPPE::$core->action!="action"?PHPPE::$core->action:"").(PHPPE::$core->item?"/".PHPPE::$core->item:""))."'><img src='images/cms/edit.png' style='padding:3px;position:absolute;'></a></span>";
+				return "<span style='padding-right:10px;'><a href='cms/pages/".(PHPPE::$core->app."/".(PHPPE::$core->action!="action"?PHPPE::$core->action:"").(PHPPE::$core->item?"/".PHPPE::$core->item:""))."'><img src='images/cms/edit.png' style='position:absolute;'></a></span>";
 			elseif(PHPPE::$core->app!="cms")
 				return "";
 			elseif(PHPPE::$core->action=="pages")
@@ -76,9 +77,10 @@ class CMS
 		$arg['type']=$a;
 		$spec=file_exists(__DIR__."/images/cms/".$a.".png");
 		$_SESSION['cms_param'][]=$arg;
-		return "<img style='padding:3px;position:absolute;' ".
+		$u=url("/"); if($u[strlen($u)-1]!="/") $u.="/";
+		return "<img style='position:absolute;".($spec&&$a!="pagelist"?"":"opacity:0.5;")."' ".
 			"onclick='cms_".urlencode($spec?$a:"edit")."(this,\"".urlencode($a)."\",".(count($_SESSION['cms_param'])-1).");' ".
-			"src='images/cms/".($spec?urlencode($a).".png":"edit.png/".urlencode($a)."/".(count($_SESSION['cms_param'])-1))."' ".
+			"src='".$u."images/cms/".($spec?urlencode($a).".png":"edit.png/".urlencode($a)."/".(count($_SESSION['cms_param'])-1))."' ".
 			"alt='[".htmlspecialchars(strtoupper($a).($title?" ".$title:""))."]' ".
 			"title='".$title."'>";
 	}

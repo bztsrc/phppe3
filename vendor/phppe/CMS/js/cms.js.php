@@ -10,10 +10,11 @@ var cms_border=null;
 var cms_configure=null;
 var cms_conf='';
 var cms_alladdon=<?=json_encode($addons)?>;
+var cms_layoutonly;
 function cms_init()
 {
     cms_bgdiv=document.createElement('div');
-    cms_bgdiv.setAttribute('style','position:fixed;display:table-cell;top:0px;left:0px;right:0px;width:100%;height:100%;z-index:100;background:#808080;opacity:0.2;visibility:hidden;');
+    cms_bgdiv.setAttribute('style','position:fixed;display:table-cell;top:0px;left:0px;right:0px;width:100%;height:100%;z-index:10000;background:#808080;opacity:0.2;visibility:hidden;');
     cms_bgdiv.setAttribute('onclick','cms_editclose()');
     document.getElementsByTagName('body')[0].appendChild(cms_bgdiv);
 
@@ -93,7 +94,7 @@ function cms_edit(o,t,i,c)
         (i==null||t.substr(t.length-4)=="list"?
         'position:fixed;left:20%;top:20%;width:60%;height:'+(h?h+30+'px':'60%')+';':
         'position:absolute;left:'+(x-(t=="wysiwyg"?1:4))+'px;top:'+(y-(t=="wysiwyg"?29:4))+'px;width:'+(w-0)+'px;height:'+(h+26+(t=="wysiwyg"?30:0))+'px;'
-        )+'border:none 0px;display:table-cell;z-index:101;background:#404040;color:#fff;opacity:0.8;box-shadow: 3px 3px 8px #000000;');
+        )+'border:none 0px;display:table-cell;z-index:10001;background:#404040;color:#fff;opacity:0.8;box-shadow: 3px 3px 8px #000000;');
     if(cms_bgdiv) cms_bgdiv.style.visibility='visible';
 }
 function cms_editclose()
@@ -168,6 +169,7 @@ function cms_addons(wwid,tag)
 {
     var t="",key;
     for(key in cms_alladdon){
+        if(cms_alladdon[key].conf.substr(0,1)!='*'||cms_layoutonly!=null||tag=='var')
         t+="<img class='wysiwyg_icon' alt='<!"+tag+" "+key+">' id='"+wwid+":addons_"+key+"' title='"+htmlspecialchars(cms_alladdon[key].name)+"' data-search='"+htmlspecialchars(key+" "+cms_alladdon[key].name)+"' data-conf='"+htmlspecialchars(cms_alladdon[key].conf)+"' src='js/wysiwyg.js/"+escape("<!")+tag+" "+escape(key+">").replace(/\//g,"!2F!").replace(/\+/g,"!2B!")+"'>";
     }
     <?php if(!PHPPE::lib("CMS")->expert) { ?>
@@ -179,6 +181,7 @@ function cms_addonoptions(wwid)
 {
     var t="",key;
     for(key in cms_alladdon){
+        if(cms_alladdon[key].conf.substr(0,1)!='*'||cms_layoutonly!=null)
         t+="<option value='"+htmlspecialchars(key)+"'>"+htmlspecialchars(cms_alladdon[key].name?cms_alladdon[key].name:L(key))+"</option>";
     }
     return t.replace("\n","");
@@ -221,6 +224,7 @@ function cms_templater(wwid)
 function cms_layout(wwid,val,conf,w,h)
 {
     var g=cms_styleguide();
+    cms_layoutonly = true;
     var t="<div id='"+wwid+":conf' class='wysiwyg_conf confpanel' style='bottom:15px;' data-hook='cms_confhook' data-imghook='cms_imghook' data-linkhook='cms_linkhook'></div>";
     t+="<div id='"+wwid+":tools' class='wysiwyg_tools' style='bottom:15px;'>";
     t+="<div style='text-align:right;color:#fff;'><span id='"+wwid+":tools_min' onclick='cms_tools_min(this);' style='cursor:pointer;'>▼</span> ";
@@ -256,7 +260,10 @@ function cms_wysiwyg(wwid,val,conf,w,h)
     t+="<img class='wysiwyg_icon' alt='<!L>' id='"+wwid+":templater_L' title='"+L("Translation")+"' data-search='L' data-conf='label' src='js/wysiwyg.js/"+escape("<!L>")+"'>";
     t+="<img class='wysiwyg_icon' alt='<!date>' id='"+wwid+":templater_date' title='"+L("Localized date")+"' data-search='date' data-conf='expression' src='js/wysiwyg.js/"+escape("<!date>")+"'>";
     t+="<img class='wysiwyg_icon' alt='<!time>' id='"+wwid+":templater_time' title='"+L("Localized time")+"' data-search='time' data-conf='expression' src='js/wysiwyg.js/"+escape("<!time>")+"'>";
-    t+="<img class='wysiwyg_icon' alt='<!difftime>' id='"+wwid+":templater_date' title='"+L("Human readable time difference")+"' data-search='difftime' data-conf='expression' src='js/wysiwyg.js/"+escape("<!difftime>")+"'>";
+    t+="<img class='wysiwyg_icon' alt='<!difftime>' id='"+wwid+":templater_difftime' title='"+L("Human readable time difference")+"' data-search='difftime' data-conf='expression' src='js/wysiwyg.js/"+escape("<!difftime>")+"'>";
+<?php if(!PHPPE::lib("CMS")->expert) { ?>
+    t+="<small style='display:block;position:fixed;bottom:20px;color:#fff;'>"+L("help_templater")+"</small>";
+<?php } ?>
     t+="</div>";
     t+="<div id='"+wwid+":tools_guide' style='display:"+(g!=''?"block":"none")+";width:100%;height:"+h+"px;overflow:auto;color:#fff;'></div>";
     t+="<div id='"+wwid+":tools_fields' style='display:none;width:200px;height:"+h+"px;overflow:auto;'>"+cms_addons(wwid,"var")+"</div>";
@@ -375,13 +382,17 @@ function cms_confhook(evt,wwid,conf)
 {
     var cfg='',t,item;
     if(evt.target.alt!=null && evt.target.alt!=''){
-        var o,c=1;
+        var o,c=1,dc=null;
         t=evt.target.alt.substring(2,evt.target.alt.length-1).replace("(,","(-,").replace(/\,\,/g,",-,").replace("("," ").replace(")"," )").replace(/\,/g," ").replace(/[\ ]+/g," ").split(' ');
         if(evt.target.alt.substr(2,1)=='='){t[0]='=';t[1]=evt.target.alt.substring(3,evt.target.alt.length-1).replace(/[\\ \\n\\t]/mg,'');}
         else if(t[0]==null)t[0]=evt.target.alt.substring(2,evt.target.alt.length-1);
         if((t[0]=='var'||t[0]=='field'||t[0]=='widget'||t[0]=='cms')&&t[1]) o=document.getElementById(wwid+':addons_'+t[1]);
         if(o==null || !o.getAttribute("data-conf")) {c=0;o=document.getElementById(wwid+':templater_'+(t[0]=="="?"eval":t[0]));}
-        if(o!=null) cfg=(c?'addon ':'')+o.getAttribute("data-conf");
+        if(o!=null) {
+            dc=o.getAttribute("data-conf");
+            if(dc!=null && dc.substr(0,1)=='*') dc=dc.substr(1);
+            cfg=(c?'addon ':'')+dc;
+        }
     }
     if(!cfg){
         return "<small style='color:#808080;'>"+L('Not configurable')+'</small><?=(!PHPPE::lib("CMS")->expert?"<br><small>'+L(\"help_addon_\"+(t[0]==\"=\"?\"eval\":(t[0].substr(0,1)==\"/\"?t[0].substr(1):(t[0]==\"else\"?\"if\":t[0]))))+'</small>":"")?>';

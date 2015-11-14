@@ -11,16 +11,17 @@
 	"description_hu": "Tartalomszerkesztő a PHPPE Tartalom Szerver adatbázisához.",
 	"version": "3.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_cms.tgz" },
-	"conf": { "expert":"select(false=off,true=on)","revert":"select(false=on,true=off)", "purge":"select(false=on,true=off)" },
+	"conf": { "expert":"boolean","revert":"notboolean", "purge":"notboolean" },
 	"conf_en": { "expert":"Expert", "revert":"Keep history", "purge":"Purge saved history" },
-	"conf_hu": { "expert":"Haladó", "revert":"Vátozáskövetés", "purge":"Verziótakarítás" ,"on":"be","off":"ki"},
+	"conf_hu": { "expert":"Haladó", "revert":"Vátozáskövetés", "purge":"Verziótakarítás" },
 
 	"version_normalized": "3.0.0.0",
 	"type": "library",
 	"license": "LGPL-3.0+",
 
 	"require": {
-		"phppe": "3.*"
+		"phppe": "3.*",
+		"phppe/wysiwyg": "*"
 	},
 
 	"maintainer": { "name": "bzt" }

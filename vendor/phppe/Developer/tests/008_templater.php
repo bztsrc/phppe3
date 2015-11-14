@@ -17,7 +17,8 @@ if( PHPPE::_gt("test1") != "aaa\n<!include test2>\nbbb\n" ) {
 
 //! load and also parse the same template
 echo("Load and parse template: ");
-if( PHPPE::template("test1") != "aaaccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccd<span style='background:#F00000;color:#FEA0A0;padding:3px;'>W-TOOMNY:&nbsp;recursion limit exceeded</span>dde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\nbbb\n" ) {
+$a=PHPPE::template("test1");
+if( !preg_match("|^aaaccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccd<span style='background:#F00000;color:#FEA0A0;padding:3px;'>W-TOOMNY:&nbsp;([^<]+)</span>dde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\nbbb\n|ims",$a ) ) {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");
@@ -120,9 +121,17 @@ if( !preg_match("|<form name='a' action='([^']+)' method='post' enctype='multipa
 } else echo("OK\n");
 
 PHPPE::$l['dateformat']="Y-m-d";
+PHPPE::$l['testdate']="2001-02-03 04:05:06";
 date_default_timezone_set( "UTC" );
-echo("date and time tags: ");
-if( PHPPE::_t("<!date 1>") != "1970-01-01" || PHPPE::_t("<!time 1>") != "1970-01-01 00:00:01") {
+
+echo("date and time with string: ");
+if( PHPPE::_t('<!date L("testdate")>') != "2001-02-03" || PHPPE::_t('<!time L("testdate")>') != "2001-02-03 04:05:06") {
+	echo("Failed!\n");
+	return false;
+} else echo("OK\n");
+
+echo("date and time with timestamp: ");
+if( PHPPE::_t("<!date 1>") != "1970-01-01" || !preg_match("/1970-01-01 [0-9]+:00:01/",PHPPE::_t("<!time 1>"))) {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");

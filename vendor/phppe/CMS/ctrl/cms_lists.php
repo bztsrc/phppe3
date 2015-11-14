@@ -1,7 +1,8 @@
 <?php
+namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class CMS_Ctrl extends \PHPPE\App {
+class CMS extends \PHPPE\Ctrl {
 	public $lists;
 
 	function __construct()

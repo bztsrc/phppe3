@@ -208,7 +208,11 @@ class DB
 						throw new DBException(L("No right value")." #".$k.": ".$v[0]." ".$v[1]);
 					if(!in_array($v[1],["=","!=","<","<=",">",">=","LIKE","RLIKE","IS NULL","IS NOT NULL"]))
 						throw new DBException(L("Bad conditional")." #".$k.": ".$v[1]);
-					$d[]=$v[0]." ".$v[1].($v[2]!=""?" ".($v[2]=="?"?$v[2]:(PHPPE::db()->quote($v[1]=="LIKE"?PHPPE::like($v[2]):(is_array($v[2])||is_object($v[2])?json_encode($v[2]):$v[2])))):"");
+					$d[]=$v[0]." ".$v[1].
+					($v[2]!=""?" ".
+						($v[2]=="?"?$v[2]:
+							"'".str_replace(["\r","\n","\t","\x1a","\x00"],["\\r","\\n","\\t","\\x1a","\\x00"],addslashes($v[1]=="LIKE"?PHPPE::like($v[2]):(is_array($v[2])||is_object($v[2])?json_encode($v[2]):$v[2])))."'")
+					:"");
 				}
 			}
 			$this->wheres[] = "(".implode(" ".strtoupper($op)." ",$d).")";

@@ -13,7 +13,7 @@ if( empty($libs["Developer"]) || $libs["Developer"] != PHPPE::lib("Developer") )
 
 //add new libraries
 PHPPE::lib( "Test1", "Test Lib");
-PHPPE::lib( "Test2", "Test Lib 2", "Test1", new \Tests());
+PHPPE::lib( "Test2", "Test Lib 2", "Test1", new \PHPPE\App());
 
 //checks
 echo("Library load: ");
@@ -29,7 +29,7 @@ if( get_class(PHPPE::lib("Test1")) != "stdClass" ) {
 	echo("Failed to load class without instance!\n");
 	return false;
 } else
-if( get_class(PHPPE::lib("Test2")) != "Tests" ) {
+if( get_class(PHPPE::lib("Test2")) != "PHPPE\App" ) {
 	echo("Failed to load instanciated class!\n");
 	return false;
 } else echo("OK\n");

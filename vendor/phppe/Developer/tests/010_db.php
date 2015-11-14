@@ -27,6 +27,7 @@ if( \PHPPE\DB::select("users")->where("id=?") != "SELECT * FROM users WHERE id=?
 
 echo("complex where: ");
 if( \PHPPE\DB::select("users")->where([["name","=","?"],["email","=","?"]],"OR")->where([["id","=","?"],["active","=","1"]]) != "SELECT * FROM users WHERE (name = ? OR email = ?) AND (id = ? AND active = '1')" ) {
+echo(\PHPPE\DB::select("users")->where([["name","=","?"],["email","=","?"]],"OR")->where([["id","=","?"],["active","=","1"]]));
 	echo("Failed\n");
 	return false;
 } else echo ("OK\n");

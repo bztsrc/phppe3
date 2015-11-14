@@ -33,6 +33,11 @@ class Extensions {
 		//register module and menu
 		PHPPE::lib( "Extensions", "Extension Manager", "", $this );
 		PHPPE::menu( L("Extensions") ."@install", "extensions" );
+		return true;
+	}
+
+	function diag()
+	{
 	}
 
 	//look for error message in output
@@ -111,11 +116,12 @@ class Extensions {
 		//fallback to local, but without remote it's read only
 		else {
 			$t="{ \"name\": \"".PHPPE::e("","",L("configure remote access in Extensions"))."\" }";
-			$d=glob("vendor/phppe/*/composer.json"); $d[]="vendor/phppe/composer.json";
-			foreach($d as $v)
+			$d=glob("vendor/phppe/*"."/composer.json"); $d[]="vendor/phppe/composer.json";
+			foreach($d as $v) {
 				$j=json_decode(file_get_contents($v),true);
 				if(!empty($j['name']) && !empty($j['version']))
 					$t.=",{ \"id\": \"".$j['name']."\", \"version\": \"".$j['version']."\" }";
+			}
 		}
 		return $t;
 	}
@@ -126,39 +132,47 @@ class Extensions {
 		$F = ".tmp/.pkgs_".PHPPE::$client->lang;
 		if( !$skipcache && file_exists($F) && filemtime($F)+60*60 > time() )
 			$pkgs = file_get_contents($F);
+
 		if( empty($pkgs) )
 		{
 			$p=array();
-			$list = [ "https://raw.githubusercontent.com/bztphp/phppe3/master/", "http://phppe.org/" ];
+			$list = [ "http://phppe.org/", "https://raw.githubusercontent.com/bztsrc/phppe3/master/" ];
 			if(!empty(PHPPE::$core->repos)) $list=array_merge(PHPPE::$core->repos,$list);
 			foreach($list as $r)
 			{
-				$d = json_decode(PHPPE::get($r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang),true);
+				$d2 = file_get_contents($r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang);
+				$d = json_decode($d2,true);
+				PHPPE::log('D','Packages from repo: '.$r.' '.(empty($d2)?"404":json_last_error_msg()),"repo");
 				if(!empty($d) && !empty($d['packages'])) {
 					foreach($d['packages'] as $pkg=>$ver) {
 						//get latest
 						$v=array_keys($ver);
-						usort($v,function($a,$b){
+						usort($v,"version_compare"/*function($a,$b){
 							$A=explode(".",$a);
 							$B=explode(".",$b);
 							if($A[0]!=$B[0]) return intval($B[0])-intval($A[0]);
 							if($A[1]!=$B[1]) return intval($B[1])-intval($A[1]);
 							if($A[2]!=$B[2]) return intval($B[2])-intval($A[2]);
 							return intval($B[3])-intval($A[3]);
-						});
-						if($ver[$v[0]]['dist']['type']!='tar') continue;
+						}*/);
+						if($ver[$v[0]]['dist']['type']!='tar' || (isset($p[$pkg]['version']) && version_compare($p[$pkg]['version'],$v[0])>=0)) {
+							PHPPE::log('D','- [Skip] '.$pkg.' '.$v[0],"repo");
+							continue;
+						}
+						PHPPE::log('D','- [ OK ] '.$pkg.' '.$v[0],"repo");
 						$p[$pkg]['id']=$pkg;
 						$p[$pkg]['desc']=!empty($ver[$v[0]]['description_'.PHPPE::$client->lang])?$ver[$v[0]]['description_'.PHPPE::$client->lang]:$ver[$v[0]]['description'];
 						$p[$pkg]['name']=!empty($ver[$v[0]]['name_'.PHPPE::$client->lang])?$ver[$v[0]]['name_'.PHPPE::$client->lang]:(!empty($ver[$v[0]]['name_en'])?$ver[$v[0]]['name_en']:$ver[$v[0]]['name']);
 						$p[$pkg]['config']=!empty($ver[$v[0]]['conf'])?$ver[$v[0]]['conf']:"";
 						$p[$pkg]['conf']=!empty($ver[$v[0]]['conf_'.PHPPE::$client->lang])?$ver[$v[0]]['conf_'.PHPPE::$client->lang]:(!empty($ver[$v[0]]['conf_en'])?$ver[$v[0]]['conf_en']:"");
+						$p[$pkg]['help']=!empty($ver[$v[0]]['help_'.PHPPE::$client->lang])?$ver[$v[0]]['help_'.PHPPE::$client->lang]:(!empty($ver[$v[0]]['help_en'])?$ver[$v[0]]['help_en']:"");
 						$p[$pkg]['maintainer']=$ver[$v[0]]['maintainer']['name'];
 						$p[$pkg]['url']=$ver[$v[0]]['dist']['url'];
 						$p[$pkg]['depends']=array_keys($ver[$v[0]]['require']);
 						foreach(array("version","license","time","size","sha1","price","preview") as $f)
 							@$p[$pkg][$f]=$ver[$v[0]][$f];
-						if(empty($p[$pkg]["version"])) $p[$pkg]=$ver;
-						//force phppe/core configuration
+						if(empty($p[$pkg]["version"])) $p[$pkg]['version']=$v[0];
+						//force a minimal phppe/core configuration
 						if($pkg=="phppe" && empty($p[$pkg]['config']))
 							$p[$pkg]['config']=[
 							'db'=>'string(255,mysql:host=localhost;dbname=test@user:pass',
@@ -173,9 +187,12 @@ class Extensions {
 			//fuck, this fails...
 			//$pkgs=json_encode($p);
 			$pkgs=""; foreach($p as $v) $pkgs.=($pkgs?",":"").json_encode($v);
-			if( !empty($p) )
+			if( !empty($p) ) {
 				file_put_contents($F,$pkgs);
-		}
+			}
+			PHPPE::log('D','Packages to cache: '.$F.' ('.count($p).' extensions)',"repo");
+		} else
+			PHPPE::log('D','Packages from cache: '.$F,"repo");
 
 		return $pkgs;
 	}
@@ -227,8 +244,12 @@ class Extensions {
 	}
 
 	//install a tarball via ssh to remote server
-	function install($param)
+	function install($param,$instdep=true)
 	{
+		$out="";
+		if(strtolower($_REQUEST['item'])==strtolower($param))
+			$param=$_REQUEST['item'];
+
 		list($url,$dir)=explode("#",$param);
 		if(empty($dir)) $dir="phppe";
 		if( !PHPPE::$user->has("install") ) {
@@ -236,6 +257,29 @@ class Extensions {
 			return "PHPPE-E: ".L("Access denied");
 		}
 
+		//installation check
+		$inst=json_decode("[".$this->getinstalled()."]",true);
+		$instidx=[];
+		foreach($inst as $i) if(!empty($i['id'])) $instidx[strtolower($i['id'])]=$i['version'];
+		//also install dependencies if this is the first install
+		if($instdep && empty($instidx[strtolower($dir)])){
+			//build dependency tree
+			$pkg=[];
+			$pkgs=json_decode("[".preg_replace("/,\"preview\":\"[^\"]+\"/","",$this->getpkgs())."]",true);
+			foreach($pkgs as $p) {
+				if(strtolower($p['id'])==strtolower($dir)) $pkg=$p;
+				$pkgidx[strtolower($p['id'])]=$p;
+			}
+			//recursively install dependencies
+			if(is_array($pkg['depends']))
+			foreach($pkg['depends'] as $d){
+				if(empty($pkgidx[strtolower($d)]))
+					return "PHPPE-E: ".sprintf(L("Failed dependency %s for %s"),$d,$url);
+				if(empty($instidx[strtolower($d)])) {
+					$out.=$this->install($pkgidx[strtolower($d)]['url']."#".$pkgidx[strtolower($d)]['id'],false)."\n----------------------------------------\n";
+}
+			}
+		}
 		//check for remote configuration
 		if( empty(PHPPE::$user->data['remote']['identity']) || empty(PHPPE::$user->data['remote']['user']) || empty(PHPPE::$user->data['remote']['host']) || empty(PHPPE::$user->data['remote']['path']) )
 			return "PHPPE-E: ".L("configure remote access in Extensions");
@@ -257,38 +301,41 @@ class Extensions {
 			if( !empty($ca) )
 				fwrite($p[0],$ca);
 			fclose($p[0]);
-			$r=explode("\n",trim(stream_get_contents($p[1])));
+			$r=trim(stream_get_contents($p[1]));
 			fclose($p[1]);
 			proc_close($pr);
 			//run diagnostics to check newly created file's access rights
 			$cmd="ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
 				(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
 				" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-				" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag\;sudo php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
+				" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
 			PHPPE::log('D',$cmd,"extensions");
 			ob_start();
 			passthru($cmd);
-			ob_get_clean();
+			$r=explode("\n",$r."\n\n".ob_get_clean());
 		} else $r=array();
 		unlink($idfile);
 		if( Extensions::iserr($r[0]) || Extensions::iserr($r[1]) || Extensions::iserr($r[2]) ) {
 			foreach($r as $k=>$v) if(strpos($v,".rootca")!==false) unset($r[$k]);
 			PHPPE::log('E',"Failed to install ".$url." to ".$this->getsiteurl().", ".implode(" ",$r),"extensions");
-			return "PHPPE-E: ".sprintf(L("Failed to install %s"),$url)."\n\n".implode("\n",$r);
+			return $out."PHPPE-E: ".sprintf(L("Failed to install %s"),$url)."\n\n".implode("\n",$r);
 		} else {
-			foreach($r as $k=>$v)
+			$c=0;
+			foreach($r as $k=>$v) {
 				if($v[strlen($v)-1]=="/"||strpos($v,".rootca")!==false)
 					unset($r[$k]);
 				else if($v[0]=="x" && $v[1]==" ") $r[$k]="vendor/".$dir."/".substr($v,2);
-			PHPPE::log('A',"Installed ".$url." to ".$this->getsiteurl().", ".count($r)." files".(PHPPE::$core->runlevel>1?": ".implode(" ",$r):""),"extensions");
-			return "PHPPE-I: ".sprintf(L("Installed %d files from %s"),count($r),$url)."\n\n".implode("\n",$r);
+				if(substr($r[$k],0,6)=="vendor"&&strpos($r[$k],"DIAG-")===false) $c++;
+			}
+			PHPPE::log('A',"Installed ".$url." to ".$this->getsiteurl().", ".($c+0)." files".(PHPPE::$core->runlevel>1?": ".implode(" ",$r):""),"extensions");
+			return $out."PHPPE-I: ".sprintf(L("Installed %d files from %s"),$c+0,$url)."\n\n".implode("\n",$r);
 		}
 	}
 
 	//remove files specified in a tarball via ssh from remote server
 	function uninstall($param)
 	{
-		list($url,$dir)=explode("#",$param);
+		list($url,$dir)=explode("#",$_REQUEST['item']);
 		if(empty($dir)) $dir="phppe";
 		if( !PHPPE::$user->has("install") ) {
 			PHPPE::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
@@ -318,13 +365,12 @@ class Extensions {
 			if( !empty($ca) )
 				fwrite($p[0],$ca);
 			fclose($p[0]);
-			$r=explode("\n",trim(stream_get_contents($p[1])));
+			$r=trim(stream_get_contents($p[1]));
 			fclose($p[1]);
 			proc_close($pr);
-		} else $r=array();
+		} else $r="";
 		//extra cleanup when removing PHPPE Pack
 		if($dir=="phppe" || $dir=="phppe/core") {
-			ob_start();
 			//remove empty additional directories
 			$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
 				(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
@@ -336,17 +382,32 @@ class Extensions {
 					escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/phppe/GPIO")." ".
 					"2>&1";
 			PHPPE::log('D',$cmd,"extensions");
+			ob_start();
 			passthru($cmd);
-			echo("\nPHPPE-I: re-creating default files with diag\n");
-			//call diag mode to create default files
+			$r.="\n".trim(ob_get_clean());
+		}
+		if($dir=="phppe/ClassMap") {
+			//remove empty additional directories
 			$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
 				(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
 				" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-				" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
+				" rm -vf ".
+					escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/autoload.php")." ".
+					"2>&1";
 			PHPPE::log('D',$cmd,"extensions");
+			ob_start();
 			passthru($cmd);
-			$r=array_merge($r,explode("\n",trim(ob_get_clean())));
+			$r.="\n".trim(ob_get_clean());
 		}
+		//call diag mode to create default files
+		$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
+			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
+			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
+			" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
+		PHPPE::log('D',$cmd,"extensions");
+		ob_start();
+		passthru($cmd);
+		$r=explode("\n",$r."\n\n".trim(ob_get_clean()));
 		unlink($idfile);
 		if( Extensions::iserr($r[0]) || Extensions::iserr($r[1]) || Extensions::iserr($r[2]) ) {
 			foreach($r as $k=>$v) if(strpos($v,".rootca")!==false) unset($r[$k]);
@@ -357,7 +418,7 @@ class Extensions {
 			foreach($r as $k=>$v) {
 				if(strpos($v,".rootca")!==false) unset($r[$k]);
 				elseif(substr($v,0,strlen(PHPPE::$user->data['remote']['path']))==PHPPE::$user->data['remote']['path']) $r[$k]=substr($v,strlen(PHPPE::$user->data['remote']['path'])+1);
-				if(substr($r[$k],0,6)=="vendor") $c++;
+				if(substr($r[$k],0,6)=="vendor"&&strpos($r[$k],"DIAG-")===false) $c++;
 			}
 			PHPPE::log('A',"Uninstalled ".$url." ".$this->getsiteurl().", ".($c+0)." files".(PHPPE::$core->runlevel>1?": ".implode(" ",$r):""),"extensions");
 			if( explode(".",basename($url))[0] == "phppe3_extmgr" ) {

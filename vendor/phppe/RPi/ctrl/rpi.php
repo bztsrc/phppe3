@@ -1,7 +1,8 @@
 <?php
+namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class RPi_Ctrl extends \PHPPE\App {
+class RPi extends \PHPPE\Ctrl {
 	public $pins;
 	public $values;
 

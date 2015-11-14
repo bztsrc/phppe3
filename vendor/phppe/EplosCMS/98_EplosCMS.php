@@ -32,6 +32,8 @@ use PHPPE\Core as PHPPE;
  */
 class EplosCMS extends App
 {
+	public $name;
+	public $pagesdir;
 	static public $params = [];
 	static public $page;
 
@@ -42,7 +44,7 @@ class EplosCMS extends App
 		//! defaults
 		if(empty($cfg["sqldir"]))   $cfg["sqldir"] = "data/temp";
 		if(empty($cfg["pagesdir"])) $cfg["pagesdir"] = "pages";
-
+		$this->pagesdir=$cfg["pagesdir"];
 		//! get page name from url
 		$c = $_SERVER['SCRIPT_NAME'];
 		@list($d) = explode("?",$_SERVER['REQUEST_URI']);
@@ -89,6 +91,7 @@ class EplosCMS extends App
 		}
 		//reverse the parameters as they were popped in reverse order
 		self::$params = @array_reverse(self::$params);
+		return true;
 	}
 
 	/**

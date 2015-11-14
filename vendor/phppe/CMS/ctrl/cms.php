@@ -1,4 +1,5 @@
 <?php
+namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
 class Page extends \PHPPE\Model {
@@ -9,7 +10,7 @@ class View extends \PHPPE\Model {
 	static $_table="views";
 }
 
-class CMS_Ctrl extends \PHPPE\App {
+class CMS extends \PHPPE\Ctrl {
 	public $param;
 	public $type;
 	public $page;
@@ -109,7 +110,7 @@ class CMS_Ctrl extends \PHPPE\App {
 				foreach($_SESSION['cms_page'] as $k=>$v)
 					$this->page->$k=$v;
 				if(PHPPE::$core->action=="pagemeta"||PHPPE::$core->action=="pageadd") {
-					$this->layouts = PHPPE::query("id,name","views","","","id ASC");
+					$this->layouts = PHPPE::query("id,name","views","meta!='SITEBUILD'","","id ASC");
 					foreach($this->layouts as $k=>$v) {
 						if(empty($v['name'])||$v['name']=="null") $v['name']=$v['id'];
 						$this->layouts[$k]['name']=L($v['name']);
