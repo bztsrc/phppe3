@@ -25,5 +25,6 @@
 
 	"maintainer": { "name": "bzt" },
 
+	"scripts":{"post-install-cmd":"sudo php public/index.php --diag"}
 	"scripts":{"post-update-cmd":"sudo php public/index.php --diag"}
 }
