@@ -3450,8 +3450,7 @@ namespace PHPPE\AddOn {
 		{
 			$B = 'o.className=o.className.replace(" errinput,"")';
 			Core::js("pe_cs(n,e)", "if(n!=null){n.className=n.className.replace(' errinput','');if(e!=null)n.className+=' errinput';}");
-			Core::js("pe_cd(o,f)", "var d=new Date(Date.UTC(o[f+':y'].value,o[f+':m'].value-1,o[f+':d'].value,o[f+':h']?o[f+':h'].value:0,o[f+':i']?o[f+':i'].value:0,0));pe_cs(o[f+':y']);pe_cs(o[f+':m']);pe_cs(o[f+':d']);pe_cs(o[f+':h']);pe_cs(o[f+':i']);
-				if(!d||d.getUTCDate()!=o[f+':d'].value){pe_cs(o[f+':y'],1);pe_cs(o[f+':m'],1);pe_cs(o[f+':d'],1);}");
+			Core::js("pe_cd(o,f)", "var d=new Date(Date.UTC(o[f+':y'].value,o[f+':m'].value-1,o[f+':d'].value,o[f+':h']?o[f+':h'].value:0,o[f+':i']?o[f+':i'].value:0,0));pe_cs(o[f+':y']);pe_cs(o[f+':m']);pe_cs(o[f+':d']);pe_cs(o[f+':h']);pe_cs(o[f+':i']);if(!d||d.getUTCDate()!=o[f+':d'].value){pe_cs(o[f+':y'],1);pe_cs(o[f+':m'],1);pe_cs(o[f+':d'],1);}");
 			$t = $this;
 			$a = $t->args;
 			$b = $t->attrs;

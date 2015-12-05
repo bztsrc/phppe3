@@ -76,6 +76,6 @@ done
 # generate packages.json with repo.php
 cd ../../..
 rm packages.json
-php tools/repo.php >/dev/null
+php vendor/phppe/developer/src/repo.php >/dev/null
 cat packages.json | sed 's/http:\/\/phppe.org\/phppe3_/https:\/\/raw.githubusercontent.com\/bztsrc\/phppe3\/master\/phppe3_/g' >packages.json.github
 cd ..
