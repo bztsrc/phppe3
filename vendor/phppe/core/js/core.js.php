@@ -391,30 +391,34 @@ function boolean_open(name,value,type,args)
 	value=value==true||value=="true"||value==1||value=="1"?"true":"false";
 	t+="<input type='hidden' name='"+name+"' value='"+value+"' data-args='"+args.join(",")+"'>";
 	t+="<span onclick='boolean_"+(type=="notboolean"?"not":"")+"on(this);' ";
-	t+="style='margin:2px 0px 2px 2px;color:#"+(type=="boolean"&&value=="true"||type=="notboolean"&&value!="true"?"fff":"000")+";border-color:#DADADA;";
+	t+="style='margin:2px 0px 2px 2px;color:#"+(type=="boolean"&&value=="true"||type=="notboolean"&&value!="true"?"c0ffc0":"000")+";border-color:#DADADA;";
 	t+="border-top-left-radius:5px;border-bottom-left-radius:5px;box-shadow:0 1px 3px #999;text-shadow:0 -1px 1px #808080;";
-	t+="background:#"+(type=="boolean"&&value=="true"||type=="notboolean"&&value!="true"?"00FF00 linear-gradient(to top, #00FF00, #008000)":"F0F0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)")+";";
+	t+="background-color:#"+(type=="boolean"&&value=="true"||type=="notboolean"&&value!="true"?"00c000; background-image:linear-gradient(to top, #00FF00, #008000)":"F0F0F0; background-image:linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)")+";";
 	t+="cursor:pointer;padding:1px;'>&nbsp;&nbsp;"+L(args[1]!=null&&args[1]!=""?args[1]:"Yes")+"&nbsp;&nbsp;</span>";
 	t+="<span onclick='boolean_"+(type=="notboolean"?"not":"")+"off(this);' ";
-	t+="style='margin:2px 2px 2px 0px;color:#"+(type=="boolean"&&value!="true"||type=="notboolean"&&value=="true"?"fff":"000")+";border-color:#DADADA;";
+	t+="style='margin:2px 2px 2px 0px;color:#"+(type=="boolean"&&value!="true"||type=="notboolean"&&value=="true"?"ffc0c0":"000")+";border-color:#DADADA;";
 	t+="border-top-right-radius:5px;border-bottom-right-radius:5px;box-shadow:0 1px 3px #999;text-shadow:0 -1px 1px #808080;";
-	t+="background:#"+(type=="boolean"&&value!="true"||type=="notboolean"&&value=="true"?"FF0000 linear-gradient(to top, #FF0000, #800000)":"F0F0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)")+";";
+	t+="background-color:#"+(type=="boolean"&&value!="true"||type=="notboolean"&&value=="true"?"c00000; background-image:linear-gradient(to top, #FF0000, #800000)":"F0F0F0; background-image:linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)")+";";
 	t+="cursor:pointer;padding:1px;'>&nbsp;&nbsp;"+L(args[2]!=null&&args[2]!=""?args[2]:"No")+"&nbsp;&nbsp;</span>";
 	return t;
 }
 function boolean_on(o) {
 	o.previousSibling.value='true';
-	o.style.color='#fff';
-	o.style.background='#00FF00 linear-gradient(to top, #00FF00, #008000)';
+	o.style.color='#c0ffc0';
+	o.style.backgroundColor='#00c000';
+	o.style.backgroundImage='linear-gradient(to top, #00FF00, #008000)';
 	o.nextSibling.style.color='#000';
-	o.nextSibling.style.background='#F0F0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)';
+	o.nextSibling.style.backgroundColor='#F0F0F0';
+	o.nextSibling.style.backgroundImage='linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)';
 }
 function boolean_off(o) {
 	o.previousSibling.previousSibling.value='false';
-	o.style.color='#fff';
-	o.style.background='#FF0000 linear-gradient(to top, #FF0000, #800000)';
+	o.style.color='#ffc0c0';
+	o.style.backgroundColor='#c00000';
+	o.style.backgroundImage='linear-gradient(to top, #FF0000, #800000)';
 	o.previousSibling.style.color='#000';
-	o.previousSibling.style.background='#F0F0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)';
+	o.previousSibling.style.backgroundColor='#F0F0F0';
+	o.previousSibling.style.backgroundImage='linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%)';
 }
 function boolean_noton(o) {
 	boolean_on(o);

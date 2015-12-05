@@ -290,21 +290,28 @@ function cms_wysiwyg(wwid,val,conf,w,h)
 function cms_generateguide(wwid)
 {
     var i,src=document.getElementById(wwid+':tools_guide_').getElementsByTagName('DIV');
-    var dst=document.getElementById(wwid+':tools_guide');
+    var t="",dst=document.getElementById(wwid+':tools_guide');
     dst.innerHTML="";
     for(i=0;i<src.length;i++) {
         var tid=src[i].getAttribute('data-id');
         if(tid==null||tid=='') continue;
-        var div=document.createElement('div');
+
+        t+="<img class='styleguide_icon wysiwyg_icon' data-search='"+htmlspecialchars(tid)+"'";
+        t+=" src='js/wysiwyg.js/"+escape(tid).replace(/\//g,"!2F!").replace(/\+/g,"!2B!")+"'";
+        t+=" onmouseover='popup_open(this,\""+wwid+':tools_guide_'+i+"\");' style='cursor:pointer;'>";
         src[i].setAttribute('id',wwid+':tools_guide_'+i);
         src[i].style.display='none';
+/*
+        var div=document.createElement('div');
         div.innerHTML=tid;
         div.setAttribute('onmouseover','popup_open(this,"'+wwid+':tools_guide_'+i+'");');
         div.setAttribute('onmousedown','cms_insertguide("'+wwid+'",'+i+');');
         div.setAttribute('data-search',tid);
         div.setAttribute('style','cursor:pointer;');
         dst.appendChild(div);
+*/
     }
+    dst.innerHTML=t;
     <?php if(!PHPPE::lib("CMS")->expert) {?>
     var sm=document.createElement('small');
     sm.innerHTML=L('help_guide');
@@ -343,16 +350,8 @@ function cms_tools_search(inp,wwid)
     res.innerHTML="";
     cms_tools_switch(wwid+":tools_results");
     if(inp.value!='') {
-        var i,haystack=document.getElementById(wwid+':tools_guide').getElementsByTagName('DIV');
+        var i,haystack;
         var re=new RegExp(inp.value,"i");
-        for(i=0;i<haystack.length;i++){
-            var s=haystack[i].getAttribute('data-search');
-            if(s!=null && s!='' && haystack[i].parentNode.id!=wwid+':tools_results' && (s.indexOf(inp.value)>-1||s.match(re))){
-             var style=haystack[i].cloneNode();
-             style.innerHTML='☼ '+s;
-             res.appendChild(style);
-            }
-        }
         haystack=document.getElementById(wwid+':tools_container').getElementsByTagName('IMG');
         for(i=0;i<haystack.length;i++){
             var s=haystack[i].getAttribute('data-search');

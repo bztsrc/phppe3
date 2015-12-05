@@ -93,6 +93,7 @@ function wysiwyg_refreshtools(evt,id)
 {
     if(!evt)evt=window.event;
     var o=evt.target;
+console.log(evt);
     wysiwyg_selected(id,evt);
     var tools=document.getElementById(id+':tools');
     var conf=document.getElementById(id+':conf');
@@ -337,6 +338,7 @@ function wysiwyg_new(fn,fv,cfg)
     var hooks=wysiwyg_customhooks+(wysiwyg_customhooks!=''&&conf!=null&&conf[0]!=null?",":"")+(conf!=null&&conf[0]!=null?conf[0]:"");
     var custom=document.createElement('div'); custom.setAttribute('id',fn+':custom'); custom.setAttribute('style','display:'+(hooks!=''?'inline':'none')+';'); custom.setAttribute('draggable','false');
 	edit.setAttribute("onmouseup",'wysiwyg_refreshtools(event,"'+fn+'");');edit.setAttribute('onkeyup','wysiwyg_setvalue("'+fn+'");');edit.setAttribute("contentEditable",true);edit.setAttribute("designMode","on");
+    edit.setAttribute("ondrop",'wysiwyg_refreshtools(event,"'+fn+'");');
 	//container.setAttribute('style','width:'+source.offsetWidth+'px;height:'+(source.offsetHeight+36)+'px;');
 	edit.setAttribute('onmouseout','wysiwyg_setvalue("'+fn+'");');
 	link.appendChild(link_href);
@@ -393,6 +395,11 @@ function wysiwyg_new(fn,fv,cfg)
 
     wysiwyg_tableresize(null,table);
     wysiwyg_togglesrc(fn);
+}
+function wysiwyg_drop(evt,id)
+{
+    console.log(evt);
+    console.log(id);
 }
 function wysiwyg_update()
 {
