@@ -1,7 +1,7 @@
 {
-	"name": "bztphp/phppe",
+	"name": "bztsrc/phppe",
 	"description": "Meta package for PHP Portal Engine. Minimalistic, scalable and secure PHP framework and CMS with tons of features, ideal on a Raspberry Pi.",
-	"keywords": [ "php", "cms", "framework", "kiss", "opensource", "wysiwyg", "raspberry", "rpi" ],
+	"keywords": [ "php", "cms", "framework", "kiss", "security", "opensource", "wyswyg", "raspberry", "raspberry pi", "rpi", "arm" ],
 
 	"version": "3.0.0",
 	"version_normalized": "3.0.0.0",
@@ -10,7 +10,7 @@
 	"homepage": "http://phppe.org/",
 
 	"repositories":[
-		{"type":"composer","url":"https://raw.githubusercontent.com/bztphp/phppe3/master/"}
+		{"type":"composer","url":"https://raw.githubusercontent.com/bztsrc/phppe3/master/"}
 	],
 
 	"require": {
@@ -18,7 +18,7 @@
 	},
 
 	"support": {
-		"source": "http://phppe.org/phppe3_devel.tgz",
+		"source": "https://github.com/bztsrc/phppe3/",
 		"wiki": "http://phppe.org/phppe3.html"
 	},
 

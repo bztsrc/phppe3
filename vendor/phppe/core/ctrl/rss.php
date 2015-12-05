@@ -1,7 +1,7 @@
 <?php
-namespace PHPPE;
+namespace PHPPE\Ctrl;
 
-class RSS_Ctrl extends App {
+class RSS extends \PHPPE\Ctrl {
 	public $mimetype="text/xml";
 	public $ttl=100;
 	public $results=[];

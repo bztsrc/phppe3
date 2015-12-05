@@ -1,10 +1,11 @@
 <?php
-namespace PHPPE;
+namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class index_Ctrl extends \PHPPE\App {
+class index extends \PHPPE\Ctrl {
 	public $obj;
 	public $strings;
+	public $_favicon="images/phppe.png";
 
 	function __construct()
 	{

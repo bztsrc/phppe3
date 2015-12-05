@@ -1,7 +1,8 @@
 <?php
-namespace PHPPE;
+namespace PHPPE\Ctrl;
+use PHPPE\Core as PHPPE;
 
-class Scripts extends App {
+class Scripts extends \PHPPE\Ctrl {
 
 	function action_daily($item="")
 	{

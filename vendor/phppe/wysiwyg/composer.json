@@ -10,9 +10,5 @@
 	"type": "library",
 	"license": "LGPL-3.0+",
 
-	"require": {
-		"phppe": "3.*"
-	},
-
 	"maintainer": { "name": "bzt" }
 }

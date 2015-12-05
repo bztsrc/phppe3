@@ -42,7 +42,22 @@ This 64k bytes of PHP code will give you:
 Requirements
 ------------
 
-At least PHP 5.5 (5.6 recommended). If you also install Pack and CMS Extensions, no more than 256k disk space needed.
+At least PHP 5.5 (5.6 recommended). If you install the full environment (with Pack, CMS and Extensions), no more than 768k disk space needed.
+
+Installation with Packagist
+---------------------------
+1. Create a new project
+
+    ``` sh
+    $ composer create-project "bztsrc/phppe"
+    ```
+
+2. If you want the full environment, also install PHPPE Pack (~80kb) with
+
+    ``` sh
+    $ composer require "phppe"
+    ```
+
 
 Installation without Packagist
 ------------------------------
@@ -58,7 +73,7 @@ For detailed instructions and alternatives see [documentation](http://phppe.org/
 2. Download the framework (networkless alternative: copy it from the documentation and paste it into this command: `cat >public/index.php`)
 
     ``` sh
-    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/public/index.php >public/index.php
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
     ```
 
 3. Run diagnostics mode to extract directory structure (note that root privilege is only required for chown and chgrp calls)
@@ -67,30 +82,16 @@ For detailed instructions and alternatives see [documentation](http://phppe.org/
     $ sudo php public/index.php --diag
     ```
 
-4. If you want additional features, install PHPPE Pack (~80kb) with
+4. If you want the full environment, also install PHPPE Pack (~80kb) with
 
     ``` sh
     $ composer update
     ```
 
-    or
+    or without even Composer
 
     ``` sh
-    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
-    ```
-
-Installation with Packagist
----------------------------
-1. Create a new project
-
-    ``` sh
-    $ composer create-project "bztphp/phppe"
-    ```
-
-2. If you want additional features, install PHPPE Pack (~80kb) with
-
-    ``` sh
-    $ composer require "phppe"
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
     ```
 
 Content Management
@@ -102,7 +103,7 @@ This single file also serves as a Content Server. You can install the CMS Conten
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
 One CMS can feed several Content Servers. See [documentation](http://phppe.org/phppe3.html#contents) for more details on load balancing.
 
@@ -115,7 +116,7 @@ If you want a web based interface for extension management, install
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
 
 This will give you the standard webadmin feeling you're used to, but unlike the competition, works in a secure way.
 
@@ -128,18 +129,18 @@ Unit tests (over 100) and source are included in the Developer package
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztphp/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
 
-You can also use [Packagist](https://packagist.org/packages/bztphp/phppe) to install the whole development environment from ground up (including core extensions and tarballs):
+You can also use [Packagist](https://packagist.org/packages/bztsrc/phppe) to install the whole repository from ground up (including core extensions and tarballs):
 
-    $ composer create-project "bztphp/phppe:dev-master"
+    $ composer create-project "bztsrc/phppe:dev-master"
 
 Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
 
 License
 -------
 
-PHPPE Core, PHPPE Pack as well as PHPPE CMS are free and OpenSource softwares, licensed under [LGPL-3.0+](http://www.gnu.org/licenses/). See vendor/phppe/LICENSE for details.
+PHPPE Core, PHPPE Pack, PHPPE CMS as well as PHPPE Extensions are free and OpenSource softwares, licensed under [LGPL-3.0+](http://www.gnu.org/licenses/). See vendor/phppe/LICENSE for details.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published

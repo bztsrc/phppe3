@@ -1,7 +1,7 @@
 <?php
 /**
  *  PHP Portal Engine v3.0.0
- *  https://github.com/bztphp/phppe3/
+ *  https://github.com/bztsrc/phppe3/
  *
  *  Copyright LGPL 2015 bzt
  *
@@ -39,15 +39,15 @@ function minify( $data, $type = "css" ) {
 	$new = ""; $l=strlen($data);
 	for($i=0;$i<strlen($data);$i++) {
 		if($data[$i]=='/' && $data[$i+1]=='*') { $i+=2; while($i<$l&&!($data[$i-1]=='*'&&$data[$i]=='/'))$i++; continue; }
-		if($type == "js") {
+		if($type != "css") {
 			if($data[$i]=='/' && $data[$i+1]=='/' && $data[$i-1]!=':') { $i+=2; while($i<$l&&!($data[$i]=="\n"||$data[$i]=="\r"))$i++; continue; }
 			if($data[$i]=='/' && ($new[strlen($new)-1]=='='||$new[strlen($new)-1]=='(')) { while($i+1<$l&&($data[$i+1]!='/'||$data[$i]=="\\"))$new.=$data[$i++]; $new.=$data[$i]; continue; }
 		}
 		if($data[$i]=='"' || $data[$i]=="'") { $s=$data[$i]; $new.=$s; $i++; while($i<$l&&($data[$i]!=$s||$data[$i-1]=="\\"))$new.=$data[$i++]; $new.=$s; continue; }
 		if($data[$i]==" " || $data[$i]=="\t" || $data[$i]=="\r" || $data[$i]=="\n") {
 			$o=$data[$i];
+			//! I know I could've used in_array(), but a couple of inline character equals are way much faster
 			while($i<$l && ($data[$i]==" " || $data[$i]=="\t" || $data[$i]=="\r" || $data[$i]=="\n"))$i++;$i--;
-			//if(($o=="\n"||$o=="\r")&&$data[$i+1]!='{'&&!empty($new)&&!in_array($new[strlen($new)-1],['[','(',';',',','?',':','{','}','|','&','='])) $new.=";";
 			if($new&&preg_match("/[a-zA-Z0-9\_]/",$new[strlen($new)-1])&&preg_match('/[a-zA-Z0-9\.\$\_]/',$data[$i+1])&&$data[$i]!="\n"&&$data[$i]!="\r")
 				$new.=" ";
 			continue;

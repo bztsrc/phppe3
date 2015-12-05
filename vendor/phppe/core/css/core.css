@@ -5,33 +5,38 @@ TD {padding:2px;}
 TD.row0 {background:#E8E8E8;}
 TD.row1 {background:#F8F8F8;}
 
+.errinput {
+    background:#FFA0A0 !important;
+}
+
 /* PE Panel */
 #pe_p {
 }
-/* PE Panel: menu */
+/* menu */
 #pe_p .menu {
 }
-/* PE Panel: inactive menu item */
+/* inactive menu item */
 #pe_p .menu_i {
 }
-/* PE Panel: active menu item */
+/* active menu item */
 #pe_p .menu_a {
 }
-/* PE Panel: drop down submenu */
+/* drop down submenu */
 #pe_p .sub {
 }
-/* PE Panel: menu item in submenu */
+/* menu item in submenu */
 #pe_p LI {
 }
-/* PE Panel: selected menu item */
+/* selected menu item */
 #pe_p LI:hover {
 }
-/* PE Panel: dock */
-#pe_p .dock {
+/* status bar */
+#pe_p .stat {
 }
 
 /* Table of Contents */
 .toc {
+    z-index:998;
     float:right;
     margin:5px;
     padding:5px;
@@ -41,49 +46,128 @@ TD.row1 {background:#F8F8F8;}
 }
 
 /* Calendar classes */
-.calendar_div {
+.cal_icon {
+    cursor:pointer;
+    vertical-align:middle;
+}
+.cal_div {
     background: #ffffff;
     border: solid 1px #808080;
     padding: 3px 3px 3px 3px;
     box-shadow: 3px 3px 8px #000000;
     text-align:center;
 }
-.calendar_table {
+.cal_table {
     border-collapse: separate;
     border-spacing: 2px;
 }
-.calendar_bg {
+.cal_bg {
     background:#808080;
     opacity: 0.2;
 }
-.calendar_headerbg {
+.cal_headerbg {
 }
-.calendar_header {
+.cal_header {
     background:#A0A0A0;
 }
-.calendar_footer {
+.cal_footer {
     background:#F0F0F0;
 }
-.calendar_empty {
+.cal_empty {
     background:#F0F0F0;
     border:solid 1px transparent;
 }
-.calendar_workday {
+.cal_workday {
     background:#D0D0D0;
     border:solid 1px transparent;
 }
-.calendar_today {
+.cal_today {
     border:solid 1px #FF0000 !important;
 }
-.calendar_selected {
+.cal_selected {
     border:solid 1px transparent;
     background:#8080FF;
 }
-.calendar_weekend {
+.cal_weekend {
     border:solid 1px transparent;
     background:#D0B0B0;
 }
-.calendar_week {
+.cal_week {
     color:#A0A0A0;
     font-style:italic;
+}
+
+/* Responsive tables */
+.resptable_pager {
+    text-align:right;
+}
+.resptable_pager SPAN {
+    padding: 0px 5px 0px 5px;
+}
+.resptable_button_inactive {
+    color:#808080;
+}
+.resptable_button {
+    cursor:pointer;
+}
+
+/* Sitebuild specific */
+.button,BUTTON {
+    background:linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);
+    display: inline-block;
+    padding: 5px 10px 6px;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px #999;
+    text-shadow: 0 -1px 1px #808080;
+    border-bottom: 1px solid #808080;
+    position: relative;
+    cursor: pointer;
+}
+.modal {
+    position:fixed;
+    display:block;
+    z-index:1001;
+    background:#404040;
+    color:#fff;
+    opacity:0.8;
+    box-shadow: 3px 3px 8px #000000;
+    overflow:auto;
+}
+.mosaicwide {
+    min-height:10px;
+    width:98%;
+    display:block;
+    float:left;
+    margin:5px;
+    padding:5px;
+    background:#F0F0F0;
+    box-shadow: 3px 3px 8px #000000;
+}
+.mosaic {
+    min-width:100px;
+    min-height:100px;
+    display:block;
+    float:left;
+    margin:5px;
+    padding:5px;
+    background:#F0F0F0;
+    box-shadow: 3px 3px 8px #000000;
+}
+.splitmosaic DIV.mosaicbox {
+    min-width:100px;
+    min-height:100px;
+    display:block;
+    float:left;
+    margin:5px;
+    padding:5px;
+    background:#F0F0F0;
+    box-shadow: 3px 3px 8px #000000;
+}
+.sidebar {
+    width:200px;
+    padding:5px;
+    background:#F0F0F0;
 }

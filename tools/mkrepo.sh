@@ -1,1 +1,1 @@
-../vendor/phppe/Developer/src/mkrepo.sh
+../vendor/phppe/developer/src/mkrepo.sh

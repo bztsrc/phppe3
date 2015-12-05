@@ -1,7 +1,7 @@
 <?php
 /**
  *  PHP Portal Engine v3.0.0
- *  https://github.com/bztphp/phppe3/
+ *  https://github.com/bztsrc/phppe3/
  *
  *  Copyright LGPL 2015 bzt
  *

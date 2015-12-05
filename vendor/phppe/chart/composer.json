@@ -1,0 +1,17 @@
+{
+	"name": "phppe/Chart",
+	"name_en": "Chart generator",
+	"name_hu": "Grafikon generáló",
+	"keywords": [ "Content" ],
+	"keywords_hu": [ "Tartalom" ],
+
+	"description": "Generates different charts in png as dynamic asset.",
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_chart.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

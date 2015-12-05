@@ -1,0 +1,14 @@
+{
+	"name": "phppe/ClassMap",
+	"name_en": "PHPPE ClassMap",
+
+	"description": "Very lightweight, PHP Composer comptible, PSR-4 class autoloader. Use diag mode to regenerate the map.",
+	"version": "3.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_classmap.tgz" },
+
+	"version_normalized": "3.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

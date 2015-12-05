@@ -12,14 +12,15 @@
 	"version": "3.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_pack.tgz" },
 	"conf": { "Basic":"section",
-	 "site":"string(Your site&acute;s title)","runlevel":"select(0=production,1=testing,2=development,3=debug)","maintenance":"boolean",
+	 "maintenance":"notboolean(false,No,Yes)",
+	 "site":"string(Your site&acute;s title)","runlevel":"select(0=production,1=testing,2=development,3=debug)",
 	 "db":"string(mysql:host=localhost;dbname=test@user:pass)","mailer":"string(smtp://localhost)",
-	 "syslog":"select(false=to files,true=to syslog)",
-	 "Session":"section", "sessionvar":"string(pe_pid)","timeout":"select(0=forever,60=1 min,120=2 mins,180=3 mins,300=5 mins,600=10 mins,900=quoter an hour,1800=half an hour,3600=1 hour,7200=2 hours,10800=3 hours,86400=1 day,604800=1 week)",
+	 "syslog":"select(false=to files,true=to syslog)","noanim":"notboolean",
+	 "Session":"section", "sessionvar":"string(pe_pid)","timeout":"select(0=never,60=1 min,120=2 mins,180=3 mins,300=5 mins,600=10 mins,900=quoter an hour,1800=half an hour,3600=1 hour,7200=2 hours,10800=3 hours,86400=1 day,604800=1 week)",
 	 "Caching":"section", "nocache":"boolean","cache":"string(localhost:11211)","noaggr":"notboolean","nominify":"notboolean","cachettl":"select(10=10 secs,60=1 min,120=2 mins,180=3 mins,300=5 mins,600=10 mins,900=quoter an hour,1800=half an hour,3600=1 hour,7200=2 hours,10800=3 hours,86400=1 day,604800=1 week)",
-	 "Security":"section", "masterpasswd":"string($2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO)","secsession":"boolean"},
-	"conf_en": { "site":"Site", "db":"Datasource","cache":"Cache","noaggr":"Aggregation","nominify":"Asset minify", "masterpasswd":"Master password","runlevel":"Run level","maintenance":"Maintenance mode","mailer":"Mailer backend","syslog":"Logging","nocache":"Enabled", "cachettl":"Cache TTL","sessionvar":"Cookie name","secsession":"Secure cookie","timeout":"Session timeout"},
-	"conf_hu": { "Basic":"Általános", "Caching":"Gyorsítás", "Security":"Biztonság", "site":"Oldal", "db":"Adatforrás","cache":"Gyorsítótár","noaggr":"Aggregálás","nominify":"Kimenettömörítés","masterpasswd":"Mester jelszó","runlevel":"Futási szint","maintenance":"Karbantartás","mailer":"Levélküldő", "production":"éles üzem","testing":"tesztelés","development":"fejlesztés","debug":"hibakeresés","syslog":"Naplózás","to files":"fájlokba","to syslog":"syslog-ba","nocache":"Engedélyezve", "cachettl":"Gyorsítótár TTL","sessionvar":"Süti neve","secsession":"Biztonságos süti","timeout":"Süti érvényessége","forever":"örökké","10 secs":"10 mp","1 min":"1 perc","2 mins":"2 perc","3 mins":"3 perc","5 mins":"5 perc","10 mins":"10 perc","quoter an hour":"negyedóra","half an hour":"félóra","1 hour":"1 óra","2 hours":"2 óra","3 hours":"3 óra","1 day":"1 nap","1 week":"1 hét" },
+	 "Security":"section", "masterpasswd":"*string($2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO)","secsession":"boolean","noctrl":"boolean(false,No,Yes)","nopanel":"notboolean"},
+	"conf_en": { "site":"Site", "db":"Datasource","cache":"Cache","noaggr":"Aggregation","nominify":"Asset minify", "masterpasswd":"Master password","runlevel":"Run level","maintenance":"Maintenance mode","mailer":"Mailer backend","syslog":"Logging","noanim":"Animations","nocache":"Enabled", "cachettl":"Cache TTL","sessionvar":"Cookie name","secsession":"Secure cookie","timeout":"Session timeout","noctrl":"Dynamic controllers","nopanel":"Panel allowed"},
+	"conf_hu": { "Basic":"Általános", "Caching":"Gyorsítás", "Security":"Biztonság", "site":"Oldal", "db":"Adatforrás","cache":"Gyorsítótár","noaggr":"Aggregálás","nominify":"Kimenettömörítés","masterpasswd":"Mester jelszó","runlevel":"Futási szint","maintenance":"Karbantartás","mailer":"Levélküldő", "production":"éles üzem","testing":"tesztelés","development":"fejlesztés","debug":"hibakeresés","syslog":"Naplózás","noanim":"Animációk","to files":"fájlokba","to syslog":"syslog-ba","nocache":"Engedélyezve", "cachettl":"Gyorsítótár TTL","sessionvar":"Süti neve","secsession":"Biztonságos süti","timeout":"Süti érvényessége","never":"sose jár le","forever":"örökké","10 secs":"10 mp","1 min":"1 perc","2 mins":"2 perc","3 mins":"3 perc","5 mins":"5 perc","10 mins":"10 perc","quoter an hour":"negyedóra","half an hour":"félóra","1 hour":"1 óra","2 hours":"2 óra","3 hours":"3 óra","1 day":"1 nap","1 week":"1 hét","noctrl":"Dinamikus kontroller","nopanel":"Panel megjelenhet" },
 
 	"help_en": { "mailer":"smtp=Built-in SMTP,log=Log only,mail=PHP mail,sendmail=Sendmail pipe,db=Database queue,phpmailer=PHPMailer","db":"PDO DSN"},
 
@@ -31,7 +32,7 @@
 		"files": "public/index.php"
 	},
 	"support": {
-		"source": "http://phppe.org/phppe3_devel.tgz",
+		"source": "https://github.com/bztsrc/phppe3/",
 		"wiki": "http://phppe.org/phppe3.html"
 	},
 	"maintainer": { "name": "bzt" }
