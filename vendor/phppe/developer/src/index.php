@@ -3495,7 +3495,7 @@ namespace PHPPE\AddOn {
 			else 
 				$oh = $oi = $os = "";
 			if(Core::isInst("Core")) {
-				list($o, $d) = x(".", $t->name);
+				@list($o, $d) = x(".", $t->name);
 				$c = "&nbsp;<img src='images/cal.png' class='cal_icon' style='vertical-align:middle;' onclick='if(document.forms[\"" . $o . "\"])cal_open(this,document.forms[\"" . $o . "\"],\"" . $o . "_" . $d . "\");' alt='[C]'>";
 			}
 			else 
