@@ -16,10 +16,10 @@
 	"require": {
 		"php": ">=5.5",
 		"phppe": ">=3.0",
-		"phppe/CMS": ">=3.0",
-		"phppe/Extensions": ">=3.0",
-		"phppe/DBA": ">=3.0",
-		"phppe/DataLibrary": ">=3.0"
+		"phppe/CMS": "*",
+		"phppe/Extensions": "*",
+		"phppe/DBA": "*",
+		"phppe/DataLibrary": "*"
 	},
 
 	"support": {
