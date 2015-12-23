@@ -49,7 +49,7 @@ Installation with Packagist
 1. Create a new project
 
     ``` sh
-    $ composer create-project "bztsrc/phppe"
+    $ composer create-project "bztsrc/phppe3"
     ```
 
 2. If you want the full environment, also install PHPPE Pack (~80kb) with
@@ -131,9 +131,9 @@ or
 
     $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/developer
 
-You can also use [Packagist](https://packagist.org/packages/bztsrc/phppe) to install the whole repository from ground up (including core extensions and tarballs):
+You can also use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole repository from ground up (including core extensions and tarballs):
 
-    $ composer create-project "bztsrc/phppe:dev-master"
+    $ composer create-project "bztsrc/phppe3:dev-master"
 
 Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
 
