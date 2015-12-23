@@ -1,5 +1,5 @@
 {
-	"name": "bztsrc/phppe",
+	"name": "phppe3",
 	"description": "Meta package for PHP Portal Engine. Minimalistic, scalable and secure PHP framework and CMS with tons of features, ideal on a Raspberry Pi.",
 	"keywords": [ "php", "cms", "framework", "kiss", "security", "opensource", "wyswyg", "raspberry", "raspberry pi", "rpi", "arm" ],
 
@@ -15,7 +15,11 @@
 
 	"require": {
 		"php": ">=5.5",
-		"phppe": ">=3.0"
+		"phppe": ">=3.0",
+		"phppe/CMS": ">=3.0",
+		"phppe/Extensions": ">=3.0",
+		"phppe/DBA": ">=3.0",
+		"phppe/DataLibrary": ">=3.0"
 	},
 
 	"support": {
