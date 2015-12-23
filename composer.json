@@ -1,5 +1,5 @@
 {
-	"name": "phppe3",
+	"name": "bztsrc/phppe3",
 	"description": "Meta package for PHP Portal Engine. Minimalistic, scalable and secure PHP framework and CMS with tons of features, ideal on a Raspberry Pi.",
 	"keywords": [ "php", "cms", "framework", "kiss", "security", "opensource", "wyswyg", "raspberry", "raspberry pi", "rpi", "arm" ],
 
