@@ -4,6 +4,10 @@ use \PHPPE\Core as PHPPE;
 
 class cmsjs extends \PHPPE\AddOn\text
 {
+	function init()
+	{
+		PHPPE::addon("cmsjs", "CMS JavaScript Selector", "", "*");
+	}
 	function show(  )
 	{
 		$v=$this->toArr($this->value);
@@ -18,7 +22,7 @@ class cmsjs extends \PHPPE\AddOn\text
 	function toArr($v) {
 		if(is_array($v))
 			return $v;
-		if($v[0]=='{'||$v[0]=='[')
+		if(@$v[0]=='{'||@$v[0]=='[')
 			return json_decode($v,true);
 		return explode("\n",$v);
 	}

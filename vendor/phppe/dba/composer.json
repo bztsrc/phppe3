@@ -1,0 +1,19 @@
+{
+	"name": "phppe/DBA",
+	"name_en": "DataBase Administrator",
+	"name_hu": "AdatBázis Adminisztrátor",
+
+	"description": "Web interface for data sources.",
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_dba.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

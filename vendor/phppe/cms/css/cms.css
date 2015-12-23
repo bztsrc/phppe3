@@ -5,44 +5,56 @@
 	padding:0px;
 	width:100%;
 	height:100%;
-	min-height:600px;
 	border-top:1px solid #808080;
 	border-left:0px none;
 	border-right:0px none;
 	border-bottom:1px solid #808080;
 }
-#layout_edit IMG.zoom {
-	border:solid 2px green !important;
+#layout_fieldset {
+	padding:5px;
 }
-#layout_fieldset DIV {
-	min-width:100px; min-height:100px;
-	background:linear-gradient(to bottom,rgba(250,250,250,0.8) 10%,rgba(255,255,255,0) 80%,rgba(255,255,255,0.2) 10%);
+.blockform DIV {
+	min-width:100px; min-height:24px;
 	float:left;
 	display:block;
 	padding:3px;
-	border: inset 1px rgba(128,128,128,0.6);
-    border-radius: 5px;
-    box-shadow: 0 -1px 2px #999;
 	margin:0px 5px 5px 0px;
 }
-#param_edit IMG.zoom {
-	border:solid 2px green !important;
+.wysiwyg_tools INPUT {
+	margin:0px;
+	height:10px;
+	line-height:14px;
+	font-size:12px;
 }
-.wysiwyg_tools {
-	position:fixed;right:32px;padding:5px;box-shadow:3px 3px 8px #000;background-color:#000;opacity:0.8;z-index:999;
+.wysiwyg_toolscontainer {
+	position:fixed;
+	width:220px;
+	padding:5px;
+	box-shadow:3px 3px 8px #000;
+	background-color:#202020;
+	opacity:0.8;
+	z-index:999;
 }
 .wysiwyg_tools IMG {
 	max-width:180px;
 	max-height:48px;
 	margin:3px;
 	vertical-align:middle;
+	cursor:move;
 }
 .wysiwyg_conf {
-	position:fixed;right:15px;padding:5px;box-shadow:3px 3px 8px #000;background-color:#000;color:white;opacity:0.8;
+	position:fixed;padding:5px;box-shadow:3px 3px 8px #000;background:#202020;color:#D0D0D0;text-shadow:#000 2px 2px 3px;opacity:0.8;z-index:999;
 }
-#param_edit .wysiwyg_edit {
-	opacity:1.0 !important;
-	background:#fff;
+#param_edit {
+	overflow:hidden;
+}
+#param_edit DIV.wysiwyg_edit {
+	background:rgba(255,255,255,1.0);
+}
+#param_edit INPUT, #param_edit SELECT, #param_edit TEXTAREA {
+	border:inset 1px #404040;
+	background:rgba(64,64,64,0.8);
+	color:#fff;
 }
 
 .cms_guide DIV {
@@ -54,24 +66,24 @@
 	padding-bottom:2px;
 }
 
+.confpanel INPUT, .confpanel SELECT, .confpanel TEXTAREA {
+	border:inset 1px #404040;
+	background:rgba(64,64,64,0.8);
+	color:#fff;
+}
+
 .confpanel {
-	color:#fff;padding:5px;
+	color:#D0D0D0;text-shadow:#000 2px 2px 3px;
+	padding:5px;
 }
 .confpanel INPUT {
 	width:95%;
-	color:#000;
 }
 .confpanel INPUT.confurl {
 	width:50%;
-	color:#000;
-}
-
-.confpanel SELECT {
-	color:#000;
 }
 .confpanel TEXTAREA {
 	width:95%;
-	color:#000;
 }
 
 IMG.accept {
@@ -80,6 +92,29 @@ IMG.accept {
 	bottom:5px;
 	right:5px;
 }
-IFRAME.modal {
-	border:0px none;
+.setsel SPAN {
+	color:#D0D0D0;
 }
+.setsel_item {
+	border:outset 1px #202020 !important;
+	color:#D0D0D0;
+	background:rgb(95, 95, 95);
+    padding:2px;
+    cursor:move;
+    text-shadow:2px 2px 3px rgb(0, 0, 0);
+
+}
+.setsel_title {
+	color:#D0D0D0;
+    padding:2px;
+    text-shadow:2px 2px 3px rgb(0, 0, 0);
+    font-weight:bold;
+    font-size:20px;
+}
+.setsel_item:hover {
+    background:#808080;
+    color:#fff;
+}
+.dlbox { display:block;width:512px;background:#F0F0F0;color:#808080; margin:5px;padding:8px;}
+.dlbox A { margin-top:5px; clear:both; width:100%; text-align:center; display:block;background:#D0D0D0; text-decoration:none;color:#000;cursor:pointer;padding:3px;}
+.dlbox B {color:#000;font-size:20px;}

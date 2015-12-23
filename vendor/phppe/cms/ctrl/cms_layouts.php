@@ -17,11 +17,11 @@ class CMS extends \PHPPE\Ctrl {
 	function __construct()
 	{
 		PHPPE::$core->nocache = true;
-		PHPPE::$core->needframe = false;
+		PHPPE::$core->noframe = true;
 		PHPPE::$core->site = L("CMS Layouts");
 		if(PHPPE::lib("CMS")->expert)
 			$this->quickhelp=false;
-		PHPPE::jslib("cms.js","cms_init();");
+		PHPPE::jslib("cms.js","cms_init();".(!empty(PHPPE::$core->item)?"cms_layoutresizeinit();":""));
 		PHPPE::css("cms.css");
 		if(!empty($_SESSION['cms_copyout'])) {
 			$this->copyout=$_SESSION['cms_copyout'];
@@ -57,7 +57,7 @@ class CMS extends \PHPPE\Ctrl {
 				PHPPE::redirect("cms/layouts");
 			}
 		} else {
-			PHPPE::$core->needframe=true;
+			PHPPE::$core->noframe=false;
 			unset($_SESSION['cms_sitebuild']);
 			$import=PHPPE::req2arr('import');
 			if(!empty($import['file'])) {

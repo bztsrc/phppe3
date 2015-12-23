@@ -4,6 +4,10 @@ use \PHPPE\Core as PHPPE;
 
 class cmsmeta extends \PHPPE\AddOn
 {
+	function init()
+	{
+		PHPPE::addon("cmsmeta", "CMS Meta info", "", "*");
+	}
 	function show(  )
 	{
 		$m=PHPPE::lib("CMS")->metas;

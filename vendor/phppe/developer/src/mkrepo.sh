@@ -31,7 +31,7 @@ echo
 # phppe/Pack
 # special, this one ships several extensions at once
 if [ ! -f  ../../phppe3_pack.tgz -o "`find core/* email users db gpio -cnewer ../../phppe3_pack.tgz 2>/dev/null|grep -v normalize.css`" != "" ]; then
-    tar --exclude=log $TARFLAG -czvf ../../phppe3_pack.tgz composer.json LICENSE core/libs core/addons core/js/core.js.php core/js/resptable.js core/js/jquery.js core/ctrl core/css/normalize.css core/css/core.css core/images core/lang core/sql/views.sql core/sql/pages.sql core/out core/views/index.tpl core/views/maintenance.tpl core/views/rss.tpl core/00_core.php email users db registry
+    tar --exclude=log $TARFLAG -czvf ../../phppe3_pack.tgz composer.json LICENSE core/libs core/addons core/js/core.js.php core/js/resptable.js core/js/setsel.js core/js/jquery.js core/ctrl core/css/normalize.css core/css/core.css core/images core/lang core/sql/views.sql core/sql/pages.sql core/out core/views/index.tpl core/views/maintenance.tpl core/views/rss.tpl core/00_core.php email users db registry
     echo
 fi
 
@@ -63,7 +63,7 @@ EOF
 fi
 
 # non-special extensions
-for pkg in classmap cms eploscms wysiwyg gpio rpi bitstorm chart cookiealert; do
+for pkg in classmap cms eploscms wysiwyg gpio rpi bitstorm chart cookiealert gallery datalibrary dba youtube; do
     tarball=`echo $pkg| tr '[:upper:]' '[:lower:]'`
     cd ../$pkg
     rm ./._* 2>/dev/null
@@ -76,6 +76,6 @@ done
 # generate packages.json with repo.php
 cd ../../..
 rm packages.json
-php vendor/phppe/developer/src/repo.php >/dev/null
+php vendor/phppe/developer/src/repo.php >packages.json
 cat packages.json | sed 's/http:\/\/phppe.org\/phppe3_/https:\/\/raw.githubusercontent.com\/bztsrc\/phppe3\/master\/phppe3_/g' >packages.json.github
 cd ..

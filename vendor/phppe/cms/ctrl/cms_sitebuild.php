@@ -14,7 +14,7 @@ class CMS extends \PHPPE\Ctrl {
 	{
 		$dirs=["css","images","js"];
 		PHPPE::$core->nocache = true;
-		PHPPE::$core->needframe = false;
+		PHPPE::$core->noframe = true;
 		PHPPE::$core->site = L("CMS Layouts");
 		if(PHPPE::lib("CMS")->expert)
 			$this->quickhelp=false;
@@ -43,7 +43,7 @@ class CMS extends \PHPPE\Ctrl {
 		}
 		if(empty($_SESSION['cms_sitebuild'])) {
 			$this->choose=true;
-			PHPPE::$core->needframe = true;
+			PHPPE::$core->noframe = false;
 		} else {
 			$data=file_get_contents($_SESSION['cms_sitebuild']);
 			foreach($dirs as $dir) {

@@ -79,9 +79,9 @@
 <table>
 <tr><td>&lt;!foreach strings>&lt;!=KEY>:&lt;!=VALUE>&lt;br>&lt;!/foreach></td><td><!foreach strings><!=KEY>:<!=VALUE><br><!/foreach></td><td class='comment'>Example iteration on a plain array</td></tr>
 <tr><td>&lt;!foreach core.addons><br>&nbsp;&nbsp;&lt;!=IDX>(&lt;!=ODD>)&lt;!=KEY>:&lt;!=name>&lt;br><br>&lt;!/foreach><br><br></td><td><!foreach core.addons><!=IDX>(<!=ODD>) <!=KEY>:<!=name><br><!/foreach></td><td class='comment'>Example iteration on an array of objects</td></tr>
-<tr><td>&lt;!if core.needframe>normal mode&lt;!else>fullscreen mode&lt;!/if></td><td><!if core.needframe>normal mode<!else>fullscreen mode<!/if></td><td class='comment'>Expression dependent branches of output</td></tr>
-<tr><td>&lt;!if core.needframe><br>&nbsp;&nbsp;&lt;!foreach core.addons><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;!if ODD><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!=KEY>, &lt;!foreach strings>&lt;!=KEY>&lt;!/foreach><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;!else><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!foreach core.js>&lt;!=KEY>,&nbsp;&lt;!=parent.KEY>&lt;!/foreach><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/if><br>&nbsp;&nbsp;&lt;!/foreach><br>&lt;!else>should not see this&lt;!/if></td><td>
-<!if core.needframe>
+<tr><td>&lt;!if core.noframe>fullscreen mode&lt;!else>normal mode&lt;!/if></td><td><!if core.noframe>fullscreen mode<!else>normal mode<!/if></td><td class='comment'>Expression dependent branches of output</td></tr>
+<tr><td>&lt;!if !core.noframe><br>&nbsp;&nbsp;&lt;!foreach core.addons><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;!if ODD><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!=KEY>, &lt;!foreach strings>&lt;!=KEY>&lt;!/foreach><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;!else><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!foreach core.js>&lt;!=KEY>,&nbsp;&lt;!=parent.KEY>&lt;!/foreach><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/if><br>&nbsp;&nbsp;&lt;!/foreach><br>&lt;!else>should not see this&lt;!/if></td><td>
+<!if !core.noframe>
   <!foreach core.addons>
     <!if ODD><!=KEY>, <!foreach strings><!=KEY><!/foreach><br><!else>
       <!foreach core.js><!=KEY>, <!=parent.KEY><br><!/foreach>
@@ -96,7 +96,7 @@
 <table>
 <tr><td>&lt;!=core.id></td><td><!=core.id></td><td class='comment'>Output the value of a field of an object</td></tr>
 <tr><td>&lt;!=core.now></td><td><!=core.now></td><td class='comment'>Current UNIX timestamp (seconds since 01/01/1970 00:00:00 UTC)</td></tr>
-<tr><td>&lt;!=(core.now/100+core.needframe)></td><td><!=(core.now/100+core.needframe)></td><td class='comment'>Output the result of an expression (uses eval)</tr>
+<tr><td>&lt;!=(core.now/100+(1-core.noframe))></td><td><!=(core.now/100+(1-core.noframe))></td><td class='comment'>Output the result of an expression (uses eval)</tr>
 <tr><td>&lt;!=sprintf('%012d',core.now/123)></td><td><!=sprintf('%012d',core.now/123)></td><td class='comment'>Output result with formatting applied</td></tr>
 <tr><td>&lt;!date core.now></td><td><!date core.now></td><td class='comment'>Output timestamp in localized human readable format</tr>
 <tr><td>&lt;!time core.now></td><td><!time core.now></td><td class='comment'>Your browser's timezone is: <!=_SESSION['pe_tz']></td></tr>
@@ -116,7 +116,7 @@
 <tr><td>&lt;!field pass obj.field1></td><td><!field pass obj.field1></td><td class='comment'>Simple password</td></tr>
 <tr><td>&lt;!field text(<span title='size'>8</span>,<span title='maxlength'>32</span>) obj.field2 - - - Search></td><td><!field text(8,32) obj.field2 - - - Search></td><td class='comment'>Reads more than meets the eye with &quot;fake&quot; value</td></tr>
 <tr><td>&lt;!field text(<span title='size'>20</span>,<span title='maxlength'>80</span>,<span title='rows'>2</span>)  obj.field3></td><td><!field text(20,80,2) obj.field3></td><td class='comment'>You don't have to know about textarea, just add the number of rows you want</td></tr>
-<tr><td>&lt;!field select obj.field4 <span title='list values'>core.addons</span>></td><td><!field select obj.field4 core.addons></td><td></td></tr>
+<tr><td>&lt;!field select obj.field4 <span title='list values'>core.addon()</span>></td><td><!field select obj.field4 core.addon()></td><td></td></tr>
 <tr><td>&lt;!field select(<span title='size'>3</span>,<span title='is multiple'>1</span>) obj.field5 <span title='list values'>core.addons</span>></td><td><!field select(3,1) obj.field5 core.addons></td><td></td></tr>
 <tr><td>&lt;!field date(<span title='years behind'>5</span>,<span title='years to come'>2</span>) obj.field6></td><td><!field date(5,2) obj.field6></td><td class='comment'>Hint: change date format in phppe/lang/<!=client.lang>.php, and see what happens ;-)</td></tr>
 <tr><td>&lt;!field time(<span title='years behind'>3</span>,<span title='years to come'>3</span>,<span title='steps in minutes'>5</span>) obj.field7></td><td><!field time(3,3,5) obj.field7></td><td class='comment'>Date plus time</td></tr>
@@ -146,10 +146,11 @@
 <div class='heading'><h3>Library test</h3></div>
 <table width='100%'>
 <tr><td>PHPPE Pack<!if !file_exists('phppe/00_core.php')> not<!/if> installed.</td>
-<td style='min-width:300px !important;'><!if !user.id><a href='login'>Login</a><!else><a href='logout'>Logout</a><!/if></td><td width='100%'></td></tr>
+<td style='min-width:320px !important;'><!if !user.id><a href='login'>Login</a><!else><a href='logout'>Logout</a><!/if></td><td width='100%'></td></tr>
 <tr><td>&lt;!field boolean obj.field20></td><!if !core.isinst('boolean')><td><span style="background:#F00000;color:#FFA0A0;padding:3px;">boolean not installed.</span></td><!else><td><!field boolean obj.field20><!/if></td><td></td></tr>
 <tr><td>&lt;!field boolean(true,'Enabled','Disabled') obj.field21></td><!if !core.isinst('boolean')><td><span style="background:#F00000;color:#FFA0A0;padding:3px;">boolean not installed.</span></td><!else><td><!field boolean(true,'Enabled','Disabled') obj.field21><!/if></td><td></td></tr>
 <tr><td>&lt;!field notboolean obj.field22></td><!if !core.isinst('notboolean')><td><span style="background:#F00000;color:#FFA0A0;padding:3px;">notboolean not installed.</span></td><!else><td><!field notboolean obj.field22><!/if></td><td></td></tr>
+<tr><td>&lt;!field setsel obj.field23 core.addons></td><!if !core.isinst('setsel')><td colspan='2'><span style="background:#F00000;color:#FFA0A0;padding:3px;">setsel not installed.</span></td><!else><td colspan='2'><!field setsel obj.field23 core.addons><!/if></td></tr>
 <tr><td>&lt;!widget popup></td><!if !core.isinst('popup')>
 <td><span style="background:#F00000;color:#FFA0A0;padding:3px;">popup not installed.</span></td><!else><td><span style='border:1px solid black;padding:3px;' onmouseover='popup_open(this,"mymenu",10,10);'>over me</span>
 <div id='mymenu' class='popup' style='position:absolute;background:#A0A0A0;padding:5px;z-index:10;display:none;'>one<br>two<br>three<br>four<br>...<br></div>

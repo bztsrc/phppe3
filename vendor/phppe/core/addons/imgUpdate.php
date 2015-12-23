@@ -5,7 +5,7 @@ use \PHPPE\Core as PHPPE;
 class imgUpdate extends \PHPPE\AddOn {
 	function init()
 	{
-		\PHPPE\Core::addon("imgUpdate","Image Update");
+		\PHPPE\Core::addon("imgUpdate","Image Update","","*(url)");
 	}
 	function show()
 	{

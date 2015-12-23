@@ -133,5 +133,9 @@ return [
 	"help_addon_text"=>"Szöveges mező, opcionális helyfoglaló értékkel",
 	"help_addon_update"=>"Végrehajtja az űrlap által definiált objektum módosításokat",
 	"help_addon_wysiwyg"=>"Azt kapod, amit látsz típusú szövegszerkesztő",
+	"Simple"=>"Egyszerű",
+	"Classic"=>"Klasszikus",
+	"Default"=>"Alapértelmezett",
+	"Mosaic"=>"Mozaik"
 ];
 ?>

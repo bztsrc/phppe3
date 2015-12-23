@@ -33,17 +33,10 @@ class CMS
 	public $metas=[];
 
 	function init($cfg) {
-		PHPPE::lib("CMS","Content Editor", ["Core","wysiwyg"],$this);
-		PHPPE::menu( L("CMS"), [
-			L("Pages") ."@siteadm" => "cms/pages",
-			L("Layouts") ."@siteadm" => "cms/layouts",
-			L("Lists") ."@siteadm" => "cms/lists",
-			L("Attachments") ."@siteadm" => "cms/attachments",
-			PHPPE::isinst("CMSLT")? L("TimeLine") ."@siteadm" : "" => "cms/timeline",
-		]);
+		PHPPE::lib("CMS","Content Editor", ["Core","wysiwyg"], $this);
 		if(PHPPE::$core->app=="cms") {
 			\PHPPE\Filter\loggedin::filter();
-			if(!PHPPE::$user->has("siteadm"))
+			if(!PHPPE::$user->has("siteadm|webadm"))
 				PHPPE::redirect("403");
 		}
 		if(PHPPE::$core->action=="pages")
@@ -79,18 +72,22 @@ class CMS
 
 	function stat() {
 		if(PHPPE::$user->has("panel")) {
+			$cms_menu=
+				(PHPPE::$user->has("siteadm")?"<span style='margin-left:4px;'><img title=\"".L("CMS Layouts")."\" src='images/cms/layouts.png' onclick='document.location.href=\"".url("cms","layouts")."\";'></span>":"").
+				(PHPPE::$user->has("siteadm|webadm")?"<span><img title=\"".L("CMS Pages")."\" src='images/cms/pages.png' onclick='document.location.href=\"".url("cms","pages")."\";'></span>":"");
 			$c=get_class(PHPPE::getval("app"));
 			if($c=="PHPPE\App" || $c=="PHPPE\Content")
 				return
-			"<span style='padding-right:15px;'><a href='".url("cms","pages")."'><img src='images/cms/home.png' style='position:absolute;'></a></span>".
-			"<span style='padding-right:15px;'><img style=\"position:absolute;\" onclick=\"cms_pageadd(this,&quot;pageadd&quot;);\" src=\"images/cms/pageadd.png\" title=\"".L("Add new page")."\"></span>".
-			"<span style='padding-right:10px;'><a href='cms/pages/".(PHPPE::$core->app."/".(PHPPE::$core->action!="action"?PHPPE::$core->action:"").(PHPPE::$core->item?"/".PHPPE::$core->item:""))."'><img src='images/cms/edit.png' style='position:absolute;' title=\"".L("Edit page")."\"></a></span>";
+//			"<span style='padding-right:6px;'><a href='".url("cms","pages")."'><img src='images/cms/home.png'></a></span>".
+//			"<span style='padding-right:4px;'><img onclick=\"cms_pageadd(this,&quot;pageadd&quot;);\" src=\"images/cms/pageadd.png\" title=\"".L("Add new page")."\"></span>".
+			"<span><a href='cms/pages/".(PHPPE::$core->app."/".(PHPPE::$core->action!="action"?PHPPE::$core->action:"").(PHPPE::$core->item?"/".PHPPE::$core->item:""))."'><img src='images/cms/edit.png' title=\"".L("Edit page")."\"></a></span>".
+			$cms_menu;
 			elseif(PHPPE::$core->app!="cms")
-				return "";
+				return $cms_menu;
 			elseif(PHPPE::$core->action=="pages")
-				return PHPPE::template("cms_pagepanel");
+				return PHPPE::template("cms_pagepanel").$cms_menu;
 			elseif(PHPPE::$core->action=="layouts")
-				return PHPPE::template("cms_layoutpanel");
+				return PHPPE::template("cms_layoutpanel").$cms_menu;
 		}
 	}
 

@@ -33,6 +33,8 @@ TD.row1 {background:#F8F8F8;}
 /* status bar */
 #pe_p .stat {
 }
+#pe_p .stat IMG { position:relative !important;}
+#pe_p .stat SPAN SPAN { margin:0px !important;}
 
 /* Table of Contents */
 .toc {
@@ -126,13 +128,16 @@ TD.row1 {background:#F8F8F8;}
     position: relative;
     cursor: pointer;
 }
+IFRAME.modal {
+    border:0px;
+    opacity:0.8;
+}
 .modal {
     position:fixed;
     display:block;
     z-index:1001;
-    background:#404040;
+    background:rgba(64,64,64,0.8);
     color:#fff;
-    opacity:0.8;
     box-shadow: 3px 3px 8px #000000;
     overflow:auto;
 }
@@ -153,7 +158,6 @@ TD.row1 {background:#F8F8F8;}
     float:left;
     margin:5px;
     padding:5px;
-    background:#F0F0F0;
     box-shadow: 3px 3px 8px #000000;
 }
 .splitmosaic DIV.mosaicbox {
@@ -163,11 +167,29 @@ TD.row1 {background:#F8F8F8;}
     float:left;
     margin:5px;
     padding:5px;
-    background:#F0F0F0;
     box-shadow: 3px 3px 8px #000000;
 }
 .sidebar {
-    width:200px;
+    width:300px;
     padding:5px;
     background:#F0F0F0;
+}
+
+IMG[data-zoom] {
+    cursor:pointer;
+}
+
+.setsel_box {
+    border:inset 1px #404040;
+    width:48.5%;
+    min-height:64px;
+    margin-left:5px;
+    display:inline-block;
+    float:left;
+    overflow:auto;
+    clear:none;
+}
+.setsel_box DIV {
+    cursor:move;
+    border-bottom:dotted 1px #808080;
 }

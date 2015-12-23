@@ -2,6 +2,8 @@
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
+include_once("vendor/phppe/cms/libs/pages.php");
+
 class CMS extends \PHPPE\Ctrl {
 	public $id;
 	public $name;
@@ -15,8 +17,9 @@ class CMS extends \PHPPE\Ctrl {
 	{
 		PHPPE::$core->nocache = true;
 		if(empty(PHPPE::$core->item))
-			PHPPE::$core->needframe = false;
+			PHPPE::$core->noframe = true;
 		PHPPE::$core->site = L("CMS Pages");
+
 		PHPPE::jslib("cms.js","cms_init();");
 		list($c) = x("?",@$_SERVER['REQUEST_URI']); $s=$_SERVER['SCRIPT_NAME'];
 		$u = w($c,(z($c,0,u($s))==$s?u($s):u(n($s)))+1);
@@ -33,7 +36,7 @@ class CMS extends \PHPPE\Ctrl {
 			$frame = @jd(PHPPE::field("data","pages","id='frame'"));
 			PHPPE::assign("frame",$frame);
 			$page = PHPPE::fetch( "*", "pages", "id=? OR ? LIKE id||'/%'", "", "id DESC,created DESC",[$item,$item]);
-			PHPPE::$core->site = "* ".$page['name'];
+			PHPPE::$core->site = "*".$page['name'];
 			PHPPE::exec("UPDATE pages SET lockd=0,ownerid=0 WHERE ownerid=? AND id!=?",[PHPPE::$user->id,$item]);
 			$this->_pages = PHPPE::query("a.created as id,a.created as name,a.created as ago,a.lockd,a.modifyid,b.name as moduser","pages a left join users b on a.modifyid=b.id", "a.id=?", "", "a.created DESC",0,0,[$page['id']]);
 			foreach($this->_pages as $k=>$v) {
@@ -43,8 +46,6 @@ class CMS extends \PHPPE\Ctrl {
 					$this->_pages[$k]['ago']=strtotime($v['ago']);
 			}
 			$_SESSION['cms_page']['_pages']=$this->_pages;
-			if(empty($page) && $f=@glob()[0])
-//			if(is_string($page['dds'])) $this->dds=@json_decode($page['dds'],true);
 			if(is_string($page['data'])) $page['data']=@json_decode($page['data'],true);
 			if(is_array($page['data'])) foreach($page['data'] as $k=>$v) {$this->$k=$v;$_SESSION['cms_page']['data'][$k]=$v;}
 			foreach(["id","name","lang","filter","template","pubd","expd","dds","ownerid","created"] as $k) $this->$k=$_SESSION['cms_page'][$k]=$page[$k];
@@ -53,7 +54,7 @@ class CMS extends \PHPPE\Ctrl {
 				foreach($p as $k => $c)
 					if($k != "dds") {
 						try{
-						$this->$k = PHPPE::query($c[ 0 ], $c[ 1 ], @ $c[ 2 ], @ $c[ 3 ], @ $c[ 4 ], @ $c[ 5 ], @ $c[ 6 ]);
+						$this->$k = PHPPE::query($c[ 0 ], $c[ 1 ], @ $c[ 2 ], @ $c[ 3 ], @ $c[ 4 ], @ $c[ 5 ], PHPPE::getval(@ $c[ 6 ]));
 						} catch(\Exception $e) {PHPPE::log("E",$_SESSION['cms_page']['id']." ".$e->getMessage()." ".implode(" ",$c),"dds");}
 					}
 			}
@@ -77,9 +78,7 @@ class CMS extends \PHPPE\Ctrl {
 			$_SESSION['cms_page']=[];
 			$this->_pages=[];
 			PHPPE::exec("DELETE FROM pages WHERE id='' OR template=''");
-			$p = PHPPE::query("a.id,a.name,a.template as tid,a.dds,a.ownerid,a.modifyid,max(a.created) as created,max(a.lockd) as lockd,count(1) as versions,b.name as lockuser,c.name as moduser,v.name as template, CURRENT_TIMESTAMP as ct",
-				"pages a left join users b on a.ownerid=b.id left join users c on a.modifyid=c.id left join views v on a.template=v.id",
-				"a.id!='frame'","a.template,a.id","a.modifyd DESC");
+			$p = \Page::getPages();
 			PHPPE::exec("UPDATE pages SET lockd=0,ownerid=0 WHERE ownerid=?",[PHPPE::$user->id]);
 			if(!empty($_REQUEST['order'])) {
 				$this->_pages[0]=$p;
@@ -87,7 +86,7 @@ class CMS extends \PHPPE\Ctrl {
 				foreach($p as $v)
 					$this->_pages[$v['template']][]=$v;
 			}
-			PHPPE::$core->needframe=true;
+			PHPPE::$core->noframe=false;
 		}
 	}
 }

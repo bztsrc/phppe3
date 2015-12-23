@@ -15,6 +15,7 @@ class wysiwyg extends \PHPPE\AddOn
 	function edit(  )
 	{
 		PHPPE::jslib("wysiwyg.js", "wysiwyg_init();");
+		PHPPE::css("wysiwyg.css");
 		return "<div id='".htmlspecialchars(str_replace(".","_",$this->name)).":container' class='wysiwyg' data-conf='".htmlspecialchars(urlencode(json_encode($this->args)))."'>".
 		"<textarea id='".htmlspecialchars(str_replace(".","_",$this->name))."' name='".htmlspecialchars(str_replace(".","_",$this->name))."' class='wysiwyg wysiwyg_edit input'>".
 		htmlspecialchars($this->value)."</textarea></div>";

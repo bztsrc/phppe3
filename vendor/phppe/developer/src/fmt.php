@@ -338,7 +338,8 @@ function autoformat($decompress,$code)
 		str_replace('function as ','function as',
 		preg_replace("/as([A-Z])/","as \\1",
 		preg_replace("/[\n]([ \t]+)[\n]/m","\n",
-		str_replace('$ $','$$',$out))))))))));
+		str_replace('@ $','@$',
+		str_replace('$ $','$$',$out)))))))))));
 }
 function addtab($c)
 {

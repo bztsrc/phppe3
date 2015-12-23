@@ -1,7 +1,4 @@
 <style>
-.input {
-	color:#000;
-}
 B {
 	display:block;
 	margin-top:8px;

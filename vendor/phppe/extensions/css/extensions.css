@@ -39,19 +39,35 @@ INPUT[type=button] {
 	height:60%;
 	z-index:101;
 	background:#404040;
-	color:#FFFFFF;
+	color:#D0D0D0;
 	opacity: 0.8;
 	visibility:hidden;
 	font-size: 12px;
 	box-shadow: 3px 3px 8px #000000;
 }
 
-#status SELECT,INPUT,TEXTAREA {
-	color: #000000;
-	opacity: 1.0;
+.conftable SELECT, .conftable INPUT, .conftable TEXTAREA {
+	border:inset 1px #404040;
+	background:rgba(32,32,32,0.9);
+	color:#fff;
 }
 .confgroup {
 	background:#606060;
+}
+.conftab {
+	border: solid 1px #202020;
+	background-image:linear-gradient(to bottom,rgba(0,0,0,0.25),rgba(0,0,0,0.0));
+	border-bottom:0px;
+	padding:5px;
+	margin-right:5px;
+	cursor:pointer;
+}
+.conftab_active {
+	border: outset 1px #404040;
+	border-bottom:0px;
+	background-image:linear-gradient(to bottom,rgba(128,128,128,0.4),rgba(128,128,128,0.0));
+	padding:5px;
+	margin-right:5px;
 }
 .extension {
 	float:left;

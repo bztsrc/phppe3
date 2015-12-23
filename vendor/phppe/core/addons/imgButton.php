@@ -5,7 +5,7 @@ use \PHPPE\Core as PHPPE;
 class imgButton extends \PHPPE\AddOn {
 	function init()
 	{
-		\PHPPE\Core::addon("imgButton","Image Button");
+		\PHPPE\Core::addon("imgButton","Image Button","","*(url)");
 	}
 	function show()
 	{

@@ -54,44 +54,32 @@
 <!/if>
 </div>
 <!else>
-<!if choose>
-<div id='divchoose'>
-<b style='margin:3px;display:block;'><!=L('Select area to import')></b>
-<div style='border:inset 1px rgba(128,128,128,0.5);border-radius: 5px;box-shadow: 0 -1px 2px #999;padding:0px 0px 10px 0px;'>
-<div data-chooseid='0' onmousemove='cms_divchoosemove(event);' onclick='cms_divchooseselect(event);'><br><!=choose></div></div>
-<!if quickhelp>
-<small>(<!=L("help_sbimportdiv")>)</small>
-<!/if>
-</div>
-<!/if>
-<div id='layoutdiv'<!if choose> style='display:none;'<!/if>>
+<div id='layoutdiv'>
 <!form layout>
-<div id='layout_fieldset' style='display:table-cell;'>
-<!widget popup>
-<div style='display:block;min-height:16px;float:none;'>
-<span<!if copyout> onmouseover='popup_open(this,"copyout",10,10);'<!/if>><!=L('Import sitebuild html')>: <!field file layout.input - this.style.display="none";this.form.submit()></span><div id='copyout' style='box-shadow: 3px 3px 8px #000;position:absolute;background:#A0A0A0;padding:5px;z-index:10;display:none;'><!if copyout><pre><!=L("Imported")>:<br><!=copyout></pre><!/if></div>
-<!if quickhelp><small>(<!L help_importhtml>)</small><!/if>
+<div id='layout_fieldset' class='blockform' style='display:none;' data-zoom-nodecor='1'><div class='confpanel'>
+<h2><!=L("Layout Info")></h2>
+<!if copyout><div><!=L("Imported")>:<br/><pre><!=copyout></pre></div><!/if>
+
+<div style='float:left;width:200px;'>
+<!L ID>:<br/><!field text layout.id><br/><br/>
+<!L Name>:<br/><!field text layout.name>
 </div>
-<div style='text-align:right;'>
-<nobr><!L ID>: <!field text layout.id></nobr><br/>
-<nobr><!L Name>: <!field text layout.name></nobr>
-</div>
-<div>
+<div style='float:left;width:400px;'>
 <!L Meta data>: <!field cmsmeta layout.meta>
 <!if quickhelp><small>(<!L help_pagemeta>)</small><!/if>
 </div>
-<div>
+<div style='float:left;'>
 <!L Style sheets>:<br/><!field cmscss layout.css>
 <!if quickhelp><br/><small>(<!L help_css>)</small><!/if>
 </div>
-<div>
+<div style='float:left;'>
 <!L JavaScript libraries>:<br/><!field cmsjs layout.jslib>
 <!if quickhelp><br/><small>(<!L help_js>)</small><!/if>
 </div>
 </div>
-<br style='clear:both;'>
-<div style='text-align:right;padding:5px;margin-bottom:-30px;'><!field update Save></div>
+</div>
+<div style='text-align:right;padding:5px;margin-bottom:-24px;'><!field update Save></div>
 <div id='layout_edit'><!field wysiwyg('cms_layout') layout.data><!if quickhelp><small>(<!L help_toolbar>)</small><!/if></div>
-<div style='text-align:right;padding:5px;'><!field update Save></div>
+<div style='text-align:right;padding:5px;margin-top:-16px;'><!field update Save></div>
 </form>
 <!/if>

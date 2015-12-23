@@ -2,13 +2,8 @@
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class Page extends \PHPPE\Model {
-	static $_table="pages";
-}
-
-class View extends \PHPPE\Model {
-	static $_table="views";
-}
+include_once("vendor/phppe/cms/libs/views.php");
+include_once("vendor/phppe/cms/libs/pages.php");
 
 class CMS extends \PHPPE\Ctrl {
 	public $param;
@@ -43,7 +38,7 @@ class CMS extends \PHPPE\Ctrl {
 
 	function action($item)
 	{
-		PHPPE::$core->needframe = false;
+		PHPPE::$core->noframe = true;
 		PHPPE::$core->nopanel = true;
 		PHPPE::$core->template="cms_".PHPPE::$core->action;
 		switch(PHPPE::$core->action){
@@ -120,14 +115,14 @@ class CMS extends \PHPPE\Ctrl {
 							PHPPE::exec("UPDATE pages set ".$s."=?,modifyid=?,modifyd=CURRENT_TIMESTAMP WHERE id=?",$w);
 							PHPPE::exec("DELETE FROM pages WHERE id=? AND created not in (SELECT created FROM pages WHERE id=? order by created desc limit 1)",[$_SESSION['cms_page']['id'],$_SESSION['cms_page']['id']]);
 						} else {
-							$page=new Page();
+							$page=new \Page();
 							$page->data='';
 							$page->ctrl='';
 							foreach($_SESSION['cms_page'] as $k=>$v)
 								if($k[0]!="_"&&$k!="created"&&$k!="modifyd"&&$k!="modifyid"&&$k!="gdds"&&strpos($k,":")===false)
 									$page->$k=isset($d[$k])?$d[$k]:$v;
 							$page->modifyid=PHPPE::$user->id;
-							$pafe->created=$page->modifyd=date("Y-m-d H:i:s");
+							$page->created=$page->modifyd=date("Y-m-d H:i:s");
 							$page->save(true);
 							PHPPE::exec("DELETE FROM pages WHERE id=? AND created not in (SELECT created FROM pages WHERE id=? order by created desc limit ".intval(PHPPE::lib("CMS")->purge).")",[$_SESSION['cms_page']['id'],$_SESSION['cms_page']['id']]);
 						}
@@ -138,7 +133,7 @@ class CMS extends \PHPPE\Ctrl {
 					$frame=PHPPE::fetch("dds","pages","id='frame'","","created DESC");
 					$_SESSION['cms_page']['gdds']=$frame['dds'];
 				}
-				$this->page=new Page();
+				$this->page=new \Page();
 				$this->page->data='';
 				$this->page->ctrl='';
 				foreach($_SESSION['cms_page'] as $k=>$v)
@@ -170,7 +165,7 @@ class CMS extends \PHPPE\Ctrl {
 				}
 				break;
 			default:
-				PHPPE::$core->needframe = true;
+				PHPPE::$core->noframe = false;
 				PHPPE::$core->nopanel = false;
 		}
 	}

@@ -1,0 +1,19 @@
+{
+	"name": "phppe/DataLibrary",
+	"name_en": "Data Library",
+	"name_hu": "Adattár",
+
+	"description": "Adds attachments support.",
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_datalibrary.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

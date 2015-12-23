@@ -1,0 +1,15 @@
+{
+	"name": "phppe/Gallery",
+	"name_en": "Image gallery",
+	"name_hu": "Képgaléria",
+
+	"description": "Provides image upload, resize, watermarking and gallery.",
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_gallery.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

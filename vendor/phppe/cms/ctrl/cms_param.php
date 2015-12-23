@@ -2,11 +2,7 @@
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-class Page extends \PHPPE\Model {
-	public $data='';
-	public $ctrl='';
-	static $_table="pages";
-}
+include_once("vendor/phppe/cms/libs/pages.php");
 
 class CMS extends \PHPPE\Ctrl {
 	public $param;
@@ -18,7 +14,7 @@ class CMS extends \PHPPE\Ctrl {
 	function __construct()
 	{
 		PHPPE::$core->nocache = true;
-		PHPPE::$core->needframe = false;
+		PHPPE::$core->noframe = true;
 		PHPPE::$core->nopanel = true;
 		PHPPE::jslib("cms.js","cms_init();");
 		PHPPE::css("cms.css");
@@ -26,14 +22,16 @@ class CMS extends \PHPPE\Ctrl {
 
 	function action($item="")
 	{
+		PHPPE::$core->noframe = true;
+		PHPPE::$core->nopanel = true;
 		$frame = false;
 		$this->param=$_SESSION['cms_param'][$item+0];
 		if(substr($this->param[1],0,6)=="frame.") $frame = true;
 		$key=str_replace("frame.","",str_replace("app.","",$this->param[1]));
 		$this->type=$this->param[0];
 		if($frame) {
-				$page=@jd(PHPPE::field("data","pages","id='frame'"));
-				$this->value=$page[$key];
+				$frpage=@jd(PHPPE::field("data","pages","id='frame'"));
+				$this->value=$frpage[$key];
 		} else
 			$this->value=$_SESSION['cms_page']['data'][$key];
 		$this->w=intval($_REQUEST['w']);
@@ -41,10 +39,16 @@ class CMS extends \PHPPE\Ctrl {
 		$this->page=PHPPE::fetch( "ownerid", "pages", "id=?", "", "id DESC,created DESC",[$_SESSION['cms_page']['id']]);
 		if(PHPPE::istry() && $this->page['ownerid']==PHPPE::$user->id) {
 			$param=PHPPE::req2arr("app");
-			if($frame) {
-					$page[$key]=$param['value'];
+			if($this->type=="pagelist") {
+				PHPPE::exec("DELETE FROM pages_list WHERE list_id=?",[$this->param[1]]);
+				$d=explode(",",$param['value']);
+				foreach($d as $k=>$v)
+					if(!empty($v)&&trim($v)!="null")
+						PHPPE::exec("INSERT INTO pages_list (list_id,page_id,ordering) values (?,?,?)",[$this->param[1],$v,intval($k)]);
+			} elseif($frame) {
+					$frpage[$key]=$param['value'];
 					// FIXME frame is not revertable
-					PHPPE::exec("UPDATE pages set data=?,modifyid=?,modifyd=CURRENT_TIMESTAMP WHERE id='frame'",[json_encode($page),PHPPE::$user->id]);
+					PHPPE::exec("UPDATE pages set data=?,modifyid=?,modifyd=CURRENT_TIMESTAMP WHERE id='frame'",[json_encode($frpage),PHPPE::$user->id]);
 			} else {
 				$_SESSION['cms_page']['data'][$key]=preg_replace("/<script.*?script>/ims","",preg_replace("/<style.*?style>/ims","",preg_replace("/<head.*?head>/ims","",$param['value'])));
 				if(empty(PHPPE::lib("CMS")->revert)) {
@@ -63,6 +67,8 @@ class CMS extends \PHPPE\Ctrl {
 			}
 			die("<html><script>\ntop.document.location.href='".url("cms","pages").$_SESSION['cms_page']['id']."';\n</script></html>");
 		}
-		PHPPE::js("init()","if(wysiwyg_toolbarhooks) wysiwyg_toolbarhooks('cms_wysiwyg');");
+		if($this->type=="pagelist")
+			$this->value=array_column(PHPPE::query("page_id","pages_list","list_id=?","page_id","ordering",0,0,[$this->param[1]]),'page_id');
+		PHPPE::js("init()","if(typeof wysiwyg_toolbarhooks=='function') wysiwyg_toolbarhooks('cms_wysiwyg');setTimeout(function(){document.getElementsByTagName('FORM')[0].elements[0].focus();},100);");
 	}
 }

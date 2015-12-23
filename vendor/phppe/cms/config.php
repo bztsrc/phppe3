@@ -1,7 +1,7 @@
 <?php
 return [
 	"expert"=> false,
-	"revert"=> true,
+	"pagehistory"=> true,
 	"purge"=> 8,
 	"metas"=> "copyright,description,keywords",
 ];

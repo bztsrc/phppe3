@@ -4,11 +4,11 @@
 	"keywords": [ "Hardware" ],
 
 	"description": "Basic interface for Raspberry Pi, such as GPIO, frequency, temperature etc.",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_gpio.tgz" },
 	"conf": { "pins":"string" },
 
-	"version_normalized": "0.0.1.0",
+	"version_normalized": "1.0.0.0",
 	"type": "library",
 	"license": "LGPL-3.0+",
 
