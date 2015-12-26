@@ -143,7 +143,12 @@ function number_format(number, decimals, dec_point, thousands_sep) {
  *   Multilanguage support
  */
 var LANG=<?=json_encode($lang)?>;
-function L(t){return LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:t.replace(/_/g,' ');}
+function L(t){
+if(t==null||t==undefined){
+  var stack = new Error().stack;
+  console.log( stack );
+}
+return LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:(t!=null?t.replace(/_/g,' '):'');}
 
 /*
  *   JS Cookie support

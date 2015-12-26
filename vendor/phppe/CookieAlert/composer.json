@@ -1,0 +1,20 @@
+{
+	"name": "phppe/CookieAlert",
+	"name_en": "Cookie Alert",
+	"name_hu": "Süti figyelmeztetés",
+	"keywords": [ "Content" ],
+	"keywords_hu": [ "Tartalom" ],
+
+	"description": "Displays a warning on page until cookie policy accepted.",
+	"version": "1.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_cookiealert.tgz" },
+	"conf":{"cookiename":"string(cookiealert_acked)","message":"string(This site uses cookies. By continuing to browse the site, you are agreeing to our use of cookies.)","morelabel":"Find out more.","moreurl":"cookiepolicy","acceptlabel":"Acknoledged"},
+	"conf_en":{"cookiename":"Name of the cookie","message":"Message","morelabel":"More link text","moreurl":"More link url","acceptlabel":"Accept button text"},
+	"conf_hu":{"cookiename":"Süti neve","message":"Üzenet","morelabel":"Tovább link felirat","moreurl":"Tovább link url","acceptlabel":"Elfogadom gomb felirat"},
+
+	"version_normalized": "1.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

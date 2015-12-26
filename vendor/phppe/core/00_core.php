@@ -23,12 +23,12 @@
  * @brief PHPPE Core Extensions
  */
 namespace PHPPE {
-	//! regardless to autoloaders, make sure the Tools class exists
-	include_once("vendor/phppe/core/libs/tools.php");
-	//! register ourself, using Tools as object reference
+	//! regardless to autoloaders, make sure the Content class exists
+	include_once("vendor/phppe/core/libs/content.php");
+	//! register ourself, using Content as object reference
 	//! if we would use PHPPE::$core, that would end in an
 	//! infinite reference loop. So we have to use a different object
-	Core::lib("Core","PHPPE Core","",new Tools);
+	Core::lib("Core","PHPPE Core","",new Content);
 
 	//! register built-in fields and widets all at once
 	//! this is required for \PHPPE\Core::isinst() to always return true for built-ins

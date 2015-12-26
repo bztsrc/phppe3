@@ -50,14 +50,8 @@ Installation with Packagist
 
     ``` sh
     $ composer create-project "bztsrc/phppe3"
+    $ mv phppe3 myProject
     ```
-
-2. If you want the full environment, also install PHPPE Pack (~80kb) with
-
-    ``` sh
-    $ composer require "phppe"
-    ```
-
 
 Installation without Packagist
 ------------------------------
@@ -103,7 +97,7 @@ This single file also serves as a Content Server. You can install the CMS Conten
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/cms
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
 One CMS can feed several Content Servers. See [documentation](http://phppe.org/phppe3.html#contents) for more details on load balancing.
 
@@ -116,7 +110,7 @@ If you want a web based interface for extension management, install
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/extensions
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
 
 This will give you the standard webadmin feeling you're used to, but unlike the competition, works in a secure way.
 
@@ -129,7 +123,7 @@ Unit tests (over 100) and source are included in the Developer package
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/developer
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
 
 You can also use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole repository from ground up (including core extensions and tarballs):
 
