@@ -17,8 +17,8 @@ if [ -f public/src.php ]; then
     if [ public/src.php -nt public/index.php ]; then
         php tools/fmt.php -c public/src.php >public/index.php
     fi
-    if [ public/src.php -nt vendor/phppe/developer/src/index.php ]; then
-        php tools/fmt.php public/src.php >vendor/phppe/developer/src/index.php
+    if [ public/src.php -nt vendor/phppe/Developer/src/index.php ]; then
+        php tools/fmt.php public/src.php >vendor/phppe/Developer/src/index.php
     fi
 fi
 

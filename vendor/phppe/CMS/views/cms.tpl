@@ -6,6 +6,6 @@
 <img src='images/cms/gpl.png' alt='GPL - some rights reserved' style='float:right;'><br><br><br>
 <a href='cms/pages'><!L Pages></a>
 <a href='cms/layouts'><!L Layouts></a><br>
-<a href="https://github.com/bztsrc/phppe3/tree/master/vendor/phppe/cms" target="_new"><!=L("Source on github")></a>
+<a href="https://github.com/bztsrc/phppe3/tree/master/vendor/phppe/CMS" target="_new"><!=L("Source on github")></a>
 </span>
 </center>

@@ -276,23 +276,6 @@ namespace PHPPE {
 		}
 	}
 
-/**
- * default Content action handler, takes care of PHPPE CMS generated controllers
- */
-	class Content
-	{
-		function action($a)
-		{
-			//! as this can be considered a security risk, this feature can be turned off globally
-			if(! empty(Core::$core->noctrl) || empty($a[ 'ctrl' ]) || ! Core::istry())
-				return;
-			ob_start();
-			//FIXME: sanitize php code
-			eval("namespace PHPPE\Ctrl;\nuse PHPPE\Core as PHPPE;\n" . $a[ 'ctrl' ]);
-			return o();
-		}
-	}
-
 /****** PHPPE Core ******/
 	//! required by formatter (fmt.php)
 	define('M', "vendor/");
@@ -403,6 +386,7 @@ namespace PHPPE {
 			$R = $_REQUEST;
 			//! load configuration
 			$c = P . "config" . PE;
+			$this->disabled = [];
 			if(f($c))
 				require_once($c);
 			//! range checks
@@ -413,8 +397,12 @@ namespace PHPPE {
 				$this->timeout = 7 * 24 * 3600;
 			if($this->cachettl < 10)
 				$this->cachettl = 10;
+			//! functions allowed in view expressions
 			if(! empty($this->allowed) && ! a($this->allowed))
 				$this->allowed = x(",", $this->allowed);
+			//! disabled extensions
+			if(! a($this->disabled))
+				$this->disabled = x(",", $this->disabled);
 			//! patch php. this must be done _after_ config loaded
 			ini_set("display_errors", $this->runlevel > 1 ? 1 : 0);
 			$this->now = time();
@@ -507,15 +495,15 @@ namespace PHPPE {
 			});
 			foreach($d as $f) {
 				//!extra check on glob's output - first part must be numeric, second must match directory name
-				if(p("/([^\/]+)\/([0-9]{2}_([^\.]+)\.php)$/", $f, $m) && $m[ 1 ] == t($m[ 3 ]) && ! ia($m[ 3 ], $this->disabled)) {
+				if(p("/([^\/]+)\/([0-9]{2}_([^\.]+)\.php)$/", $f, $m) && $m[ 1 ] == $m[ 3 ] && ! ia($m[ 3 ], $this->disabled)) {
 					$c = C . $m[ 1 ];
 					//we don't have session pe_l yet, don't use langInit
 					io($f);
-					if(ce($c) && t($c) != "\\" . t(__CLASS__)) {
+					if(ce($c) && t($c) != t("\\" . __CLASS__)) {
 						$C = new $c();
 						//don't allow libraries to overwrite DataSource layer
-						if($m[ 1 ] != "DS" && empty($this->libs[ t($m[ 1 ]) ]))
-							$this->libs[ t($m[ 1 ]) ] = $C;
+						if($m[ 1 ] != "DS" && empty($this->libs[ $m[ 1 ] ]))
+							$this->libs[ $m[ 1 ] ] = $C;
 					}
 				}
 			}
@@ -808,7 +796,7 @@ namespace PHPPE {
 			//! *** INIT Event ***
 			foreach($this->libs as $k => $v) {
 				LANG_INIT($k, $i);
-				$c = N . t($k) . "/config" . PE;
+				$c = N . $k . "/config" . PE;
 				if(q($v, "init") && ! $v->init(f($c) ? io($c) : []))
 					unset($this->libs[ $k ]);
 			}
@@ -852,7 +840,7 @@ namespace PHPPE {
 			//! initialize primary datasource if configured
 			if(! empty($this->db)) {
 				//! replace string $this->db with an array of pdo object
-				self::db($this->db);
+				@self::db($this->db);
 				//! get current timestamp from primary datasoure
 				//! this will override time() in $core->now with
 				//! a time in database server's timezone
@@ -1136,7 +1124,7 @@ namespace PHPPE {
 			}
 			//! get configuration array for Application
 			$p = s($d, [ "PHPPE\\App\\" => "", "PHPPE\\Ctrl\\" => "" ]);
-			foreach([ t($p), t($this->app) ] as $C) {
+			foreach([ $p, $this->app ] as $C) {
 				$c = @include(N . "$C/config" . PE);
 				if(a($c))
 					break;
@@ -1601,7 +1589,7 @@ namespace PHPPE {
 			$L = &self::$core->libs;
 			//! return list of lib or a specific module instance
 			if($l == "" && empty($D) && ! $o)
-				return empty($n) ? $L : (empty($L[ t($n) ]) ? null : $L[ t($n) ]);
+				return empty($n) ? $L : (empty($L[ $n ]) ? null : $L[ $n ]);
 			//! initialize a module with dependency check
 			$d = "";
 			//! if name not given, guess from filename
@@ -1623,9 +1611,9 @@ namespace PHPPE {
 			}
 			//! if there's a name and no failed dependency, add to list
 			if(! $d && $n) {
-				if(empty($L[ t($n) ]))
-					$L[ t($n) ] = $o ? $o : new \StdClass();
-				$L[ t($n) ]->name = L(empty($l) ? $n : $l) . (! empty($o->version) ? " (" . $o->version . ")" : "");
+				if(empty($L[ $n ]))
+					$L[ $n ] = $o ? $o : new \StdClass();
+				$L[ $n ]->name = L(empty($l) ? $n : $l) . (! empty($o->version) ? " (" . $o->version . ")" : "");
 			}
 		}
 /**
@@ -1643,9 +1631,9 @@ namespace PHPPE {
 		static function addon($n = "", $l = "", $D = "", $c = "")
 		{
 			if(empty($n)) {
-				//! return all available add-ons in list
 				//! save current context
 				$S = [ self::$core->addons, self::$core->js, self::$core->jslib, self::$core->css ];
+				//! return all available add-ons
 				$d = @glob(N . "*/addons/*" . PE);
 				foreach($d as $f) {
 					$F = m($f);
@@ -1695,7 +1683,7 @@ namespace PHPPE {
 		static function isInst($n)
 		{
 			//! check for installed module or available add-on
-			return(isset(self::$core->libs[ t($n) ]) || isset(self::$core->addons[ $n ]) || ce(C . $n) || ce(A . $n) || ! empty(@glob(N . "*/addons/" . $n . PE)[ 0 ]));
+			return(isset(self::$core->libs[ $n ]) || isset(self::$core->addons[ $n ]) || ce(C . $n) || ce(A . $n) || ! empty(@glob(N . "*/addons/" . $n . PE)[ 0 ]));
 		}
 /**
  * format an error message

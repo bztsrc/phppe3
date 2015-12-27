@@ -22,14 +22,17 @@
  * @brief Set list selection
  */
 
+var setsel_dragged=null;
+
 function setsel_drag(evt,id) {
+	setsel_dragged=id;
 	evt.dataTransfer.setData("text", id);
 	document.getElementById(id+':inlist').removeAttribute('data-finished');
 	//! force refresh browser screen
-	evt.target.parentNode.style.display='none';
+//	evt.target.parentNode.style.display='none';
 	obj=evt.target.cloneNode(true);
-	obj.setAttribute('id','setsel_dnd');
-	obj.style.background='rgba(255,255,255,0.5);';
+	obj.setAttribute('data-setselid',id);
+//	obj.style.background='rgba(255,255,255,0.5);';
 	obj.style.display='inline';
 	obj.style.position='absolute';
 	obj.style.top='0px';
@@ -42,14 +45,36 @@ function setsel_drag(evt,id) {
 		$('#setsel_animate').animate({'marginTop':'0px'},250);
 		evt.target.nextSibling.removeAttribute('id');
 	}
-	evt.target.setAttribute('data-inlist',1);
-	evt.target.style.display="none";
+	//chromium workaround
+	//evt.target.style.display='none';
+	var i,t=evt.target.parentNode.getElementsByTagName("*");
+	for(i=0;i<t.length;i++){
+	    if(t[i].getAttribute("data-id")==evt.target.getAttribute("data-id")){
+		t[i].setAttribute('style','display:none;');
+		t[i].setAttribute('data-inlist',1);
+	    }
+	}
 	evt.dataTransfer.setDragImage(obj, 0, 0);
-	evt.target.parentNode.style.display='block';
+//	evt.target.parentNode.style.display='block';
+
+	//!chromium bug workaround
+//	if(evt.target.getAttribute("data-id")==obj.getAttribute("data-id")) {
+	    dnd_drag(id,obj);
+	    if ( window.addEventListener )
+	        window.addEventListener( "mouseup", setsel_dragend, false );
+	    else if ( window.attachEvent )
+    		window.attachEvent( "onmouseup", setsel_dragend );
+//    	}
+
 }
 
 function setsel_droparea(evt) {
-	var id=evt.dataTransfer.getData("text");
+	obj=document.body.lastChild;
+	if(obj==null||obj.className!="setsel_item") return;
+	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
+	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
+	if(id==null||id=='') id=setsel_dragged;
+	if(id==null||id=='' || document.getElementById(id+':inlist')==null) return;
 	evt.preventDefault();
 	var i,n=null,o=document.getElementById(id+':inlist').getElementsByTagName('*');
 	for(i=0;i<o.length;i++) if(o[i].className.indexOf('setsel_item')>-1){
@@ -61,30 +86,51 @@ function setsel_droparea(evt) {
 }
 
 function setsel_add(evt) {
-	var id=evt.dataTransfer.getData("text");
+	obj=document.body.lastChild;
+	if(obj==null||obj.className!='setsel_item') return;
+	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
+	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
+	if(id==null||id=='') id=setsel_dragged;
+	if(id==null||id=='') return;
 	evt.preventDefault();
+	document.getElementById(id+':inlist').style.display='none';
 	document.getElementById(id+':inlist').setAttribute('data-finished','true');
-	obj=document.getElementById('setsel_dnd');
-	document.body.removeChild(obj);
+	obj.setAttribute('id','');
 	obj.removeAttribute('id');
+	obj.setAttribute('style','');
 	obj.removeAttribute('style');
+	obj.style.display='block';
+	document.body.removeChild(obj);
 	var i,n=null,o=document.getElementById(id+':inlist').getElementsByTagName('*');
 	for(i=0;i<o.length;i++) {
+		var mt=Math.round(o[i].style.marginTop.replace('px',''));
 		o[i].style.marginTop='0px';
-		if(o[i].getAttribute('data-id')==obj.getAttribute('data-id'))
+		if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==obj.getAttribute('data-id'))
 			o[i].parentNode.removeChild(o[i]);
-		else
-			if(evt.layerY<o[i].offsetTop && n==null) n=o[i];
+		else {
+			if(mt>0 && n==null) n=o[i];
+		}
 	}
 	if(n!=null)
 		document.getElementById(id+':inlist').insertBefore(obj,n);
 	else
 		document.getElementById(id+':inlist').appendChild(obj);
+	document.getElementById(id+':inlist').style.display='block';
+	setsel_dragged=null;
 	setsel_setvalue(id);
+	try{
+	if(obj!=null && obj.className=='setsel_item')
+		document.body.removeChild(obj);
+	}catch(e){}
 }
 
 function setsel_remove(evt) {
-	var id=evt.dataTransfer.getData("text");
+	obj=document.body.lastChild;
+	if(obj==null||obj.className!='setsel_item') return;
+	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
+	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
+	if(id==null||id=='') id=setsel_dragged;
+	if(id==null||id=='') return;
 	evt.preventDefault();
 	document.getElementById(id+':inlist').setAttribute('data-finished','true');
 	var i,o=document.getElementById(id+':inlist').getElementsByTagName('*');
@@ -99,16 +145,30 @@ function setsel_remove(evt) {
 			o[i].removeAttribute('data-inlist');
 			o[i].style.display='block';
 		}
+	setsel_dragged=null;
 	setsel_setvalue(id);
+	try{
+	if(obj!=null && obj.className=='setsel_item')
+		document.body.removeChild(obj);
+	}catch(e){}
 }
 
 function setsel_dragend(evt) {
-	var id=evt.dataTransfer.getData("text");
-	obj=document.getElementById('setsel_dnd');
-	if(obj!=null)
+	obj=document.body.lastChild;
+	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
+	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
+	if(id==null||id=='') id=setsel_dragged;
+	if(id==null||id=='') return;
+	var inl=document.getElementById(id+':inlist');
+	if(evt.target==inl) setsel_add(evt);
+	if(evt.target==document.getElementById(id+':inlist')) setsel_remove(evt);
+	setsel_dragged=null;
+	try{
+	if(obj!=null && obj.className=='setsel_item')
 		document.body.removeChild(obj);
-	if(document.getElementById(id+':inlist').getAttribute('data-finished')!='true'){
-		var i,w=0,o=document.getElementById(id+':inlist').getElementsByTagName('*');
+	}catch(e){}
+    if(inl!=null){
+		var i,w=0,o=inl.getElementsByTagName('*');
 		for(i=0;i<o.length;i++) {
 			o[i].style.marginTop='0px';
 			if(o[i].style.display=='none') {
@@ -116,6 +176,7 @@ function setsel_dragend(evt) {
 				w=1;
 			}
 		}
+	if(inl.getAttribute('data-finished')!='true'){
 		if(!w){
 			o=document.getElementById(id+':all').getElementsByTagName('*');
 			for(i=0;i<o.length;i++) {
@@ -127,7 +188,8 @@ function setsel_dragend(evt) {
 			}
 		}
 	} else
-		document.getElementById(id+':inlist').removeAttribute('data-finished');
+		inl.removeAttribute('data-finished');
+    }
 }
 
 function setsel_setvalue(id) {

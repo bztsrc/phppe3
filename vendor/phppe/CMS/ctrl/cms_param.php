@@ -33,7 +33,7 @@ class CMS extends \PHPPE\Ctrl {
 				$frpage=@jd(PHPPE::field("data","pages","id='frame'"));
 				$this->value=$frpage[$key];
 		} else
-			$this->value=$_SESSION['cms_page']['data'][$key];
+			$this->value=!empty($_SESSION['cms_page']['data'][$key])?$_SESSION['cms_page']['data'][$key]:'';
 		$this->w=intval($_REQUEST['w']);
 		$this->h=intval($_REQUEST['h']);
 		$this->page=PHPPE::fetch( "ownerid", "pages", "id=?", "", "id DESC,created DESC",[$_SESSION['cms_page']['id']]);

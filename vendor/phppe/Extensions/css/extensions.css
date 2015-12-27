@@ -83,7 +83,7 @@ INPUT[type=button] {
 @media screen and (min-width:800px) {
 	.extension { width:48%; }
 }
-@media screen and (min-width:1200px) {
+@media screen and (min-width:1280px) {
 	.extension { width:32%; }
 }
  .popup {box-shadow: 3px 3px 8px #000;position:absolute;background:#A0A0A0;padding:5px;z-index:10;}

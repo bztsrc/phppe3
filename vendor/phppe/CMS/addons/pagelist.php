@@ -14,12 +14,13 @@ class pagelist extends \PHPPE\AddOn\setsel
 	}
 	function edit()
 	{
-		$t=[];
+		$t=!empty($this->args[0])?$this->args[0]:[];
 		if(is_string($t)) {
 			if($t[0]=='{'||$t[0]=='[') $t=json_decode($t,true);
 			else $t=explode(",",$t);
-		} elseif(is_array($t))
-			$t=$this->args[0];
+		}
+		if(!is_array($t))
+			$t=[];
 
 		$this->args[0]=intval($_REQUEST['h'])-24;
 		$this->args[1]='lang,tid:template';

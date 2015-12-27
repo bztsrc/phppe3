@@ -86,8 +86,7 @@ function cms_edit(o,t,i,c)
     if(t=="color"||t=="pagerevert") { w=200; h=200; }
     if(t=="text"||t=="pass"||t=="num"||t=="select"||t=="check"||t=="email"||t=="phone"||t=="file"||t=="date"||t=="datetime") {w=400;h=20;}
     if(t=="wysiwyg" && h < 300) h=300;
-    if(t=="pagepublish"||t=="pagemeta") h=310;
-    if(t=="pageadd") h=220;
+    if(t=="pagepublish"||t=="pagemeta"||t=="pageadd") h=320;
     if(t=="pagefilters"||t=="pagedelete"||t=="layoutadd"||t=="layoutdelete") h=110;
     if(t=="pagelist") h=Math.round(wh*0.6)-24;
     if(h>wh) h=wh;
