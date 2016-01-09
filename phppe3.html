@@ -231,14 +231,14 @@ function tab_back()
 function tab_getscroll()
 {
     var o=document.getElementById('infobox');
-    tab_scroll=window.pageYOffset || document.documentElement.scrollTop;
+    tab_scroll=Math.floor(window.pageYOffset || document.documentElement.scrollTop);
     var t='#'+tab_current+' :'+tab_scroll;
     if(o!=null&&o!=undefined) o.innerHTML=t;
 }
 function tab_permalink()
 {
 	var d=document.location.href.split("#")[0];
-	document.location.href=d+'#'+tab_current+(tab_scroll>30?':'+tab_scroll:'');
+	document.location.href=d+'#'+tab_current+(tab_scroll>30?':'+Math.floor(tab_scroll):'');
 }
 function div_switch(name)
 {
@@ -489,7 +489,7 @@ As being a micro-framework, it won't solve all of your web-development oriented 
 Of course one single file is very limited, so here's the <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_pack.tgz' target='_new'>PHPPE Pack</a> (~96KiB) to save the day and give you an easy start (also available via PHP Composer, just type <tt>composer update</tt>).<br>
 PHPPE Pack includes normalize.css and JQuery2 to standardize views; eye candies like image zoomer, pop-up divs; SQL Query Builder, CSV and RSS output, Raspberry Pi interface and even more!<br><br>
 
-For full CMS capability install the Content Editor too with <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz' target='_new'>PHPPE CMS</a> (~40KiB), because Core on it's own only serves contents (also available via PHP Composer, <tt>composer require "phppe/CMS"</tt>).<br><br>
+For full CMS capability install the Content Editor too with <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz' target='_new'>PHPPE CMS</a> (~60KiB), because Core on it's own only serves contents (also available via PHP Composer, <tt>composer require "phppe/CMS"</tt>).<br><br>
 
 <h2>Features</h2>
 This 64k bytes of php code will give you:<ul>
@@ -518,7 +518,7 @@ This 64k bytes of php code will give you:<ul>
 <li>Uses View layer to detect Models (flexibility you've never seen)</li>
 </ul>
 <h2>Requirements</h2>
-At least PHP 5.5 (5.6 recommended). If you also install Pack and CMS Extensions, no more than 256k disk space needed.
+At least PHP 5.5 (5.6 recommended). If you also install Pack and CMS Extensions, no more than 768k disk space needed.
 <h2>License</h2>
 PHPPE Core, PHPPE Pack as well as PHPPE CMS are free and OpenSource softwares, licensed under <a href='http://www.gnu.org/licenses/' target='_new'>LGPL-3.0+</a>. See <tt>vendor/phppe/LICENSE</tt> for details.
 <pre>
@@ -693,10 +693,11 @@ It's an (usually, but not necessairly) xml with placeholders for application pro
 <div id='install' class='tab' rel='diagnostics,sudo'>
 <h2>Requirements</h2>
 <ul>
-<li>at least php 5.5 installed (5.6 recommended)</li>
+<li>At least php 5.5 (5.6 recommended)</li>
 <li>SSH terminal access (use ssh utility or PuTTY)</li>
-<li>http (or https) access for output (Apache or nginx on server side, any HTML5 compatible browser on client side)</li>
-<li>at top 256k free space</li>
+<li>Apache or nginx with php on server side</li>
+<li>Any HTML5 compatible browser on client side</li>
+<li>Less than 1 Mb free space</li>
 </ul>
 <h4>Optional</h4>
 <ul>
@@ -705,18 +706,23 @@ It's an (usually, but not necessairly) xml with placeholders for application pro
 <li>a cron implementation (crond, vixie-cron etc.) for <a href='javascript:tab_switch("cron");'>background jobs</a></li>
 </ul>
 <h2>Installation</h2>
-All-in-one commands for installing PHPPE Core and PHPPE Pack:<br><br>
-<b>From this documentation</b><br>
+All-in-one commands for bootstrapping PHPPE Core in an empty directory:<br><br>
+<b>From this documentation, no dependencies at all</b><br>
 <pre>
 mkdir public
 cat >public/index.php
-     <i><a href='javascript:phppe_download();'>copy this</a>, paste here and press ^D</i>
-curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe
+         <i><a href='javascript:phppe_download();'>copy this</a>, paste here and press ^D</i>
 sudo php public/index.php --diag
 $EDITOR phppe/config.php
 </pre>
-
-<b>Without Packagist</b><br>
+<br><b>With Packagist</b><br>
+<pre>
+composer create-project bztsrc/phppe3
+mv phppe3 <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
+$EDITOR phppe/config.php
+</pre>
+<br>
+<b>Without Packagist (Composer alone)</b><br>
 <pre>
 mkdir public
 curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
@@ -724,13 +730,16 @@ sudo php public/index.php --diag
 composer update
 $EDITOR phppe/config.php
 </pre>
-<br><b>With Packagist</b><br>
+<br><b>With git</b><br>
 <pre>
-composer create-project bztsrc/phppe
-mv phppe <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
-composer require phppe
+git clone --branch 3.0 https://github.com/bztsrc/phppe3.git
+mv phppe3 <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
+sudo php public/index.php --diag
 $EDITOR phppe/config.php
 </pre>
+<br><b>Using web interface</b><br>
+Alternatively if you already have a running PHPPE environment somewhere, you can use <a href='javascript:tab_switch("extensions");'>PHPPE Extension Manager</a> to
+bootstrap the environment to a fresh new, empty directory on a remote server. All you need is a working key based ssh authentication.<br><br>
 See steps breaked down (and more alternatives) below.
 <h3>1. Get the single file framework</h3>
 To get it on your clipboard, <a href='javascript:phppe_download();'>click here</a>. Select all and copy.<br><br>
@@ -742,23 +751,17 @@ $ cat >public/index.php
 </pre>
 Paste the code from clipboard then press ^D.<br><br>
 Alternatively you can save the file on your computer, create "public" directory with a windowed scp tool and upload downloaded image.<br><br>
+If your terminal is laggy and you cannot paste the code without mistakes, copy'n'paste this much shorter command that downloads the file from the server.<br><br>
 <b>From server</b><br>
 Also, you can use this to download it directly from github without using git command:
 <pre>
-$ mkdir public
 $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
 </pre>
-<b>With git</b><br>
+Or use the official mirror:
 <pre>
-$ git clone --branch 3.0 https://github.com/bztsrc/phppe3.git
-$ mv phppe3 <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
+$ curl http://phppe.org/index.php.txt >public/index.php
 </pre>
-<b>With Packagist</b><br>
-<pre>
-$ composer create-project bztsrc/phppe
-$ mv phppe <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
-</pre>
-<b>NOTE</b> you can skip the following when using Packagist and installing Pack as well (go to step 4)
+<b>NOTE</b> you can skip the following when using Composer as it automatically triggers diagnostics (go to step 3).
 <h3>2. Run diagnostics</h3>
 Now framework is in place, it's time to run diagnostics to create directory structure and missing files.
 Without the "sudo", file ownerships and permissions may be left incorrect.
@@ -780,7 +783,7 @@ DIAG-I: OK
 </pre>
 <b>NOTE</b> that "--diag" argument is not required on the first run, because PHPPE will automatically fallback to diagnostics if configuration file is not found.<br>
 <h3>3. Check it in a browser</h3>
-Check your site in a browser. You should see something like this:<br><br>
+Check your site in a browser. You should see something similar to this:<br><br>
 <div id='installpreview' style='border:solid 2px black;padding:5px 5px 5px 5px;font-family:times new roman;'>
 
 <h1>PHPPE works!</h1>Next step: install <a href='http://phppe.org/phppe3.html#install:1956' target='_new'>PHPPE Pack</a>.<div style='font-weight:bold;background:#F0F0F0;padding:3px;'>Test form</div><form name="obj" action='http://localhost/phppe3_test/public/' method='post' enctype='multipart/form-data'>
@@ -801,47 +804,55 @@ Text<input class='input' name='obj_f0' size='6' type='text' onfocus='this.style.
 </div>
 <br>
 <div style='border:red 2px solid;background:#fff0f0;margin:10px;padding:5px;'>
-<b>At this point the framework is fully functional</b>, although it will suffer low resolution logo and missing features. To help that, you'll need to install Extensions.
+<b>At this point the framework is fully functional</b>, although it worth expanding it's capabilities by configuring and installing Extensions.
 </div>
-<h3>4. Install PHPPE Pack (optional)</h3>
-The diagnostics mode has already created missing files, among others composer.json. So you can use PHP Composer to install PHPPE Pack with just like that:<br><br>
-<b>Without Packagist</b><br>
-<pre>
-$ composer update
-</pre>
-<b>With Packagist</b><br>
-When PHPPE installed with create-project, nothing left to do. Pack is already installed for you.<br>
-<b>Without Composer</b><br>
-<pre>
-$ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
-</pre>
-<b>Over web</b><br>
-Alternatively if you already have a running PHPPE environment, you can use <a href='javascript:tab_switch("extensions");'>PHPPE Extension Manager</a> to
-bootstrap the environment and install PHPPE Pack to a fresh new, empty directory on a remote server with key based authentication.
-<pre>
-$ composer require phppe/Extensions
-</pre>
-<pre>
-$ mkdir vendor/phppe/Extensions && curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
-</pre>
-You'll find the configuration in <a href='javascript:tab_switch("extensions");'><tt>vendor/phppe/Extensions/config.php</tt></a>.
-This gives you a nice web configuration interface too. This is the recommended way.
-<h3>5. Configure your site</h3>
+<h3>4. Configure your site</h3>
 Open phppe/config.php with your favourite editor over a terminal, and <a href='javascript:tab_switch("configuration");'>set up framework</a> parameters.<br>
 <pre>
 $ nano phppe/config.php
 $ vim phppe/config.php
 </pre>
 It's very likely that you have an $EDITOR environment variable holding default editor's name.
-<h3>6. Install PHPPE CMS (optional)</h3>
-Full Content Management capability can only be achieved with this package:<br><br>
+<h3>5. Install PHPPE Pack (optional)</h3>
+<b>NOTE</b>: if you've used <tt>composer create-project</tt>, nothing left to do as basic extensions are already installed.<br><br>
+The diagnostics mode created missing files, among others composer.json. With that you can make PHP Composer to install PHPPE Pack, Extensions and CMS all at once:<br><br>
+<b>With Composer (not using Packagist)</b><br>
+<pre>
+$ composer update
+</pre>
+<b>Without Composer</b><br>
+<pre>
+$ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
+</pre>
+<pre>
+$ curl http://phppe.org/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
+</pre>
+<h3>6. Install PHPPE Extensions (optional)</h3>
+<b>With Composer</b><br>
+<pre>
+$ composer require phppe/Extensions
+</pre>
+<b>Without Composer</b><br>
+<pre>
+$ mkdir vendor/phppe/Extensions && curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
+</pre>
+<pre>
+$ mkdir vendor/phppe/Extensions && curl http://phppe.org/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
+</pre>
+You'll find it's configuration in <a href='javascript:tab_switch("extensions");'><tt>vendor/phppe/Extensions/config.php</tt></a>. Once you've set up this, you can configure all the other Extensions
+over a nice web interface. This is the recommended way.
+<h3>7. Install PHPPE CMS (optional)</h3>
+For a full Content Management System you'll also need the Content Editor:<br><br>
 <b>With Composer</b><br>
 <pre>
 $ composer require phppe/CMS
 </pre>
 <b>Without Composer</b><br>
 <pre>
-$ mkdir vendor/phppe/cms && curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/cms
+$ mkdir vendor/phppe/CMS && curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
+</pre>
+<pre>
+$ mkdir vendor/phppe/CMS && curl http://phppe.org/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 </pre>
 </div>
 
@@ -4785,7 +4796,7 @@ Core extensions.<br>
 
 <span class='dlbox'>
 <img style='float:left;' src='data:image/png;base64,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'>
-<b>CMS <small>(56k)</small></b><br>
+<b>CMS <small>(60k)</small></b><br>
 Content editor.<br>
 <a href='http://phppe.org/phppe3_cms.tgz' target='_new'>phppe.org</a>
 <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz' target='_new'>github.com</a>
@@ -4817,6 +4828,7 @@ Utility to upload and oraginze attachments.<br>
 <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_datalibrary.tgz' target='_new'>github.com</a>
 <a href='https://github.com/bztsrc/phppe3/tree/master/vendor/phppe/DataLibrary' target='_new'>Source</a>
 </span>
+
 <span class='dlbox'>
 <img style='float:left;' src='data:image/png;base64,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'>
 <b>DBA <small>(5k)</small></b><br>
@@ -4824,6 +4836,15 @@ DataBase Administrator web interface.<br>
 <a href='http://phppe.org/phppe3_dba.tgz' target='_new'>phppe.org</a>
 <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_dba.tgz' target='_new'>github.com</a>
 <a href='https://github.com/bztsrc/phppe3/tree/master/vendor/phppe/DBA' target='_new'>Source</a>
+</span>
+
+<span class='dlbox'>
+<img style='float:left;' src='data:image/png;base64,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'>
+<b>Gallery <small>(5k)</small></b><br>
+Picture manipulation and management tool.<br>
+<a href='http://phppe.org/phppe3_gallery.tgz' target='_new'>phppe.org</a>
+<a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_gallery.tgz' target='_new'>github.com</a>
+<a href='https://github.com/bztsrc/phppe3/tree/master/vendor/phppe/Gallery' target='_new'>Source</a>
 </span>
 
 <span class='dlbox'>
