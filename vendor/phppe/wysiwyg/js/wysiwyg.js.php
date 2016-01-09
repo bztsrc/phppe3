@@ -196,13 +196,18 @@ function wysiwyg_setvalue(id)
     //rte.value=rte.value.replace(">&quot;\"",">\"").replace(/&lt;!([^-])/gi,"<!$1").replace(/\=\"\"/g,"").replace(/\"\=\"\"/g,"\"").replace(/\=\"\"/g,"").replace(/alt=\"[\ ]+/gmi,"alt=\"").replace(/&lt;img/g,"<img");
     var i,txt=rte.value.match(/<img class=[\"\'][\ ]?wysiwyg_icon[^>]+>([\'\"][^>]*?>)?/gmi,"$1");
     if(txt!=null&&txt.length>0) for(i=0;i<txt.length;i++) {
-	var tmp=txt[i].match(/alt=\"[^\"]*[\">]?/gmi,"$1");
-	if(tmp&&tmp[0]) {var t=tmp[0].substring(5,tmp[0].length-1).trim();t=t.replace("<!/form>","</form>");
-    //if(t.match(/^<!iframe/i))t="<"+t.substring(2,t.length)+(t.length<10||t.substr(t.length-9,9)!="<"+"/iframe>"?"<"+"/iframe>":"");else
-    t=t.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,"\"").replace(/&amp;/g,"&").trim();
-	if(t.charAt(t.length-1)!='>') t=t+'>';
-	rte.value=rte.value.replace(txt[i],t).replace("&lt;"+txt[i].substring(1,txt[i].length),t);}
+    	var tmp=txt[i].match(/alt=\"[^\"]*[\">]?/gmi,"$1");
+    	if(tmp&&tmp[0]) {var t=tmp[0].substring(5,tmp[0].length-1).trim();t=t.replace("<!/form>","</form>");
+        //if(t.match(/^<!iframe/i))t="<"+t.substring(2,t.length)+(t.length<10||t.substr(t.length-9,9)!="<"+"/iframe>"?"<"+"/iframe>":"");else
+        t=t.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,"\"").replace(/&amp;/g,"&").trim();
+    	if(t.charAt(t.length-1)!='>') t=t+'>';
+    	rte.value=rte.value.replace(txt[i],t).replace("&lt;"+txt[i].substring(1,txt[i].length),t);}
     }
+    rte.value=rte.value.replace(/(<!for[^>]+>)(^<!\/for)*?(<table(.|[\r\n])+?\/tr>)/im,"$3$1");
+    rte.value=rte.value.replace(/(<\/table>)((^<!for)*?<br[^>]*?>)*?(.|[\r\n])*?(<!\/for[^>]+>)/im,"$5$1");
+    rte.value=rte.value.replace(/(<\/tbody>)((^<!for)*?<br[^>]*?>)*?(.|[\r\n])*?(<!\/for[^>]+>)/im,"$5$1");
+    rte.value=rte.value.replace(/(<!for[^>]+>)(^<!\/for)*?(<[uo]l[^>]*?>)/im,"$3$1");
+    rte.value=rte.value.replace(/(<\/[uo]l>)(.|[\r\n])*?(<!\/for[^>]+>)/im,"$3$1");
     rte.value=rte.value.replace(/<br[\/]?>([^\n])/gi,"<br>\n$1").replace(/<\/([a-z]+)>([^\n])/gi,"</$1>\n$2").replace(/<!\/([^>]+)>([^\n]?)/g,"<!/$1>\n$2").replace(/([{};])([^\n])/g,"$1\n$2").replace(/(&[a-z0-9#]+;)\n/gi,"$1");
 }
 
@@ -246,6 +251,11 @@ function wysiwyg_togglesrc(id)
 	output=document.getElementById(id).value.toString().replace(/<(!?)\/([^>]+)>\n/g,"<$1/$2>").replace(/<!-/g,"<span class='comment'>&lt;!-").replace('-->','--></span>').replace(/<\/form>/gi,"<!/form>").replace(/([{};])\n/g,"$1");
     document.getElementById(id+':frame').style.width=tw+'px';
     document.getElementById(id+':frame').style.height=th+'px';
+    output=output.replace(/(<table(.|[\r\n])+?\/tr>)[^<]*?(<!for[^>]+>)/im,"$3$1");
+    output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/tbody>)/im,"$2$1");
+    output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/table>)/im,"$2$1");
+    output=output.replace(/(<[uo]l[^>]*?>)[^<]*?(<!for[^>]+>)/im,"$2$1");
+    output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/[uo]l>)/im,"$2$1");
 	tags=output.replace(/=['"][^<>'"]*<!/,"").replace(/=['"]<!/,"");
     tags=tags.match(/<![^>]+>/gm,"$1");
 	if(tags!=null&&tags.length>0)for(i=0;i<tags.length;i++) {

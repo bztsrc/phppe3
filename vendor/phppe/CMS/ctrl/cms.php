@@ -142,11 +142,19 @@ class CMS extends \PHPPE\Ctrl {
 				foreach($_SESSION['cms_page'] as $k=>$v)
 					$this->page->$k=$v;
 				if(PHPPE::$core->action=="pagemeta"||PHPPE::$core->action=="pageadd") {
-					$this->layouts = PHPPE::query("id,name","views","sitebuild=''","","id ASC");
+					$this->layouts = PHPPE::query("id,name","views","sitebuild='' AND id!='styleguide'","","id ASC");
+					$w=0;
 					foreach($this->layouts as $k=>$v) {
 						if(empty($v['name'])||$v['name']=="null") $v['name']=$v['id'];
 						$this->layouts[$k]['name']=L($v['name']);
+						if(!empty($this->page->template) && $this->page->template==$v['id']) $w=1;
 					}
+					//add template to option list if not found so far
+					if(!empty($this->page->template) && !$w)
+						$this->layouts[]=['id'=>$this->page->template,'name'=>L($this->page->template)];
+					//add language to languages option list if not found
+					if(!empty($this->page->lang) && empty($this->langs[$this->page->lang]))
+						$this->langs[$this->page->lang]=$this->page->lang." ".L($this->page->lang);
 				}
 				if(empty($this->page->lang)) $this->page->lang=PHPPE::$client->lang;
 				break;

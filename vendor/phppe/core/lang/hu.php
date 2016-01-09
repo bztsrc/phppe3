@@ -38,6 +38,7 @@ return array(
 "Save"=>"Elment",
 "Delete"=>"Töröl",
 "Update"=>"Módosít",
+"Any"=>"Bármelyik",
 "empty"=>"Üres",
 "all"=>"Mind",
 "none"=>"Nincs",

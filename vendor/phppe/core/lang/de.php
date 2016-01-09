@@ -38,6 +38,7 @@ return array(
 "Save"=>"Speichern",
 "Delete"=>"Löschen",
 "Update"=>"Verändern",
+"Any"=>"Jeder",
 "empty"=>"Leer",
 "all"=>"Alle",
 "none"=>"Keiner",

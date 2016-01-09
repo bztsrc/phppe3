@@ -377,7 +377,7 @@ function cms_setattr(obj,wwid)
     var inp=new Array(form.rows[1]!=null&&form.rows[1].cells[0].firstChild!=null&&form.rows[1].cells[0].firstChild.value!=null?form.rows[1].cells[0].firstChild.value:cms_conf[0]);
     if(form.rows[0]!=null&&form.rows[0].cells[1]!=null&&form.rows[0].cells[1].firstChild!=null){
         if(form.rows[0].cells[1].firstChild.value!=null&&form.rows[0].cells[1].firstChild.value!='')
-            inp.push("@"+form.rows[0].cells[1].firstChild.value);
+            inp.push((form.rows[0].cells[1].firstChild.getAttribute('data-acl')!=null?"@":"")+form.rows[0].cells[1].firstChild.value.replace('>',''));
         if(form.rows[0].cells[0].firstChild!=null&&form.rows[0].cells[0].firstChild.checked)
             req="*";
     }
@@ -391,10 +391,10 @@ function cms_setattr(obj,wwid)
         req="";
     }
     for(i=inp.length-1;i>1&&inp[i]=="-";i--) inp.pop();
-    var alt=inp.join(" ").replace(/[\ ]*\([\ ]*/g,"(").replace(/[\ ]*\)[\ ]*/g,") ").replace("()","").replace(/[\ ]*\,[\ ]*/g,",").replace(/[\ ]+$/,"");
+    var alt=inp.join(" ").replace(/^= /,"=").replace(/[\ ]*\([\ ]*/g,"(").replace(/[\ ]*\)[\ ]*/g,") ").replace("()","").replace(/[\ ]*\,[\ ]*/g,",").replace(/[\ ]+$/,"");
     cms_configure.alt="<"+"!"+alt+">";
     var d=alt.split(' ');
-    var url=(d[1]==null?d[0]:d[0]+' '+(d[1].match(/^[a-z]+=['"]/)?d[1].substring(d[1].indexOf('=')+2,d[1].length-1):d[1]))+(d[2]!=null?' '+d[2]+(d[1].match(/^@/)&&d[3]!=null?' '+d[3]:''):'');
+    var url=(d[1]==null?d[0]:(d[0]?d[0]+' ':'')+(d[1].match(/^[a-z]+=['"]/)?d[1].substring(d[1].indexOf('=')+2,d[1].length-1):d[1]))+(d[2]!=null?' '+d[2]+(d[1].match(/^@/)&&d[3]!=null?' '+d[3]:''):'');
     cms_configure.src=cms_configure.src.replace(/wysiwyg\.js\/.*$/,"wysiwyg.js/"+escape("<"+"!"+url+">").replace(/\//g,"!2F!").replace(/\+/g,"!2B!"));
 }
 function cms_confhook(evt,wwid,conf)
@@ -435,7 +435,7 @@ function cms_confhook(evt,wwid,conf)
         j=1;
     }
     if(item==null) item="";
-    var r="<b>"+L(t[0]=="="?"Evaluate":'addon_'+(item!=''?item:t[0]))+"</b><table id='"+wwid+":cfgform'>";
+    var sk=1,r="<b>"+L(t[0]=="="?"Evaluate":'addon_'+(item!=''?item:t[0]))+"</b><table id='"+wwid+":cfgform'>";
     var i,idx=0,c=cfg.split(' ');
     if(evt!=null) cms_configure=evt.target;
     cms_conf=new Array(t[0]).concat(c);
@@ -443,11 +443,12 @@ function cms_confhook(evt,wwid,conf)
         var k,n=c[i].substr(0,1)=="["?c[i].substr(1):c[i];
         if(c[i]==")") {idx--;while(j>1&&t[j]!=')') j--; if(acl) j++; }
         if(n=="") j++;
+        if(t[j]==")") sk=0;
         if(n=="addon") {
             r+="<tr><td align='right' valign='top' style='padding-top:5px;'>";
             r+="<input type='checkbox' value='1' style='width:16px;' id='tmpltagisreq' onchange='cms_setattr(this,\""+wwid+"\");'"+(isreq?" checked":"")+">&nbsp;<label for='tmpltagisreq'><?=L("required")?></label>";
             r+=", @</td><td title='<?=L("pipe separated ACEs, like loggedin|admin")?>'>";
-            r+="<input type='text' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(acl)+"'><br/>";
+            r+="<input type='text' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(acl)+"' data-acl='1'><br/>";
             r+="</td></tr>";
         }
         r+="<tr><td"+(idx==1?" align='right'":"")+(n!=null&&L('help_arg_'+n)!='help arg '+n.replace('_',' ')?"<?=(!PHPPE::lib("CMS")->expert?" title='\"+htmlspecialchars(L(\"help_arg_\"+n))+\"'":"")?>":"")+">";
@@ -478,23 +479,23 @@ function cms_confhook(evt,wwid,conf)
                 for(k in LANG) {
                     var txt=LANG[k]+"";
                     txt=txt.replace("\n","").substr(0,80);
-                    r+="<option value='"+htmlspecialchars(k)+"'"+(k==t[j]?" selected":"")+">"+htmlspecialchars(k.substr(0,10)+': '+txt)+"</option>";
+                    r+="<option value='"+htmlspecialchars(k)+"'"+(sk&&k==t[j]?" selected":"")+">"+htmlspecialchars(k.substr(0,10)+': '+txt)+"</option>";
                 }
                 r+="</select>";
             } else
             if(n=="size"||n=="maxlen"||n=="min"||n=="max"||n=="width"||n=="height"||n=="before"||n=="after"||n=="rows"||n.substr(0,3)=="num"){
-                r+="<input type='number' style='width:100px;text-align:right;' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
+                r+="<input type='number' style='width:100px;text-align:right;' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(sk&&t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
             } else
             if(n.substr(0,2)=="is"){
-                r+="<input type='checkbox' value='1' onchange='cms_setattr(this,\""+wwid+"\");' "+(t[j]!=null&&t[j]=="1"?" checked":"")+"'>";
+                r+="<input type='checkbox' value='1' onchange='cms_setattr(this,\""+wwid+"\");' "+(sk&&t[j]!=null&&t[j]=="1"?" checked":"")+"'>";
             } else
             if(n=="obj.field"||n=="") {
-                r+="<input type='text' onchange='cms_objfld(this,\""+wwid+"\");' onkeyup='cms_objfld(this,\""+wwid+"\");' value='"+htmlspecialchars(t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
+                r+="<input type='text' onchange='cms_objfld(this,\""+wwid+"\");' onkeyup='this.value=this.value.replace(\">\",\"\");cms_objfld(this,\""+wwid+"\");' value='"+htmlspecialchars(sk&&t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
             } else
-                r+="<input type='text' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(t[j]!=null&&t[j]!="-"?t[j]:"")+"'>";
-        }
+                r+="<input type='text' onchange='cms_setattr(this,\""+wwid+"\");' onkeyup='this.value=this.value.replace(\">\",\"\");cms_setattr(this,\""+wwid+"\");' value='"+htmlspecialchars(sk&&t[j]!=null&&t[j]!="-"?t[j]:"")+"'"+(t[0]=="="?" pattern='[^>]'":"")+">";
+        } else sk=1;
         r+="</td></tr>";
-        if(c[i]=="(") idx++;
+        if(c[i]=="(") {idx++;sk=1;}
         j++;
     }
     if(item=="") item="noaddon";

@@ -38,6 +38,7 @@ return array(
 "Save"=>"他去",
 "Delete"=>"取消",
 "Update"=>"修改",
+"Any"=>"任何",
 "empty"=>"空",
 "all"=>"所有",
 "none"=>"没有",

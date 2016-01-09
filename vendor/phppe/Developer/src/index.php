@@ -612,14 +612,7 @@ namespace PHPPE {
 			//! create files
 			umask(0027);
 			i("app/config" . PE, "");
-			/*
-		$c = "public/.htaccess";
-		if (@i( $c,"RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n", 1 ))
-		{
-			$p = ( fileperms( $c ) &0777 );
-			if( ( $p &0222 ) != 0 )$E .= sprintf( "\t%o?\t%4o ", $p,$p &0555 ) . "$c\n";
-		}
-*/
+			//			i( "public/.htaccess","RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n");
 			i("public/favicon.ico", "");
 			i(P . "config" . PE, "");
 			$U = "http://phppe.org/";
@@ -653,7 +646,8 @@ namespace PHPPE {
 					self::exec($q);
 			}
 			//! *** DIAG Event ***
-			$this->_eh("diag");
+			if(! y("posix_getuid") || posix_getuid() != 0)
+				$this->_eh("diag");
 			umask($o);
 			die("DIAG-I: OK\n");
 		}

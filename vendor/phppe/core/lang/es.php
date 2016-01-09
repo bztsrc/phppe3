@@ -38,6 +38,7 @@ return array(
 "Save"=>"Guardar",
 "Delete"=>"Borrar",
 "Update"=>"Modificar",
+"Any"=>"Cualquier",
 "empty"=>"Vacío",
 "all"=>"Todos",
 "none"=>"Nada",
