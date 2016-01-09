@@ -31,7 +31,7 @@ echo
 # phppe/Pack
 # special, this one ships several extensions at once
 if [ ! -f  ../../phppe3_pack.tgz -o "`find core/* email users db gpio -cnewer ../../phppe3_pack.tgz 2>/dev/null|grep -v normalize.css`" != "" ]; then
-    tar --exclude=log $TARFLAG -czvf ../../phppe3_pack.tgz composer.json LICENSE core/libs core/addons core/js/core.js.php core/js/resptable.js core/js/setsel.js core/js/jquery.js core/ctrl core/css/normalize.css core/css/core.css core/images core/lang core/sql/views.sql core/sql/pages.sql core/out core/views/index.tpl core/views/maintenance.tpl core/views/rss.tpl core/00_core.php email users db registry
+    tar --exclude=log $TARFLAG -czvf ../../phppe3_pack.tgz composer.json LICENSE core/libs core/addons core/js/core.js.php core/js/resptable.js core/js/setsel.js core/js/jquery.js core/ctrl core/css/normalize.css core/css/core.css core/images core/lang core/sql/views.sql core/sql/pages.sql core/out core/views/index.tpl core/views/maintenance.tpl core/views/rss.tpl core/00_core.php Email Users DB Registry
     echo
 fi
 
