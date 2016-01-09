@@ -21,7 +21,7 @@
 		"phppe/Extensions": "*",
 	},
 
-	"suggests": {
+	"suggest": {
 		"phppe/GPIO": "*",
 		"phppe/Gallery": "*",
 		"phppe/DataLibrary": "*",
