@@ -48,7 +48,7 @@ try {
 }
 
 echo("update no fields (toString): ");
-if( \PHPPE\DB::update("users") != "<span style='background:#F00000;color:#FEA0A0;padding:3px;'>E-DB:&nbsp;No fields specified</span>" ) {
+if( !preg_match("/No fields specified/",\PHPPE\DB::update("users")) ) {
 	echo("Failed\n");
 	return false;
 } else echo ("OK\n");

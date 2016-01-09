@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/Email/01_Email.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief Email message object
  */
 namespace PHPPE;
@@ -146,6 +146,8 @@ class Email {
 			//! PHP Mailer
 			if( !class_exists("PHPMailer") )
 				@include_once("vendor/phpmailer/PHPMailerAutoload.php");
+			if( !class_exists("PHPMailer") )
+				@include_once("vendor/phpmailer/phpmailer/PHPMailerAutoload.php");
 			if( !class_exists("PHPMailer") )
 				throw new \Exception(L("PHPMailer not loaded!"));
 			$mail = new \PHPMailer();

@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -17,16 +17,18 @@
  *
  *   <http://www.gnu.org/licenses/>
  *
- * @file vendor/phppe/core/libs/tools.php
+ * @file vendor/phppe/core/libs/content.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
- * @brief PHPPE Core Extensions
+ * @date 1 Jan 2016
+ * @brief PHPPE Content Extension - misc and useful functions
  */
 namespace PHPPE;
 
+//! this class is used as a placeholder in PHPPE::libs() for core
 class Content {
 		public $version = VERSION;
 		public $name;
+
 		//! we do not register ourself, because we are going to be registered by 00_core.php
 		function __construct() {}
 
@@ -37,18 +39,21 @@ class Content {
 				"aaaaaaaaaaaaaaaaaaaaeeeeeeeeiiiiiiiiddnnoooooooooooouuuuuu"
 				)))));
 		}
+
 		//! accent safe string to upper
 		static function toupper($str){
 			return strtoupper(strtr($str,
 			"àá",
 			"ÀÁ"));
 		}
+
 		//! accent safe string to lower
 		static function tolower($str){
 			return strtolower(strtr($str,
 			"ÀÁ",
 			"àá"));
 		}
+
 		//! recursive directory delete
 		static function rmdir($dir) {
 			if(is_dir($dir)){
@@ -59,6 +64,7 @@ class Content {
 			} else
 				unlink($dir);
 		}
+
 		//! recursive directory structure creation
 		static function mkdir($pn) {
 			if(is_dir($pn)||empty($pn)) return true;
@@ -66,6 +72,7 @@ class Content {
 			if(self::mkdir($next_pathname)) {if(!file_exists($pn)) {return mkdir($pn,0777);} }
 			return false;
 		}
+
 		//! archive extractor (file can be pkzip,gz,bz2,tar,cpio,pax)
 		static function untar($file,$fn=""){
 			//! detect format
@@ -79,6 +86,7 @@ class Content {
 			if($size>0 && is_array($fn) && method_exists($fn[0],$fn[1])) call_user_func($fn,$name,substr($body,0,$size));
 			}$close($f);
 		}
+
 		//! copy files to a remote server over a secure channel
 		static function copy($files,$dest="")
 		{
@@ -105,16 +113,17 @@ class Content {
 					.": ".explode("\n",$r)[0]);
 			return $r;
 		}
+
 		//! default action handler executes code stored in db in pages.ctrl field
-                function action($a)
-                {
-                        //! as this could be considered as a security risk, this feature can be turned off globally
-                        if(! empty(Core::$core->noctrl) || empty($a[ 'ctrl' ]) || ! Core::istry())
-                                return;
-                        ob_start();
-                        //FIXME: sanitize php code
-                        eval("namespace PHPPE\Ctrl;\nuse PHPPE\Core as PHPPE;\n" . $a[ 'ctrl' ]);
-                        return o();
-                }
+        function action($a)
+        {
+            //! as this could be considered as a security risk, this feature can be turned off globally
+            if(! empty(Core::$core->noctrl) || empty($a[ 'ctrl' ]) || ! Core::istry())
+                    return;
+            ob_start();
+            //FIXME: sanitize php code
+            eval("namespace PHPPE\Ctrl;\nuse PHPPE\Core as PHPPE;\n" . $a[ 'ctrl' ]);
+            return o();
+        }
 	}
 ?>

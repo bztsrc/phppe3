@@ -4,6 +4,8 @@
 	"name_hu": "Adattár",
 
 	"description": "Adds attachments support.",
+	"description_hu": "Csatolmányok kezelését teszi lehetővé.",
+
 	"version": "0.0.1",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_datalibrary.tgz" },
 

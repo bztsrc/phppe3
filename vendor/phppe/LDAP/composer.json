@@ -1,0 +1,18 @@
+{
+	"name": "phppe/LDAP",
+	"name_en": "LDAP Authentication",
+	"name_hu": "LDAP Azonosítás",
+	"keywords": [ "Connections" ],
+
+	"description": "Connects your site with LDAP or Active Directory server for authentication.",
+	"description_hu": "LDAP vagy Aktív Könyvtár kapcsolatot hoz létre azonosításhoz.",
+
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_ldap.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

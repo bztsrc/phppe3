@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/EplosCMS/98_EplosCMS.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief Compatibility layer for EplosCMS contents
  */
 namespace PHPPE;

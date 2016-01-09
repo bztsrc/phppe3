@@ -11,9 +11,9 @@ header("Content-type:text/javascript;charset=utf8");
 error_reporting(0);
 ?>/*
  *   PHP Portal Engine v3.0.0
- *   https://github.com/bztsrc/phppe3/
+ *   http://phppe.org/
  *
- *   Copyright 2015 bzt, LGPLv3
+ *   Copyright LGPL 2016 bzt
  *
  *   PHPPE Extension Manager
  *
@@ -54,7 +54,7 @@ function extensions_search(str,installed)
 		}catch(e){}
 		if(extensions_pkgs[i].category!=null && extensions_pkgs[i].category!=cat) {
 			cat=extensions_pkgs[i].category;
-			t+="<br style='clear:both;'><a name='category_label"+extensions_cats.indexOf(cat)+"'><b>"+cat+"</b></a><br style='clear:both;'>"
+			t+="<br style='clear:both;'><a name='category_label"+extensions_cats.indexOf(cat)+"'><b>"+L(cat)+"</b></a><br style='clear:both;'>"
 		}
 		t+="<div class='extension'><img class='preview' title='"+extensions_pkgs[i].url+"' src='data:image/png;base64,"+(extensions_pkgs[i].preview?extensions_pkgs[i].preview:'iVBORw0KGgoAAAANSUhEUgAAAIAAAAB5CAMAAADGfdkoAAAAUVBMVEUAAADDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8OOFo/iAAAAGnRSTlMA+Mgje5u258wWvleUTwtvrUQspPCGYTne1lzKNFwAAAPaSURBVGje7ZrJlqsgEEALBAdUBFHU+v8PfadHTToRRAlvkbvJok8nF6kJEoiC1MzkVKim6yEBVuDKYCZ4LR3BO5ZXKkwFPkBJeBEdPmZ4USyM+JSXbEOHzyEZRGfCPShEp8RdGESmxn2G2Kkg0EEH8ZASMnSRQxx6JophWCi6KKLsQU/RmxiZ2OAB+FTBxeR4kLK71EFhALyKXnpflY8VwUCEjNv73AyXJMSC4ZAeTtPjGYoqbvNxI4IXbhnrWhmUA+fbczUWPwvILJ4kO/7xOa6QAU9iDn8+QwdxHkE9svani8hM112TL+vq40eBLklBzWh1v0kcmU0ta/KyiJ8I/WbXZ2HGrt2KQDXVncBQ+rByR2aqmq1IcGxYj8DbK6ezUOO0zqNRgkC73+REX27AifXayBbD4Oda7rqMOp6A8komFm8LSq+KyuMFYeH1LgbDqE9k4cr0WY/atUJfORZN6EZvK7TuGkWL60qxRQ+KJW+6m1ZRacu4cHqwgCzcL4zbAv27MTPBJ1TgICy8Z8GZ1dnGo9dNYBUAgcEUHx1LZ3KdYEOurWY8y7Dk3eOCwiCgF4YPfyZoGpnwGqa/Nb2Qh88eM+eUBA8ey97hUEqPLGRfiWV5edyiBTncrv/m8+0wiLF9FJNs+P2PaZvenZoPzt/93vFcfT9ixfS9hextk8+fNaPqb+NTM7X4ZsLtyEIsbLn948I7Lf8eB1vQAxb5WN8aZvWoiqMTwyhd5Wag3P7pU/QnFPOxre70hHvwUd+Lp1Z63vXM+SYs7vN4UUxvLdrCdSfEqDKcaXmw3syq09WTkkAW3v1aVMtuEpwr+SW3k3wynBHa1F8Gw6kDkHXGsRifSs6t4wBBJLiQeIp6f3wtwU1+/qBfdWYJv4ho8RTqp3k93KcRPCB4Crn3KC14YE5Gwd5KJvBAX3Xpx4/NnivDyT14Hk0zuFnNT991ZI7jR/w9KBzTd6w96Ne2eQe78uunxfDHGP0bBPyO/rrbd1JDTGaP6Toqo8+NjmVumg/GzQtv2kv2oAVool4LL26B0vvLGIrfveHrrUvwgLkLvkA3FP4KGAoeZOcF1tIr8PvM8aVDr/gNRu05uFBjlCGojFJm+HgxuWc57EIF3DTgQ+UUmJcsCMzBC+ESKCgE4StgnQJlXAGZWgBEaoE6tYBMLQAqtUCbWkCSxAJgUgvo1AIwpBJwj4ZtVIEVmloAeGoBqGq+JBNYJRpKEgmsEu0oSEKBVSKZwHo1LwZEm0BgRepxSiSw8hZ4C7wF3gJvgbfAW+At8Bb4HwRoYoEZSRCXCdSqpAGURsMT/gG5cUM2oGYBXgAAAABJRU5ErkJggg==');
 		t+="' style='position:absolute;width:128px !important;' alt='"+extensions_pkgs[i].id+"'><div style='overflow:auto;padding-left:140px;height:128px;'>";
@@ -63,7 +63,7 @@ function extensions_search(str,installed)
 			var u="",s=extensions_pkgs[i].size;
 			if(s>1024*1024) { u="M"; s=Math.round(s/1024/1024); }
 			if(s>1024) { u="K"; s=Math.round(s/1024); }
-			t+="<small class='details' style='font-style:italic;'>"+extensions_pkgs[i].id+" ("+s+" "+u+"b, "+extensions_pkgs[i].license+", "+extensions_pkgs[i].maintainer+")</small><br>";
+			t+="<small class='details' style='font-style:italic;'>"+extensions_pkgs[i].id+" ("+s+" "+u+"b, "+L(extensions_pkgs[i].license)+", "+extensions_pkgs[i].maintainer+")</small><br>";
 			if(Math.floor(extensions_pkgs[i].price)!=0)
 			t+="<input type='button' class='button' onclick='"+(extensions_pkgs[i].homepage? "window.open(\""+extensions_pkgs[i].homepage : "alert(\"<?=L("No webshop url given")?>" )+"\");' value='<?=L("Buy")?> ("+extensions_pkgs[i].price+"&euro;)' style='background:#B0B0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);'>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if(!extensions_pkgs[i].installed) {
@@ -86,7 +86,7 @@ function extensions_search(str,installed)
 						t+="<br><small"+(extensions_pkgs[i].installed?" style='color:red;'":"")+">"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small>";
 				} catch(e) {}
 		}
-		t+="<br><small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc:'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div>";
+		t+="<br><small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div>";
 	}
 	if(t=="") t="<br style='clear:both;'><i><?=L("No match found.")?></i>";
 	document.getElementById('pkgs').innerHTML=t;
@@ -183,9 +183,11 @@ function extensions_conf(obj,i)
 	    var a=obj,x=0,y=0;
 	    if(a.offsetParent) {
 		do {
-		    x += a.offsetLeft;
-		    y += a.offsetTop;
+		    x += a.offsetLeft - a.scrollLeft ;//+ a.clientLeft;
+		    y += a.offsetTop - a.scrollTop ;//+ a.clientTop;
 		} while (a = a.offsetParent);
+		x-=Math.floor((window.pageXOffset?window.pageXOffset:document.body.scrollLeft));
+		y-=Math.floor((window.pageYOffset?window.pageYOffset:document.body.scrollTop));
 	    }
 	    document.getElementById('status').style.left=x+'px';
 	    document.getElementById('status').style.top=y+'px';
@@ -276,16 +278,9 @@ function extensions_cmd(obj,cmd,i)
 		    var a=obj,x=0,y=0;
 		    var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
 			do {
-				if(a.scrollTop||a.scrollLeft){x-=Math.round(a.scrollLeft);y-=Math.round(a.scrollTop);}
-			    x += a.offsetLeft;
-			    y += a.offsetTop;
+			    x += a.offsetLeft - a.scrollLeft ;//+ a.clientLeft;
+			    y += a.offsetTop - a.scrollTop ;//+ a.clientTop;
 			} while (a = a.offsetParent);
-/*
-		    a=obj;
-			do {
-				if(a.scrollTop||a.scrollLeft){x-=Math.round(a.scrollLeft);y-=Math.round(a.scrollTop);}
-			} while (a = a.parentNode);
-*/
 			x-=Math.floor((window.pageXOffset?window.pageXOffset:document.body.scrollLeft));
 			y-=Math.floor((window.pageYOffset?window.pageYOffset:document.body.scrollTop));
 		    document.getElementById('status').setAttribute('style','left:'+x+'px;top:'+y+'px;width:'+obj.offsetWidth+'px;height:'+obj.offsetHeight+'px;visibility:visible;');
@@ -399,10 +394,12 @@ function extensions_header(evt) {
 		oy=ep.getAttribute("data-y");
 	} else {
 		while (t.offsetParent) {
-			ox += t.offsetLeft;
-			oy += t.offsetTop;
+			ox += t.offsetLeft - t.scrollLeft ;//+ t.clientLeft;
+			oy += t.offsetTop - t.scrollTop ;//+ t.clientTop;
 			t = t.offsetParent;
 		}
+		ox-=Math.floor((window.pageXOffset?window.pageXOffset:document.body.scrollLeft));
+		oy-=Math.floor((window.pageYOffset?window.pageYOffset:document.body.scrollTop));
 		ep.setAttribute("data-x",ox);
 		ep.setAttribute("data-y",oy);
    	}

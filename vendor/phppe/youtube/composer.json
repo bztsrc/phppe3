@@ -3,19 +3,16 @@
 	"name_en": "YouTube video",
 	"name_hu": "YouTube videó",
 	"keywords": [ "Content" ],
-	"keywords_hu": [ "Tartalom" ],
 
 	"description": "Add on to inline YouTube videos in your content.",
+	"description_hu": "YouTube videókat lehet beágyazni vele szövegbe.",
+
 	"version": "0.0.1",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_dba.tgz" },
 
 	"version_normalized": "0.0.1.0",
 	"type": "library",
 	"license": "LGPL-3.0+",
-
-	"require": {
-		"phppe": "3.*"
-	},
 
 	"maintainer": { "name": "bzt" }
 }

@@ -1,10 +1,10 @@
-/* 
+/*
  *   PHP Portal Engine v2.0.0
- *   http://phppe.turdus.hu
- * 
- *   Copyright 2012 bzt, LGPLv3
- * 
- * Code highlight support
+ *   http://phppe.org/
+ *
+ *   Copyright 2016 LGPL bzt
+ *
+ *   Code highlight support
  */
 
 /*PRIVATE VARS*/
@@ -111,7 +111,7 @@ function highlight_dohl(cls,obj) {
 			    while(i<txt.length&&txt.substr(i,1).match(reg))i++;
 			    if(i!=j) { ret+="<span class='"+(txt.substr(i,1)=='('?"function":"variable")+"'>"+txt.substr(j,i-j)+"</span>"; was=1; i--; }
 			}
-			if(!was) 
+			if(!was)
 			    ret+=txt.substr(i,1);
 		}
 	}

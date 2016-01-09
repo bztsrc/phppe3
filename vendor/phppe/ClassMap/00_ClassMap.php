@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,8 +19,8 @@
  *
  * @file vendor/phppe/ClassMap/00_ClassMap.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
- * @brief Compositor and PSR/4 compliant classmap based class auto loader.
+ * @date 1 Jan 2016
+ * @brief PHP Compositor and PSR-4 compliant, classmap based class auto loader.
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;
@@ -51,12 +51,12 @@ class ClassMap
         $D=[]; $R=[];
         foreach(["*/*","*/*/*","*/*/*/*","*/*/*/*/*","*/*/*/*/*/*"] as$v) {$D+=array_fill_keys(@glob("vendor/".$v.".php"),0); $D+=array_fill_keys(@glob("app/".$v.".php"),0); }
         foreach($D as $fn=>$v) {
-            if(strpos(strtolower($fn),"autoload")!==false||strpos(strtolower($fn),"00_classmap")!==false||explode("/",$fn)[2]=="developer") continue;
+            if(strpos(strtolower($fn),"autoload")!==false||strpos(strtolower($fn),"00_classmap")!==false||explode("/",$fn)[1]=="phppe") continue;
             $data=str_replace("\n{","{",preg_replace("|//[^\n]*$|ims","",preg_replace("|/\*.+?\*/|ims","",preg_replace("|/'.+?'|ims","",preg_replace("|/\".+?\"|ims","",file_get_contents($fn))))));
             if(preg_match_all("/(namespace|class)[\ \t]+([^\ ;{\[\(\]\)\$]+)/ims",$data,$m,PREG_SET_ORDER)) {
                 $ns="";
                 foreach($m as $V) {
-                    if(strtolower($V[1])=="namespace") $ns=trim($V[2]);
+                    if(strtolower($V[1])=="namespace"&&ctype_alpha(trim($V[2])[0])) $ns=trim($V[2]);
                     if(strtolower($V[1])=="class"&&ctype_alpha(trim($V[2])[0]) && (empty(PHPPE::$core->disabled)||(!in_array(trim($V[2]),PHPPE::$core->disabled)&&!in_array($ns.($ns?"\\":"").trim($V[2]),PHPPE::$core->disabled)))) $R[$ns.($ns?"\\":"").trim($V[2])]=$fn;
                 }
             }
@@ -69,7 +69,7 @@ class ClassMap
  *  PHP Portal Engine v3.0.0
  *  http://phppe.org/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  * @file vendor/autoload.php
  * @date ".@date("r",PHPPE::$core->now)."
@@ -77,7 +77,7 @@ class ClassMap
  * @regenwith php public/index.php --diag\n */\nspl_autoload_register(function(\$c){\$m=[\n";
         foreach($R as $k=>$v)
             $ret.="  \"".$k."\" => \"".addslashes($v)."\",\n";
-        $ret.="];if(!empty(\$m[\$c]) && file_exists(\$m[\$c])) include(\$m[\$c]);"./*\nelse\n  \\PHPPE\Core::\$core->log('E','Unable to load class: '.\$class,'autoloader');*/"});\n";
+        $ret.="];if(!class_exists(\$c) && !empty(\$m[\$c]) && file_exists(\$m[\$c])) include_once(\$m[\$c]);"./*\nelse\n  \\PHPPE\Core::\$core->log('E','Unable to load class: '.\$class,'autoloader');*/"});\n";
         @unlink("vendor/autoload.php");
         i( "vendor/autoload.php",  $ret, true );
     }

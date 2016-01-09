@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/DataLibrary/01_DataLibrary.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief Attachment upload and managing
  */
 namespace PHPPE;
@@ -38,7 +38,7 @@ class DataLibrary
  * @param cfg not used
  */
 	function init($cfg) {
-		PHPPE::lib("DataLibrary","DataLibrary");
+		PHPPE::lib("DataLibrary","Data Library");
 		self::$self=$this;
         return true;
 	}

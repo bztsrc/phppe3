@@ -6,10 +6,10 @@ Unlike other existing OpenSource PHP frameworks, PHPPE was written with security
 As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and makes your life easier.
 It's not bloated, and with simplicity cames stability and high performance.
 
-Of course one single file is very limited, so here's the PHPPE Pack (~80KiB) to save the day and give you an easy start.
-Includes normalize.css and JQuery2 to standardize views; eye candies like image zoomer, pop-up divs; SQL Query Builder, CSV and RSS output, RaspBerry Pi interface and even more!
+Of course one single file is very limited, so here's the PHPPE Pack (~96KiB) to save the day and give you an easy start.
+Includes normalize.css and JQuery2 to standardize views; eye candies like image zoomer, pop-up divs; SQL Query Builder, CSV, RSS and JSON output, Email interface and even more!
 
-For full CMS capability install the Content Editor too with PHPPE CMS (~30KiB), because PHPPE Core on it's own only serves contents.
+For full CMS capability install the Content Editor too with PHPPE CMS (60KiB), because PHPPE Core on it's own only serves contents.
 
 See documentation for more (phppe3.html above) or visit the site [http://phppe.org/](http://phppe.org).
 
@@ -76,7 +76,7 @@ For detailed instructions and alternatives see [documentation](http://phppe.org/
     $ sudo php public/index.php --diag
     ```
 
-4. If you want the full environment, also install PHPPE Pack (~80kb) with
+4. If you want the full environment, also install PHPPE Pack (~96kb) with
 
     ``` sh
     $ composer update

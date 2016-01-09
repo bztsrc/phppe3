@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/core/ctrl/scripts.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief Example CLI action handlers
  */
 namespace PHPPE\Ctrl;
@@ -27,23 +27,18 @@ use PHPPE\Core as PHPPE;
 
 class Scripts extends \PHPPE\Ctrl {
 
-	function action_daily($item="")
+	//! call this from cli as: php public/index.php scripts namedscript
+	function action_namedscript($item="")
 	{
+		//! if you don't need a view (likely), call die() in action handler
+		die("specific CLI handler, namedscript\n");
 	}
 
-	function action_hourly($item="")
-	{
-	}
-
+	//! call this from cli as: php public/index.php scripts *
 	function action($item="")
 	{
+		echo("common CLI handler, action:'".PHPPE::$core->action."' item:'".$item."'\n");
 	}
 
-	//! call this frequently if you use file caching
-	function action_cachegc($item="") {
-		if(!empty(PHPPE::mc()) && method_exists(PHPPE::mc(), "cleanUp") ){
-			PHPPE::mc()->cleanUp();
-		}
-	}
 }
 ?>

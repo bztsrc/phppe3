@@ -1,8 +1,11 @@
 {
 	"name": "phppe/ClassMap",
-	"name_en": "PHPPE ClassMap",
+	"name_en": "ClassMap",
+	"name_hu": "OsztályTérkép",
 
-	"description": "Very lightweight, PHP Composer comptible, PSR-4 class autoloader. Use diag mode to regenerate the map.",
+	"description": "Very lightweight, PHP Composer comptible, PSR-4 class autoloader. Use diag mode to regenerate the class map.",
+	"description_hu": "Egy nagyon minimalista, PHP Composer kompatíbilis, PSR-4 betöltő. Diagnosztikai módban újragenerálja a php osztályok térképét.",
+
 	"version": "3.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_classmap.tgz" },
 

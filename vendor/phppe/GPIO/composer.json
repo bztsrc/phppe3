@@ -4,6 +4,8 @@
 	"keywords": [ "Hardware" ],
 
 	"description": "Basic interface for Raspberry Pi, such as GPIO, frequency, temperature etc.",
+	"description_hu": "Alacsony szintű függvénykönyvtár Raspberry Pi-hez, úgy mint GPIO vezérlés, órajel és hőmérséklet lekérdezés, stb.",
+
 	"version": "1.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_gpio.tgz" },
 	"conf": { "pins":"string" },

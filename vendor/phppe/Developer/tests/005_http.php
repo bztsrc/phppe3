@@ -21,12 +21,12 @@ if( basename(dirname(url("a","b"))) != "a" || basename(url("a","b")) != "b" ) {
     return false;
 } else echo ("OK\n");
 
-echo("HTTP Get: ");
+echo("HTTP Get: ".url("","http").": ");
 echo(PHPPE::get(url("","http")));
 if( PHPPE::get(url("","http")) != "OK " ) {
     echo("failed!\n");
     return false;
-} else echo ("OK\n");
+} else echo ("\n");
 
 echo("HTTP Post: ");
 if( PHPPE::get(url("","http")."post",array("var1"=>"test1","var2"=>"test2")) != '{"var1":"test1","var2":"test2"}' ) {
@@ -35,6 +35,7 @@ if( PHPPE::get(url("","http")."post",array("var1"=>"test1","var2"=>"test2")) != 
 } else echo ("OK\n");
 
 echo("HTTP Redirect: ");
+echo(PHPPE::get(url("","http")."redirect"));
 if( PHPPE::get(url("","http")."redirect") != "Redirected" ) {
     echo("failed!\n");
     return false;

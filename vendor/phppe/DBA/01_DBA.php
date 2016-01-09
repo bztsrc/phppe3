@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/DBA/01_DBA.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief DataBase Administrator tool
  */
 namespace PHPPE;
@@ -40,12 +40,13 @@ class DBA
 	function init($cfg) {
 		PHPPE::lib("DBA","DataBase Administrator");
 		PHPPE::menu(L("Database"),"dba");
+		PHPPE::menu(L("Users"),"users");
 		self::$self=$this;
         return true;
 	}
 
 /**
- * Constructor, loads pin mapping
+ * Constructor
  *
  * @param cfg not used
  */

@@ -4,6 +4,8 @@
 	"name_hu": "Képgaléria",
 
 	"description": "Provides image upload, resize, watermarking and gallery.",
+	"description_hu": "Képfeltöltés, átméretezés, vízjelezés és galériába szervezés lehetőségével bővíti a rendszert.",
+
 	"version": "0.0.1",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_gallery.tgz" },
 

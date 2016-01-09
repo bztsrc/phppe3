@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/Registry/01_Registry.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief key-value registry for Extension configuration
  */
 namespace PHPPE;
@@ -27,36 +27,65 @@ use PHPPE\Core as PHPPE;
 
 class Registry {
 /**
- * Read a configuration value for key from registry. Will return default if key not found
+ * Register registry extension
+ *
+ * @param cfg not used
+ */
+	function init($cfg) {
+		PHPPE::lib("Registry","Parameter Registry");
+        return true;
+	}
+
+/**
+ * Read a parameter value for key from registry. Will return default if key not found
  *
  * @param key
  * @param optional default value
  * @return value
 */
 	static function get($key,$default="") {
-		$key=preg_replace("/[^a-zA-Z0-9_]","",$key);
+		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
 		$value=null;
 		try {
-			$value = PHPPE::fetch("data","registry","name=?","","",[$key]);
+			$value = PHPPE::field("data","registry","name=?","","",[$key]);
 		} catch(\Exception $e) {
-			$value = @file_get_contents("data/registry/".$key);
+			$v = trim(@file_get_contents("data/registry/".$key));
+			$value = json_decode($v);
+			if(!is_array($value)&&!is_object($value))
+				$value=$v;
 		}
-		return json_decode(trim($value==null?$default:$value));
+		return $value==null?$default:$value;
 	}
 /**
- * Store a configuration value for key into registry
+ * Store a parameter value for key into registry
  *
  * @param key
  * @param value
 */
 	static function set($key,$value) {
-		$key=preg_replace("/[^a-zA-Z0-9_]","",$key);
-		$value=trim($value);
+		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
+		$value=is_array($value)||is_object($value)?json_encode($value):trim($value);
 		try {
-			if(!PHPPE::exec("REPLACE INTO registry SET name=?,data=?",[$key,$value])) throw new \Exception();
+			if(!PHPPE::exec("REPLACE INTO registry (name,data) VALUES (?,?)",[$key,$value])) throw new \Exception();
 		} catch(\Exception $e) {
 			@mkdir("data/registry");
-			file_put_contents("data/registry/".$key,json_encode($value));
+			file_put_contents("data/registry/".$key,$value);
+		}
+	}
+/**
+ * Remove a parameter from registry
+ *
+ * @param key
+*/
+	static function del($key) {
+		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
+		try {
+			@PHPPE::exec("DELETE FROM registry WHERE name=?",[$key]);
+		} catch(\Exception $e) {
+		}
+		try {
+			@unlink("data/registry/".$key);
+		} catch(\Exception $e) {
 		}
 	}
 }

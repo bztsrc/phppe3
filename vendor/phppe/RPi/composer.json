@@ -4,6 +4,8 @@
 	"keywords": [ "Hardware" ],
 
 	"description": "Web interface for Raspberry Pi. Control and monitor your Pi from any smartphone!",
+	"description_hu": "Webes felület a Raspberry Pi-hez. Vezéreld és monitorozd a Pi-det a mobilodról!",
+
 	"version": "0.0.1",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_rpi.tgz" },
 

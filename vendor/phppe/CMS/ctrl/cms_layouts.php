@@ -6,7 +6,7 @@ class View extends \PHPPE\Model {
 	static $_table="views";
 }
 
-class CMS extends \PHPPE\Ctrl {
+class CMSLayouts extends \PHPPE\Ctrl {
 	public $layouts;
 	public $sitebuilds;
 	public $layout;
@@ -46,6 +46,9 @@ class CMS extends \PHPPE\Ctrl {
 					$this->choose=$body[0][1];
 			}
 			if(PHPPE::isTry()) {
+				include_once("vendor/phppe/CMS/addons/cmsmeta.php");
+				include_once("vendor/phppe/CMS/addons/cmscss.php");
+				include_once("vendor/phppe/CMS/addons/cmsjs.php");
 				\PHPPE\AddOn\cmsmeta::validate("layout_meta",$layout['meta']);
 				\PHPPE\AddOn\cmscss::validate("layout_css",$layout['css']);
 				\PHPPE\AddOn\cmsjs::validate("layout_jslib",$layout['jslib']);
@@ -54,28 +57,40 @@ class CMS extends \PHPPE\Ctrl {
 					if($k!="input"&&strpos($k,":")===false)
 						$view->$k=$v;
 				$view->save();
+				//!if memory cache enabled
+				if(PHPPE::mc()) {
+					//invalidate the raw template in cache
+					PHPPE::ic($item);
+					//invalidate all pages generated with the old template
+					$pages = PHPPE::query("id","pages","template=?","id","id",0,0,[$item]);
+					foreach($pages as $p)
+						PHPPE::ic($p['id']);
+				}
 				PHPPE::redirect("cms/layouts");
 			}
 		} else {
 			PHPPE::$core->noframe=false;
 			unset($_SESSION['cms_sitebuild']);
 			$import=PHPPE::req2arr('import');
-			if(!empty($import['file'])) {
-				if(@$import['file']['size']>0) {
-					if(in_array($import['file']['type'],['application/zip', 'application/x-zip','application/gzip', 'application/x-gzip', 'application/compressed-tar', 'application/x-compressed-tar'])) {
+			if(!empty($_FILES['import_file'])) {
+				if(@$_FILES['import_file']['size']>0) {
+					if(in_array($_FILES['import_file']['type'],['application/zip', 'application/x-zip','application/gzip', 'application/x-gzip', 'application/compressed-tar', 'application/x-compressed-tar'])) {
 						try {
-						  \PHPPE\Content::untar($import['file']['tmp_name'],[__CLASS__,"process"]);
+						  \PHPPE\Content::untar($_FILES['import_file']['tmp_name'],[__CLASS__,"process"]);
+						  PHPPE::log('A',"Import sitebuild: ".$_FILES['import_file']['name']." by ".PHPPE::$user->id,"cms");
 						  PHPPE::redirect("cms/sitebuild");
 						} catch(\Exception $e) {
 						  PHPPE::error($e->getMessage(),"import.file");
 						}
 					} else
-						PHPPE::error(L("Bad file format. Use zip or targz.")."\n".$import['file']['type'],"import.file");
+						PHPPE::error(L("Bad file format. Use zip or targz.")."\n".$_FILES['import_file']['type'],"import.file");
 				} else
 					PHPPE::error(L("Error uploading file"),"import.file");
 			}
 			PHPPE::exec("DELETE FROM views WHERE id=''");
 			if(!empty($_REQUEST['set'])) {
+				//invalidate cache
+				PHPPE::ic("frame");
 				PHPPE::exec("UPDATE views SET id=sitebuild WHERE sitebuild!='' AND id='frame'");
 				PHPPE::exec("UPDATE views SET id='frame' WHERE sitebuild=?",trim($_REQUEST['set']));
 				PHPPE::redirect();

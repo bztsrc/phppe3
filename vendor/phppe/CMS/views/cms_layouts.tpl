@@ -46,6 +46,17 @@
 <small>(<!L help_sitebuilds>)</small>
 <!/if>
 <br/><br/>
+<!if core.isError()>
+<div class='mosaicbox' style='border:red 1px solid;border-radius:5px;padding:5px;margin:10px;background:#FFC0C0;color:red;'>
+    <b>Form validation error!</b><br/>
+    <!foreach core.error()>
+	    <!foreach VALUE>
+	    &nbsp;&nbsp;<!=VALUE><br/>
+	<!/foreach>
+    <!/foreach>
+</div>
+<!/if>
+
 <!form import>
 <!=L("Import sitebuild zip")>: <!field file import.file - this.style.display="none";this.form.submit()>
 </form>
@@ -57,7 +68,7 @@
 <div id='layoutdiv'>
 <!form layout>
 <div id='layout_fieldset' class='blockform' style='display:none;' data-zoom-nodecor='1'><div class='confpanel'>
-<h2><!=L("Layout Info")></h2>
+<h2><!=L("Layout info")></h2>
 <!if copyout><div><!=L("Imported")>:<br/><pre><!=copyout></pre></div><!/if>
 
 <div style='float:left;width:200px;'>

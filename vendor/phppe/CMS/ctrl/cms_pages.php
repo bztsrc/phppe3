@@ -2,9 +2,7 @@
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-include_once("vendor/phppe/CMS/libs/pages.php");
-
-class CMS extends \PHPPE\Ctrl {
+class CMSPages extends \PHPPE\Ctrl {
 	public $id;
 	public $name;
 	public $_favicon="images/cms/edit.png";
@@ -59,8 +57,10 @@ class CMS extends \PHPPE\Ctrl {
 					}
 			}
 
-			if($this->ownerid==0)
+			if($this->ownerid==0) {
+				PHPPE::log('A',"Page lock: ".$item." by ".PHPPE::$user->id,"cms");
 				PHPPE::exec("UPDATE pages SET lockd=CURRENT_TIMESTAMP,ownerid=? WHERE id=?",[PHPPE::$user->id,$item]);
+			}
 			if($page['ownerid']&&$page['ownerid']!=PHPPE::$user->id)
 				PHPPE::js("init()","alert('".L("Page is locked!")."');",true);
 //			$d = PHPPE::template("frame");
@@ -71,6 +71,7 @@ class CMS extends \PHPPE\Ctrl {
 //			if( !$d ) $this->_result = "<div id='content'>".$T."</div>";
 //			$this->_templates=array_column(PHPPE::query("id","views","","","id"),"id");
 		} else {
+			include_once("vendor/phppe/CMS/libs/pages.php");
 			if(!empty($_REQUEST['unlock'])) {
 				PHPPE::exec("UPDATE pages SET lockd=0,ownerid=0 WHERE id=?",[$_REQUEST['unlock']]);
 				PHPPE::redirect();
@@ -78,7 +79,7 @@ class CMS extends \PHPPE\Ctrl {
 			$_SESSION['cms_page']=[];
 			$this->_pages=[];
 			PHPPE::exec("DELETE FROM pages WHERE id='' OR template=''");
-			$p = \Page::getPages();
+			$p = \PHPPE\Page::getPages();
 			PHPPE::exec("UPDATE pages SET lockd=0,ownerid=0 WHERE ownerid=?",[PHPPE::$user->id]);
 			if(!empty($_REQUEST['order'])) {
 				$this->_pages[0]=$p;

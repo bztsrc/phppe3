@@ -1,7 +1,7 @@
 <!--
  @file phppe/views/index.tpl
  @author bzt@phppe.org
- @date 1 Jan 2015
+ @date 1 Jan 2016
  @brief Self test view for PHPPE Core
 -->
 <style type='text/css' scoped>
@@ -45,6 +45,16 @@
 <a href='http://validator.w3.org/check?uri=referer' target='_blank'>W3C HTML Validator</a> |
 <a href='http://jigsaw.w3.org/css-validator/check/referer' target='_blank'>W3C CSS Validator</a><br><br>
 </div>
+<!if core.isError()>
+<div class='mosaicbox' style='border:red 1px solid;border-radius:5px;padding:5px;margin:10px;background:#FFC0C0;color:red;'>
+	<b>Form validation error!</b><br/>
+	<!foreach core.error()>
+		<!foreach VALUE>
+			&nbsp;&nbsp;<!=VALUE><br/>
+		<!/foreach>
+	<!/foreach>
+</div>
+<!/if>
 <div class='mosaicbox'>
 <div class='heading'><h3>Environment</h3></div>
 <table>
@@ -156,11 +166,11 @@
 <div id='mymenu' class='popup' style='position:absolute;background:#A0A0A0;padding:5px;z-index:10;display:none;'>one<br>two<br>three<br>four<br>...<br></div>
 <br><br></td><!/if><td class='comment'>Popup title support</td></tr>
 <tr><td>&lt;!widget zoom><br>&lt;img id='thumb0'... &lt;div id='thumb1'...</td><!if !core.isinst('zoom')>
-<td><span style="background:#F00000;color:#FFA0A0;padding:3px;">zoom not installed.</span></td><!else><td><img id='thumb0' alt='' width='60' src='http://phppe.org/extmgr.png' rel='galery1' data-zoom='http://phppe.org/extmgr.png' data-zoom-max=80 data-zoom-min=60 title='Screenshot of PHPPE Extension Manager'>&nbsp;&nbsp;&nbsp;<div id='thumb1' rel='galery1' title='div to zoom' data-zoom='large1' style='cursor:pointer;' onselectstart='return dnd_drag(this.id,this,16);' onmousedown='return dnd_drag(this.id,this,16);'>click me</div><br>
+<td><span style="background:#F00000;color:#FFA0A0;padding:3px;">zoom not installed.</span></td><!else><td><img id='thumb0' alt='' width='60' src='http://phppe.org/extmgr.png' rel='galery1' data-zoom='http://phppe.org/extmgr.png' data-zoom-max=80 data-zoom-min=60 title='Screenshot of PHPPE Extension Manager'>&nbsp;&nbsp;&nbsp;<div id='thumb1' rel='galery1' title='div to zoom' data-zoom='large1' style='cursor:pointer;' onselectstart='return dnd_drag(event,this.id,this);' onmousedown='return dnd_drag(event,this.id,this);'>click me</div><br>
 <div id='large1' class='bluebg' style='display:none;'>sdf;laskdf asdf asdf sadf asdf<br>adasdsd asd asd asdasdas<br>adasdasdas asd asd<br><br><br><br><br><br>sdf;laskdf asdf asdf sadf asdf<br>adasdsd asd asd asdasdas<br>adasdasdas asd asd<br><br><br><br><br><br>sdf;laskdf asdf asdf sadf asdf<br>adasdsd asd asd asdasdas<br>adasdasdas asd asd<br><br><br><br><br><br>sdf;laskdf asdf asdf sadf asdf<br>adasdsd asd asd asdasdas<br>adasdasdas asd asd<br><br><br><br><br><br>sdf;laskdf asdf asdf sadf asdf<br>adasdsd asd asd asdasdas<br>adasdasdas asd asd<br><br><br><br><br><br>sdf;laskdf asdf asdf sadf asdf<br>adasdsd asd asd asdasdas<br>adasdasdas asd asd<br><br><br><br><br><br></div>
 </td><!/if><td class='comment'>Example field plugin that has only js part. It can stress thumbnails on hover. It also zooms large images or div elements.</td></tr>
 <tr><td>&lt;!widget dnd></td><!if !core.isinst('dnd')>
-<td><span style="background:#F00000;color:#FFA0A0;padding:3px;">dnd not installed.</span></td><!else><td><img id='dndtestimg' src='?cache=logo' alt='dragable image' onmousedown='return dnd_drag("tagName: img, id: "+this.id+",\nsrc: "+this.src,this,32);' style='cursor:move;padding-right:20px;' width='42'> <span style='border:1px solid black;padding:5px;cursor:copy;' onmouseup='return dnd_drop(event,alert);'><nobr>drag and drop picture here</nobr></span><br><br></td><!/if><td class='comment'>Yet another fancy js stuff</td></tr>
+<td><span style="background:#F00000;color:#FFA0A0;padding:3px;">dnd not installed.</span></td><!else><td><img id='dndtestimg' src='?cache=logo' alt='dragable image' onmousedown='return dnd_drag(event,"tagName: img, id: "+this.id+",\nsrc: "+this.src,this);' style='cursor:move;padding-right:20px;' width='42'> <span style='border:1px solid black;padding:5px;cursor:copy;' onmouseup='return dnd_drop(event,alert);'><nobr>drag and drop picture here</nobr></span><br><br></td><!/if><td class='comment'>Yet another fancy js stuff</td></tr>
 <tr><td>&lt;!widget highlight(0,200) txt php perl python cpp)><br>&lt;pre class='php'>...&lt;/pre></td>
 <!if !core.isinst('highlight')>
 <td><span style="background:#F00000;color:#FFA0A0;padding:3px;">highlight not installed.</span></td>

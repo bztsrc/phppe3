@@ -3,8 +3,9 @@
 <table style='margin-left:5px;'>
 <tr>
     <th></th>
-    <th><!=L("Test name")></th>
+    <th><!=L("Test boundle")></th>
     <th><!=L("Avg.time")></th>
+    <th><!=L("#Tests")></th>
     <th><!=L("Last run")></th>
     <th><!=L("Result")></th>
 </tr>
@@ -13,6 +14,7 @@
     <td class='row<!=ODD>'><input type='button' value='<!=L("Run")>' onclick='runtest("tests/run/<!=KEY>");'></td>
     <td class='row<!=ODD>'><!=name></td>
     <td class='row<!=ODD>' align='right'><!=avg><small>&nbsp;sec</small></td>
+    <td class='row<!=ODD>' align='right'><!=asserts></td>
     <td class='row<!=ODD>'><!=date("Y-m-d H:i:s",time)></td>
     <td class='row<!=ODD>' style='color:<!=color>;'><!=ret></td>
 </tr>

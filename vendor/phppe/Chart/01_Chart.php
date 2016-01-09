@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,8 +19,8 @@
  *
  * @file vendor/phppe/Chart/01_Chart.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
- * @brief Chart generator
+ * @date 1 Jan 2016
+ * @brief Simple chart generator
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;

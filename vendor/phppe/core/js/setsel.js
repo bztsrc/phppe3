@@ -2,7 +2,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -18,155 +18,97 @@
  *
  * @file vendor/phppe/core/js/setsel.js
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief Set list selection
  */
 
-var setsel_dragged=null;
+var setsel_id=null,setsel_skip=0;
 
 function setsel_drag(evt,id) {
-	setsel_dragged=id;
-	evt.dataTransfer.setData("text", id);
-	document.getElementById(id+':inlist').removeAttribute('data-finished');
-	//! force refresh browser screen
-//	evt.target.parentNode.style.display='none';
-	obj=evt.target.cloneNode(true);
-	obj.setAttribute('data-setselid',id);
-//	obj.style.background='rgba(255,255,255,0.5);';
-	obj.style.display='inline';
-	obj.style.position='absolute';
-	obj.style.top='0px';
-	obj.style.marginTop=(0-obj.offsetHeight-1000)+'px';
-	document.body.appendChild(obj);
+	setsel_id=id;
 	if(evt.target.nextSibling!=null && evt.target.tagName==evt.target.nextSibling.tagName && typeof jQuery == 'function') {
-		evt.target.nextSibling.style.marginTop=obj.offsetHeight+'px';
+		evt.target.nextSibling.style.marginTop=evt.target.offsetHeight+'px';
 		evt.target.nextSibling.setAttribute('id','setsel_animate');
-		$('#setsel_animate').css({'marginTop':obj.offsetHeight+'px'});
-		$('#setsel_animate').animate({'marginTop':'0px'},250);
+		$('#setsel_animate').css({'marginTop':evt.target.offsetHeight+'px'});
+		$('#setsel_animate').animate({'marginTop':'0px'},300);
 		evt.target.nextSibling.removeAttribute('id');
 	}
-	//chromium workaround
-	//evt.target.style.display='none';
 	var i,t=evt.target.parentNode.getElementsByTagName("*");
 	for(i=0;i<t.length;i++){
 	    if(t[i].getAttribute("data-id")==evt.target.getAttribute("data-id")){
 		t[i].setAttribute('style','display:none;');
-		t[i].setAttribute('data-inlist',1);
 	    }
 	}
-	evt.dataTransfer.setDragImage(obj, 0, 0);
-//	evt.target.parentNode.style.display='block';
-
-	//!chromium bug workaround
-//	if(evt.target.getAttribute("data-id")==obj.getAttribute("data-id")) {
-	    dnd_drag(id,obj);
-	    if ( window.addEventListener )
-	        window.addEventListener( "mouseup", setsel_dragend, false );
-	    else if ( window.attachEvent )
-    		window.attachEvent( "onmouseup", setsel_dragend );
-//    	}
-
+    return dnd_drag(evt,id,evt.target,16,"setsel_dragend");
 }
 
 function setsel_droparea(evt) {
-	obj=document.body.lastChild;
-	if(obj==null||obj.className!="setsel_item") return;
-	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
-	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
-	if(id==null||id=='') id=setsel_dragged;
-	if(id==null||id=='' || document.getElementById(id+':inlist')==null) return;
-	evt.preventDefault();
-	var i,n=null,o=document.getElementById(id+':inlist').getElementsByTagName('*');
-	for(i=0;i<o.length;i++) if(o[i].className.indexOf('setsel_item')>-1){
+	if(setsel_skip) { setsel_skip=0; if(evt.target.id==setsel_id+':inlist') return; }
+	if(setsel_id==null||dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
+	var i,n=null,o=document.getElementById(setsel_id+':inlist').getElementsByTagName('*');
+	for(i=0;i<o.length;i++) if(o[i].className=='setsel_item'){
 		o[i].style.marginTop='0px';
-		if(evt.layerY<o[i].offsetTop && n==null) n=o[i];
+		if((evt.target==o[i]/*||evt.layerY<o[i].offsetTop+o[i].offsetHeight*/) && n==null) n=o[i];
 	}
-	if(n!=null)
+	if(n!=null){
 		n.style.marginTop='12px';
+		setsel_skip=1;
+	}
 }
 
 function setsel_add(evt) {
-	obj=document.body.lastChild;
-	if(obj==null||obj.className!='setsel_item') return;
-	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
-	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
-	if(id==null||id=='') id=setsel_dragged;
-	if(id==null||id=='') return;
-	evt.preventDefault();
-	document.getElementById(id+':inlist').style.display='none';
-	document.getElementById(id+':inlist').setAttribute('data-finished','true');
-	obj.setAttribute('id','');
-	obj.removeAttribute('id');
-	obj.setAttribute('style','');
-	obj.removeAttribute('style');
-	obj.style.display='block';
-	document.body.removeChild(obj);
+	var id=setsel_id;
+	if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
+	dnd_icon.setAttribute('style','');
 	var i,n=null,o=document.getElementById(id+':inlist').getElementsByTagName('*');
 	for(i=0;i<o.length;i++) {
 		var mt=Math.round(o[i].style.marginTop.replace('px',''));
 		o[i].style.marginTop='0px';
-		if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==obj.getAttribute('data-id'))
+		if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id'))
 			o[i].parentNode.removeChild(o[i]);
 		else {
 			if(mt>0 && n==null) n=o[i];
 		}
 	}
 	if(n!=null)
-		document.getElementById(id+':inlist').insertBefore(obj,n);
+		document.getElementById(id+':inlist').insertBefore(dnd_icon,n);
 	else
-		document.getElementById(id+':inlist').appendChild(obj);
-	document.getElementById(id+':inlist').style.display='block';
-	setsel_dragged=null;
+		document.getElementById(id+':inlist').appendChild(dnd_icon);
+	o=document.getElementById(id+':all').getElementsByTagName('*');
+	for(i=0;i<o.length;i++) {
+		if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')) {
+			o[i].setAttribute('data-inlist',1);
+			break;
+		}
+	}
 	setsel_setvalue(id);
-	try{
-	if(obj!=null && obj.className=='setsel_item')
-		document.body.removeChild(obj);
-	}catch(e){}
 }
 
 function setsel_remove(evt) {
-	obj=document.body.lastChild;
-	if(obj==null||obj.className!='setsel_item') return;
-	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
-	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
-	if(id==null||id=='') id=setsel_dragged;
-	if(id==null||id=='') return;
-	evt.preventDefault();
-	document.getElementById(id+':inlist').setAttribute('data-finished','true');
+	var id=setsel_id;
+	setsel_id=null;
+	if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
 	var i,o=document.getElementById(id+':inlist').getElementsByTagName('*');
 	for(i=0;i<o.length;i++) {
-		o[i].style.marginTop='0px';
-		if(o[i].getAttribute('data-id')==obj.getAttribute('data-id'))
-			o[i].parentNode.removeChild(o[i])
+		if(o[i].style.display=='none'||(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')))
+			o[i].parentNode.removeChild(o[i]);
 	}
 	o=document.getElementById(id+':all').getElementsByTagName('*');
-	for(i=0;i<o.length;i++)
-		if(o[i].getAttribute('data-id')==obj.getAttribute('data-id')) {
+	for(i=0;i<o.length;i++) {
+		if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')) {
 			o[i].removeAttribute('data-inlist');
 			o[i].style.display='block';
+			break;
 		}
-	setsel_dragged=null;
+	}
 	setsel_setvalue(id);
-	try{
-	if(obj!=null && obj.className=='setsel_item')
-		document.body.removeChild(obj);
-	}catch(e){}
 }
 
 function setsel_dragend(evt) {
-	obj=document.body.lastChild;
-	var id=evt.dataTransfer==null?null:evt.dataTransfer.getData("text");
-	if(obj!=null&&(id==null||id=='')) id=obj.getAttribute("data-setselid");
-	if(id==null||id=='') id=setsel_dragged;
+	var id=setsel_id;
+	setsel_id=null;
 	if(id==null||id=='') return;
 	var inl=document.getElementById(id+':inlist');
-	if(evt.target==inl) setsel_add(evt);
-	if(evt.target==document.getElementById(id+':inlist')) setsel_remove(evt);
-	setsel_dragged=null;
-	try{
-	if(obj!=null && obj.className=='setsel_item')
-		document.body.removeChild(obj);
-	}catch(e){}
     if(inl!=null){
 		var i,w=0,o=inl.getElementsByTagName('*');
 		for(i=0;i<o.length;i++) {
@@ -176,19 +118,13 @@ function setsel_dragend(evt) {
 				w=1;
 			}
 		}
-	if(inl.getAttribute('data-finished')!='true'){
-		if(!w){
-			o=document.getElementById(id+':all').getElementsByTagName('*');
-			for(i=0;i<o.length;i++) {
-				o[i].style.marginTop='0px';
-				if(o[i].style.display=='none') {
-					o[i].removeAttribute('data-inlist');
-					o[i].style.display='block';
-				}
+		o=document.getElementById(id+':all').getElementsByTagName('*');
+		for(i=0;i<o.length;i++) {
+			o[i].style.marginTop='0px';
+			if(o[i].style.display=='none'&&o[i].getAttribute('data-inlist')!=1) {
+				o[i].style.display='block';
 			}
 		}
-	} else
-		inl.removeAttribute('data-finished');
     }
 }
 

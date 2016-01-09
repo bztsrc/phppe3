@@ -32,7 +32,7 @@
 	padding:5px;
 	box-shadow:3px 3px 8px #000;
 	background-color:#202020;
-	opacity:0.8;
+	opacity:0.9;
 	z-index:999;
 }
 .wysiwyg_tools IMG {
@@ -43,7 +43,7 @@
 	cursor:move;
 }
 .wysiwyg_conf {
-	position:fixed;padding:5px;box-shadow:3px 3px 8px #000;background:#202020;color:#D0D0D0;text-shadow:#000 2px 2px 3px;opacity:0.8;z-index:999;
+	position:fixed;padding:5px;box-shadow:3px 3px 8px #000;background:#202020;color:#D0D0D0;text-shadow:#000 2px 2px 3px;opacity:0.9;z-index:999;
 }
 #param_edit {
 	overflow:hidden;
@@ -53,7 +53,7 @@
 }
 #param_edit INPUT, #param_edit SELECT, #param_edit TEXTAREA {
 	border:inset 1px #404040;
-	background:rgba(64,64,64,0.8);
+	background:rgba(64,64,64,0.9);
 	color:#fff;
 }
 
@@ -68,7 +68,7 @@
 
 .confpanel INPUT, .confpanel SELECT, .confpanel TEXTAREA {
 	border:inset 1px #404040;
-	background:rgba(64,64,64,0.8);
+	background:rgba(64,64,64,0.9);
 	color:#fff;
 }
 

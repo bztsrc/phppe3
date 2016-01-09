@@ -1,0 +1,21 @@
+{
+	"name": "phppe/SalesForce",
+	"name_en": "SalesForce",
+	"keywords": [ "Connections" ],
+
+	"description": "Wraps SalesForce API as a data source: https://github.com/developerforce/Force.com-Toolkit-for-PHP This is an example of how to create a datasource out of a SOAP interface.",
+	"description_hu": "Adatforrásként teszi elérhetővé a SalesForce API-t: https://github.com/developerforce/Force.com-Toolkit-for-PHP Ez egy példa arra, hogyan kell adatforrássá alakítani egy SOAP interfészt.",
+
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_sf.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require-dev": {
+		"developerforce/force.com-toolkit-for-php": "*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

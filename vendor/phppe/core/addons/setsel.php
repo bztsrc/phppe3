@@ -57,7 +57,7 @@ class setsel extends \PHPPE\AddOn {
 						$blk.=" data-".$K."=\"".htmlspecialchars($V)."\"";
 				}
 			}
-			$blk.=" data-id='".htmlspecialchars($id)."' draggable='true' ondragstart='setsel_drag(event,\"".$this->fld."\");':display>".$rep."</div>";
+			$blk.=" data-id='".htmlspecialchars($id)."' onmousedown='return setsel_drag(event,\"".$this->fld."\");':display>".$rep."</div>";
 			if(isset($i[$id]))
 				$b[$i[$id]]=str_replace(":display","",$blk);
 			$out[1].=str_replace(":display",(isset($i[$id])?" data-inlist='1' style='display:none;'":""),$blk);
@@ -81,8 +81,8 @@ class setsel extends \PHPPE\AddOn {
 		"<div id='".$this->fld.":filters' style='height:24px;text-align:right;padding:2px;'>".(!empty($this->args[3])?"<span class='setsel_title' style='float:left;line-height:22px;'>".$this->args[3]."</span>":"").$flthtml.
 		"<input name='search' type='text' placeholder='".L("Search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
 		"<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".
-		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' ondragover='setsel_droparea(event);' onmouseover='setsel_droparea(event);' ondrop=\"setsel_add(event);\" onmouseup=\"setsel_add(event);\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;'>".$out[0]."</div>".
-		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' ondragover='event.preventDefault()' ondrop=\"setsel_remove(event);\" onmouseup=\"setsel_remove(event);\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;'>".$out[1]."</div></div>";
+		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmousemove='setsel_droparea(event);' onmouseup=\"dnd_drop(event,'setsel_add');\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;'>".$out[0]."</div>".
+		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"dnd_drop(event,'setsel_remove');\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;'>".$out[1]."</div></div>";
 	}
 }
 

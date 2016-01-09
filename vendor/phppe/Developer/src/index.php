@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -20,9 +20,9 @@
  *  PHPPE Core - Use as is
  */
 /**
- * @file public/index.php
+ * @file vendor/phppe/Developer/src/index.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief PHPPE micro-framework's Core
  *
  * This is the nicely formatted and commented source version of PHPPE Core
@@ -208,6 +208,7 @@ namespace PHPPE {
 		public $tz;				//!< client's timezone
 		public $lang;				//!< client's prefered language
 		public $screen = [];			//!< screen dimensions
+		public $geo = [];			//!< geo location data (filled in by an extension)
 	}
 
 /**
@@ -285,6 +286,7 @@ namespace PHPPE {
 	define('C', "\\PHPPE\\");
 	define('A', C . "AddOn\\");
 	define('I', "index");
+	define('T', "CURRENT_TIMESTAMP");
 
 /**
  * this is the heart of PHPPE, the class of \PHPPE\Core::$core
@@ -418,7 +420,7 @@ namespace PHPPE {
 			if($C != "/")
 				$C .= "/";
 			$d = "SERVER_NAME";
-			$this->base = (! empty($this->base) ? $this->base : (! empty($S[ $d ]) ? $S[ $d ] : "localhost")) . ($C[ 0 ] != "/" ? "/" : "") . $C;
+			$this->base = (! empty($this->base) ? $this->base : (! empty($S[ $d ]) ? $S[ $d ] : "localhost") . ($C[ 0 ] != "/" ? "/" : "") . $C);
 			//! get application, action and item
 			list($d) = x("?", @$S[ 'REQUEST_URI' ]);
 			foreach([ $c, n($c) ] as $C)
@@ -445,11 +447,13 @@ namespace PHPPE {
 				$c = $d;
 			self::$fm = ($c > $v && $v ? $v : $c);
 			//! check arguments
-			if(! self::$w && ! empty($S[ $A ][ 1 ])) {
+			if(! self::$w && ! $islib) {
 				if(ia("--version", $S[ $A ]))
 					die(VERSION . "\n");
-				if(ia("--help", $S[ $A ]))
-					die("PHP Portal Engine " . VERSION . ", LGPL 2015 bzt\n\nphp " . m(__FILE__) . " (cmd | [application [action [item]]] ) [ $D ]\n\nCommands:\n --version\n --diag [--gid=x]\n");
+				if(empty($S[ $A ][ 1 ]) || ia("--help", $S[ $A ])) {
+					$c = "php " . $S[ $A ][ 0 ];
+					die("PHP Portal Engine " . VERSION . ", LGPL 2016 bzt\n\n $c --help\n $c --version\n $c --diag [--gid=x]\n $c [application [action [item]]] ) [ $D ]\n\n");
+				}
 			}
 			//! session restore may require models, so we have to
 			//! load all classes *before* session_start()
@@ -569,18 +573,21 @@ namespace PHPPE {
 			@symlink(N . "core", "phppe");
 			$D = [ ".tmp" => $W, "data" => $W, "app" => 0, M => 0755, M . "bin" => 0, N => 0, N . "core" => 0, P . "log" => $W, P . "views" => 0, P . "ctrl" => 0, P . "lang" => 0, P . "libs" => 0, P . "out" => 0, P . "sql" => 0, "public/images" => 0, "public/css" => 0, "public/js" => 0, "app/ctrl" => 0, "app/lang" => 0, "app/libs" => 0, "app/views" => 0 ];
 			$A = [ "*", "*/*", "*/*/*", "*/*/*/*", "*/*/*/*/*" ];
-			foreach($A as $v)
-				$D += array_fill_keys(@glob(M . $v), 0);
+			foreach([ "data/", M ] as $d)
+				foreach($A as $v)
+					$D += array_fill_keys(@glob($d . $v), 0);
 			foreach($D as $d => $p) {
+				if(! $p)
+					$p = $C;
+				$x = ia(substr($d, 0, 4), [ ".tmp", "data" ]) || substr($d, 0, 21) == P . "log";
 				if(is_file($d)) {
-					$x = substr($d, 0, 4) == ".tmp" || substr($d, 0, 4) == "data" || substr($d, 0, 21) == P . "log";
 					$P = fileperms($d) &0777;
 					$p = $x ? 0660 : 0640;
 				}
 				else
 				{
-					if(! $p)
-						$p = $C;
+					if($x)
+						$p = $W;
 					if(! is_dir($d) && ! is_file($d)) {
 						echo("DIAG-A: $d\n");
 						if(! mkdir($d, $p))
@@ -590,7 +597,7 @@ namespace PHPPE {
 				}
 				if($P != $p) {
 					$E .= sprintf("\t%03o?\t%03o ", $P, $p) . "$d\n";
-					@chmod($d, $p);
+					chmod($d, $p);
 				}
 				if(! @chgrp($d, self::$g) || ! @chown($d, $U))
 					echo("DIAG-E: chown/chgrp $d\n");
@@ -669,16 +676,6 @@ namespace PHPPE {
 			session_start();
 			if(ini_get("session.use_cookies"))
 				setcookie(session_name(), session_id(), time() + $this->timeout, "/", $S[ "SERVER_NAME" ], ! empty($this->secsession) ? 1 : 0, 1);
-			//! *** User ***
-			$c = C . "User";
-			$u = $c . "s";
-			if(! ce($u) || ! is_subclass_of($u, $c))
-				$u = $c;
-			$L = "pe_u";
-			if(! empty($_SESSION[ $L ]) && is_object($_SESSION[ $L ]))
-				self::$user = $_SESSION[ $L ];
-			else 
-				self::$user = $_SESSION[ $L ] = new $u();
 			//! *** Client ***
 			self::$client = new Client;
 			if(self::$w) {
@@ -729,7 +726,7 @@ namespace PHPPE {
 				}
 				//! get client's real ip address
 				$d = 'HTTP_X_FORWARDED_FOR';
-				self::$client->ip = ! empty($S[ $d ]) ? $S[ $d ] : $S[ 'REMOTE_ADDR' ];
+				self::$client->ip = $i = ! empty($S[ $d ]) ? $S[ $d ] : $S[ 'REMOTE_ADDR' ];
 				self::$client->screen = ! empty($_SESSION[ 'pe_w' ]) ? [ $_SESSION[ 'pe_w' ], $_SESSION[ 'pe_h' ] ] : [ 0, 0 ];
 				$d = 'HTTP_USER_AGENT';
 				self::$client->agent = ! empty($S[ $d ]) ? $S[ $d ] : "browser";
@@ -752,12 +749,20 @@ namespace PHPPE {
 				$d = getenv("USER");
 				self::$client->user = ! empty($d) ? $d : "";
 				$this->noframe = 1;
-				//! change default application for scripts
-				if($this->app == I)
-					$this->app = "scripts";
+				//				if($this->app==I) $this->app="cron";
 			}
 			//! set up client's timezone
 			date_default_timezone_set(self::$client->tz = ! empty($_SESSION[ $L ]) ? $_SESSION[ $L ] : "UTC");
+			//! *** User ***
+			$c = C . "User";
+			$u = $c . "s";
+			if(! ce($u) || ! is_subclass_of($u, $c))
+				$u = $c;
+			$L = "pe_u";
+			if(! empty($_SESSION[ $L ]) && is_object($_SESSION[ $L ]))
+				self::$user = $_SESSION[ $L ];
+			else 
+				self::$user = $_SESSION[ $L ] = new $u();
 			//! set up client's prefered language
 			//! only allow if language is defined in core or in app
 			$L = 'pe_l';
@@ -788,6 +793,21 @@ namespace PHPPE {
 			if(self::isInst($C)) {
 				$this->jslib[ "$C.$v.js" ] = P . "js/$C.js" . PE;
 				$this->css[ "$C.css" ] = P . "css/$C.css";
+			}
+			//! initialize primary datasource if configured prior module init
+			if(! empty($this->db)) {
+				//! replace string $this->db with an array of pdo object
+				@self::db($this->db);
+				//! get current timestamp from primary datasoure
+				//! this will override time() in $core->now with
+				//! a time in database server's timezone
+				try {
+					$t = @strtotime(@self::field(T));
+					if($t > 0)
+						$this->now = $t;
+				}
+				catch(\Exception $e) {
+				}
 			}
 			//! load core dictionary
 			self::$l = [];
@@ -836,22 +856,6 @@ namespace PHPPE {
 				}
 				//! let rest of the world know about us
 				self::lib("mc", L(ucfirst($C)), "", self::$mc);
-			}
-			//! initialize primary datasource if configured
-			if(! empty($this->db)) {
-				//! replace string $this->db with an array of pdo object
-				@self::db($this->db);
-				//! get current timestamp from primary datasoure
-				//! this will override time() in $core->now with
-				//! a time in database server's timezone
-				$d = "CURRENT_TIMESTAMP";
-				try {
-					$t = @strtotime(@self::field($d));
-					if($t > 0)
-						$this->now = $t;
-				}
-				catch(\Exception $e) {
-				}
 			}
 		}
 /**
@@ -906,7 +910,7 @@ namespace PHPPE {
 					die(k($C) . "-E: " . $d);
 				}
 			}
-			$LA = self::$client->lang;
+			$B = self::$client->lang;
 			//! proxy dynamic assets (vendor directory is not accessable by the webserver, only public dir)
 			if(ia($this->app, [ "css", "js", "images" ])) {
 				function b($a, $b)
@@ -914,7 +918,7 @@ namespace PHPPE {
 					c($a == "css" ? "text/css" : ($a == "js" ? "text/javascript" : "image/png"));
 					die(minify($b, $a));
 				}
-				$N = 'a_' . sha1($this->base . $u . "_" . self::$user->id . "_" . $LA);
+				$N = 'a_' . sha1($this->base . $u . "_" . self::$user->id . "_$B");
 				$d = "";
 				if(! empty(self::$mc))
 					$d = self::$mc->get($N);
@@ -1045,16 +1049,25 @@ namespace PHPPE {
 				if($d[ 0 ] == "\\")
 					$d = w($d, 1);
 				$C = t($d);
-				$D = ucfirst($d);
 				$E = $this->$a;
 				$F = t($E);
-				$G = ucfirst($E);
 				$P = "app/ctrl/";
 				$H = N . "*/ctrl/";
-				foreach(array_unique([ "$P$d" . "_$E" . PE, "$P$C" . "_$F" . PE, "$P$D" . "_$G" . PE, "$P$d" . PE, "$P$C" . PE, "$P$D" . PE, "$H$d" . "_$E" . PE, "$H$C" . "_$F" . PE, "$H$D" . "_$G" . PE, "$H$d" . PE, "$H$C" . PE, "$H$D" . PE ]) as $v) {
+				foreach(array_unique([ "$P$d" . "_$E" . PE, "$P$C" . "_$F" . PE, "$P$d" . PE, "$P$C" . PE, "$H$d" . "_$E" . PE, "$H$C" . "_$F" . PE, "$H$d" . PE, "$H$C" . PE ]) as $v) {
 					$c = @glob($v);
 					if(! empty($c[ 0 ])) {
-						io($c[ 0 ]);
+						try {
+							@io($c[ 0 ]);
+						}
+						catch(\Exception $e) {
+						}
+						$P = gc();
+						krsort($P);
+						foreach($P as $G)
+							if(cc($G)) {
+								$d = $G;
+								break;
+							}
 						self::$p = n(n($c[ 0 ]));
 						break;
 					}
@@ -1074,9 +1087,10 @@ namespace PHPPE {
 			//! do we have a valid application or controller?
 			$D = $o = [];
 			if(! cc($d)) {
-				//! no, fail on CLI
+				//! no, cronjob or fail on CLI
 				if(! self::$w)
-					die("PHPPE-C: " . L($d . "_$a not found!") . "\n");
+					//! *** CRON Event ***
+					die($d == "cron" ? $this->_eh("cron_" . $this->action, 0) : "PHPPE-C: " . L($d . "_$a not found!") . "\n");
 				//! fallback to default application on CGI
 				$d = $P;
 				//! look for cms content from database - only for primary datasource
@@ -1084,14 +1098,14 @@ namespace PHPPE {
 					try {
 						$T = "template";
 						//! if found in cache
-						$C = 'd_' . sha1($this->base . $u);
+						$C = 'd_' . sha1($this->base . $u . "_$B");
 						if($A)
 							$D = self::$mc->get($C);
 						//! look for a page in database
 						//! best match policy
 						if(empty($D[ $T ])) {
 							Core::ds(0);
-							$D = Core::fetch("*", "pages", "(id=? OR ? LIKE id||'/%') AND (lang='' OR lang=?) AND pubd<=CURRENT_TIMESTAMP AND (expd=0 OR expd>CURRENT_TIMESTAMP)", "", "id DESC,created DESC", [ $u, $u, $LA ]);
+							$D = Core::fetch("*", "pages", "(id=? OR ? LIKE id||'/%') AND (lang='' OR lang=?) AND pubd<=" . T . " AND (expd=0 OR expd>" . T . ")", "", "id DESC,created DESC", [ $u, $u, $B ]);
 							if($A && ! empty($D[ $T ]))
 								$this->_ms($C, $D);
 						}
@@ -1144,7 +1158,7 @@ namespace PHPPE {
 			$m = "maintenance";
 			if(empty($this->$m) || ! self::$w) {
 				//! output view with templater
-				$C = 'p_' . sha1($this->base . $u . "_" . self::$user->id . "_" . $LA);
+				$C = 'p_' . sha1($this->base . $u . "_" . self::$user->id . "_$B");
 				$T = "";
 				//only read from cache if application allows
 				if($A && ! self::istry()) {
@@ -1269,13 +1283,12 @@ namespace PHPPE {
 					io($c[ 0 ]);
 				elseif($o == "html") {
 					$P = empty($this->nopanel) && self::$user->has("panel");
-					$O = "";
 					$I = m(__FILE__) . "/";
 					if($I == I . ".php/")
 						$I = "";
-					$B = "http" . ($this->sec ? "s" : "") . "://" . $this->base;
+					$d = "http" . ($this->sec ? "s" : "") . "://" . $this->base;
 					//! HTML5 header and title
-					$O .= "<!DOCTYPE HTML>\n<html lang='" . $LA . "'><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='$B'/><meta charset='utf-8'/>\n<meta name='Generator' content='" . $this->id . "'/>\n";
+					$O = "<!DOCTYPE HTML>\n<html lang='$B'><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='$d'/><meta charset='utf-8'/>\n<meta name='Generator' content='http://phppe.org/'/>\n";
 					foreach($this->meta as $k => $m)
 						if($m)
 							$O .= "<meta name='$k' content='" . h($m) . "'/>\n";
@@ -1285,10 +1298,10 @@ namespace PHPPE {
 					//			$d = "<link rel='stylesheet' type='text/css' href='%s' media='screen,print'/>\n";
 					$O .= "<style media='all'>\n";
 					$d = "@import url('%s');\n";
-					$N = $this->base . "_" . $this->app . "." . $this->$a . "_" . self::$user->id . "_" . $LA;
+					$N = $this->base . "_" . $this->app . "." . $this->$a . "_" . self::$user->id . "_$B";
 					//! admin css if user logged in and has access
 					if($P)
-						$O .= sprintf($d, "$I?cache=css");
+						$O .= sprintf($d, $I . "css/?cache=css");
 					//! user stylesheets
 					if(! empty($this->css)) {
 						//! if aggregation allowed
@@ -1303,7 +1316,7 @@ namespace PHPPE {
 								//! save result to cache
 								$this->_ms("c_$n", [ "m" => "text/css", "d" => $da ]);
 							}
-							$O .= sprintf($d, "$I?cache=$n");
+							$O .= sprintf($d, $I . "css/?cache=$n");
 							//! add dynamic stylesheets, they were left out from aggregated cache above
 							foreach($this->css as $u => $v)
 								if($v && ($u[ 0 ] == "?" || w($v, - 3) == "php"))
@@ -1333,7 +1346,7 @@ namespace PHPPE {
 										$da .= minify(r(g($v)), "js") . "\n";
 								$this->_ms("c_$n", [ "m" => "text/javascript", "d" => $da ]);
 							}
-							$O .= "$d async src='$I?cache=$n'>$e";
+							$O .= "$d async src='${I}js/?cache=$n'>$e";
 							//! add dynamic javascripts, they were left out from aggregated cache above
 							foreach($this->jslib as $u => $v)
 								if($v && w($v, - 3) == "php")
@@ -1450,7 +1463,7 @@ namespace PHPPE {
 								$O .= "<li><a href='" . url() . "?lang=$k'><img src='images/lang_$k.png' alt='$k' title='$k'>" . ($k != L($k) ? "&nbsp;" . L($k) : "") . "</a></li>";
 						$O .= "</ul></div>";
 						//! current language and user menu
-						$k = $LA;
+						$k = $B;
 						$f = "images/lang_$k.png";
 						$c = ! empty($_SESSION[ 'pe_c' ]);
 						$O .= "<span onclick='return pe_p(\"l\");'>" . (f(P . $f) ? "<img src='$f' height='10' alt='$k' title='$k'>" : $k) . "</span><div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof users_profile==\"function\")users_profile(this);else alert(\"" . L("Install PHPPE Pack") . "\");'>" . L("Profile") . "</li>" . (self::$user->has("conf") ? "<li><a href='" . url() . "?conf=" . (1 - $c) . "'>" . L(($c ? "Lock" : "Unlock")) . "</a></li>" : "") . "<li><a href='" . url("logout") . "'>" . L("Logout") . "</a></li></ul></div><span onclick='return pe_p(\"u\");'>" . (! empty(self::$user->name) ? self::$user->name : "#" . self::$user->id) . "</span></div></div><div style='height:32px !important;'></div>\n";
@@ -1469,12 +1482,14 @@ namespace PHPPE {
 					$D = count($this->error);
 					$d = 'REQUEST_TIME_FLOAT';
 					$T = ! empty($_SERVER[ $d ]) ? $_SERVER[ $d ] : $this->started;
+					/*
 					if($D > 0 && empty($this->noerror)) {
 						$c = "";
 						foreach($this->error as $v)
 							$c .= implode("\n", $v) . "\n";
 						echo("<script type='text/javascript'>\nalert('" . s(ad(r($c)), "\n", "\\n") . "');\n</script>\n");
 					}
+*/
 					echo("\n<!-- MONITORING: " . ($D > 0 ? "ERROR" : ($this->runlevel > 0 ? "WARNING" : "OK")) . ", page " . sprintf("%.4f sec, db %.4f sec, server %.4f sec, mem %.4f mb%s -->\n</body>\n</html>\n", microtime(1) - $T, self::$b, $this->started - $T, memory_get_peak_usage() / 1024 / 1024, ! empty(self::$mc) ? ", mc" : ""));
 				}
 			}
@@ -1797,6 +1812,20 @@ namespace PHPPE {
 		{
 			return self::$mc;
 		}
+/**
+ * invalidate templater objects in cache
+ *
+ * @param name of the template or page
+ */
+		static function ic($n)
+		{
+			$m = self::$mc;
+			if($m) {
+				$b = sha1(self::$core->base . "_$n");
+				$m->set("t_$b", "");
+				$m->set("p_" . $b . "_" . self::$user->id . "_" . self::$client->lang, "");
+			}
+		}
 
 /*** HTTP helpers ***/
 /**
@@ -1809,10 +1838,11 @@ namespace PHPPE {
 		{
 			//! generate canonized permanent link
 			$c = self::$core->base;
+			$A = self::$core->app;
 			$f = m(__FILE__);
-			if(empty($m) && ! empty(self::$core->app))
-				$m = self::$core->app;
-			if(empty($p) && ! empty(self::$core->app) && self::$core->app == $m)
+			if(empty($m) && ! empty($A))
+				$m = $A;
+			if(empty($p) && ! empty($A) && $A == $m)
 				$p = self::$core->action;
 			$a = ($m != "/" ? ($m . $p != I . "action" ? $m . "/" : "") . (! empty($p) && $p != "action" ? $p . "/" : "") : "");
 			return "http" . (self::$core->sec ? "s" : "") . "://" . $c . ($c[ u($c) - 1 ] != "/" ? "/" : "") . ($f != I . PE ? $f . ($a ? "/" : "") : "") . $a;
@@ -2242,9 +2272,9 @@ namespace PHPPE {
 			self::log("D", $q . " " . json_encode($a), "db");
 			//! check for valid datasource
 			if(! a($a))
-				$a = [ $a ];
-			if(empty($a[ 0 ]))
-				$a = [];
+				$a = [ $a ];		
+			//			if(empty($a[0]))
+			//				$a=[];
 			if(empty(self::$db[ self::$s ]))
 				throw new \Exception(L("Invalid ds") . " #" . self::$s);
 			//! skip comment lines and empty queries by
@@ -2820,7 +2850,7 @@ namespace PHPPE {
 				$t = pr("/<!-.*?->[\r\n]*/ms", "", pr("/<\?.*?\?\>[\r\n]*/ms", "", $t));
 				//! save to cache
 				if(! empty(self::$mc) && ! empty($t))
-					$this->_ms($C, [ "m" => $m, "d" => $t ]);
+					self::$core->_ms($C, [ "m" => $m, "d" => $t ]);
 			}
 			//! append meta tags
 			self::$core->meta += a($m) ? $m : [ $m ];
@@ -2831,11 +2861,11 @@ namespace PHPPE {
 		{
 			//! parse a template string
 			//check recursion limit
-			$L = self::e("W", "TOOMNY", L("recursion limit exceeded"));
+			$L = self::e("W", "TOOMNY", L("recursion limit exceeded") . "!");
 			if($re >= 64)
 				return $L;
 			//check if we're in cms edit mode
-			$CM = self::$core->app == "cms" && self::$core->action == "pages" && q(C . "CMS", "icon");
+			$J = self::$core->app == "cms" && self::$core->action == "pages" && q(C . "CMS", "icon");
 			//get tags
 			if(preg_match_all("/<!([^\[\-][^>]+)>[\r\n]*/ms", $x, $T, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
 				//get opening/closing pairs
@@ -2857,20 +2887,20 @@ namespace PHPPE {
 				//parse tags
 				$C = 0;
 				for($k = 0; $k < count($T) && $m = $T[ $k ]; $k++ ) {
-					$ta = r($m[ 1 ][ 0 ]);
+					$H = r($m[ 1 ][ 0 ]);
 					$w = "";
 					$a = "";
-					if($ta[ 0 ] == "=")
+					if($H[ 0 ] == "=")
 						$t = "=";
 					else 
-						$t = t(strstr($ta, ' ', true));
+						$t = t(strstr($H, ' ', true));
 					if(empty($t))
-						$t = $ta;
+						$t = $H;
 					else 
-						$a = r(w($ta, u($t)));
+						$a = r(w($H, u($t)));
 					$A = x(" ", $a);
-					$oo = $m[ 0 ][ 1 ];
-					$os = $m[ 0 ][ 2 ];
+					$N = $m[ 0 ][ 1 ];
+					$M = $m[ 0 ][ 2 ];
 					//interpret tags
 					switch($t) {
 						//application output marker in frame. It's not our job to parse it
@@ -2892,7 +2922,7 @@ namespace PHPPE {
 						case "template" :
 						$w = self::_t(s(self::_t(z($x, $m[ 0 ][ 1 ] + $m[ 0 ][ 2 ] + $C, $T[ $m[ 3 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] - $m[ 0 ][ 2 ]), $re), "<%", "<!"), $re + 1);
 						$k = $m[ 3 ];
-						$os = $T[ $m[ 3 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] + $T[ $m[ 3 ] ][ 0 ][ 2 ];
+						$M = $T[ $m[ 3 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] + $T[ $m[ 3 ] ][ 0 ][ 2 ];
 						break;
 						//iteration
 						case "foreach" :
@@ -2908,14 +2938,14 @@ namespace PHPPE {
 								self::$c[ self::$n ]->IDX++ ;
 							}
 						$k = $m[ 3 ];
-						$os = $T[ $m[ 3 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] + $T[ $m[ 3 ] ][ 0 ][ 2 ];
+						$M = $T[ $m[ 3 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] + $T[ $m[ 3 ] ][ 0 ][ 2 ];
 						unset(self::$c[ self::$n ]);
 						self::$n-- ;
 						break;
 						//conditional
 						case "if" :
-						$os = $T[ $m[ 3 ] ][ 0 ][ 1 ] + $T[ $m[ 3 ] ][ 0 ][ 2 ] - $m[ 0 ][ 1 ];
-						$w = self::_t(($a != "cms" && ! empty(self::getval($a))) || ($a == "cms" && $CM) ? z($x, $oo + $C + $m[ 0 ][ 2 ], ! empty($m[ 4 ]) ? $T[ $m[ 4 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] - $m[ 0 ][ 2 ] : $os - $m[ 0 ][ 2 ] - $T[ $m[ 3 ] ][ 0 ][ 2 ]) : (! empty($m[ 4 ]) ? z($x, $T[ $m[ 4 ] ][ 0 ][ 1 ] + $C + $T[ $m[ 4 ] ][ 0 ][ 2 ], $T[ $m[ 3 ] ][ 0 ][ 1 ] - $T[ $m[ 4 ] ][ 0 ][ 1 ] - $T[ $m[ 4 ] ][ 0 ][ 2 ]) : ""), $re + 1);
+						$M = $T[ $m[ 3 ] ][ 0 ][ 1 ] + $T[ $m[ 3 ] ][ 0 ][ 2 ] - $m[ 0 ][ 1 ];
+						$w = self::_t(($a != "cms" && ! empty(self::getval($a))) || ($a == "cms" && $J) ? z($x, $N + $C + $m[ 0 ][ 2 ], ! empty($m[ 4 ]) ? $T[ $m[ 4 ] ][ 0 ][ 1 ] - $m[ 0 ][ 1 ] - $m[ 0 ][ 2 ] : $M - $m[ 0 ][ 2 ] - $T[ $m[ 3 ] ][ 0 ][ 2 ]) : (! empty($m[ 4 ]) ? z($x, $T[ $m[ 4 ] ][ 0 ][ 1 ] + $C + $T[ $m[ 4 ] ][ 0 ][ 2 ], $T[ $m[ 3 ] ][ 0 ][ 1 ] - $T[ $m[ 4 ] ][ 0 ][ 1 ] - $T[ $m[ 4 ] ][ 0 ][ 2 ]) : ""), $re + 1);
 						$k = $m[ 3 ];
 						break;
 						//object reference
@@ -2988,21 +3018,21 @@ namespace PHPPE {
 						break;
 						//hook for cms editor icons
 						case "cms" :
-						{
-							if($CM)
-								$w = CMS::icon($A) . "<span>";
-							//no break, fall into add-on code
-						}
 						//add-on support
 						case "widget" :
 						case "var" :
 						case "field" :
 						$Z = $R = $m = false;
+						$G = $t == "cms";
+						$V = $t == "var";
 						//if first attribute starts with an at sign, it's an ace definition
 						if($A[ 0 ][ 0 ] == '@') {
 							$Z = w($A[ 0 ], 1);
 							array_shift($A);
 						}
+						$Z = ! $Z || self::$user->has($Z);
+						if($G && $J && $Z)
+							$w = CMS::icon($A);
 						//if type starts with an asterix, it's a mandatory field
 						//equal sign does not show error on missing addon, but display plain value
 						if($A[ 0 ][ 0 ] == '*') {
@@ -3011,13 +3041,13 @@ namespace PHPPE {
 						}
 						$f = $A[ 0 ];
 						//get add-on type and arguments
-						if(p("/^([^\(]+)[\(]?([^\)]*)/", $A[ 0 ], $ma) && ! empty($ma[ 1 ])) {
-							$f = $ma[ 1 ];
+						if(p("/^([^\(]+)[\(]?([^\)]*)/", $A[ 0 ], $B) && ! empty($B[ 1 ])) {
+							$f = $B[ 1 ];
 							//submit is just an alias of update
 							if($f == "submit")
 								$f = "update";
 							//get arguments array
-							$a = self::getval("[" . $ma[ 2 ] . "]");
+							$a = self::getval("[" . $B[ 2 ] . "]");
 							array_shift($A);
 							//name
 							$n = ! empty($A[ 0 ]) ? $A[ 0 ] : "";
@@ -3039,23 +3069,22 @@ namespace PHPPE {
 								if($R || $f == "check" || $f == "file" || q(A . $f, "validate"))
 									$_SESSION[ "pe_v" ][ $n ][ $f ] = [ $R, $a, $A ];
 								//find out method to use to draw AddOn
-								$m = $t != "cms" && ($t == "field" || ! empty($_SESSION[ $t == "var" ? "pe_e" : "pe_c" ])) && q($F, "edit") ? "edit" : "show";
+								$m = ! $G && ($t == "field" || ! empty($_SESSION[ $V ? "pe_e" : "pe_c" ])) && q($F, "edit") ? "edit" : "show";
 								//get output
-								$w .= q($F, $m) && (! $Z || self::$user->has($Z)) ? $F->$m() : $v;
+								$w .= q($F, $m) && $Z ? $F->$m() : $v;
 								unset($F);
 								break;
 							}
 						}
-						$w .= $t == "cms" || ($t == "var" && empty($_SESSION[ 'pe_e' ])) ? (is_scalar($v) ? $v . "" : $v && json_encode($v)) : self::e("W", "UNKADDON", $f);
-						$w .= $t == "cms" && $CM ? "</span>" : "";
+						$w .= $G || ($V && empty($_SESSION[ 'pe_e' ])) ? (is_scalar($v) ? $v . "" : $v && json_encode($v)) : self::e("W", "UNKADDON", $f);
 						break;
 						default : $w = self::e("W", "UNKTAG", $t);
 					}
 					//replace templater tag with output, not using any search and replace algorithm
-					$D = $oo + $C && $x[ $oo + $C - 1 ] == "\n" ? 1 : 0;
-					$E = isset($x[ $oo + $os + $C ]) && $x[ $oo + $os + $C ] == "\n" ? 1 : 0;
-					$x = z($x, 0, $oo + $C - $D) . $w . w($x, $oo + $os + $C + $E);
-					$C += @u($w) - $os - $D - $E;
+					$D = $N + $C && $x[ $N + $C - 1 ] == "\n" ? 1 : 0;
+					$E = isset($x[ $N + $M + $C ]) && $x[ $N + $M + $C ] == "\n" ? 1 : 0;
+					$x = z($x, 0, $N + $C - $D) . $w . w($x, $N + $M + $C + $E);
+					$C += @u($w) - $M - $D - $E;
 				}
 			}
 			return $x;
@@ -3069,8 +3098,11 @@ namespace PHPPE {
 		function _eh($e, $c = [])
 		{
 			foreach($this->libs as $k => $v)
-				if(q($v, $e))
-					$c = $v->$e($c);
+				if(q($v, $e)) {
+					$d = $v->$e($c);
+					if($d != null)
+						$c = $d;
+					}
 			return $c;
 		}
 	}
@@ -3399,7 +3431,7 @@ namespace PHPPE\AddOn {
 			$a = $t->attrs;
 			$b = 'o.className=o.className.replace(" errinput","")';
 			Core::js("pe_oe(o)", "$b;if(o.value!=''&&o.value.match(/^.+\@(\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?)$/i)==null)o.className+=' errinput';");
-			return "<input" . @v($t, $a[ 1 ], "", $t->args) . " type='text' onfocus='" . s($b, "o.", "this.") . "' onchange='pe_oe(this);" . (! empty($a[ 0 ]) && $a[ 0 ] != "-" ? $a[ 0 ] : "") . "' value=\"" . h(r($t->value)) . "\">";
+			return "<input" . @v($t, $a[ 1 ], "", $t->args) . " type='email' onfocus='" . s($b, "o.", "this.") . "' onchange='pe_oe(this);" . (! empty($a[ 0 ]) && $a[ 0 ] != "-" ? $a[ 0 ] : "") . "' value=\"" . h(r($t->value)) . "\">";
 		}
 		static function validate($n, &$v, $a, $t)
 		{
@@ -3605,10 +3637,12 @@ namespace {
 	}
 	function c($m)
 	{
-		header("Pragma:cache");
-		header("Cache-Control:cache,public,max-age=" . \PHPPE\Core::$core->cachettl);
-		header("Content-Type:$m;charset=utf-8");
-		header("Connection:close");
+		//on cli this will most probably report an error
+		//as usually cli action handlers have already echoed output by now
+		@header("Pragma:cache");
+		@header("Cache-Control:cache,public,max-age=" . \PHPPE\Core::$core->cachettl);
+		@header("Content-Type:$m;charset=utf-8");
+		@header("Connection:close");
 	}
 	function d($n)
 	{
@@ -3677,7 +3711,7 @@ namespace {
 	}
 	function v($a, $b, $e = "", $f = [])
 	{
-		return " class='" . $a->css . (! empty($b) && $b != "-" ? " " . $b : "") . "'" . ($a->name ? " name='" . $a->fld . "'" : "") . ($e && $e != "-" ? " onchange='" . $e . "'" : "") . (! empty($f[ 0 ]) && $f[ 0 ] > 0 ? " size='" . $f[ 0 ] . "'" : "") . (! empty($f[ 1 ]) && $f[ 1 ] > 0 ? " maxlength='" . $f[ 1 ] . "'" : "");
+		return(@$a->css[ 0 ] == "r" ? " required" : "") . " class='" . $a->css . (! empty($b) && $b != "-" ? " " . $b : "") . "'" . ($a->name ? " name='" . $a->fld . "'" : "") . ($e && $e != "-" ? " onchange='" . $e . "'" : "") . (! empty($f[ 0 ]) && $f[ 0 ] > 0 ? " size='" . $f[ 0 ] . "'" : "") . (! empty($f[ 1 ]) && $f[ 1 ] > 0 ? " maxlength='" . $f[ 1 ] . "'" : "");
 	}
 	function u($a)
 	{
@@ -3710,6 +3744,10 @@ namespace {
 	function cc($c)
 	{
 		return ce($c) && is_subclass_of($c, C . "App");
+	}
+	function gc()
+	{
+		return get_declared_classes();
 	}
 	function ts($v)
 	{

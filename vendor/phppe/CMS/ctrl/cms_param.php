@@ -2,9 +2,7 @@
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
-include_once("vendor/phppe/CMS/libs/pages.php");
-
-class CMS extends \PHPPE\Ctrl {
+class CMSParam extends \PHPPE\Ctrl {
 	public $param;
 	public $type;
 	public $value;
@@ -55,7 +53,8 @@ class CMS extends \PHPPE\Ctrl {
 					PHPPE::exec("UPDATE pages set data=?,modifyid=?,modifyd=CURRENT_TIMESTAMP WHERE id=? AND created=?",[json_encode($_SESSION['cms_page']['data']),PHPPE::$user->id,$_SESSION['cms_page']['id'],$_SESSION['cms_page']['created']]);
 					PHPPE::exec("DELETE FROM pages WHERE id=? AND created not in (SELECT created FROM pages WHERE id=? order by created desc limit 1)",[$_SESSION['cms_page']['id'],$_SESSION['cms_page']['id']]);
 				} else {
-					$page=new Page();
+					include_once("vendor/phppe/CMS/libs/pages.php");
+					$page=new \PHPPE\Page();
 					foreach($_SESSION['cms_page'] as $k=>$v)
 						if($k[0]!="_"&&$k!="created"&&$k!="modifyd"&&$k!="modifyid"&&$k!="gdds")
 							$page->$k=$v;

@@ -28,7 +28,7 @@ CREATE TABLE `pages_list` (
 );
 
 
-INSERT INTO `pages` VALUES ('cmstest','','Test Page','','simple','{"body":"test2","meta":{}}','','',0,0,'2015-01-01 00:00:00',CURRENT_TIMESTAMP,0,0,-1);
+INSERT INTO `pages` VALUES ('cmstest','','Test Page','','simple','{"body":"test2","meta":{}}','','',0,0,'2016-01-01 00:00:00',CURRENT_TIMESTAMP,0,0,-1);
 INSERT INTO `pages` VALUES ('cmstest','','Test Page','','simple','{"body":"test","meta":{}}','','',0,0,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,0,0,-1);
 INSERT INTO `pages` VALUES ('cmstest/2','hu','Test Page #2','','simple','{"body":"test2","meta":{}}','','',0,0,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,0,0,-1);
 INSERT INTO `pages_list` VALUES ('mainmenu','cmstest',0);

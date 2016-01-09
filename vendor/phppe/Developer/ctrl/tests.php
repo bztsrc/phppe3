@@ -16,15 +16,16 @@ class Tests extends \PHPPE\Ctrl {
 		PHPPE::$core->nocache = true;
 		//get test cases
 		$this->testCases = array();
-		foreach(glob("vendor/phppe/Developer/tests/*.php") as $f) {
+		foreach(glob("vendor/phppe/*/tests/*.php") as $f) {
 		    list($k)=explode(".",basename($f));
 		    $d=explode(";",@file_get_contents("data/tests/".$k));
 		    $this->testCases[$k]=[
 			'name' => ucfirst(trim(str_replace("_", " ",substr($k,4)))),
 			'time' => @filemtime("data/tests/".$k),
-			'avg' => $d[0]+0.0,
-			'ret' => L(isset($d[1])?($d[1]=='1'?"OK":($d[1]=='0'?"FAIL":$d[1])):"None"),
-			'color' => !isset($d[1])||($d[1]!='0'&&$d[1]!='1')?"blue":($d[1]?"green":"red")
+			'avg' => !empty($d[0])?$d[0]+0.0:0.0,
+			'asserts' => !empty($d[1])?$d[1]+0:0,
+			'ret' => L(isset($d[2])?($d[2]=='1'?"OK":(!$d[2]?"FAIL":$d[2])):"None"),
+			'color' => !isset($d[2])||($d[2]&&$d[2]!='1')?"blue":($d[2]?"green":"red")
 		    ];
 		}
 		//this is required by output cache test
@@ -53,10 +54,12 @@ class Tests extends \PHPPE\Ctrl {
 			flush();
 			$t=microtime(true);
 			$ret=include("vendor/phppe/Developer/tests/".$test.".php");
-			if($ret===true && preg_match_all("/return/",file_get_contents("vendor/phppe/Developer/tests/".$test.".php"),$m))
-			    $numasserts+=count($m[0]);
+			if($ret===true && preg_match_all("/return/",file_get_contents("vendor/phppe/Developer/tests/".$test.".php"),$m)) {
+			    $asserts=count($m[0])-1;
+			    $numasserts+=$asserts;
+			}
 			$t=microtime(true)-$t;
-			file_put_contents("data/tests/".$test,sprintf("%0.4f",round($this->testCases[$test]['avg']?($this->testCases[$test]['avg']+$t)/2:$t,4)).";".$ret);
+			file_put_contents("data/tests/".$test,sprintf("%0.4f",round($this->testCases[$test]['avg']?($this->testCases[$test]['avg']+$t)/2:$t,4)).";".$asserts.";".$ret);
 			@chmod("data/tests/".$test,0666);
 			echo("\n".L("Result").": ".L($ret===true?"OK":($ret===false?"FAIL":$ret))."\n");
 			flush();
@@ -67,9 +70,9 @@ class Tests extends \PHPPE\Ctrl {
 	function action($item)
 	{
 		if(PHPPE::$core->output!="html") {
-			printf("%-20s%-9s%-21s%s\n",L("Test name"),L("Avg.time"),L("Last run"),L("Result"));
+			printf("%-20s%-9s%-7s%-21s%s\n------------------- -------- ------ -------------------- ----------\n",L("Test boundle"),L("Avg.time"),L("#Tests"),L("Last run"),L("Result"));
 			foreach($this->testCases as $t)
-				printf("%-20s%0.4fs  %s  %s\n",$t['name'],$t['avg'],date("Y-m-d H:i:s",$t['time']),$t['ret']);
+				printf("%-20s%0.4fs  %6d %s  %s\n",$t['name'],$t['avg'],$t['asserts'],date("Y-m-d H:i:s",$t['time']),$t['ret']);
 			die();
 		}
 		PHPPE::js("runtest(t)", "document.getElementById('testsdiv').style.display='none';document.getElementById('loadingdiv').style.display='block';document.location.href=t;");

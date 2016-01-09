@@ -33,14 +33,16 @@ if( $mc->get($var)!="aaa" ) {
 } else echo("OK\n");
 
 //value time to live
-echo("Cache TTL: ");
+echo("Cache TTL (1 sec): ");
 //make sure to empty template cache
 $tn = 't_' . sha1(PHPPE::$core->base."_cachetest");
 $mc->set($tn,"",false,1);
 $mc->set($var,"bbb",false,1);
-sleep(1);
-if(method_exists($mc,"cleanUp")) $mc->cleanUp();
-//this check always fail on APC, because it's cleared on next request only...
+sleep(1.001);
+//call garbage collector to flush cache
+if(method_exists($mc,"cron_minute")) $mc->cron_minute("");
+//this check always fail on APC, because it's cleared on
+//next request only, and there's no way to trigger that...
 if( $mc->get($var) ) {
 	if(PHPPE::$core->cache!="apc") {
 	    echo("failed to get!\n");
@@ -70,7 +72,7 @@ if( strpos($d1,", mc -->")===false || strpos($d1,"NOCACHE")!==false ||
 	return false;
 } else echo("OK\n");
 
-if(method_exists($mc,"cleanUp")) $mc->cleanUp();
+if(method_exists($mc,"cron_minute")) $mc->cron_minute("");
 
 //everything was ok
 return true;

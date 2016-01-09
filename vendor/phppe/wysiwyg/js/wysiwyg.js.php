@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/wysiwyg/js/wysiwyg.js.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief HTML5 compatible WYSIWYG Editor
  */
 use PHPPE\Core as PHPPE;
@@ -32,8 +32,9 @@ if(!empty(PHPPE::$core->item)){
     header( "Connection:close");
     $str=str_replace(array("!2F!","!2B!","!2f!","!2b!"),array("/","+","/","+"),urldecode(stripslashes(PHPPE::$core->item)));
     if(strtolower(substr($str,0,8))=="<!widget") {
-        list($d)=explode(" ",trim(substr($str,9,strlen($str)-10)));
-        list($d)=explode("(",$d);
+        $d=explode(" ",trim(substr($str,9,strlen($str)-10)));
+        if($d[0][0]=="@") array_shift($d);
+        list($d)=explode("(",$d[0]);
         $f=glob("vendor/phppe/*/addons/".str_replace("..","",$d).".png");
         if(!empty($f[0]) && file_exists($f[0]) && $data=@file_get_contents($f[0])) die($data);
     }
@@ -202,7 +203,7 @@ function wysiwyg_setvalue(id)
 	if(t.charAt(t.length-1)!='>') t=t+'>';
 	rte.value=rte.value.replace(txt[i],t).replace("&lt;"+txt[i].substring(1,txt[i].length),t);}
     }
-    rte.value=rte.value.replace(/<br[\/]?>([^\n])/gi,"<br>\n$1").replace(/<\/([a-z]+)>([^\n])/gi,"</$1>\n$2").replace(/<!\/([^>]+)>([^\n])/g,"<!/$1>\n$2").replace(/([{};])([^\n])/g,"$1\n$2").replace(/(&[a-z0-9#]+;)\n/gi,"$1");
+    rte.value=rte.value.replace(/<br[\/]?>([^\n])/gi,"<br>\n$1").replace(/<\/([a-z]+)>([^\n])/gi,"</$1>\n$2").replace(/<!\/([^>]+)>([^\n]?)/g,"<!/$1>\n$2").replace(/([{};])([^\n])/g,"$1\n$2").replace(/(&[a-z0-9#]+;)\n/gi,"$1");
 }
 
 function wysiwyg_zoom(evt,id)
@@ -224,6 +225,8 @@ function wysiwyg_togglesrc(id)
     var tblicons=document.getElementById(id+':tblicons');
     var tw=document.getElementById(id).offsetWidth-1;
     var th=document.getElementById(id).offsetHeight-1;
+    if(!wysiwyg_src[id])
+        document.getElementById(id).style.height=document.getElementById(id+':frame').style.height;
     document.getElementById(id+':frame').style.display=(wysiwyg_src[id]?"block":"none");
     document.getElementById(id).style.display=(wysiwyg_src[id]?"none":"block");
     document.getElementById(id+':source').style='background-position:'+(wysiwyg_src[id]?'0':'-24')+'px 0px';
@@ -243,11 +246,12 @@ function wysiwyg_togglesrc(id)
 	output=document.getElementById(id).value.toString().replace(/<(!?)\/([^>]+)>\n/g,"<$1/$2>").replace(/<!-/g,"<span class='comment'>&lt;!-").replace('-->','--></span>').replace(/<\/form>/gi,"<!/form>").replace(/([{};])\n/g,"$1");
     document.getElementById(id+':frame').style.width=tw+'px';
     document.getElementById(id+':frame').style.height=th+'px';
-	tags=output.match(/<!.+?>/gm,"$1");
+	tags=output.replace(/=['"][^<>'"]*<!/,"").replace(/=['"]<!/,"");
+    tags=tags.match(/<![^>]+>/gm,"$1");
 	if(tags!=null&&tags.length>0)for(i=0;i<tags.length;i++) {
 	    var tmp=tags[i].substring(1,tags[i].length-1);
 	    var t=tmp.split(' ');
-	    var url=(t[1]==null?t[0]:t[0]+' '+(t[1].match(/^[a-z]+=['"]/)?t[1].substring(t[1].indexOf('=')+2,t[1].length-1):t[1]))+(t[2]!=null?' '+t[2]:'');
+	    var url=(t[1]==null?t[0]:t[0]+' '+(t[1].match(/^[a-z]+=['"]/)?t[1].substring(t[1].indexOf('=')+2,t[1].length-1):t[1]))+(t[2]!=null?' '+t[2]+(t[1].substr(0,1)=='@'&&t[3]!=''?' '+t[3]:''):'');
 //+(t[0].substr(1,5)=='field'||t[0].substr(1,3)=='var'&&t[2]!=null&&t[2]?' '+t[2]:''));
 	    output=output.replace(tags[i],"<img class='wysiwyg_icon' "+(url.substr(0,7)!="!widget"?"height='14' width='"+(url.length*8)+"'":"")+" src='js/wysiwyg.js/"+escape("<"+url.replace(/\//g,"!2F!").replace(/\+/g,"!2B!")+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
 	}
@@ -357,8 +361,8 @@ function wysiwyg_numbered(id) {wysiwyg_exec(id+':frame',"insertorderedlist","");
 function wysiwyg_undo(id) {wysiwyg_exec(id+':frame',"undo","");}
 function wysiwyg_redo(id) {wysiwyg_exec(id+':frame',"redo","");}
 function wysiwyg_unlink(id) {wysiwyg_exec(id+':frame',"unlink","");}
-function wysiwyg_link(id,obj) {document.getElementById(id+':link_href').value=wysiwyg_selected_obj&&wysiwyg_selected_obj.tagName=='A'?wysiwyg_selected_obj.getAttribute('href'):'https://';if(wysiwyg_selected_obj&&wysiwyg_selected_obj.tagName!='A'&&wysiwyg_selected_sel) {var a=document.createElement('a');a.setAttribute('href','https://');a.innerHTML=wysiwyg_selected_txt;wysiwyg_selected_sel.getRangeAt(wysiwyg_selected_sel.rangeCount-1).surroundContents(a);wysiwyg_selected_obj=a;}popup_open(obj,id+':link',-100,24);}
-function wysiwyg_setlink(id,obj){if(!obj||!obj.value||obj.value=='')wysiwyg_exec(id+':frame',"unlink","");if(!wysiwyg_selected_obj)wysiwyg_selected(id);if(wysiwyg_selected_obj&&wysiwyg_selected_obj.tagName=='A')wysiwyg_selected_obj.href=obj.value;else alert(obj.value);}
+function wysiwyg_link(id,obj) {document.getElementById(id+':link_href').value=wysiwyg_selected_obj&&wysiwyg_selected_obj.tagName=='A'?wysiwyg_selected_obj.getAttribute('href'):(wysiwyg_selected_obj&&wysiwyg_selected_obj.parentNode&&wysiwyg_selected_obj.parentNode.tagName=='A'?wysiwyg_selected_obj.parentNode.getAttribute('href'):'https://');if(wysiwyg_selected_obj&&wysiwyg_selected_obj.tagName!='A'&&(wysiwyg_selected_obj.parentNode==null|wysiwyg_selected_obj.parentNode.tagName!='A')&&wysiwyg_selected_sel) {var a=document.createElement('a');a.setAttribute('href','https://');a.innerHTML=wysiwyg_selected_txt;wysiwyg_selected_sel.getRangeAt(wysiwyg_selected_sel.rangeCount-1).surroundContents(a);wysiwyg_selected_obj=a;}popup_open(obj,id+':link',-100,24);}
+function wysiwyg_setlink(id,obj){if(!obj||!obj.value||obj.value=='')wysiwyg_exec(id+':frame',"unlink","");if(!wysiwyg_selected_obj)wysiwyg_selected(id);if(wysiwyg_selected_obj&&wysiwyg_selected_obj.tagName=='A')wysiwyg_selected_obj.href=obj.value;else if(wysiwyg_selected_obj&&wysiwyg_selected_obj.parentNode&&wysiwyg_selected_obj.parentNode.tagName=='A')wysiwyg_selected_obj.parentNode.href=obj.value;else alert(obj.value);}
 //function wysiwyg_image(id,obj) {popup_open(obj,id+':image',0,24);}
 function wysiwyg_table(id,obj) {popup_open(obj,id+':table',0,24);}
 function wysiwyg_style(id,obj) {popup_open(obj,id+':style',0,24);}

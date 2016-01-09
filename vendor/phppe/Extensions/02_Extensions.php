@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/Extensions/02_Extensions.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief PHPPE Extension Manager
  */
 namespace PHPPE;
@@ -140,7 +140,9 @@ class Extensions {
 			if(!empty(PHPPE::$core->repos)) $list=array_merge(PHPPE::$core->repos,$list);
 			foreach($list as $r)
 			{
-				$d2 = file_get_contents($r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang);
+				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang;
+				$d2 = file_get_contents($url);
+				if(empty($d2)) $d2=PHPPE::get($url);
 				$d = json_decode($d2,true);
 				PHPPE::log('D','Packages from repo: '.$r.' '.(empty($d2)?"404":json_last_error_msg()),"repo");
 				if(!empty($d) && !empty($d['packages'])) {

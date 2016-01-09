@@ -1,4 +1,5 @@
 <?php
+namespace PHPPE;
 use \PHPPE\Core as PHPPE;
 
 class Page extends \PHPPE\Model

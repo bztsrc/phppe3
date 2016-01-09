@@ -16,10 +16,17 @@
 	"require": {
 		"php": ">=5.5",
 		"phppe": ">=3.0",
+		"phppe/wysiwyg": "*",
 		"phppe/CMS": "*",
 		"phppe/Extensions": "*",
+	},
+
+	"suggests": {
+		"phppe/GPIO": "*",
+		"phppe/Gallery": "*",
+		"phppe/DataLibrary": "*",
 		"phppe/DBA": "*",
-		"phppe/DataLibrary": "*"
+		"phppe/youtube": "*"
 	},
 
 	"support": {

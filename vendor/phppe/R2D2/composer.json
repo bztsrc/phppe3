@@ -1,0 +1,23 @@
+{
+	"name": "phppe/R2D2",
+	"name_en": "R2D2 controller",
+	"name_hu": "R2D2 vezérlő",
+	"keywords": [ "Hardware" ],
+
+	"description": "Controller for a small robot with RPi. Read instructions here: http://phppe.org/r2d2/",
+	"description_hu": "Vezérlő egy kis RPi robothoz. Az összeszerelési instrukciókat itt találod: http://phppe.org/r2d2/",
+
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_r2d2.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*",
+		"phppe/GPIO": "*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

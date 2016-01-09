@@ -6,14 +6,14 @@ $libs = PHPPE::lib();
 
 //check if it's empty
 echo("Library autoloading: ");
-if( empty($libs["developer"]) || $libs["developer"] != PHPPE::lib("developer") ) {
+if( empty($libs["Developer"]) || $libs["Developer"] != PHPPE::lib("Developer") ) {
 	echo("Failed, should not happen!\n");
 	return false;
 } else echo("OK\n");
 
 //add new libraries
 PHPPE::lib( "TestLib1", "Test Lib");
-PHPPE::lib( "TestLib2", "Test Lib 2", "Test1", new \PHPPE\App());
+PHPPE::lib( "TestLib2", "Test Lib 2", "TestLib1", new \PHPPE\App());
 
 //checks
 echo("Library load: ");
@@ -73,7 +73,27 @@ if( !empty($addons_loaded["test2"]) || empty(PHPPE::getval("core.addons")["test2
 
 // error reporting test
 echo("Error reporting: ");
+//FIXME PHPPE::e(), PHPPE::error(), PHPPPE::isError()
 echo("OK\n");
+
+//! Extension test, only if installed
+echo("Registry get: ");
+\PHPPE\Registry::del('tests_aaa');
+if(PHPPE::isInst("Registry")) {
+	if( !empty(\PHPPE\Registry::get('tests_aaa'))) {
+		echo("failed!\n");
+		return false;
+	} else echo("OK\n");
+
+	echo("Registry set: ");
+	\PHPPE\Registry::set('tests_aaa',1);
+	if( \PHPPE\Registry::get('tests_aaa')!=1) {
+		echo("failed!\n");
+		return false;
+	} else echo("OK\n");
+	\PHPPE\Registry::del('tests_aaa');
+
+} else echo("SKIP\n");
 
 //everything was ok
 return true;

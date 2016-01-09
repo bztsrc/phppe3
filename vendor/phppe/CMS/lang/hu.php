@@ -90,7 +90,7 @@ return [
 	"addon_phone"=>"Telefonszám",
 	"addon_radio"=>"Egyszeri választás",
 	"addon_select"=>"Opció lista",
-	"addon_text"=>"Syöveges mező",
+	"addon_text"=>"Szöveges mező",
 	"addon_update"=>"Objektum módosítása gomb",
 	"addon_wysiwyg"=>"WYSIWYG Szerkesztő",
 	"help_pagename"=>"Ez lesz a böngészőablak címe",

@@ -3,9 +3,10 @@
 	"name_en": "Chart generator",
 	"name_hu": "Grafikon generáló",
 	"keywords": [ "Content" ],
-	"keywords_hu": [ "Tartalom" ],
 
-	"description": "Generates different charts in png as dynamic asset.",
+	"description": "Generates different charts from data source in png as dynamic asset.",
+	"description_hu": "Különböző grafikonokat generál adatforrásból png-be, és képként hivatkozható.",
+
 	"version": "0.0.1",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_chart.tgz" },
 

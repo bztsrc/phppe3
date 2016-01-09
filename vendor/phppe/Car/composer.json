@@ -1,0 +1,23 @@
+{
+	"name": "phppe/Car",
+	"name_en": "Car Interface",
+	"name_hu": "Autó kapcsolat",
+	"keywords": [ "Hardware" ],
+
+	"description": "Library to get car OBD data. See http://www.instructables.com/id/OBD-Pi/",
+	"description_hu": "Függvénykönyvtár az autó OBD adatainak lekéréséhez. Lásd http://www.instructables.com/id/OBD-Pi/",
+
+	"version": "0.0.1",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_car.tgz" },
+
+	"version_normalized": "0.0.1.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*",
+		"phppe/GPIO": "*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

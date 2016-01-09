@@ -15,5 +15,5 @@ tGpKhaLgyemnzUE2oEvo8pL3gsbizcLKsYkIeqAYJpy2PnJukIHjwQIUR6LT1xEZ
 hBa5NxamkX3qEMEPBd8=
 -----END DSA PRIVATE KEY-----
 ",
-	"path"=>"/Users/turdus/WWW/phppe3_test2"
+	"path"=>"/Users/turdus/WWW/phppe3_test"
 );?>

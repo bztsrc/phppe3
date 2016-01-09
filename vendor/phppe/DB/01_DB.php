@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2015 bzt
+ *  Copyright LGPL 2016 bzt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@
  *
  * @file vendor/phppe/DB/01_DB.php
  * @author bzt@phppe.org
- * @date 1 Jan 2015
+ * @date 1 Jan 2016
  * @brief A very basic SQL Query Builder
  */
 namespace PHPPE;
@@ -92,7 +92,7 @@ class DB
  * @param alias alias name for table
  * @return DB instance
  */
-	static function insert($table)
+	static function insert($table,$alias=null)
 	{
 		$n = new self;
 		$n->command = "INSERT";
@@ -209,7 +209,7 @@ class DB
 					if(!in_array($v[1],["=","!=","<","<=",">",">=","LIKE","RLIKE","IS NULL","IS NOT NULL"]))
 						throw new DBException(L("Bad conditional")." #".$k.": ".$v[1]);
 					$d[]=$v[0]." ".$v[1].
-					($v[2]!=""?" ".
+					(!empty($v[2])?" ".
 						($v[2]=="?"?$v[2]:
 							"'".str_replace(["\r","\n","\t","\x1a","\x00"],["\\r","\\n","\\t","\\x1a","\\x00"],addslashes($v[1]=="LIKE"?PHPPE::like($v[2]):(is_array($v[2])||is_object($v[2])?json_encode($v[2]):$v[2])))."'")
 					:"");

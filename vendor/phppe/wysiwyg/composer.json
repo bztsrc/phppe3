@@ -3,6 +3,8 @@
 	"name_en": "WYSIWYG Editor",
 
 	"description": "What You See Is What You Get Editor",
+	"description_hu": "Amit látsz, azt kapod szerkesztő",
+
 	"version": "3.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_wysiwyg.tgz" },
 

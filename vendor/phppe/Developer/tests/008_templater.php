@@ -18,7 +18,11 @@ if( PHPPE::_gt("test1") != "aaa\n<!include test2>\nbbb\n" ) {
 //! load and also parse the same template
 echo("Load and parse template: ");
 $a=PHPPE::template("test1");
-if( !preg_match("|^aaaccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccd<span style='background:#F00000;color:#FEA0A0;padding:3px;'>W-TOOMNY:&nbsp;([^<]+)</span>dde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\nbbb\n|ims",$a ) ) {
+if( !preg_match("|^aaaccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccd".
+	"ccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccdccd.*?TOOMNY.*?dde\ndde\ndde\n".
+	"dde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\n".
+	"dde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\n".
+	"dde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\ndde\nbbb\n|ims",$a ) ) {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");
@@ -97,25 +101,30 @@ if( PHPPE::_t("<!foreach test_arr><!if ODD>A<!else>B<!/if><!/foreach>") != "ABA"
 } else echo("OK\n");
 
 echo("form tag: ");
-if( !preg_match("|<form name='a' action='[^']+' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]+'><input type='hidden' name='pe_f' value='a'>|ims", PHPPE::_t("<!form a>")) ) {
+
+if( !preg_match("|<form name='a' action='[^']+' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+  PHPPE::_t("<!form a>")) ) {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");
 
 echo("form tag with action: ");
-if( !preg_match("|<form name='a' action='([^']+)' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]+'><input type='hidden' name='pe_f' value='a'>|ims", PHPPE::_t("<!form a b/c>"), $m) || substr($m[1],-4)!="b/c/") {
+if( !preg_match("|<form name='a' action='([^']+)' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+  PHPPE::_t("<!form a b/c>"), $m) || substr($m[1],-4)!="b/c/") {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");
 
 echo("form tag with onsubmit: ");
-if( !preg_match("|<form name='a' action='[^']+' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]+'><input type='hidden' name='pe_f' value='a'>|ims", PHPPE::_t("<!form a - d()>")) ) {
+if( !preg_match("|<form name='a' action='[^']+' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+  PHPPE::_t("<!form a - d()>")) ) {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");
 
 echo("form tag with action and onsubmit: ");
-if( !preg_match("|<form name='a' action='([^']+)' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]+'><input type='hidden' name='pe_f' value='a'>|ims", PHPPE::_t("<!form a b/c d()>"), $m) || substr($m[1],-4)!="b/c/") {
+if( !preg_match("|<form name='a' action='([^']+)' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+  PHPPE::_t("<!form a b/c d()>"), $m) || substr($m[1],-4)!="b/c/") {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");
@@ -125,7 +134,8 @@ PHPPE::$l['testdate']="2001-02-03 04:05:06";
 date_default_timezone_set( "UTC" );
 
 echo("date and time with string: ");
-if( PHPPE::_t('<!date L("testdate")>') != "2001-02-03" || PHPPE::_t('<!time L("testdate")>') != "2001-02-03 04:05:06") {
+if( PHPPE::_t('<!date L("testdate")>') != "2001-02-03" ||
+	PHPPE::_t('<!time L("testdate")>') != "2001-02-03 04:05:06") {
 	echo("Failed!\n");
 	return false;
 } else echo("OK\n");

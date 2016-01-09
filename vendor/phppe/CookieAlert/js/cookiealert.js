@@ -2,7 +2,7 @@
  *   PHP Portal Engine v3.0.0
  *   https://github.com/bztsrc/phppe3/
  *
- *   Copyright 2015 bzt, LGPLv3
+ *   Copyright 2016 LGPL bzt
  *
  *   PHPPE Cookie Alert
  *
