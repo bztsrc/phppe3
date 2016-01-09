@@ -18,7 +18,7 @@
 		"phppe": ">=3.0",
 		"phppe/wysiwyg": "*",
 		"phppe/CMS": "*",
-		"phppe/Extensions": "*",
+		"phppe/Extensions": "*"
 	},
 
 	"suggest": {
