@@ -18,10 +18,10 @@
 		"phppe": ">=3.0",
 		"phppe/wysiwyg": "*",
 		"phppe/CMS": "*",
-		"phppe/Extensions": "*",
+		"phppe/Extensions": "*"
 	},
 
-	"suggests": {
+	"suggest": {
 		"phppe/GPIO": "*",
 		"phppe/Gallery": "*",
 		"phppe/DataLibrary": "*",
