@@ -102,7 +102,7 @@ class Extensions {
 			unlink($idfile);
 			//get site title
 			if( !Extensions::iserr($r[0]) ) {
-				$d=explode('"',$r[0]);
+				$d=explode('"',$r[0]);if(empty($d[3])||$d[3]=="phppe3") $d[3]="No name";
 				$t="{ \"name\": \"".($d[3]=="No name"?L($d[3]):$d[3])."\" }";
 			} else
 				$t="{ \"name\": \"".PHPPE::e("","",substr(trim($r[0]),0,4)=="cat:"?L("Run diagnostics first!"):str_replace("\r","",str_replace("\n"," ",trim(empty($r[1])?$r[0]:$r[1]))))."\" }";
@@ -143,8 +143,10 @@ class Extensions {
 				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang;
 				$d2 = file_get_contents($url);
 				if(empty($d2)) $d2=PHPPE::get($url);
-				$d = json_decode($d2,true);
-				PHPPE::log('D','Packages from repo: '.$r.' '.(empty($d2)?"404":json_last_error_msg()),"repo");
+				$d = json_decode($d2,true,8);
+				if(json_last_error()==4)
+					$d = json_decode(str_replace("\\'","'",$d2),true,8);
+				PHPPE::log('D','Packages from: '.$url.' '.(empty($d2)?"404":json_last_error_msg()),"repo");
 				if(!empty($d) && !empty($d['packages'])) {
 					foreach($d['packages'] as $pkg=>$ver) {
 						//get latest

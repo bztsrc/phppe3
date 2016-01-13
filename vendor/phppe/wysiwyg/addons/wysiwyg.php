@@ -6,7 +6,7 @@ class wysiwyg extends \PHPPE\AddOn
 {
 	function init()
 	{
-		PHPPE::addon("wysiwyg", "WYSIWYG Editor", "", "*");
+		PHPPE::addon("wysiwyg", "WYSiWYG", "", "*");
 	}
 	function show(  )
 	{
@@ -17,7 +17,7 @@ class wysiwyg extends \PHPPE\AddOn
 		PHPPE::jslib("wysiwyg.js", "wysiwyg_init();");
 		PHPPE::css("wysiwyg.css");
 		return "<div id='".htmlspecialchars(str_replace(".","_",$this->name)).":container' class='wysiwyg' data-conf='".htmlspecialchars(urlencode(json_encode($this->args)))."'>".
-		"<textarea id='".htmlspecialchars(str_replace(".","_",$this->name))."' name='".htmlspecialchars(str_replace(".","_",$this->name))."' class='wysiwyg wysiwyg_edit input'>".
+		"<textarea id='".htmlspecialchars(str_replace(".","_",$this->name))."' name='".htmlspecialchars(str_replace(".","_",$this->name))."' class='wysiwyg wysiwyg_edit input' dir='ltr'>".
 		htmlspecialchars($this->value)."</textarea></div>";
 	}
 }

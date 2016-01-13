@@ -69,6 +69,7 @@ function resptable_detect() {
 	var pagerdiv=document.createElement('DIV');
 	var prevspan=document.createElement('SPAN'),nextspan=document.createElement('SPAN');
 	pagerdiv.setAttribute('id','resptable'+l+'_pager');
+	pagerdiv.setAttribute('dir','ltr');
 	pagerdiv.className="resptable_pager";
 	pagerdiv.setAttribute('style','position:relative;width:'+ts[i].style.width+';');
 	prevspan.setAttribute('id','resptable'+l+'_prev');

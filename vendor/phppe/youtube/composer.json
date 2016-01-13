@@ -7,10 +7,10 @@
 	"description": "Add on to inline YouTube videos in your content.",
 	"description_hu": "YouTube videókat lehet beágyazni vele szövegbe.",
 
-	"version": "0.0.1",
-	"dist": { "type":"tar","url": "http://phppe.org/phppe3_dba.tgz" },
+	"version": "1.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_youtube.tgz" },
 
-	"version_normalized": "0.0.1.0",
+	"version_normalized": "1.0.0.0",
 	"type": "library",
 	"license": "LGPL-3.0+",
 

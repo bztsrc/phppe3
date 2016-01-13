@@ -7,8 +7,19 @@
 	"name_es": "Revelador",
 	"name_fr": "Développateur",
 	"name_ch": "開發人員",
+	"name_he": "מפתחים",
+	"name_ar": "مبرمج",
+
 	"description": "Source and tests for PHPPE framework developers.",
 	"description_hu": "Forrás és tesztkörnyezet a PHPPE keretrendszerhez.",
+	"description_ru": "Источник и тесты для PHPPE разработчиков инфраструктуры.",
+	"description_de": "Quelle und Tests für PHPPE-Framework-Entwickler.",
+	"description_es": "Fuente y pruebas para desarrolladores PHPPE Framework.",
+	"description_fr": "Source et des tests pour les développeurs PHPPE cadres.",
+	"description_ch": "来源和试验的PHPPE框架的开发。",
+	"description_he": "מקור ובדיקות למפתחים במסגרת PHPPE.",
+	"description_ar": "مصدر والاختبارات ل PHPPE المطورين الإطار.",
+
 	"version": "3.0.0",
 	"dist": { "type":"tar","url": "http://phppe.org/phppe3_devel.tgz" },
 

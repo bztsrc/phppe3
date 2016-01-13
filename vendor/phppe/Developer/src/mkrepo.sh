@@ -63,7 +63,7 @@ EOF
 fi
 
 # non-special extensions
-for pkg in ClassMap CMS EplosCMS wysiwyg GPIO RPi Bitstorm Chart CookieAlert Gallery DataLibrary DBA youtube Car R2D2 LDAP SF GeoLocation; do
+for pkg in ClassMap CMS EplosCMS wysiwyg GPIO RPi Bitstorm Chart CookieAlert Gallery DataLibrary DBA youtube Car R2D2 LDAP SF GeoLocation bootstrap; do
     tarball=`echo $pkg| tr '[:upper:]' '[:lower:]'`
     cd ../$pkg
     rm ./._* 2>/dev/null

@@ -27,6 +27,7 @@
  *
  * This is the nicely formatted and commented source version of PHPPE Core
  * !!! IMPORTANT !!! If you want to keep forward compatibility, don't touch!
+ * @see https://raw.githubusercontent.com/bztsrc/phppe3/master/vendor/phppe/Developer/src/index.php
  * @see http://phppe.org/src.php.txt
  */
 namespace PHPPE {
@@ -63,12 +64,12 @@ namespace PHPPE {
 			$this->fld = s($n, ".", "_");
 			$this->value = $v;
 			$this->attrs = $t;
-			//! css class name reinput for mandatory fields
+			//! css class name reqinput for mandatory fields
 			$this->css = ((! empty($r) ? "req" : "") . "input") . (Core::isError($n) ? " errinput" : "");
 		}
 /**
  * init method is called when needed but only once per page generation
- * constructor may be called several times depending on the view used
+ * constructor may be called several times depending on the template
  */
 		//! function init($cfgarray)
 		//! {
@@ -100,7 +101,7 @@ namespace PHPPE {
  */
 		//! static function validate( $name, &$value,$args,$attrs )
 		//! {
-		//!	return array(true, "Dummy validator that always pass");
+		//!	  return [true, "Dummy validator that always pass"];
 		//! }
 	}
 
@@ -161,8 +162,8 @@ namespace PHPPE {
 				throw new \Exception("no _table");
 			//get the record from current datasource
 			$r = Core::fetch("*", static ::$_table, $w ? $w : "id=?", "", $o, a($i) ? $i : [ $i ? $i : $this->id ]);
-			//update property values. FETCH_INTO not exactly does what we want
-			if(! empty($r)) {
+			//update property values. FETCH_INTO not exactly what we want
+			if($r) {
 				foreach($this as $k => $v)
 					if($k[ 0 ] != '_')
 						$this->$k = is_string($r[ $k ]) && ($r[ $k ][ 0 ] == '{' || $r[ $k ][ 0 ] == '[') ? jd($r[ $k ]) : $r[ $k ];
@@ -171,7 +172,7 @@ namespace PHPPE {
 			return false;
 		}
 /**
- * Save the current object into database. May also alter $id property.
+ * Save the current object into database. May also alter $id property (and that only).
  *
  * @return true on success
  */
@@ -335,7 +336,7 @@ namespace PHPPE {
 		private static $db;			//!< database layer
 		private static $s;			//!< data source selector
 		private static $b;			//!< time consumed by data source queries (bill for db)
-		private static $w;			//!< boolean, true if REQUEST_METHOD not empty
+		private static $w;			//!< boolean, true if called via web (REQUEST_METHOD not empty)
 		private static $v;			//!< validator data
 		static $g;				//!< posix group
 /**
@@ -349,8 +350,6 @@ namespace PHPPE {
 		{
 			//! server time is calculated with (this - http request arrive time)
 			$this->started = microtime(1);
-			//! set self reference
-			$core = self::$core = &$this;
 			//! patch php, set defaults
 			set_exception_handler(function(\Exception $e)
 			{
@@ -378,19 +377,20 @@ namespace PHPPE {
 							$_REQUEST[ $k ][ $K ] = stripslashes($V);
 			}
 			//! self check
-			//! this is updated by the php formatter (fmt.php)
+			//! this is updated by the php formater (fmt.php)
 			//$c=__FILE__;if(filesize($c)!=65535||'eac7bb45f675d1f73b1ae0b44f14c45a141cd8c9'!=sha1(pr("/\'([^\']+)\'\!\=sha1/","''!=sha1",g($c))))self::log("C","Corrupted ".m($c));
 			//!
-			//! set default working directory to projectroot
+			//! set default working directory to ProjectRoot
 			chdir(n(__DIR__));
 			//! initialize PHPPE environment
 			$S = $_SERVER;
-			$R = $_REQUEST;
+			//! set self reference for singleton
+			$core = self::$core = &$this;
 			//! load configuration
 			$c = P . "config" . PE;
 			$this->disabled = [];
 			if(f($c))
-				require_once($c);
+				@require_once($c);
 			//! range checks
 			$this->id = "PHPPE" . VERSION;
 			if($this->runlevel < 0 || $this->runlevel > 3)
@@ -405,7 +405,7 @@ namespace PHPPE {
 			//! disabled extensions
 			if(! a($this->disabled))
 				$this->disabled = x(",", $this->disabled);
-			//! patch php. this must be done _after_ config loaded
+			//! patch php. these have to be done *after* config loaded
 			ini_set("display_errors", $this->runlevel > 1 ? 1 : 0);
 			$this->now = time();
 			$this->error = $this->js = $this->jslib = $this->css = $this->libs = [];
@@ -430,12 +430,14 @@ namespace PHPPE {
 				}
 			$D = "--dump";
 			$A = "argv";
+			$a = "action";
 			$d = x("/", ! empty($d) ? $d : "//");
-			foreach([ 1 => "app", 2 => "action", 3 => "item" ] as $c => $v)
-				$this->$v = ! empty($d[ $c ]) ? t($d[ $c ]) : (! empty($R[ $v ]) ? r(t($R[ $v ])) : (! self::$w && ! empty($S[ $A ][ $c ]) && $S[ $A ][ $c ] != $D ? r(t($S[ $A ][ $c ])) : ($c < 3 ? ($c == 1 ? I : "action") : "")));
+			$R = $_REQUEST;
+			foreach([ 1 => "app", 2 => $a, 3 => "item" ] as $c => $v)
+				$this->$v = ! empty($d[ $c ]) ? t($d[ $c ]) : (! empty($R[ $v ]) ? r(t($R[ $v ])) : (! self::$w && ! empty($S[ $A ][ $c ]) && $S[ $A ][ $c ] != $D ? r(t($S[ $A ][ $c ])) : ($c < 3 ? ($c == 1 ? I : $a) : "")));
 			//! a few basic security check
-			$c = $this->app . "_" . $this->action;
-			if(strpos($c, "..") !== false || strpos($c, "/") !== false || w($this->app, - 4) == PE || w($this->action, - 4) == PE)
+			$c = $this->app . "_" . $this->$a;
+			if(strpos($c, "..") !== false || strpos($c, "/") !== false || w($this->app, - 4) == PE || w($this->$a, - 4) == PE)
 				$this->redirect("403");
 			//! default template
 			$this->template = $c;
@@ -452,7 +454,7 @@ namespace PHPPE {
 					die(VERSION . "\n");
 				if(empty($S[ $A ][ 1 ]) || ia("--help", $S[ $A ])) {
 					$c = "php " . $S[ $A ][ 0 ];
-					die("PHP Portal Engine " . VERSION . ", LGPL 2016 bzt\n\n $c --help\n $c --version\n $c --diag [--gid=x]\n $c [application [action [item]]] ) [ $D ]\n\n");
+					die("PHP Portal Engine " . VERSION . ", LGPL 2016 bzt\n\n $c --help\n $c --version\n $c --diag [--gid=x]\n $c [application [$a [item]]] ) [ $D ]\n\n");
 				}
 			}
 			//! session restore may require models, so we have to
@@ -528,8 +530,7 @@ namespace PHPPE {
  */
 		private function bootdiag()
 		{
-			//		ini_set( "display_errors", 1 );
-			header("Content-Type:text/plain");
+			//ini_set( "display_errors", 1 );
 			//! extensions checks and webserver group id
 			if(! extension_loaded("posix") && y("dl"))
 				@dl((PHP_SHLIB_SUFFIX == "dll" ? "php_" : "") . "posix." . PHP_SHLIB_SUFFIX);
@@ -543,25 +544,31 @@ namespace PHPPE {
 						break;
 					}
 				}
+			//! fallback to 33 if not found or configured
 			if(empty($g[ "g" ]))
 				self::$g = 33;
 			else 
-				self::$g = $g[ "g" ];
+				self::$g = $g[ "g" ];	
+			//! output UID and GID
 			$U = fileowner(__FILE__);
 			if($this->runlevel)
 				echo("DIAG-I: uid $U gid " . self::$g . "\n");
 			//! helper function to create files
 			function i($c, $r, $f = 0, $a = 0640)
 			{
+				//! if not exists yet or creation is forced
 				if(! f($c) || $f) {
 					if(! f($c))
 						echo("DIAG-A: $c\n");
 					file_put_contents($c, $r);
 				}
+				//! change owner and group
 				if(f($c) && (! @chgrp($c, \PHPPE\Core::$g) || ! @chown($c, fileowner(__FILE__))))
 					echo("DIAG-E: chown/chgrp $c\n");
+				//! change access rights
 				return ! @chmod($c, $a);
 			}
+			//! fix missing files and access rights
 			$E = "";
 			$C = 0750;
 			$W = 0775;
@@ -571,14 +578,17 @@ namespace PHPPE {
 			$o = umask(0);
 			//! hide errors here, target may not exists or the symlink may be already there
 			@symlink(N . "core", "phppe");
+			//! directory skeleton
 			$D = [ ".tmp" => $W, "data" => $W, "app" => 0, M => 0755, M . "bin" => 0, N => 0, N . "core" => 0, P . "log" => $W, P . "views" => 0, P . "ctrl" => 0, P . "lang" => 0, P . "libs" => 0, P . "out" => 0, P . "sql" => 0, "public/images" => 0, "public/css" => 0, "public/js" => 0, "app/ctrl" => 0, "app/lang" => 0, "app/libs" => 0, "app/views" => 0 ];
 			$A = [ "*", "*/*", "*/*/*", "*/*/*/*", "*/*/*/*/*" ];
 			foreach([ "data/", M ] as $d)
 				foreach($A as $v)
 					$D += array_fill_keys(@glob($d . $v), 0);
+			//! $D not has all installed files
 			foreach($D as $d => $p) {
 				if(! $p)
 					$p = $C;
+				//! exceptions that has to be writeable
 				$x = ia(substr($d, 0, 4), [ ".tmp", "data" ]) || substr($d, 0, 21) == P . "log";
 				if(is_file($d)) {
 					$P = fileperms($d) &0777;
@@ -595,9 +605,10 @@ namespace PHPPE {
 					}
 					$P = fileperms($d) &0777;
 				}
+				//! if detected and calculated access rights differ
 				if($P != $p) {
 					$E .= sprintf("\t%03o?\t%03o ", $P, $p) . "$d\n";
-					chmod($d, $p);
+					@chmod($d, $p);
 				}
 				if(! @chgrp($d, self::$g) || ! @chown($d, $U))
 					echo("DIAG-E: chown/chgrp $d\n");
@@ -645,6 +656,7 @@ namespace PHPPE {
 				foreach($s as $q)
 					self::exec($q);
 			}
+			//! we don't want third party php code to be called when running with root privs
 			//! *** DIAG Event ***
 			if(! y("posix_getuid") || posix_getuid() != 0)
 				$this->_eh("diag");
@@ -673,6 +685,7 @@ namespace PHPPE {
 			//! *** Client ***
 			self::$client = new Client;
 			if(self::$w) {
+				//! Cache hit
 				$L = 'HTTP_IF_MODIFIED_SINCE';
 				if(! $this->runlevel && isset($S[ $L ]) && $S[ $L ] + $this->cachettl < $this->now) {
 					header('HTTP/1.1 304 Not Modified');
@@ -683,13 +696,17 @@ namespace PHPPE {
 					$this->redirect();
 				//! destroy user session if requested
 				if(isset($R[ 'clear' ])) {
+					//! save the logged in user
+					$L = 'pe_u';
 					$u = $_SESSION[ $L ];
 					$_SESSION = [];
 					$_SESSION[ $L ] = $u;
+					//! redirect user to reload everything
 					$this->redirect();
 				}
 				//! operation modes
 				if(! empty(self::$user->id)) {
+					//! edit for updating records and conf for widget configuration
 					foreach([ "edit", "conf" ] as $v) {
 						if(isset($R[ $v ]) && self::$user->has($v)) {
 							$_SESSION[ 'pe_' . z($v, 0, 1) ] = ! empty($R[ $v ]);
@@ -700,6 +717,9 @@ namespace PHPPE {
 				//! detect browser's language, timezone and screen size
 				$L = "pe_tz";
 				if($this->app == I && empty($_SESSION[ $L ]) && ! isset($R[ 'nojs' ]) && empty($R[ 'cache' ])) {
+					//! this is a small JavaScript page that shows up for the first time
+					//! after collecting information, it redirects user so fast, he won't
+					//! notice a thing.
 					$c = L("Enable JavaScript");
 					if(empty($R[ 'n' ])) {
 						$_SESSION[ 'pe_n' ] = sha1(rand());
@@ -722,8 +742,10 @@ namespace PHPPE {
 				$d = 'HTTP_X_FORWARDED_FOR';
 				self::$client->ip = $i = ! empty($S[ $d ]) ? $S[ $d ] : $S[ 'REMOTE_ADDR' ];
 				self::$client->screen = ! empty($_SESSION[ 'pe_w' ]) ? [ $_SESSION[ 'pe_w' ], $_SESSION[ 'pe_h' ] ] : [ 0, 0 ];
+				//! agent is user agent
 				$d = 'HTTP_USER_AGENT';
 				self::$client->agent = ! empty($S[ $d ]) ? $S[ $d ] : "browser";
+				//! user is http auth user
 				$d = 'PHP_AUTH_USER';
 				self::$client->user = ! empty($S[ $d ]) ? $S[ $d ] : "";
 			}
@@ -734,24 +756,31 @@ namespace PHPPE {
 				$d = x("/", $T ? $T : @readlink("/etc/localtime"));
 				$c = count($d);
 				$_SESSION[ $L ] = $c > 1 ? $d[ $c - 2 ] . "/" . $d[ $c - 1 ] : "UTC";
+				//! no IP for tty
+				self::$client->ip = "CLI";
+				//! query tty size. If you know a better, exec()-less way, let me know!!!
 				$c = exec("tput cols") + 0;
 				$d = exec("tput lines") + 0;
-				self::$client->ip = "CLI";
 				self::$client->screen = [ $c < 1 ? 80 : $c, $d < 1 ? 25 : $d ];
+				//! agent is a terminal
 				$d = getenv("TERM");
 				self::$client->agent = ! empty($d) ? $d : "term";
+				//! user is standard unix user
 				$d = getenv("USER");
 				self::$client->user = ! empty($d) ? $d : "";
 				$this->noframe = 1;
-				//				if($this->app==I) $this->app="cron";
 			}
 			//! set up client's timezone
 			date_default_timezone_set(self::$client->tz = ! empty($_SESSION[ $L ]) ? $_SESSION[ $L ] : "UTC");
 			//! *** User ***
 			$c = C . "User";
+			//! this code is tricky. Core defines PHPPE\User, while Pack ships PHPPE\Users.
+			//! we'll use the later if found, and fallback to the former.
 			$u = $c . "s";
+			//! don't allow any class to take over, only that are inherited from PHPPE\User.
 			if(! ce($u) || ! is_subclass_of($u, $c))
 				$u = $c;
+			//! load PHPPE\Core::$user or create an Anonymous object
 			$L = "pe_u";
 			if(! empty($_SESSION[ $L ]) && is_object($_SESSION[ $L ]))
 				self::$user = $_SESSION[ $L ];
@@ -767,8 +796,10 @@ namespace PHPPE {
 				$i = 'HTTP_ACCEPT_LANGUAGE';
 				$d = x(",", s(! empty($S[ $i ]) ? $S[ $i ] : (getenv('LANG') || "en"), "/", ""));
 			}
+			//! this can be overriden from url
 			if(! empty($R[ 'lang' ]))
 				$d = [ s(r($R[ 'lang' ]), "/", "") ];
+			//! look for valid language code
 			foreach($d as $v) {
 				list($a) = x(";", t($v));
 				if(! empty($a) && (f(P . "lang/$a" . PE) || f("app/lang/$a" . PE))) {
@@ -776,25 +807,28 @@ namespace PHPPE {
 					break;
 				}
 			}
+			//! failsafe
 			if(empty($_SESSION[ $L ]))
 				$_SESSION[ $L ] = "en";
 			self::$client->lang = $v = $_SESSION[ $L ];
 			$i = x("_", s($v, "-", "_"));
 			//! set PHP locale for the language
 			setlocale(LC_ALL, t($i[ 0 ]) . "_" . k(! empty($i[ 1 ]) ? $i[ 1 ] : $i[ 0 ]) . ".UTF8");
-			//! multilanguage support for JavaScript
+			//! multilanguage (and other) support for JavaScript, shipped with Pack
 			$C = "core";
 			if(self::isInst($C)) {
 				$this->jslib[ "$C.$v.js" ] = P . "js/$C.js" . PE;
 				$this->css[ "$C.css" ] = P . "css/$C.css";
 			}
-			//! initialize primary datasource if configured prior module init
+			//! initialize primary datasource if configured prior module initialization
 			if(! empty($this->db)) {
-				//! replace string $this->db with an array of pdo object
+				//! replace string $this->db with an array of pdo objects
 				@self::db($this->db);
 				//! get current timestamp from primary datasoure
 				//! this will override time() in $core->now with
-				//! a time in database server's timezone
+				//! a time in database server's timezone. This is
+				//! important if webserver and dbserver are on
+				//! separate hosts without time synchronization.
 				try {
 					$t = @strtotime(@self::field(T));
 					if($t > 0)
@@ -803,18 +837,18 @@ namespace PHPPE {
 				catch(\Exception $e) {
 				}
 			}
-			//! load core dictionary
+			//! load core's language dictionary
 			self::$l = [];
 			LANG_INIT($C, $i);
-			//! load autoloaded classes' dictionaries and initialize them
+			//! load autoloaded classes' dictionaries and initialize the modules one by one
 			//! *** INIT Event ***
 			foreach($this->libs as $k => $v) {
 				LANG_INIT($k, $i);
 				$c = N . $k . "/config" . PE;
-				if(q($v, "init") && ! $v->init(f($c) ? io($c) : []))
+				if(q($v, "init") && ! $v->init(t($k) != "core" && f($c) ? io($c) : []))
 					unset($this->libs[ $k ]);
 			}
-			//! load application dictionary
+			//! load application's language dictionary
 			LANG_INIT("app", $i);
 			//! initialize memory caching if configured
 			if(! empty($this->cache)) {
@@ -907,42 +941,50 @@ namespace PHPPE {
 			$B = self::$client->lang;
 			//! proxy dynamic assets (vendor directory is not accessable by the webserver, only public dir)
 			if(ia($this->app, [ "css", "js", "images" ])) {
+				//! helper function to specify mime header and minify assets
 				function b($a, $b)
 				{
 					c($a == "css" ? "text/css" : ($a == "js" ? "text/javascript" : "image/png"));
 					die(minify($b, $a));
 				}
+				//! let's try to get it from cache
 				$N = 'a_' . sha1($this->base . $u . "_" . self::$user->id . "_$B");
 				$d = "";
 				if(! empty(self::$mc))
 					$d = self::$mc->get($N);
-				if(! empty($d))
+				if($d)
 					b($this->app, $d);
 				else
 				{
-					//! patch core.js url to allow per language cache
+					//! cache miss, we'll have to generate the asset
+					//! remove language code from core.js url. This "alias" allows per language cache
 					foreach([ $this->$a, pr("/^core\.[^\.]+\.js/", "core.js", $this->$a) . PE, $this->$a . ($this->item ? "/" . $this->item : "") ] as $p) {
 						$A = N . "*/" . $this->app . "/" . s($p, [ "*" => "", ".." => "" ]);
 						$c = @glob($A, GLOB_NOSORT)[ 0 ];
 						if($c) {
 							if(f($c) && w($c, - 4) != PE) {
+								//! use file_get_contents and 10 times longer cache ttl for static files
 								$d = g($c);
 								$this->cachettl *= 10;
 							}
 							else
 							{
+								//! use include_once for php with normal cache ttl
 								ob_start();
 								io($c);
 								$d = o();
 							}
 						}
-						if(! empty($d)) {
+						if($d) {
+							//! save it to the cache for later
 							if(! empty(self::$mc) && empty($this->nocache))
 								$this->_ms($N, $d);
+							//! output result
 							b($this->app, $d);
 						}
 					}
 				}
+				//! no asset found by that url
 				$c = "404 Not Found";
 				header("HTTP/1.1 $c");
 				die;
@@ -955,7 +997,7 @@ namespace PHPPE {
 			//! register default meta keywords
 			$this->meta[ "viewport" ] = "width=device-width,initial-scale=1.0";
 			$A = P . "ctrl/";
-			//! get action
+			//! get application (controller) and action (task)
 			$X = [];
 			$w = 0;
 			if(! empty($n)) {
@@ -971,7 +1013,9 @@ namespace PHPPE {
 					return strcmp($b[ 0 ], $a[ 0 ]); 
 
 				});
+				//! check route patterns
 				foreach(self::$r as $v) {
+					//! if matches current url
 					if(p("!^" . s($v[ 0 ], "!", "") . "!i", $u, $X)) {
 						//! check filter
 						if(! self::_cf($v[ 3 ])) {
@@ -980,7 +1024,7 @@ namespace PHPPE {
 						}
 						//! chop off whole match (first index) from arguments
 						array_shift($X);
-						//! get class and action
+						//! get class and method
 						$d = $v[ 1 ];
 						$f = $v[ 2 ];
 						break;
@@ -1008,7 +1052,7 @@ namespace PHPPE {
 			}
 			if(empty($f))
 				$f = $a . "_" . t($this->$a);
-			//! handle admin login before Users login method gets called
+			//! handle hardwired admin login and logout before Users class get's a chance
 			if($this->app == "login" || $d == "login") {
 				$A = "admin";
 				if($this->istry() && ! empty($R[ 'id' ]) && $R[ 'id' ] == $A) {
@@ -1017,10 +1061,11 @@ namespace PHPPE {
 						self::log("A", "Login " . L($A), "users");
 						$_SESSION[ "pe_u" ]->id = - 1;
 						$_SESSION[ "pe_u" ]->name = L($A);
-						//! don't allow Users class to log in admin, that's Core's job
+						//! don't let Users class to log in admin, that's our job
 						$this->redirect();
 					}
 				}
+				//! if already logged in redirect to home
 				if($_SESSION[ "pe_u" ]->id)
 					$this->redirect("/");
 			}
@@ -1028,7 +1073,7 @@ namespace PHPPE {
 				$i = self::$user->id;
 				if($i) {
 					self::log("A", "Logout " . self::$user->name, "users");
-					//! hook Users class log out method
+					//! hook Users class' method for non-admin user logouts
 					if($i != - 1 && q(self::$user, "logout"))
 						self::$user->logout();
 				}
@@ -1050,18 +1095,21 @@ namespace PHPPE {
 				foreach(array_unique([ "$P$d" . "_$E" . PE, "$P$C" . "_$F" . PE, "$P$d" . PE, "$P$C" . PE, "$H$d" . "_$E" . PE, "$H$C" . "_$F" . PE, "$H$d" . PE, "$H$C" . PE ]) as $v) {
 					$c = @glob($v);
 					if(! empty($c[ 0 ])) {
+						$D = count(gc());
+						//! try to load file
 						try {
 							@io($c[ 0 ]);
 						}
 						catch(\Exception $e) {
 						}
+						//! get the first controller defined there
 						$P = gc();
-						krsort($P);
-						foreach($P as $G)
-							if(cc($G)) {
-								$d = $G;
+						for($G = $D; ! empty($P[ $G ]); $G++ )
+							if(cc($P[ $G ])) {
+								$d = $P[ $G ];
 								break;
 							}
+						//! save application's path for templater
 						self::$p = n(n($c[ 0 ]));
 						break;
 					}
@@ -1085,7 +1133,7 @@ namespace PHPPE {
 				if(! self::$w)
 					//! *** CRON Event ***
 					die($d == "cron" ? $this->_eh("cron_" . $this->action, 0) : "PHPPE-C: " . L($d . "_$a not found!") . "\n");
-				//! fallback to default application on CGI
+				//! fallback to built-in application on CGI
 				$d = $P;
 				//! look for cms content from database - only for primary datasource
 				if(! empty(Core::db(0)) && $G) {
@@ -1132,11 +1180,12 @@ namespace PHPPE {
 			}
 			//! get configuration array for Application
 			$p = s($d, [ "PHPPE\\App\\" => "", "PHPPE\\Ctrl\\" => "" ]);
-			foreach([ $p, $this->app ] as $C) {
-				$c = @include(N . "$C/config" . PE);
-				if(a($c))
-					break;
-			}
+			foreach([ self::$p, N . $p, N . $this->app ] as $C)
+				if($C) {
+					$c = @include("$C/config" . PE);
+					if(a($c))
+						break;
+					}
 			//! get validators from previous view generation
 			if(! empty($_SESSION[ $V ]))
 				self::$v = $_SESSION[ $V ];
@@ -1144,9 +1193,9 @@ namespace PHPPE {
 			self::$o[ "app" ] = $app = new $d(a($c) ? $c : []);
 			if(! q($app, $f))
 				$f = $a;
-			//! Application constructor may alter template, so we have to log this after "new App"
+			//! Application constructor may altered template, so we have to log this after "new App"
 			self::log("D", $this->app . "/" . $this->$a . " ->$d::$f " . $this->template, "routes");
-			//! Application constructor may requested cache to be off
+			//! Application constructor may requested cache to be turned off
 			$A &= empty($this->nocache);
 			//! in maintenance mode only a view displayed
 			$m = "maintenance";
@@ -1155,9 +1204,10 @@ namespace PHPPE {
 				$C = 'p_' . sha1($this->base . $u . "_" . self::$user->id . "_$B");
 				$T = "";
 				//only read from cache if application allows
-				if($A && ! self::istry()) {
+				if($A && ! self::isTry()) {
 					$p = self::$mc->get($C);
 					if(a($p)) {
+						//! cache hit, we are happy!
 						foreach([ 'm' => 'meta', 'c' => 'css', 'j' => 'js', 'J' => 'jslib' ] as $k => $v)
 							if(a($p[ $k ]))
 								$this->$v = array_merge($this->$v, $p[ $k ]);
@@ -1172,6 +1222,7 @@ namespace PHPPE {
 					$d = "dds";
 					if($G) {
 						try {
+							//! special page holds global page parameters and dds'
 							$F = self::fetch("*", "pages", "id='frame'");
 							$E = @jd($F[ 'data' ]);
 							self::$o[ 'frame' ] = $E;
@@ -1220,8 +1271,10 @@ namespace PHPPE {
 						$this->meta = array_merge($this->meta, $app->_meta);
 					//! clear validators
 					$_SESSION[ $V ] = [];
-					if(! empty($this->template)) {
-						$T = $this->template($this->template);
+					//! generate view with templates
+					$d = ! empty($app->_template) ? $app->_template : $this->template;
+					if(! empty($d)) {
+						$T = $this->template($d);
 						//if action specific template not found, fallback to application's
 						if(! $T)
 							$T = $this->template($this->app);
@@ -1243,6 +1296,7 @@ namespace PHPPE {
 			}
 			else
 			{
+				//! site is down message
 				$T = $this->template($m);
 				if(empty($T))
 					$T = L(ucfirst($m));
@@ -1268,10 +1322,10 @@ namespace PHPPE {
 			if(self::$w) {
 				header("Pragma:no-cache");
 				header("Cache-Control:no-cache,no-store,private,must-revalidate,max-age=0");
-				header("Content-Type:" . (! empty($app->_mimetype) ? $app->_mimetype : "text/" . (! empty($o) ? $o : "html")) . ";charset=utf-8");
+				header("Content-Type:" . (! empty($app->_mimetype) ? $app->_mimetype : "text/" . ($o ? $o : "html")) . ";charset=utf-8");
 			}
 			//! output header
-			if(! empty($o)) {
+			if($o) {
 				$c = @glob(N . "*/out/" . $o . "_header" . PE);
 				if(! empty($c[ 0 ]))
 					io($c[ 0 ]);
@@ -1282,7 +1336,7 @@ namespace PHPPE {
 						$I = "";
 					$d = "http" . ($this->sec ? "s" : "") . "://" . $this->base;
 					//! HTML5 header and title
-					$O = "<!DOCTYPE HTML>\n<html lang='$B'><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='$d'/><meta charset='utf-8'/>\n<meta name='Generator' content='http://phppe.org/'/>\n";
+					$O = "<!DOCTYPE HTML>\n<html lang='$B'" . (! empty(self::$l[ 'rtl' ]) ? " dir='rtl'" : "") . "><head><title>" . (! empty($this->site) ? $this->site : $this->id) . "</title><base href='$d'/><meta charset='utf-8'/>\n<meta name='Generator' content='http://phppe.org/'/>\n";
 					foreach($this->meta as $k => $m)
 						if($m)
 							$O .= "<meta name='$k' content='" . h($m) . "'/>\n";
@@ -1343,7 +1397,7 @@ namespace PHPPE {
 							$O .= "$d async src='${I}js/?cache=$n'>$e";
 							//! add dynamic javascripts, they were left out from aggregated cache above
 							foreach($this->jslib as $u => $v)
-								if($v && w($v, - 3) == "php")
+								if($v && ($u[ 0 ] == "?" || w($v, - 3) == "php"))
 									$O .= "$d$a$u'>$e";
 						}
 						else
@@ -1353,19 +1407,20 @@ namespace PHPPE {
 									$O .= "$d$a$u'>$e";
 						}
 					}
-					//load PHPPE\Users library if it's not aggregated already and PHPPE panel is shown
+					//load PHPPE\Users' JS library if it's not aggregated already and PHPPE panel is shown
 					$c = "users.js";
 					if($P && ! isset($this->jslib[ $c ]) && f(N . "users/js/" . $c . PE))
 						$O .= "$d$a$c'>$e";
 					//! add javascript functions
 					$c = $this->js;
 					$a = "";
+					//! built-in stuff if core.js is not installed
 					if($P && empty($this->css[ "core.css" ])) {
-						$x = "document.getElementById('pe_'";
+						$x = "document.getElementById(";
 						$y = ".style.visibility";
 						$a = "pe_t=setTimeout(function(){pe_p('');},2000)";
 						$c[ "L(t)" ] = "return t.replace(/_/g,' ');";
-						$c[ 'pe_p(i)' ] = "var o=$x+i);if(pe_t!=null)clearTimeout(pe_t);if(pe_c&&pe_c!=i)$x+pe_c)$y='hidden';pe_t=pe_c=null;if(o!=null){if(o$y=='visible')o$y='hidden';else{o$y='visible';pe_c=i;$a;}}return false;";
+						$c[ 'pe_p(i)' ] = "var o=i?${x}i):i;if(pe_t!=null)clearTimeout(pe_t);if(pe_c&&pe_c!=i)${x}pe_c)$y='hidden';pe_t=pe_c=null;if(o!=null){if(o$y=='visible')o$y='hidden';else{o$y='visible';pe_c=i;$a;}}return false;";
 						$c[ 'pe_w()' ] = "if(pe_t!=null)clearTimeout(pe_t);$a;return false;";
 						$a = ",pe_t,pe_c";
 					}
@@ -1379,14 +1434,14 @@ namespace PHPPE {
 					//! display PHPPE panel
 					if($P) {
 						$H = " class='sub' style='visibility:hidden;' onmousemove='return pe_w();'";
-						$O .= "<div id='pe_p'><a href='" . url("/") . "'><img src='$I?cache=logo' alt='" . $this->id . "' style='margin:3px 10px -3px 10px;'></a><div class='menu'>";
+						$O .= "<div id='pe_p'><a href='" . url("/") . "'><img src='$I?cache=logo' alt='" . $this->id . "' style='margin:3px 10px -3px 10px;float:left;'></a><div class='menu'>";
 						//! menu items and submenus
 						$x = 0;
 						if(! empty($this->menu)) {
 							foreach($this->menu as $e => $L) {
 								//! access check
 								@list($ti, $a) = x("@", $e);
-								if(! empty($a) && ! self::$user->has($a))
+								if($a && ! self::$user->has($a))
 									continue;
 								$a = 0;
 								if(a($L))
@@ -1411,12 +1466,12 @@ namespace PHPPE {
 									foreach($L as $t => $l)
 										if($t) {
 											@list($Y, $A) = x("@", $t);
-											if(empty($A) || self::$user->has($A))
+											if($A || self::$user->has($A))
 												/*								if(a($l)) {
 									$O.="<li onclick='return pe_p(\"m$x_$X\");'>".h(L($Y))."<div id='pe_m$x_$X'$H><ul>";
 									foreach( $L  as $k => $v ){
 										@list($Y,$A)=x("@",$k);
-										if(empty($A) || self::$user->has($A))
+										if($A || self::$user->has($A))
 										$O.= "<li onclick=\"document.location.href='".$I."$k';\"><a href='".($I?$I."/":"")."$k'>" . h( L($Y) ) . "</a></li>";
 									}
 									$O.="</div></li>";
@@ -1424,7 +1479,7 @@ namespace PHPPE {
 												$O .= "<li onclick=\"document.location.href='" . $I . "$l';\"><a href='" . $I . "$l'>" . h(L($Y)) . "</a></li>";
 												//							$X++;
 											}
-									$O .= "</ul></div><span class='menu_" . ($a ? "a" : "i") . "' onclick='return pe_p(\"m$x\");'>" . h(L($ti)) . "</span>";
+									$O .= "</ul></div><span class='menu_" . ($a ? "a" : "i") . "' onclick='return pe_p(\"pe_m$x\");'>" . h(L($ti)) . "</span>";
 									$x++ ;
 								}
 								else 
@@ -1460,7 +1515,7 @@ namespace PHPPE {
 						$k = $B;
 						$f = "images/lang_$k.png";
 						$c = ! empty($_SESSION[ 'pe_c' ]);
-						$O .= "<span onclick='return pe_p(\"l\");'>" . (f(P . $f) ? "<img src='$f' height='10' alt='$k' title='$k'>" : $k) . "</span><div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof users_profile==\"function\")users_profile(this);else alert(\"" . L("Install PHPPE Pack") . "\");'>" . L("Profile") . "</li>" . (self::$user->has("conf") ? "<li><a href='" . url() . "?conf=" . (1 - $c) . "'>" . L(($c ? "Lock" : "Unlock")) . "</a></li>" : "") . "<li><a href='" . url("logout") . "'>" . L("Logout") . "</a></li></ul></div><span onclick='return pe_p(\"u\");'>" . (! empty(self::$user->name) ? self::$user->name : "#" . self::$user->id) . "</span></div></div><div style='height:32px !important;'></div>\n";
+						$O .= "<span onclick='return pe_p(\"pe_l\");'>" . (f(P . $f) ? "<img src='$f' height='10' alt='$k' title='$k'>" : $k) . "</span><div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof users_profile==\"function\")users_profile(this);else alert(\"" . L("Install PHPPE Pack") . "\");'>" . L("Profile") . "</li>" . (self::$user->has("conf") ? "<li><a href='" . url() . "?conf=" . (1 - $c) . "'>" . L(($c ? "Lock" : "Unlock")) . "</a></li>" : "") . "<li><a href='" . url("logout") . "'>" . L("Logout") . "</a></li></ul></div><span onclick='return pe_p(\"pe_u\");'>" . (! empty(self::$user->name) ? self::$user->name : "#" . self::$user->id) . "</span></div></div><div style='height:32px !important;'></div>\n";
 					}
 					echo $O;
 				}
@@ -1468,7 +1523,7 @@ namespace PHPPE {
 			//! output application
 			echo($T);
 			//! do footer stuff, monitoring stats
-			if(! empty($o)) {
+			if($o) {
 				$c = @glob(N . "*/out/" . $o . "_footer" . PE);
 				if(! empty($c[ 0 ]))
 					io($c[ 0 ]);
@@ -1677,7 +1732,7 @@ namespace PHPPE {
 						$d .= ($d ? "," : "") . $v;
 			}
 			if(empty($d)) {
-				self::$core->addons[ $n ] = (object)[ 'name' => L(empty($l) ? $n : $l), 'conf' => $c ];
+				self::$core->addons[ $n ] = (object)[ 'name' => L(empty($l) ? "addon $n" : $l), 'conf' => $c ];
 				LANG_INIT($n);
 			}
 			else 
@@ -2478,17 +2533,19 @@ namespace PHPPE {
  */
 		static function js($f = "", $c = "", $a = 0)
 		{
-			//! add a javascript function to output
-			$C = minify($c, "js");
-			$C .= ($C[ u($C) - 1 ] != ";" ? ";" : "");
-			if($a) {
-				if(! isset(self::$core->js[ $f ]))
-					self::$core->js[ $f ] = "";
-				if(strpos(self::$core->js[ $f ], $C) === false)
-					self::$core->js[ $f ] .= $C;
+			if($c) {
+				//! add a javascript function to output
+				$C = minify($c, "js");
+				$C .= ($C[ u($C) - 1 ] != ";" ? ";" : "");
+				if($a) {
+					if(! isset(self::$core->js[ $f ]))
+						self::$core->js[ $f ] = "";
+					if(strpos(self::$core->js[ $f ], $C) === false)
+						self::$core->js[ $f ] .= $C;
+				}
+				else 
+					self::$core->js[ $f ] = $C;
 			}
-			else 
-				self::$core->js[ $f ] = $C;
 		}
 /**
  * register a new menu item or submenu in PHPPE panel
@@ -3216,15 +3273,17 @@ namespace PHPPE\AddOn {
 		{
 			$t = $this;
 			$a = $t->args;
+			$b = $t->attrs;
 			$v = r($t->value);
+			$D = (! empty($a[ 3 ]) ? " dir='ltr'" : "");
 			if($v == "null")
 				$v = "";
 			if(! empty($a[ 2 ]) && $a[ 2 ] > 0) {
 				if($a[ 1 ] > 0)
 					Core::js("pe_mt(e,m)", "var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;return(c==8||c==46||o.value.length<=m);");
-				return "<textarea" . @v($t, $t->attrs[ 1 ], $t->attrs[ 0 ]) . ($a[ 0 ] > 0 ? " cols='" . $a[ 0 ] . "'" : "") . " rows='" . $a[ 2 ] . "'" . ($a[ 1 ] > 0 ? " onkeypress='return pe_mt(event," . $a[ 1 ] . ");'" : "") . " wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>" . $v . "</textarea>";
+				return "<textarea" . @v($t, $b[ 1 ], $b[ 0 ]) . ($a[ 0 ] > 0 ? " cols='" . $a[ 0 ] . "'" : "") . " rows='" . $a[ 2 ] . "'" . ($a[ 1 ] > 0 ? " onkeypress='return pe_mt(event," . $a[ 1 ] . ");'" : "") . "$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>" . $v . "</textarea>";
 			}
-			return "<input" . @v($t, $t->attrs[ 1 ], $t->attrs[ 0 ], $a) . " type='text'" . (! empty($t->attrs[ 2 ]) && $t->attrs[ 2 ] != "-" ? " onkepup='" . $t->attrs[ 2 ] . "'" : "") . " onfocus='this.className=this.className.replace(\" errinput\",\"\")'" . (! empty($t->attrs[ 3 ]) ? " placeholder=\"" . h(r($t->attrs[ 3 ])) . "\"" : "") . " value=\"" . h($v) . "\">";
+			return "<input" . @v($t, $b[ 1 ], $b[ 0 ], $a) . " type='text'" . (! empty($b[ 2 ]) && $b[ 2 ] != "-" ? " onkepup='" . $b[ 2 ] . "'" : "") . " onfocus='this.className=this.className.replace(\" errinput\",\"\")'" . (! empty($b[ 3 ]) ? " placeholder=\"" . h(L(r($b[ 3 ]))) . "\"" : "") . "$D value=\"" . h($v) . "\">";
 		}
 	}
 

@@ -6,7 +6,7 @@ B {
 </style>
 <div class='confpanel'>
 <!form page>
-<h2><!=L("Dynamic Data Sets")></h2>
+<h2><!=L("Dynamic_Data_Sets")></h2>
 <b><!=L('Global')></b>
 <!field cmsdds page.gdds><br/>
 <b><!=L('Local')></b>

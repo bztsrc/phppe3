@@ -21,7 +21,7 @@ class CMSLayouts extends \PHPPE\Ctrl {
 		PHPPE::$core->site = L("CMS Layouts");
 		if(PHPPE::lib("CMS")->expert)
 			$this->quickhelp=false;
-		PHPPE::jslib("cms.js","cms_init();".(!empty(PHPPE::$core->item)?"cms_layoutresizeinit();":""));
+		PHPPE::jslib("cms.js","cms_init();".(!empty(PHPPE::$core->item)?"cms_layoutresizeinit();":"try{document.getElementById('search').focus();}catch(e){}"));
 		PHPPE::css("cms.css");
 		if(!empty($_SESSION['cms_copyout'])) {
 			$this->copyout=$_SESSION['cms_copyout'];

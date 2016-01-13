@@ -13,12 +13,19 @@
 #layout_fieldset {
 	padding:5px;
 }
-.blockform DIV {
-	min-width:100px; min-height:24px;
+.blockform[direction=ltr] DIV {
 	float:left;
-	display:block;
+	margin:5px 5px 5px 0px;
+}
+.blockform[direction=rtl] DIV {
+	float:right;
+	margin:5px 0px 5px 5px;
+}
+.blockform DIV {
+	min-width:60px; min-height:24px;
+	display:inline-block;
 	padding:3px;
-	margin:0px 5px 5px 0px;
+	margin-top:5px;
 }
 .wysiwyg_tools INPUT {
 	margin:0px;

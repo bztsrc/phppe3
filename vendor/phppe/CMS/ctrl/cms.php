@@ -76,10 +76,11 @@ class CMS extends \PHPPE\Ctrl {
 			case "pageadd":
 				if(empty($_SESSION['cms_page']['id'])) $_SESSION['cms_page']=['id'=>'','name'=>'','template'=>'','lang'=>PHPPE::$client->lang,'data'=>'','dds'=>'','ownerid'=>PHPPE::$user->id,'ctrl'=>''];
 			case "pagemeta":
-			case "pagepublish":
-			case "pagefilters":
 			case "pagedds":
 				if(PHPPE::isTry()){
+					PHPPE::validate("page.pubd","time");
+					PHPPE::validate("page.expd","time");
+					PHPPE::validate("page.cmsmeta","cmsmeta");
 					$d=PHPPE::req2arr('page');
 					if(PHPPE::$core->action=="pagedds") {
 						if(!$d['id']&&!empty($_SESSION['cms_page']['id'])) $d['id']=$_SESSION['cms_page']['id'];
@@ -146,12 +147,12 @@ class CMS extends \PHPPE\Ctrl {
 					$w=0;
 					foreach($this->layouts as $k=>$v) {
 						if(empty($v['name'])||$v['name']=="null") $v['name']=$v['id'];
-						$this->layouts[$k]['name']=L($v['name']);
+						//$this->layouts[$k]['name']=L($v['name']);
 						if(!empty($this->page->template) && $this->page->template==$v['id']) $w=1;
 					}
 					//add template to option list if not found so far
 					if(!empty($this->page->template) && !$w)
-						$this->layouts[]=['id'=>$this->page->template,'name'=>L($this->page->template)];
+						$this->layouts[]=['id'=>$this->page->template,'name'=>$this->page->template];
 					//add language to languages option list if not found
 					if(!empty($this->page->lang) && empty($this->langs[$this->page->lang]))
 						$this->langs[$this->page->lang]=$this->page->lang." ".L($this->page->lang);

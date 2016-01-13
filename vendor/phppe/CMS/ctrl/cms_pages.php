@@ -16,9 +16,9 @@ class CMSPages extends \PHPPE\Ctrl {
 		PHPPE::$core->nocache = true;
 		if(empty(PHPPE::$core->item))
 			PHPPE::$core->noframe = true;
-		PHPPE::$core->site = L("CMS Pages");
+		PHPPE::$core->site = "CMS ".L("Pages");
 
-		PHPPE::jslib("cms.js","cms_init();");
+		PHPPE::jslib("cms.js","cms_init();try{document.getElementById('search').focus();}catch(e){}");
 		list($c) = x("?",@$_SERVER['REQUEST_URI']); $s=$_SERVER['SCRIPT_NAME'];
 		$u = w($c,(z($c,0,u($s))==$s?u($s):u(n($s)))+1);
 		if($u[0]=="/") $u=w($c,1);
@@ -79,7 +79,7 @@ class CMSPages extends \PHPPE\Ctrl {
 			$_SESSION['cms_page']=[];
 			$this->_pages=[];
 			PHPPE::exec("DELETE FROM pages WHERE id='' OR template=''");
-			$p = \PHPPE\Page::getPages();
+			$p = \PHPPE\Page::getPages(!empty($_REQUEST['order'])?1:0);
 			PHPPE::exec("UPDATE pages SET lockd=0,ownerid=0 WHERE ownerid=?",[PHPPE::$user->id]);
 			if(!empty($_REQUEST['order'])) {
 				$this->_pages[0]=$p;

@@ -28,7 +28,12 @@ class CMS extends \PHPPE\Ctrl {
 			}
 		}
 		if(empty($_SESSION['cms_sitebuild'])){
-			$this->html=@glob(".tmp/".session_id()."/html/*");
+			$this->html=glob(".tmp/".session_id()."/html/*");
+			if(count($this->html)<1) {
+				@\PHPPE\Content::rmdir(".tmp/".session_id());
+				unset($_SESSION['cms_sitebuild']);
+				PHPPE::redirect("cms/layouts");
+			}
 			if(count($this->html)==1) {
 				$_SESSION['cms_sitebuild']=$this->html[0];
 				PHPPE::redirect();
@@ -46,12 +51,18 @@ class CMS extends \PHPPE\Ctrl {
 			PHPPE::$core->noframe = false;
 		} else {
 			$data=file_get_contents($_SESSION['cms_sitebuild']);
+			if(empty($data)) {
+				$this->choose=true;
+				PHPPE::$core->noframe = false;
+				unset($_SESSION['cms_sitebuild']);
+				return;
+			}
 			foreach($dirs as $dir) {
 				$d=glob(".tmp/".session_id()."/".$dir."/*");
 				foreach($d as $v) {
-					$data=preg_replace("|[a-z0-9\_\./:]*".addslashes(basename($v))."|ims","?asset=".$dir."/".basename($v),$data);
-					if($dir=="css") PHPPE::css("divchoose.css?asset=".basename($v));
-					if($dir=="js") PHPPE::jslib("divchoose.js?asset=".basename($v));
+					$data=preg_replace("|[a-z0-9\_\./:]*".addslashes(basename($v))."|ims","?assetn=".$dir."/".basename($v),$data);
+					if($dir=="css"&&substr($v,0,2)!="_."&&$v[0]!=".") PHPPE::css("divchoose.css?assetn=".basename($v));
+					if($dir=="js"&&substr($v,0,2)!="_."&&$v[0]!=".") PHPPE::jslib("divchoose.js?assetn=".basename($v));
 				}
 			}
 			$this->content=\PHPPE\CMS::taghtml($data);
@@ -62,6 +73,7 @@ class CMS extends \PHPPE\Ctrl {
 				foreach($dirs as $dir) {
 					$d=glob(".tmp/".session_id()."/".$dir."/*");
 					foreach($d as $v) {
+						if(substr($v,0,2)=="_."||$v[0]==".") continue;
 						//! store file locally on CMS server
 						@copy($v,"public/".$dir."/".basename($v));
 						$data=preg_replace("|[a-z0-9\_\./:]*".addslashes(basename($v))."|ims",$dir."/".basename($v),$data);

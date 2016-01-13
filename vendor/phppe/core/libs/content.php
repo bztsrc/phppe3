@@ -30,12 +30,40 @@ class Content {
 		public $name;
 
 		//! we do not register ourself, because we are going to be registered by 00_core.php
-		function __construct() {}
+		//! but we have to register all built-in add ons
+		function init($cfg=[]) {
+			//! register built-in fields and widets all at once
+			//! this is required for \PHPPE\Core::isinst() to always return true for built-ins
+			Core::addon( "hidden", "Hidden value", "", "*obj.field" );
+			Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
+			Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
+			Core::addon( "cancel", "Cancel", "", "*[label [cssclass]]" );
+			Core::addon( "text", "Text", "", "*(size[,maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue]]]]" );
+			Core::addon( "pass", "Password", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+			Core::addon( "num", "Decimal number", "", "*(size[,maxlen[,min[,max]]]) obj.field [onchangejs [cssclass]" );
+			Core::addon( "select", "Option list", "", "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]" );
+			Core::addon( "check", "Checkbox", "", "*(truevalue) obj.field [label [cssclass]]" );
+			Core::addon( "radio", "Radiobutton", "", "*(value) obj.field [label [cssclass]]" );
+			Core::addon( "phone", "Phone", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+			Core::addon( "email", "Email", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+			Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
+			Core::addon( "date", "Date", "", "*(before[,after]) obj.field [cssclass]" );
+			Core::addon( "time", "Time", "", "*(before[,after]) obj.field [cssclass]" );
+			//initialization was successful
+			return true;
+		}
+
+		//! after everything is done, and we still not have bootstrap, add normalize css at least
+		function view(&$arg) {
+			if(empty(Core::css()["bootstrap.css"])&&empty(Core::css()["bootstrap.min.css"]))
+				Core::css("normalize.css");
+			return $arg;
+		}
 
 		//! collapse a name into a string id
 		static function collapse($str) {
 			return strtolower(preg_replace("/[\ ]+/","_",preg_replace("/[^a-zA-Z0-9\.\ \(\)!@%:_-]+/","",trim(strtr(str_replace(["\n","\r","\t"],[" "," "," "],$str),
-				"àÀáÁâÂãÃäÄåÅÆæĀāĂăĄąèÈéÉêÊëËìÌíÍîÎïÏðÐñÑòÒôÔõÕóÓöÖőŐúÚüÜűŰ",
+				"àÀáÁâÂãÃäÄåÅÆæĀāĂăĄąèÈéÉêÊëËìÌíÍîÎïÏðÐñÑòÒôÔõÕóÓöÖőŐúÚüÜűŰ",//FIXME
 				"aaaaaaaaaaaaaaaaaaaaeeeeeeeeiiiiiiiiddnnoooooooooooouuuuuu"
 				)))));
 		}
@@ -43,14 +71,14 @@ class Content {
 		//! accent safe string to upper
 		static function toupper($str){
 			return strtoupper(strtr($str,
-			"àá",
+			"àá",//FIXME
 			"ÀÁ"));
 		}
 
 		//! accent safe string to lower
 		static function tolower($str){
 			return strtolower(strtr($str,
-			"ÀÁ",
+			"ÀÁ",//FIXME
 			"àá"));
 		}
 
@@ -100,6 +128,7 @@ class Content {
 			$idfile = tempnam(".tmp", ".id_");
 			file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n");
 			chmod($idfile,0400);
+			if(is_string($files)) $files=[$files];
 			foreach($files as $k=>$v) $files[$k]=escapeshellarg($v);
 			$cmd="tar -cz ".implode(" ",$files)."|ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(Core::$user->data['remote']['user']).
 				(!empty(Core::$user->data['remote']['port'])&&Core::$user->data['remote']['port']>0?" -p ".intval(Core::$user->data['remote']['port']):"").

@@ -11,9 +11,9 @@
 </tr>
 <!foreach testCases>
 <tr>
-    <td class='row<!=ODD>'><input type='button' value='<!=L("Run")>' onclick='runtest("tests/run/<!=KEY>");'></td>
-    <td class='row<!=ODD>'><!=name></td>
-    <td class='row<!=ODD>' align='right'><!=avg><small>&nbsp;sec</small></td>
+    <td class='row<!=ODD>'><input type='button' value='<!=L("Run")>' onclick='runtest("tests/run/<!=KEY>");' title='php public/index.php tests run <!=KEY>'></td>
+    <td class='row<!=ODD>'><!=L(name)></td>
+    <td class='row<!=ODD>' align='right'><!=avg><small>&nbsp;<!L sec></small></td>
     <td class='row<!=ODD>' align='right'><!=asserts></td>
     <td class='row<!=ODD>'><!=date("Y-m-d H:i:s",time)></td>
     <td class='row<!=ODD>' style='color:<!=color>;'><!=ret></td>

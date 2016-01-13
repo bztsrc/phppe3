@@ -28,7 +28,7 @@ use PHPPE\Core as PHPPE;
 class index extends \PHPPE\Ctrl {
 	public $obj;
 	public $strings;
-	public $_favicon="images/phppe.png";
+	public $_favicon="images/phppeicon.png";
 
 	function __construct()
 	{

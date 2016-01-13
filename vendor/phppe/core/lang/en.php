@@ -7,6 +7,8 @@ return array(
 "ru"=>"русский",
 "de"=>"Deutch",
 "es"=>"Español",
+"he"=>"עברית",
+"ar"=>"العربية",
 "dateformat"=>"d-m-Y",
 "yesterday"=>"Yesterday",
 "today"=>"Today",

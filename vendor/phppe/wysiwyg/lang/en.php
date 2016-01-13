@@ -1,6 +1,7 @@
 <?php
 return array(
 "TOC"=>"TOC",
+"wysiwyg_import"=>"Import HTML",
 "wysiwyg_style"=>"Normal",
 "wysiwyg_style<h2>"=>"Heading 1",
 "wysiwyg_style<h3>"=>"Heading 2",
@@ -10,7 +11,9 @@ return array(
 "wysiwyg_bold"=>"Bold",
 "wysiwyg_italic"=>"Italic",
 "wysiwyg_underline"=>"Underline",
-"wysiwyg_strike"=>"Strike through",
+"wysiwyg_strike"=>"Strike-through",
+"wysiwyg_sup"=>"Superscript",
+"wysiwyg_sub"=>"Subscript",
 "wysiwyg_outdent"=>"Outdent",
 "wysiwyg_indent"=>"Indent",
 "wysiwyg_list"=>"Unordered list",
@@ -18,6 +21,7 @@ return array(
 "wysiwyg_link"=>"Link",
 "wysiwyg_unlink"=>"Remove link",
 "wysiwyg_image"=>"Insert image",
+"wysiwyg_video"=>"Insert video",
 "wysiwyg_table"=>"Insert table",
 "wysiwyg_undo"=>"Undo",
 "wysiwyg_redo"=>"Redo",

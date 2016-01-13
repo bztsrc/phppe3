@@ -1,9 +1,10 @@
 <!if choose>
-<h1><!L Sitebuilds></h1>
+<h1><!=L("Sitebuilds")></h1>
+<!=L("There are more HTML files in the archive. Choose one!")>
 <table>
 	<tr>
-		<th><!L Layout></th>
-		<th><!L Title></th>
+		<th><!=L("Layout")></th>
+		<th><!=L("Title")></th>
 	</tr>
 <!foreach html>
 	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()>?cms_sitebuild=<!=KEY>";'>

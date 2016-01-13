@@ -67,14 +67,18 @@ class CMS
 			header("Content-type:".($d[0]=="js"?"text/javascript":($d[0]=="css"?"text/css":"image/png")).";charset=utf-8");
 			die(file_get_contents(".tmp/".session_id()."/".$d[0]."/".$d[1]));
 		}
+
+		if(!$this->expert)
+			PHPPE::menu(L("Pages")."@siteadm|webadm","cms/pages");
+
 		return true;
 	}
 
 	function stat() {
 		if(PHPPE::$user->has("panel")) {
 			$cms_menu=
-				(PHPPE::$user->has("siteadm")?"<span style='margin-left:4px;'><img title=\"".L("CMS Layouts")."\" src='images/cms/layouts.png' onclick='document.location.href=\"".url("cms","layouts")."\";'></span>":"").
-				(PHPPE::$user->has("siteadm|webadm")?"<span><img title=\"".L("CMS Pages")."\" src='images/cms/pages.png' onclick='document.location.href=\"".url("cms","pages")."\";'></span>":"");
+				(PHPPE::$user->has("siteadm")?"<span style='margin-left:4px;'><img title=\"".L("Layouts")."\" src='images/cms/layouts.png' onclick='document.location.href=\"".url("cms","layouts")."\";'></span>":"").
+				(PHPPE::$user->has("siteadm|webadm")?"<span><img title=\"".L("Pages")."\" src='images/cms/pages.png' onclick='document.location.href=\"".url("cms","pages")."\";'></span>":"");
 			$c=get_class(PHPPE::getval("app"));
 			if($c=="PHPPE\App" || $c=="PHPPE\Content")
 				return

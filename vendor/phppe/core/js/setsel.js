@@ -22,7 +22,7 @@
  * @brief Set list selection
  */
 
-var setsel_id=null,setsel_skip=0;
+var setsel_id=null;
 
 function setsel_drag(evt,id) {
 	setsel_id=id;
@@ -43,16 +43,16 @@ function setsel_drag(evt,id) {
 }
 
 function setsel_droparea(evt) {
-	if(setsel_skip) { setsel_skip=0; if(evt.target.id==setsel_id+':inlist') return; }
 	if(setsel_id==null||dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
-	var i,n=null,o=document.getElementById(setsel_id+':inlist').getElementsByTagName('*');
+	var i,n=null,l=document.getElementById(setsel_id+':inlist'),o=l.getElementsByTagName('*'),p=getpos(l);
+	p.y-=l.scrollTop;
 	for(i=0;i<o.length;i++) if(o[i].className=='setsel_item'){
-		o[i].style.marginTop='0px';
-		if((evt.target==o[i]/*||evt.layerY<o[i].offsetTop+o[i].offsetHeight*/) && n==null) n=o[i];
+		var v=0;
+		if((evt.target==o[i]||evt.pageY<p.y+o[i].offsetTop-o[i].offsetHeight) && n==null) { n=o[i]; v=1; }
+		else o[i].style.marginTop='0px';
 	}
-	if(n!=null){
+	if(n!=null&&evt.target.className=="setsel_item"){
 		n.style.marginTop='12px';
-		setsel_skip=1;
 	}
 }
 

@@ -32,12 +32,12 @@ TEXTAREA.wysiwyg {
 .wysiwyg_style * {
 	cursor:pointer;
 	display:block;
-	background:#fff;
+	background:rgba(255,255,255,0.8);
 	margin:0px !important;
 	padding:5px !important;
 }
 .wysiwyg_style *:hover {
-	background:#e0e0e0;
+	background:rgba(240,240,240,0.9);
 }
 .wysiwyg_choosediv {
 	background:#fff;height:100%;color:#000;margin:0px !important;padding:10px !important;cursor:grab !important;

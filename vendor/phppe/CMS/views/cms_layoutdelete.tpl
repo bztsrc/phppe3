@@ -11,7 +11,7 @@ B {
 <b><!=L("sure")></b>
 <table width='100%'><tr>
 	<td width='50%' style='margin:5px !important;padding:15px !important;text-align:center;color:#fff;text-shadow: 2px 2px 3px #FF8080;background:#800000;cursor:pointer;' onclick='return document.forms["layout"].submit();'><!=L('Yes')></td>
-	<td style='margin:5px !important;padding:15px !important;text-align:center;color:#fff;text-shadow: 2px 2px 3px #80FF80;background:#008000;cursor:pointer;' onclick='top.document.location.href=top.document.location.href'><!=L('No;)></td></tr>
+	<td style='margin:5px !important;padding:15px !important;text-align:center;color:#fff;text-shadow: 2px 2px 3px #80FF80;background:#008000;cursor:pointer;' onclick='top.document.location.href=top.document.location.href'><!=L('No')></td></tr>
 </table>
 <!field hidden pe.try1>
 </form>

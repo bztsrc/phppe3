@@ -85,22 +85,24 @@ function cms_edit(o,t,i,c)
 <?php if(empty(PHPPE::$core->noanim)) { ?>
     cms_editdiv.setAttribute('style','position:absolute;overflow:hidden;border:none 0px;display:block;left:'+p.x+'px;top:'+p.y+'px;width:'+o.offsetWidth+'px;height:'+o.offsetHeight+'px;z-index:10001;background:#404040;color:#fff;opacity:0.8;box-shadow: 3px 3px 8px #000000;');
 <?php } ?>
-    var w=parseInt(o.parentNode.offsetWidth),h=parseInt(o.parentNode.offsetHeight)+22;
-    if(w>ww-p.x) w=ww-p.x;
+    var x=p.x,w=parseInt(o.parentNode.offsetWidth),h=parseInt(o.parentNode.offsetHeight)+22;
+    if(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false) x-=w-o.offsetWidth;
+    if(w>ww-x) w=ww-x;
     if(t.substr(t.length-4)=="list"||t.substr(0,4)=="page") h=0;
     if(t=="color"||t=="pagehistory") { w=200; h=200; }
     if(t=="text"||t=="pass"||t=="num"||t=="select"||t=="check"||t=="email"||t=="phone"||t=="file"||t=="date"||t=="datetime") {w=400;h=20;}
     if(t=="wysiwyg" && h < 300) h=300;
-    if(t=="pagepublish"||t=="pagemeta"||t=="pageadd") h=320;
-    if(t=="pagefilters"||t=="pagedelete"||t=="layoutadd"||t=="layoutdelete") h=110;
+    if(t=="pageadd") h=200;
+    if(t=="pagefilters"||t=="pagedelete"||t=="layoutadd"||t=="layoutdelete") h=140;
     if(t=="pagelist") h=Math.round(wh*0.6)-24;
     if(h>wh) h=wh;
-    var nx=i==null||t.substr(t.length-4)=="list"?Math.round(ww*0.2):p.x;
+    if(t=="pagepublish") { w=360;x=Math.round((ww-w)/2); i=1; }
+    var nx=i==null||t.substr(t.length-4)=="list"?Math.round(ww*0.2):x;
     var ny=i==null||t.substr(t.length-4)=="list"?Math.round(wh*0.2):p.y;
     var nw=i==null||t.substr(t.length-4)=="list"?Math.round(ww*0.6):w;
     var nh=i==null&&h<100||t.substr(t.length-4)=="list"?Math.round(wh*0.6):(h+26+(t=="wysiwyg"?21:0));
     if(ny+nh>wh) ny=wh-nh; if(ny<8) ny=8;
-    cms_editdiv.src='cms/'+(i!=null?'param/'+i:t)+'?w='+w+'&h='+h;
+    cms_editdiv.src='cms/'+(i!=null&&t!="pagepublish"?'param/'+i:t)+'?w='+w+'&h='+h;
     cms_editdiv.setAttribute('data-zoom-nodecor',true);
     cms_editdiv.setAttribute('data-zoom-x',nx);
     cms_editdiv.setAttribute('data-zoom-y',ny);
@@ -230,16 +232,17 @@ function cms_templater(wwid)
 }
 function cms_layout(wwid,val,conf,w,h)
 {
-    var g=cms_styleguide();
+    var g=cms_styleguide(),p1='⍗',p2='right:60px;',p3='0';
+    if(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false) {p1='⍈';p2='left:0px;';p3='3';}
     cms_layoutonly = true;
     var t="<div id='"+wwid+":conf' class='wysiwyg_conf confpanel' style='top:24px;right:60px;' data-hook='cms_confhook' data-imghook='cms_imghook' data-linkhook='cms_linkhook' data-drophook='cms_drophook'></div>";
     t+="<div id='"+wwid+":tools' class='wysiwyg_tools'>";
-    t+="<div style='text-align:right;' onselectstart='return false;'><span id='"+wwid+":tools_min' onclick='cms_tools_min(this);' style='cursor:pointer;width:12px;display:inline-block;'>▼</span><span id='"+wwid+":tools_pos' onselectstart='return false;' onclick='cms_tools_pos(this);' style='cursor:pointer;' data-pos='0'>⍗</span> <span style='margin-left:4px;font-size:20px;line-height:20px;'>";
+    t+="<div style='text-align:right;' onselectstart='return false;'><span id='"+wwid+":tools_min' onmousedown='cms_tools_min(this);return true;' style='cursor:pointer;width:12px;display:inline-block;'>▼</span><span id='"+wwid+":tools_pos' onselectstart='return false;' onmousedown='cms_tools_pos(this);return true;' style='cursor:pointer;'>"+p1+"</span> <span style='margin-left:4px;font-size:20px;line-height:20px;'>";
     if(g!='') t+="<span title='"+L('Guide')+"' id='"+wwid+":tools_gde' onclick='cms_tools_switch(\""+wwid+":tools_guide\");' style='cursor:pointer;'>♿</span> ";
     t+="<span title='"+L("Fields")+"' id='"+wwid+":tools_fld' onclick='cms_tools_switch(\""+wwid+":tools_fields\");' style='cursor:pointer;'>☑</span> ";
     t+="<span title='"+L("Add-Ons")+"' id='"+wwid+":tools_ads' onclick='cms_tools_switch(\""+wwid+":tools_addons\");' style='cursor:pointer;'>☰</span> </span>";
     t+="<input type='text' class='input' id='"+wwid+":tools_searchinp' value='' onfocus='cms_tools_search(this,\""+wwid+"\");' onkeyup='cms_tools_search(this,\""+wwid+"\");' style='color:#000;width:100px;'></div>";
-    t+="<div id='"+wwid+":tools_container' style='display:block;right:60px;' class='wysiwyg_toolscontainer' data-pos='0'>";
+    t+="<div id='"+wwid+":tools_container' style='display:block;"+p2+"' class='wysiwyg_toolscontainer' data-pos='"+p3+"'>";
     t+="<div id='"+wwid+":tools_guide' style='display:none;width:100%;height:400px;overflow:auto;color:#fff;'></div>";
     t+="<div id='"+wwid+":tools_fields' style='display:none;width:100%;height:400px;overflow:auto;'>"+cms_addons(wwid,"field")+"</div>";
     t+="<div id='"+wwid+":tools_addons' style='display:block;width:100%;height:400px;overflow:auto;'>"+cms_templater(wwid)+cms_addons(wwid,"widget")+"</div>";
@@ -250,15 +253,16 @@ function cms_layout(wwid,val,conf,w,h)
 }
 function cms_wysiwyg(wwid,val,conf,w,h)
 {
-    var g=cms_styleguide();
+    var g=cms_styleguide(),p1='⍗',p2='right:60px;',p3='0';
+    if(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false) {p1='⍈';p2='left:0px;';p3='3';}
     var t="<div id='"+wwid+":conf' class='wysiwyg_conf confpanel' style='top:24px;right:60px;' data-hook='cms_confhook' data-imghook='cms_imghook' data-linkhook='cms_linkhook' data-drophook='cms_drophook'></div>";
     t+="<div id='"+wwid+":tools' class='wysiwyg_tools'>";
-    t+="<div style='text-align:right;' onselectstart='return false;'><span id='"+wwid+":tools_min' onclick='cms_tools_min(this);' style='cursor:pointer;width:12px;display:inline-block;'>▶</span><span id='"+wwid+":tools_pos' onclick='cms_tools_pos(this);' onselectstart='return false;' style='cursor:pointer;' data-pos='0'>⍗</span> <span style='margin-left:8px;font-size:20px;line-height:20px;'>";
+    t+="<div style='text-align:right;' onselectstart='return false;'><span id='"+wwid+":tools_min' onclick='cms_tools_min(this);' style='cursor:pointer;width:12px;display:inline-block;'>▶</span><span id='"+wwid+":tools_pos' onclick='cms_tools_pos(this);' onselectstart='return false;' style='cursor:pointer;'>"+p1+"</span> <span style='margin-left:8px;font-size:20px;line-height:20px;'>";
     if(g!='') t+="<span title='"+L('Guide')+"' id='"+wwid+":tools_gde' onclick='cms_tools_switch(\""+wwid+":tools_guide\");' style='cursor:pointer;'>♿</span> ";
     t+="<span title='"+L("Fields")+"' id='"+wwid+":tools_fld' onclick='cms_tools_switch(\""+wwid+":tools_fields\");' style='cursor:pointer;'>☑</span> ";
     t+="<span title='"+L("Add-Ons")+"' id='"+wwid+":tools_ads' onclick='cms_tools_switch(\""+wwid+":tools_addons\");' style='cursor:pointer;'>☰</span> </span>";
     t+="<input type='text' id='"+wwid+":tools_searchinp' value='' onfocus='cms_tools_search(this,\""+wwid+"\");' onkeyup='cms_tools_search(this,\""+wwid+"\");' style='color:#fff;background:rgba(64,64,64,0.8);border:1px inset #404040;width:100px;'></div>";
-    t+="<div id='"+wwid+":tools_container' style='display:none;right:60px;' class='wysiwyg_toolscontainer' data-pos='0'>";
+    t+="<div id='"+wwid+":tools_container' style='display:none;"+p2+"' class='wysiwyg_toolscontainer' data-pos='"+p3+"'>";
     t+="<div id='"+wwid+":tools_guide' style='display:"+(g!=''?"block":"none")+";width:100%;height:"+h+"px;overflow:auto;color:#fff;'></div>";
     t+="<div id='"+wwid+":tools_fields' style='display:none;width:100%;height:"+h+"px;overflow:auto;'>"+cms_addons(wwid,"var")+"</div>";
     t+="<div id='"+wwid+":tools_addons' style='display:"+(g!=''?"none":"block")+";width:100%;height:"+h+"px;overflow:auto;'>";
@@ -536,6 +540,8 @@ function cms_layoutresizeinit()
 {
     window.onresize=cms_layoutresize;
     cms_layoutresize();
+    if(LANG['rtl']!=null)
+        setTimeout(function(){var t=document.getElementById('layout_data:tgdiv');if(t!=null)t.style.margin='0px 120px 0px 0px';},50);
 }
 function cms_layoutresize()
 {
@@ -566,4 +572,53 @@ function cms_clonedds(obj)
     inps[0].value='New';
     inps[0].select();
     inps[0].focus();
+}
+function cms_initpagediff()
+{
+    if(typeof jQuery=='function') {
+        var i,icons=Array("toggle","revert");
+        for(i=0;i<icons.length;i++) {
+            var w=$('#cms_pagediff'+icons[i]).width(),h=$('#cms_pagediff'+icons[i]).height();
+            $('#cms_pagediff'+icons[i]).width(0);$('#cms_pagediff'+icons[i]).height(0);
+            $('#cms_pagediff'+icons[i]).animate({width:w+'px',height:h+'px'},500);
+        }
+    }
+}
+var cms_divchooselast=null;
+function cms_divchoosemove(evt)
+{
+    var el=document.elementFromPoint(evt.clientX,evt.clientY);
+    if(cms_divchooselast!=el) {
+        if(cms_divchooselast!=null)
+            cms_divchooselast.setAttribute('style',cms_divchooselast.getAttribute('data-style')?cms_divchooselast.getAttribute('data-style'):'');
+        if(el!=null) {
+            el.setAttribute('data-style',el.getAttribute('style')?el.getAttribute('style'):'');
+            el.setAttribute('style','background:#801010;color:#FF0000;');
+        }
+        cms_divchooselast=el;
+    }
+}
+function cms_divchooseclick(evt)
+{
+    var el=document.elementFromPoint(evt.clientX,evt.clientY);
+    document.getElementById('divchoose').style.display='none';
+    document.getElementById('loading').style.display='block';
+    document.location.href=document.location.href.split('?')[0]+'?chooseid='+el.getAttribute('data-chooseid');
+}
+function cms_tablesearch(obj,id)
+{
+    var r=new RegExp("("+obj.value+")","i");
+    var i,j,tbl=document.getElementById(id);
+    for(j=1;j<tbl.rows.length;j++){
+        var ok=(tbl.rows[j].cells.length==1&&obj.value=='')||obj.value==''?1:0;
+        for(i=0;i<tbl.rows[j].cells.length;i++){
+            if(tbl.rows[j].cells[i].getAttribute('data-skipsearch')) continue;
+            tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent;
+            if(tbl.rows[j].cells[i].textContent.match(r)) {
+                tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent.replace(r,"<ins>$1</ins>");
+                ok=1;
+            }
+        }
+        tbl.rows[j].style.display=ok?'table-row':'none';
+    }
 }

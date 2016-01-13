@@ -16,7 +16,7 @@ class CMSPageDiff extends \PHPPE\Ctrl {
 		PHPPE::$core->nocache = true;
 		PHPPE::$core->nopanel = true;
 
-		PHPPE::jslib("cms.js","cms_init();");
+		PHPPE::jslib("cms.js","cms_init();".(empty(PHPPE::$core->noanim)?"cms_initpagediff();":""));
 		list($c) = x("?",@$_SERVER['REQUEST_URI']); $s=$_SERVER['SCRIPT_NAME'];
 		$u = w($c,(z($c,0,u($s))==$s?u($s):u(n($s)))+1);
 		if($u[0]=="/") $u=w($c,1);
