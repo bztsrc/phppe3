@@ -22,11 +22,11 @@
 	},
 
 	"suggest": {
-		"phppe/GPIO": "*",
-		"phppe/Gallery": "*",
+		"phppe/bootstrap": "*",
+		"phppe/ClassMap": "*",
 		"phppe/DataLibrary": "*",
 		"phppe/DBA": "*",
-		"phppe/youtube": "*"
+		"phppe/GPIO": "*"
 	},
 
 	"support": {
