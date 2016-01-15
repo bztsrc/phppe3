@@ -68,6 +68,6 @@ class CMSParam extends \PHPPE\Ctrl {
 		}
 		if($this->type=="pagelist")
 			$this->value=array_column(PHPPE::query("page_id","pages_list","list_id=?","page_id","ordering",0,0,[$this->param[1]]),'page_id');
-		PHPPE::js("init()","if(typeof wysiwyg_toolbarhooks=='function') wysiwyg_toolbarhooks('cms_wysiwyg');setTimeout(function(){document.getElementsByTagName('FORM')[0].elements[0].focus();},100);");
+		PHPPE::js("init()","cms_initparam();");
 	}
 }

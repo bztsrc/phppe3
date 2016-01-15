@@ -1,6 +1,6 @@
 <div class='mosaicbox'><h1><!=L("Tests")></h1>
 <div id='testsdiv' style='padding:0px 0px 5px 5px;'><input type='button' value='<!=L("Run all")>' onclick='runtest("tests/run");'><br><br>
-<table style='margin-left:5px;'>
+<table style='margin-left:5px;border-spacing:2px;border-collapse:separate;'>
 <tr>
     <th></th>
     <th><!=L("Test boundle")></th>

@@ -106,7 +106,7 @@ class Extensions {
 				$t="{ \"name\": \"".($d[3]=="No name"?L($d[3]):$d[3])."\" }";
 			} else
 				$t="{ \"name\": \"".PHPPE::e("","",substr(trim($r[0]),0,4)=="cat:"?L("Run diagnostics first!"):str_replace("\r","",str_replace("\n"," ",trim(empty($r[1])?$r[0]:$r[1]))))."\" }";
-			if( !Extensions::iserr($r[1]) && !Extensions::iserr($r[2])) {
+			if( !Extensions::iserr(@$r[1]) && !Extensions::iserr(@$r[2])) {
 				foreach($r as $v) {
 					$d=explode("\"",$v);
 					if(!empty($d[3]) && !empty($d[7])) $t.=",{ \"id\": \"".$d[3]."\", \"version\": \"".$d[7]."\" }";
@@ -322,7 +322,7 @@ class Extensions {
 			$r=explode("\n",$r."\n\n".ob_get_clean());
 		} else $r=array();
 		unlink($idfile);
-		if( Extensions::iserr($r[0]) || Extensions::iserr($r[1]) || Extensions::iserr($r[2]) ) {
+		if( Extensions::iserr($r[0]) || Extensions::iserr(@$r[1]) || Extensions::iserr(@$r[2]) ) {
 			foreach($r as $k=>$v) if(strpos($v,".rootca")!==false) unset($r[$k]);
 			PHPPE::log('E',"Failed to install ".$url." to ".$this->getsiteurl().", ".implode(" ",$r),"extensions");
 			return $out."PHPPE-E: ".sprintf(L("Failed to install %s"),$url)."\n\n".implode("\n",$r);
@@ -417,7 +417,7 @@ class Extensions {
 		passthru($cmd);
 		$r=explode("\n",$r."\n\n".trim(ob_get_clean()));
 		unlink($idfile);
-		if( Extensions::iserr($r[0]) || Extensions::iserr($r[1]) || Extensions::iserr($r[2]) ) {
+		if( Extensions::iserr($r[0]) || Extensions::iserr(@$r[1]) || Extensions::iserr(@$r[2]) ) {
 			foreach($r as $k=>$v) if(strpos($v,".rootca")!==false) unset($r[$k]);
 			PHPPE::log('E',"Failed to uninstall ".$url." ".$this->getsiteurl().", ".implode(" ",$r),"extensions");
 			return "PHPPE-E: ".sprintf(L("Failed to uninstall %s"),$url)."\n\n".implode("\n",$r);

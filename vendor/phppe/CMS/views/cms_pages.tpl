@@ -5,7 +5,7 @@
 <button onclick='document.location.href="cms/pages?order=1";'><!=L("Recent")></button>
 <nobr><input id='search' type='text' style='width:30%;height:20px;' onkeyup='return cms_tablesearch(this,"results");'><input type='button' class='button' style='font-size:28px;padding-top:0px;line-height:24px;vertical-align:middle;width:8%;' onclick='cms_tablesearch(this.previousSibling,"results");' value='⌕'></nobr>
 </span>
-<table id="results">
+<table id="results" class="cmstable">
 	<tr>
 		<th><!=L("Layout></th>
 		<th>URL</th>

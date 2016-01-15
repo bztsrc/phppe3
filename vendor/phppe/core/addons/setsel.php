@@ -78,11 +78,11 @@ class setsel extends \PHPPE\AddOn {
 		}
 		$out[0]=implode("",$b);
 		return "<div class='setsel'><input type='hidden' id='".$this->fld."' name='".$this->fld."' value='".htmlspecialchars(implode(",", $val))."'>".
-		"<div id='".$this->fld.":filters' style='height:24px;text-align:right;padding:2px;'>".(!empty($this->args[3])?"<span class='setsel_title' style='float:left;line-height:22px;'>".$this->args[3]."</span>":"").$flthtml.
+		"<div id='".$this->fld.":filters' class='setsel_filters'>".(!empty($this->args[3])?"<span class='setsel_title' style='float:left;line-height:22px !important;'>".$this->args[3]."</span>":"").$flthtml.
 		"<input name='search' type='text' placeholder='".L("search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
 		"<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".
-		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='setsel_droparea(event);' onmouseup=\"dnd_drop(event,'setsel_add');\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;padding-bottom:64px;'>".$out[0]."</div>".
-		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"dnd_drop(event,'setsel_remove');\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;'>".$out[1]."</div></div>";
+		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='setsel_droparea(event);' onmouseup=\"dnd_drop(event,'setsel_add');\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;padding-bottom:64px;box-sizing:border-box;'>".$out[0]."</div>".
+		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"dnd_drop(event,'setsel_remove');\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;box-sizing:border-box;'>".$out[1]."</div></div>";
 	}
 }
 

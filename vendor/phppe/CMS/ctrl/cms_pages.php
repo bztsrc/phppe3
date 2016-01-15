@@ -19,6 +19,7 @@ class CMSPages extends \PHPPE\Ctrl {
 		PHPPE::$core->site = "CMS ".L("Pages");
 
 		PHPPE::jslib("cms.js","cms_init();try{document.getElementById('search').focus();}catch(e){}");
+		PHPPE::css("cms.css");
 		list($c) = x("?",@$_SERVER['REQUEST_URI']); $s=$_SERVER['SCRIPT_NAME'];
 		$u = w($c,(z($c,0,u($s))==$s?u($s):u(n($s)))+1);
 		if($u[0]=="/") $u=w($c,1);

@@ -21,6 +21,8 @@ function cms_init()
         cms_editdiv.style.display='none';
         document.body.appendChild(cms_editdiv);
     }
+    var o=document.getElementById('pageresp');
+    if(o!=null) o.style.display='none';
 }
 function cms_pagemeta(o)
 {
@@ -115,10 +117,10 @@ function cms_getbreakpoints()
 {
     var i,s=document.styleSheets,pr=document.getElementById('pe_pageresp'),cache=cookie_get('cms_brkpoints');
     if(pr!=null && cache!=null && cache!='') {
-        if(cache=='none')
-            document.getElementById('pageresp').style.display='none';
-        else
+        if(cache!='none') {
             pr.innerHTML=cache;
+            document.getElementById('pageresp').style.display='inline';
+        }
         return;
     }
     var ul=document.createElement('UL');
@@ -621,4 +623,8 @@ function cms_tablesearch(obj,id)
         }
         tbl.rows[j].style.display=ok?'table-row':'none';
     }
+}
+function cms_initparam()
+{
+    if(typeof wysiwyg_toolbarhooks=='function') wysiwyg_toolbarhooks('cms_wysiwyg');setTimeout(function(){document.getElementsByTagName('FORM')[0].elements[0].focus();},100);
 }

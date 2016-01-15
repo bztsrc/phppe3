@@ -1,4 +1,5 @@
 <style>
+BODY { background:transparent !important;}
 INPUT.input, SELECT.input, TEXTAREA.input {
 	width:<!=intval(_REQUEST['w']-1)>px !important;
 }
@@ -9,7 +10,7 @@ TEXTAREA.input {
 	height:<!=_REQUEST['h']>px !important;
 }
 #param_edit .setsel_box {
-	border:inset 1px #404040;background:rgba(64,64,64,0.8);
+	border:inset 1px #404040;background:rgba(64,64,64,0.8) !important;
 	height:<!=intval(_REQUEST['h']-32)>px !important;
 }
 </style>
@@ -24,4 +25,4 @@ TEXTAREA.input {
 <!else>
 <span style='float:right;color:#F00000;'><!=L("Page is locked!")></span>
 <!/if>
-<div style='left:4px;bottom:6px;position:fixed;'><!=param['title']></div></form></div>
+<div style='left:4px;bottom:4px;position:fixed;'><!=param['title']></div></form></div>

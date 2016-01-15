@@ -1,3 +1,6 @@
+<style>
+BODY { background:transparent !important;}
+</style>
 <div class='confpanel'>
 <h2><!=L("Page_history")></h2>
 <!foreach param>

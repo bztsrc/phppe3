@@ -3,7 +3,7 @@
 <span style='display:block;padding:5px;'>
 <nobr><input id='search' type='text' style='width:30%;height:20px;' onkeyup='return cms_tablesearch(this,"results");'><input type='button' class='button' style='font-size:28px;padding-top:0px;line-height:24px;vertical-align:middle;width:8%;' onclick='cms_tablesearch(this.previousSibling,"results");' value='⌕'></nobr>
 </span>
-<table id="results">
+<table id="results" class="cmstable">
 	<tr>
 		<th><!=L('ID')></th>
 		<th><!=L('Name')></th>
@@ -25,7 +25,7 @@
 </table>
 </div>
 <div class='mosaicbox'><h1><!=L("Sitebuilds")></h1>
-<table>
+<table class="cmstable">
 	<tr>
 		<td></td>
 		<th><!=L('Name')></th>

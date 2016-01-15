@@ -704,16 +704,6 @@ namespace PHPPE {
 					//! redirect user to reload everything
 					$this->redirect();
 				}
-				//! operation modes
-				if(! empty(self::$user->id)) {
-					//! edit for updating records and conf for widget configuration
-					foreach([ "edit", "conf" ] as $v) {
-						if(isset($R[ $v ]) && self::$user->has($v)) {
-							$_SESSION[ 'pe_' . z($v, 0, 1) ] = ! empty($R[ $v ]);
-							$this->redirect();
-						}
-					}
-				}
 				//! detect browser's language, timezone and screen size
 				$L = "pe_tz";
 				if($this->app == I && empty($_SESSION[ $L ]) && ! isset($R[ 'nojs' ]) && empty($R[ 'cache' ])) {
@@ -786,6 +776,16 @@ namespace PHPPE {
 				self::$user = $_SESSION[ $L ];
 			else 
 				self::$user = $_SESSION[ $L ] = new $u();
+			//! operation modes
+			if(! empty(self::$user->id)) {
+				//! edit for updating records and conf for widget configuration
+				foreach([ "edit", "conf" ] as $v) {
+					if(isset($R[ $v ]) && self::$user->has($v)) {
+						$_SESSION[ 'pe_' . z($v, 0, 1) ] = ! empty($R[ $v ]);
+						$this->redirect();
+					}
+				}
+			}
 			//! set up client's prefered language
 			//! only allow if language is defined in core or in app
 			$L = 'pe_l';

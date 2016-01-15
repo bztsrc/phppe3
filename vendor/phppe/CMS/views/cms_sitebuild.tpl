@@ -1,7 +1,7 @@
 <!if choose>
 <h1><!=L("Sitebuilds")></h1>
 <!=L("There are more HTML files in the archive. Choose one!")>
-<table>
+<table class="cmstable">
 	<tr>
 		<th><!=L("Layout")></th>
 		<th><!=L("Title")></th>

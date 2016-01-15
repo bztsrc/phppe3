@@ -1,4 +1,5 @@
 <style>
+BODY { background:transparent !important;}
 B {
 	display:block;
 }
