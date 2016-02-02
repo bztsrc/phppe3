@@ -7,7 +7,7 @@
 </span>
 <table id="results" class="cmstable">
 	<tr>
-		<th><!=L("Layout></th>
+		<th><!=L("Layout")></th>
 		<th>URL</th>
 		<th><!=L("Title")></th>
 		<th><!=L("Filters")></th>

@@ -351,7 +351,7 @@ namespace PHPPE {
 			//! server time is calculated with (this - http request arrive time)
 			$this->started = microtime(1);
 			//! patch php, set defaults
-			set_exception_handler(function(\Exception $e)
+			set_exception_handler(function($e)
 			{
 				self::log('C', "Exception: " . $e->getMessage() . (empty(self::$core->trace) ? "" : "\n\t" . s($e->getTraceAsString(), "\n", "\n\t"))); 
 
@@ -907,9 +907,9 @@ namespace PHPPE {
 			list($c) = x("?", @$_SERVER[ 'REQUEST_URI' ]);
 			$s = $_SERVER[ 'SCRIPT_NAME' ];
 			$u = w($c, (z($c, 0, u($s)) == $s ? u($s) : u(n($s))) + 1);
-			if($u[ 0 ] == "/")
+			if(@$u[ 0 ] == "/")
 				$u = w($c, 1);
-			if($u[ u($u) - 1 ] == "/")
+			if(@$u[ u($u) - 1 ] == "/")
 				$u = z($u, 0, u($u) - 1);
 			//! built-in blobs - referenced as cached objects
 			$C = "cache";
@@ -3656,7 +3656,7 @@ namespace {
 	{
 		return is_array($a);
 	}
-	function h(&$s)
+	function h($s)
 	{
 		return htmlspecialchars($s);
 	}
