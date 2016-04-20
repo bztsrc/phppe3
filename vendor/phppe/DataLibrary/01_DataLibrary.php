@@ -38,9 +38,11 @@ class DataLibrary
  * @param cfg not used
  */
 	function init($cfg) {
+		//register module
 		PHPPE::lib("DataLibrary","Data Library");
+		//save singleton instance
 		self::$self=$this;
-        return true;
+    		return true;
 	}
 
 /**

@@ -434,7 +434,7 @@ namespace PHPPE {
 			$d = x("/", ! empty($d) ? $d : "//");
 			$R = $_REQUEST;
 			foreach([ 1 => "app", 2 => $a, 3 => "item" ] as $c => $v)
-				$this->$v = ! empty($d[ $c ]) ? t($d[ $c ]) : (! empty($R[ $v ]) ? r(t($R[ $v ])) : (! self::$w && ! empty($S[ $A ][ $c ]) && $S[ $A ][ $c ] != $D ? r(t($S[ $A ][ $c ])) : ($c < 3 ? ($c == 1 ? I : $a) : "")));
+				$this->$v = ! empty($d[ $c ]) ? $d[ $c ] : (! empty($R[ $v ]) ? r($R[ $v ]) : (! self::$w && ! empty($S[ $A ][ $c ]) && $S[ $A ][ $c ] != $D ? r($S[ $A ][ $c ]) : ($c < 3 ? ($c == 1 ? I : $a) : "")));
 			//! a few basic security check
 			$c = $this->app . "_" . $this->$a;
 			if(strpos($c, "..") !== false || strpos($c, "/") !== false || w($this->app, - 4) == PE || w($this->$a, - 4) == PE)
@@ -639,12 +639,14 @@ namespace PHPPE {
 			i(".gitignore", ".tmp\nphppe\nvendor\n");
 			if($E)
 				self::log("E", "Wrong permissions:\n$E", "diag");
+			//! connect database
+			@self::db($this->db);
 			//! apply sql updates
 			$D = [];
-			$c = "/sql/upd_*.";
+			$c = "/sql/upd_*";
 			$d = self::lib("ds");
 			foreach($A as $v)
-				foreach($d ? [ "", $d->primary ] : [ "" ] as $s)
+				foreach($d ? [ "", "." . $d->primary ] : [ "" ] as $s)
 					$D += array_fill_keys(@glob(M . $v . $c . $s . ".sql"), 0);
 			if(count($D))
 				echo("DIAG-I: db update\n");
@@ -680,14 +682,15 @@ namespace PHPPE {
 			//! start user session
 			session_name(! empty($this->sessionvar) ? $this->sessionvar : "pe_sid");
 			session_start();
-			if(ini_get("session.use_cookies"))
-				setcookie(session_name(), session_id(), time() + $this->timeout, "/", $S[ "SERVER_NAME" ], ! empty($this->secsession) ? 1 : 0, 1);
 			//! *** Client ***
 			self::$client = new Client;
+			$L = "pe_tz";
 			if(self::$w) {
+				if(ini_get("session.use_cookies"))
+					setcookie(session_name(), session_id(), time() + $this->timeout, "/", $S[ "SERVER_NAME" ], ! empty($this->secsession) ? 1 : 0, 1);
 				//! Cache hit
-				$L = 'HTTP_IF_MODIFIED_SINCE';
-				if(! $this->runlevel && isset($S[ $L ]) && $S[ $L ] + $this->cachettl < $this->now) {
+				$d = 'HTTP_IF_MODIFIED_SINCE';
+				if(! $this->runlevel && isset($S[ $d ]) && $S[ $d ] + $this->cachettl < $this->now) {
 					header('HTTP/1.1 304 Not Modified');
 					die;
 				}
@@ -697,15 +700,14 @@ namespace PHPPE {
 				//! destroy user session if requested
 				if(isset($R[ 'clear' ])) {
 					//! save the logged in user
-					$L = 'pe_u';
-					$u = $_SESSION[ $L ];
+					$d = 'pe_u';
+					$u = $_SESSION[ $d ];
 					$_SESSION = [];
-					$_SESSION[ $L ] = $u;
+					$_SESSION[ $d ] = $u;
 					//! redirect user to reload everything
 					$this->redirect();
 				}
 				//! detect browser's language, timezone and screen size
-				$L = "pe_tz";
 				if($this->app == I && empty($_SESSION[ $L ]) && ! isset($R[ 'nojs' ]) && empty($R[ 'cache' ])) {
 					//! this is a small JavaScript page that shows up for the first time
 					//! after collecting information, it redirects user so fast, he won't
@@ -906,7 +908,7 @@ namespace PHPPE {
 			//! get path from request uri (cut off script name)
 			list($c) = x("?", @$_SERVER[ 'REQUEST_URI' ]);
 			$s = $_SERVER[ 'SCRIPT_NAME' ];
-			$u = w($c, (z($c, 0, u($s)) == $s ? u($s) : u(n($s))) + 1);
+			$u = w($c, (z($c, 0, u($s)) == $s ? u($s) : u(n($s))));
 			if(@$u[ 0 ] == "/")
 				$u = w($c, 1);
 			if(@$u[ u($u) - 1 ] == "/")
@@ -1347,34 +1349,35 @@ namespace PHPPE {
 					$O .= "<style media='all'>\n";
 					$d = "@import url('%s');\n";
 					$N = $this->base . "_" . $this->app . "." . $this->$a . "_" . self::$user->id . "_$B";
+					$e = "css";
 					//! admin css if user logged in and has access
 					if($P)
-						$O .= sprintf($d, $I . "css/?cache=css");
+						$O .= sprintf($d, $I . "?cache=$e");
 					//! user stylesheets
 					if(! empty($this->css)) {
 						//! if aggregation allowed
 						if(! empty(self::$mc) && empty($this->noaggr)) {
-							$n = sha1($N . "_css");
+							$n = sha1($N . "_$e");
 							if(empty(self::$mc->get("c_$n"))) {
 								$da = "";
 								//! skip dynamic assets (they use a different caching mechanism)
 								foreach($this->css as $u => $v)
 									if($v && w($v, - 3) != "php" && $u[ 0 ] != "?")
-										$da .= minify(r(g($v)), "css") . "\n";
+										$da .= minify(r(g($v)), $e) . "\n";
 								//! save result to cache
-								$this->_ms("c_$n", [ "m" => "text/css", "d" => $da ]);
+								$this->_ms("c_$n", [ "m" => "text/$e", "d" => $da ]);
 							}
-							$O .= sprintf($d, $I . "css/?cache=$n");
+							$O .= sprintf($d, $I . "?cache=$n");
 							//! add dynamic stylesheets, they were left out from aggregated cache above
 							foreach($this->css as $u => $v)
 								if($v && ($u[ 0 ] == "?" || w($v, - 3) == "php"))
-									$O .= sprintf($d, ($u[ 0 ] == "?" ? "" : $I . "css/") . $u);
+									$O .= sprintf($d, ($u[ 0 ] == "?" ? "" : $I . "$e/") . $u);
 						}
 						else
 						{
 							foreach($this->css as $u => $v)
 								if($v)
-									$O .= sprintf($d, ($u[ 0 ] == "?" ? "" : $I . "css/") . $u);
+									$O .= sprintf($d, ($u[ 0 ] == "?" ? "" : $I . "$e/") . $u);
 						}
 					}
 					$O .= "</style>\n";
@@ -1969,17 +1972,18 @@ namespace PHPPE {
 				while(! feof($f) && r($h) != "") {
 					//! parse headers
 					$h = r((fgets($f, 4096)));
-					if(! empty($h))
+					if(! empty($h)) {
 						$H = t($h);
-					if(z($H, 0, 8) == "location")
-						$n = r(w($h, 9));
-					if(z($H, 0, 12) == "content-type" && strpos($h, "text/"))
-						$t = 1;
-					//! follow cookie changes
-					if(z($H, 0, 10) == "set-cookie") {
-						$c = x("=", x(";", r(w($h, 11)))[ 0 ]);
-						//c[1] is undefined on nginx when clearing the cookie
-						@$C[ $c[ 0 ] ] = $c[ 1 ];
+						if(z($H, 0, 8) == "location")
+							$n = r(w($h, 9));
+						if(z($H, 0, 12) == "content-type" && strpos($h, "text/"))
+							$t = 1;
+						//! follow cookie changes
+						if(z($H, 0, 10) == "set-cookie") {
+							$c = x("=", x(";", r(w($h, 11)))[ 0 ]);
+							//c[1] is undefined on nginx when clearing the cookie
+							@$C[ $c[ 0 ] ] = $c[ 1 ];
+						}
 					}
 				}
 				//! handle redirections
@@ -2353,7 +2357,8 @@ namespace PHPPE {
 			catch(\Exception $e) {
 				//! try to load scheme for missing table
 				$E = $e->getMessage();
-				if((/*Sqlite/MySQL/MariaDB*/ p("/able:?\ [\'\"]?([a-z0-9_\.]+)/mi", s($E, "le or v", ""), $d) || /*Postgre*/ p("/([a-z0-9_\.]+)[\'\"] does\ ?n/mi", $E, $d) || /*MSSql*/ p("/name:?\ [\'\"]?([a-z0-9_\.]+)/mi", $E, $d)) && ! empty($d[ 1 ])) {
+				$c = s($E, "le or v", "");
+				if((/*Sqlite/MySQL/MariaDB*/ p("/able:?\ [\'\"]?([a-z0-9_\.]+)/mi", $c, $d) || /*Postgre*/ p("/([a-z0-9_\.]+)[\'\"] does\ ?n/mi", $E, $d) || /*MSSql*/ p("/name:?\ [\'\"]?([a-z0-9_\.]+)/mi", $E, $d)) && ! empty($d[ 1 ])) {
 					$c = "";
 					$m = "." . t($h->name);
 					$d = x(".", $d[ 1 ]);
@@ -2451,7 +2456,7 @@ namespace PHPPE {
 		static function field($f, $t = "", $w = "", $g = "", $o = "", $a = [])
 		{
 			//return the first field
-			return reset(self::fetch($f, $t, $w, $g, $o, $a));
+			return @reset(self::fetch($f, $t, $w, $g, $o, $a));
 		}
 /**
  * query a recursive tree from current data source
@@ -2872,9 +2877,7 @@ namespace PHPPE {
 									$t = jd($p[ $c ]);
 									if(a($t))
 										foreach($t as $v)
-											$ {
-												self::$core->$c}
-									[ m($v) ] = $v;
+											self::$core->$c[ m($v) ] = $v;
 								}
 								$t = $p[ 'data' ];
 								if(! empty($p[ $M ]))
@@ -3064,7 +3067,7 @@ namespace PHPPE {
 								print_r($s);
 								$n = "<pre>" . h(o()) . "</pre>";
 							}
-							$w = "<b style='font-family:monospace;'>" . $A[ 0 ] . ":</b>" . s($n, "<pre", "<pre style='margin:0;'");
+							$w = "<b style='font:monospace;'>" . $A[ 0 ] . ":</b>" . $n;
 						}
 						break;
 						//hook for cms editor icons
@@ -3164,21 +3167,21 @@ namespace PHPPE\Filter {
 	use \PHPPE\Filter as X;
 	class get extends X
 	{
-		function filter()
+		static function filter()
 		{
 			return $_SERVER[ 'REQUEST_METHOD' ] == "GET";
 		}
 	}
 	class post extends X
 	{
-		function filter()
+		static function filter()
 		{
 			return $_SERVER[ 'REQUEST_METHOD' ] == "POST";
 		}
 	}
 	class loggedin extends X
 	{
-		function filter()
+		static function filter()
 		{
 			if(\PHPPE\Core::$user->id)
 				return true;
@@ -3188,7 +3191,7 @@ namespace PHPPE\Filter {
 	}
 	class csrf extends X
 	{
-		function filter()
+		static function filter()
 		{
 			return \PHPPE\Core::isTry();
 		}

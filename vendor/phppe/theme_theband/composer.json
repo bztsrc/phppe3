@@ -1,0 +1,23 @@
+{
+	"name": "phppe/theme_theband",
+	"name_en": "The Band theme",
+	"name_hu": "Együttes oldal téma",
+	"keywords": [ "Themes" ],
+
+	"description": "Bootstrap based frame example",
+	"description_hu": "Bootstrapre épülő téma minta",
+
+	"version": "1.0.0",
+	"dist": { "type":"tar","url": "http://phppe.org/phppe3_theme_theband.tgz" },
+
+	"version_normalized": "1.0.0.0",
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe": "3.*",
+		"phppe/bootstrap": "*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

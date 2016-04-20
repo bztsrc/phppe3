@@ -26,10 +26,12 @@ namespace PHPPE {
 
 	//! regardless to autoloaders, make sure the Content class exists
 	include_once("vendor/phppe/core/libs/content.php");
+
 	//! register ourself, using Content as object reference
 	//! if we would use PHPPE::$core, that would end in an
 	//! infinite reference loop. So we have to use a different object
 	Core::lib("Core","PHPPE Core","",new Content);
+
 	//! normalize stylesheets and standardize javascript
 	//! also generate Table of Contents (we do it here on purpose)
 	Core::jslib("jquery.js","toc_init();");

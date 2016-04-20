@@ -44,7 +44,7 @@ class Gallery
 	}
 
 /**
- * Constructor, loads pin mapping
+ * Constructor
  *
  * @param cfg not used
  */

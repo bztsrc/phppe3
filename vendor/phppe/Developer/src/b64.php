@@ -1,4 +1,7 @@
 <?php
+/**
+ * Helper script to generate data urls
+ */
 $a=$_SERVER['argv'];
 array_shift($a);
 if(empty($a))

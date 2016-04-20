@@ -34,6 +34,7 @@ return array(
 	"Proprietary"=>"Zárt",
 	"Framework"=>"Keretrendszer",
 	"Connections"=>"Kapcsolatok",
+	"Themes"=>"Témák",
 	"Content"=>"Tartalom",
 	"Security"=>"Biztonság",
 	"Business"=>"Üzlet",

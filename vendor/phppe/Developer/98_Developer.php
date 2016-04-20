@@ -24,12 +24,18 @@
  */
 use PHPPE\Core as PHPPE;
 
+/**
+ * As this is a very simple module, no class at all
+ */
+
 //register module and menu
 PHPPE::lib( "Developer", "PHPPE Source and Tests");
 PHPPE::menu( L("Tests"), "tests" );
+
 //this is needed for filter tests
 PHPPE::route("tests/httptest", "\Tests", "action_httppost", "post");
 PHPPE::route("tests/httptest", "\Tests", "action_httpget", "get");
+
 //register class to url that implements controller.
 //Because no action given, default action rules will apply.
 PHPPE::route("tests", "\Tests");

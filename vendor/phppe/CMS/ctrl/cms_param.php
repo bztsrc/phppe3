@@ -1,4 +1,7 @@
 <?php
+/**
+ * Controller for CMS page parameters (invoked when a CMS icon clicked on a page)
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
@@ -23,13 +26,13 @@ class CMSParam extends \PHPPE\Ctrl {
 		PHPPE::$core->noframe = true;
 		PHPPE::$core->nopanel = true;
 		$frame = false;
-		$this->param=$_SESSION['cms_param'][$item+0];
+		$this->param=$_SESSION['cms_param'][PHPPE::$core->item];
 		if(substr($this->param[1],0,6)=="frame.") $frame = true;
 		$key=str_replace("frame.","",str_replace("app.","",$this->param[1]));
 		$this->type=$this->param[0];
 		if($frame) {
 				$frpage=@jd(PHPPE::field("data","pages","id='frame'"));
-				$this->value=$frpage[$key];
+				$this->value=@$frpage[$key];
 		} else
 			$this->value=!empty($_SESSION['cms_page']['data'][$key])?$_SESSION['cms_page']['data'][$key]:'';
 		$this->w=intval($_REQUEST['w']);

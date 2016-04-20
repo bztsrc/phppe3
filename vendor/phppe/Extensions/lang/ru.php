@@ -34,6 +34,7 @@ return array(
 	"Proprietary"=>"патентованный",
 	"Framework"=>"Фреймворк",
 	"Connections"=>"связи",
+	"Themes"=>"темы",
 	"Content"=>"содержание",
 	"Security"=>"Безопасность",
 	"Business"=>"Бизнес",

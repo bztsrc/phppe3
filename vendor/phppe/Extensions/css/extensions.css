@@ -82,12 +82,13 @@ INPUT[type=button] {
 	margin: 5px 2px 10px 2px;
 	border:#808080 solid 1px;
 	width:32%;
-	min-width:370px;
+	min-width:420px;
 	display:inline-block;
 }
 .extension DIV {
-	overflow:auto;padding-left:130px;height:160px;
+	overflow:auto;padding-left:130px;height:200px;
 }
+
 @media screen and (max-width:800px) {
 	#search {max-width:50%;}
 }

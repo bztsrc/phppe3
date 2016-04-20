@@ -1,4 +1,7 @@
 <?php
+/**
+ * Helper to choose JS assets
+ */
 if(!empty($_REQUEST['assetn'])){
 	$d=explode("/",trim($_REQUEST['assetn']))[0];
 	header("Content-type:text/javascript;charset=utf-8");

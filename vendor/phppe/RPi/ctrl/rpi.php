@@ -1,4 +1,7 @@
 <?php
+/**
+ * Controller for RPi web interface
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 

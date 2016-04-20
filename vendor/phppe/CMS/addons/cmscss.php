@@ -1,4 +1,7 @@
 <?php
+/**
+ * Addon to select stylesheets for a page
+ */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as PHPPE;
 
@@ -8,17 +11,20 @@ class cmscss extends \PHPPE\AddOn\text
 	{
 		PHPPE::addon("cmscss", "CMS CSS Selector", "", "*");
 	}
+
 	function show(  )
 	{
 		$v=$this->toArr($this->value);
 		return implode("<br/>",$v);
 	}
+
 	function edit(  )
 	{
 		$this->value=implode("\n",$this->toArr($this->value));
 		$this->args=[40,32768,5];
 		return parent::edit();
 	}
+
 	function toArr($v) {
 		if(is_array($v))
 			return $v;
@@ -26,6 +32,7 @@ class cmscss extends \PHPPE\AddOn\text
 			return json_decode($v,true);
 		return explode("\n",$v);
 	}
+
 	static function validate($n, &$v, $a=[], $t=[])
 	{
 		if(!is_array($v))

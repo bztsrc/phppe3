@@ -32,15 +32,21 @@ class CMS
 	public $purge=3;
 	public $metas=[];
 
+/**
+ * Initialization hook
+ *
+ * @return true on success
+ */
 	function init($cfg) {
+		//register module
 		PHPPE::lib("CMS","Content Editor", ["Core","wysiwyg"], $this);
+		//force access filter globally for all cms related urls
 		if(PHPPE::$core->app=="cms") {
 			\PHPPE\Filter\loggedin::filter();
 			if(!PHPPE::$user->has("siteadm|webadm"))
 				PHPPE::redirect("403");
 		}
-		if(PHPPE::$core->action=="pages")
-			$_SESSION['cms_param']=[];
+		//load configuration into properties
 		if(!empty($cfg['expert']))
 			$this->expert=true;
 		if(!empty($cfg['pagehistory']))
@@ -54,10 +60,12 @@ class CMS
 		if(!empty($cfg['metas']))
 			$this->metas=x(",",$cfg['metas']);
 
+		//panel requires extra js code
 		if(PHPPE::$user->has("panel")) {
 			PHPPE::jslib("cms.js","cms_init();");
 		}
 
+		//asset handling
 		if(!empty($_REQUEST['asset'])){
 			$d=explode("/",trim($_REQUEST['asset']));
 			if(count($d)!=2||!in_array($d[0],["css","js","images"])) {
@@ -68,17 +76,25 @@ class CMS
 			die(file_get_contents(".tmp/".session_id()."/".$d[0]."/".$d[1]));
 		}
 
+		//add menu
 		if(!$this->expert)
 			PHPPE::menu(L("Pages")."@siteadm|webadm","cms/pages");
 
 		return true;
 	}
 
+/**
+ * Statistics hook on panel
+ *
+ * @return html code
+ */
 	function stat() {
 		if(PHPPE::$user->has("panel")) {
+			//normal panel icons
 			$cms_menu=
 				(PHPPE::$user->has("siteadm")?"<span style='margin-left:4px;'><img title=\"".L("Layouts")."\" src='images/cms/layouts.png' onclick='document.location.href=\"".url("cms","layouts")."\";'></span>":"").
 				(PHPPE::$user->has("siteadm|webadm")?"<span><img title=\"".L("Pages")."\" src='images/cms/pages.png' onclick='document.location.href=\"".url("cms","pages")."\";'></span>":"");
+			//panel icons for pages managed by cms
 			$c=get_class(PHPPE::getval("app"));
 			if($c=="PHPPE\App" || $c=="PHPPE\Content")
 				return
@@ -88,6 +104,7 @@ class CMS
 			$cms_menu;
 			elseif(PHPPE::$core->app!="cms")
 				return $cms_menu;
+			//panel for pages and layout lists
 			elseif(PHPPE::$core->action=="pages")
 				return PHPPE::template("cms_pagepanel").$cms_menu;
 			elseif(PHPPE::$core->action=="layouts")
@@ -95,22 +112,36 @@ class CMS
 		}
 	}
 
-	function icon($arg)
+/**
+ * generate icon for various cms functionality
+ *
+ * @return html code
+ */
+	static function icon($arg)
 	{
 		if(empty(PHPPE::$core->item)) return "";
 		$title=$arg['title']=htmlspecialchars(L(@$arg[2]?$arg[2]:(@$arg[1]?$arg[1]:$arg[0])));
 		list($a)=explode("(",$arg[0]);
 		$arg['type']=$a;
 		$spec=file_exists(__DIR__."/images/cms/".$a.".png");
-		$_SESSION['cms_param'][]=$arg;
+//echo("icon:".count($_SESSION['cms_param'])."'".$arg[0]."' '".$arg[1]."'<br>");//print_r($_SESSION['cms_param']);
+//		$w=0;
+//		foreach($_SESSION['cms_param'] as $v) if($v[1]==$arg[1]){$w=1;break;}
+//		if(!$w)
+		$_SESSION['cms_param'][md5($arg[0]."_".$arg[1])]=$arg;
 		$u=url("/"); if($u[strlen($u)-1]!="/") $u.="/";
 		return "<img style='position:absolute;z-index:998;".($spec&&$a!="pagelist"?"":"opacity:0.7;")."' ".
-			"onclick='cms_".urlencode($spec?$a:"edit")."(this,\"".urlencode($a)."\",".(count($_SESSION['cms_param'])-1).");' ".
+			"onclick='cms_".urlencode($spec?$a:"edit")."(this,\"".urlencode($a)."\",\"".(/*count($_SESSION['cms_param'])-1*/md5($arg[0]."_".$arg[1]))."\");' ".
 			"src='".$u."images/cms/".($spec?urlencode($a).".png":"edit.png/".urlencode($a)."/".(count($_SESSION['cms_param'])-1))."' ".
 			"alt='[".htmlspecialchars(strtoupper($a).($title?" ".$title:""))."]' ".
 			"title='".$title."'>";
 	}
 
+/**
+ * helper function to mark a specific tag in html
+ *
+ * @return html with marked tags
+ */
 	static function taghtml($data)
 	{
 			$t="";
@@ -128,6 +159,14 @@ class CMS
 			return $t;
 	}
 
+/**
+ * split html according to marked tags
+ *
+ * @param html with marked tags
+ * @param id of a tag
+ * @param selector: 1=return html after tag, 0=return tag for id, -1=return html before tag
+ * @return html code
+ */
 	static function splithtml($data,$id,$idx=1)
 	{
 		if(!preg_match("|data-chooseid|",$data))

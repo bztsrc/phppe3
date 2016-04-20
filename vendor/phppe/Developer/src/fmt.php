@@ -23,7 +23,10 @@
  * @date 1 Jan 2016
  * @brief quick and dirty tool to compress or decompress php source and update documentation
  */
-error_reporting(E_ALL & ~ E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE);
+/**
+ * this code is ughly, you've been warned!
+ */
 global $keywords,$spec,$modifiers,$funcs;
 $keywords=array("as","===","!==","==","+=","-=","*=","/=","^=","%=","!=",".=","<=",">=","=>","->","++","--","+","-","*","/","=","[","]",".",",","::",":","?","!","~","%","^","<",">","&&","&","||","|");
 $spec=array("if","else","for","while","do","foreach","elseif");

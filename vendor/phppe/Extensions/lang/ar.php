@@ -34,6 +34,7 @@ return array(
 	"Proprietary"=>"امتلاكي",
 	"Framework"=>"إطار",
 	"Connections"=>"روابط",
+	"Themes"=>"المواضيع",
 	"Content"=>"محتوى",
 	"Security"=>"أمن",
 	"Business"=>"عمل",

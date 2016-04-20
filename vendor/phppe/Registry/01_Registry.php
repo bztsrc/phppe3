@@ -20,7 +20,7 @@
  * @file vendor/phppe/Registry/01_Registry.php
  * @author bzt@phppe.org
  * @date 1 Jan 2016
- * @brief key-value registry for Extension configuration
+ * @brief key-value registry for Extension configuration, included in Pack
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;
@@ -33,7 +33,7 @@ class Registry {
  */
 	function init($cfg) {
 		PHPPE::lib("Registry","Parameter Registry");
-        return true;
+		return true;
 	}
 
 /**
@@ -44,11 +44,14 @@ class Registry {
  * @return value
 */
 	static function get($key,$default="") {
+		//sanitize key
 		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
 		$value=null;
+		//try to read from database...
 		try {
 			$value = PHPPE::field("data","registry","name=?","","",[$key]);
 		} catch(\Exception $e) {
+		//...fallback to files
 			$v = trim(@file_get_contents("data/registry/".$key));
 			$value = json_decode($v);
 			if(!is_array($value)&&!is_object($value))
@@ -56,6 +59,7 @@ class Registry {
 		}
 		return $value==null?$default:$value;
 	}
+
 /**
  * Store a parameter value for key into registry
  *
@@ -63,22 +67,28 @@ class Registry {
  * @param value
 */
 	static function set($key,$value) {
+		//sanitize key
 		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
 		$value=is_array($value)||is_object($value)?json_encode($value):trim($value);
+		//try to save to database...
 		try {
 			if(!PHPPE::exec("REPLACE INTO registry (name,data) VALUES (?,?)",[$key,$value])) throw new \Exception();
 		} catch(\Exception $e) {
+		//...fallback to files
 			@mkdir("data/registry");
 			file_put_contents("data/registry/".$key,$value);
 		}
 	}
+
 /**
  * Remove a parameter from registry
  *
  * @param key
 */
 	static function del($key) {
+		//sanitize key
 		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
+		//remove both database record as well as file
 		try {
 			@PHPPE::exec("DELETE FROM registry WHERE name=?",[$key]);
 		} catch(\Exception $e) {

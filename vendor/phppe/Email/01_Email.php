@@ -20,7 +20,7 @@
  * @file vendor/phppe/Email/01_Email.php
  * @author bzt@phppe.org
  * @date 1 Jan 2016
- * @brief Email message object
+ * @brief Email message object, included in Pack
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;

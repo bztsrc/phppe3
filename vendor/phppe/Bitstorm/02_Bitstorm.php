@@ -29,10 +29,18 @@ class Bitstorm
 {
 	private static $cfg;
 
+/**
+ * Initialization hook
+ *
+ * @return true on success
+ */
 	function init($cfg) {
+		//register module
 		PHPPE::lib("Bitstorm","Lightweight Bittorrent tracker", ["Core"]);
+		//configuration defaults
 		$cfg['peersdb']='data/Bittorrent.Peers';
 		self::$cfg=$cfg;
+		//include and run tracker early
 		if(PHPPE::$core->app==(!empty($cfg['url'])?$cfg['url']:"torrent")) {
 			include("libs/source.txt");
 			die();
@@ -40,6 +48,11 @@ class Bitstorm
 		return true;
 	}
 
+/**
+ * Statistics hook for panel
+ *
+ * @return html code
+ */
 	function stat() {
 		if(PHPPE::$user->has("panel")) {
 			$a=unserialize(@file_get_contents(self::$cfg['peersdb']));

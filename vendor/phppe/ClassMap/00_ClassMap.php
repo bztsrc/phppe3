@@ -48,23 +48,37 @@ class ClassMap
  */
     public function diag($group)
     {
+	//get list of php files
         $D=[]; $R=[];
         foreach(["*/*","*/*/*","*/*/*/*","*/*/*/*/*","*/*/*/*/*/*"] as$v) {$D+=array_fill_keys(@glob("vendor/".$v.".php"),0); $D+=array_fill_keys(@glob("app/".$v.".php"),0); }
+	//iterate on list
         foreach($D as $fn=>$v) {
+	    //skip generated autoload.php, ourself and phppe modules (use other means of class loading)
             if(strpos(strtolower($fn),"autoload")!==false||strpos(strtolower($fn),"00_classmap")!==false||explode("/",$fn)[1]=="phppe") continue;
+	    //load php code
             $data=str_replace("\n{","{",preg_replace("|//[^\n]*$|ims","",preg_replace("|/\*.+?\*/|ims","",preg_replace("|/'.+?'|ims","",preg_replace("|/\".+?\"|ims","",file_get_contents($fn))))));
+	    //skip if file marked
+	    if(strpos($data,"/*!SKIPAUTOLOAD!*/")!==false) continue;
+	    //get namespace and class declarations
             if(preg_match_all("/(namespace|class)[\ \t]+([^\ ;{\[\(\]\)\$]+)/ims",$data,$m,PREG_SET_ORDER)) {
                 $ns="";
                 foreach($m as $V) {
-                    if(strtolower($V[1])=="namespace"&&ctype_alpha(trim($V[2])[0])) $ns=trim($V[2]);
-                    if(strtolower($V[1])=="class"&&ctype_alpha(trim($V[2])[0]) && (empty(PHPPE::$core->disabled)||(!in_array(trim($V[2]),PHPPE::$core->disabled)&&!in_array($ns.($ns?"\\":"").trim($V[2]),PHPPE::$core->disabled)))) $R[$ns.($ns?"\\":"").trim($V[2])]=$fn;
+                    if(strtolower($V[1])=="namespace"&&ctype_alpha(trim($V[2])[0]))
+                	$ns=trim($V[2]);
+                    if(strtolower($V[1])=="class"&&ctype_alpha(trim($V[2])[0]) && 
+                	(empty(PHPPE::$core->disabled)||
+                	(!in_array(trim($V[2]),PHPPE::$core->disabled)&&
+                	!in_array($ns.($ns?"\\":"").trim($V[2]),PHPPE::$core->disabled)))) 
+                	$R[$ns.($ns?"\\":"").trim($V[2])]=$fn;
                 }
             }
         }
+	//sort list of classes alphabetically
         uksort($R,function($a,$b){
             $c=substr_count($a,"\\")-substr_count($b,"\\");
             return $c!=0?$c:strcasecmp($a,$b);
         });
+	//save new autoload.php
         $ret="<"."?php\n/**
  *  PHP Portal Engine v3.0.0
  *  http://phppe.org/

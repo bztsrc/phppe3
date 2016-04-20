@@ -1,4 +1,7 @@
 <?php
+/**
+ * Addon to select dynamic data sets for a page
+ */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as PHPPE;
 
@@ -8,6 +11,7 @@ class cmsdds extends \PHPPE\AddOn
 	{
 		PHPPE::addon("cmsdds", "CMS DDS Selector", "", "*");
 	}
+
 	function show(  )
 	{
 		$v=is_array($this->value)?$this->value:json_decode($this->value,true);
@@ -21,6 +25,7 @@ class cmsdds extends \PHPPE\AddOn
 		$r.="</table>";
 		return $r;
 	}
+
 	function edit(  )
 	{
 		$v=is_array($this->value)?$this->value:json_decode($this->value,true);

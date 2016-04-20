@@ -40,7 +40,7 @@ class R2D2
 	function init($cfg) {
 		PHPPE::lib("R2D2","R2D2 Controller");
 		self::$self=$this;
-        return true;
+		return true;
 	}
 
 /**

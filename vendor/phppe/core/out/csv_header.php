@@ -1,15 +1,19 @@
 <?php
+/**
+ * Generate Comma Separated Values output
+ */
+
 //get current application. We are about to output it's properties
 $app = \PHPPE\Core::getval("app");
 
-//write a comment with query to output
+//write a comment with the query used
 if( !empty($app->query) )
 	echo("## ".strtr($app->query,array("\r"=>"","\n"=>" "))."\n");
 
 if( empty($app->results) )
-	die("CSV-C: ".L("No input"));
+	die("##CSV-C: ".L("Empty result set"));
 
-#print header
+//print header
 foreach($app->results[0] as $k=>$v)
 	echo(($k==array_keys($app->results[0])[0]?"":";")."\"".addslashes($k)."\"");
 echo("\n");
@@ -21,6 +25,6 @@ foreach($app->results as $V) {
 	echo("\n");
 }
 
-//view layer not required at all in this case
+//view layer not required at all in this case, so stop php
 exit(0);
 ?>

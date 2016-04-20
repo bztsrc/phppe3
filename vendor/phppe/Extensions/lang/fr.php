@@ -34,6 +34,7 @@ return array(
 	"Proprietary"=>"Propriétaire",
 	"Framework"=>"Cadre",
 	"Connections"=>"Les liaisons",
+	"Themes"=>"Thèmes",
 	"Content"=>"Contenu",
 	"Security"=>"Sécurité",
 	"Business"=>"Entreprise",

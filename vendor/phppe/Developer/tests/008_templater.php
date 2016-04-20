@@ -172,7 +172,7 @@ if( PHPPE::_t("<!dump test_arr>") != "") {
 
 PHPPE::$core->runlevel = 1;
 echo("dump tag runlevel 1 (test): ");
-if( PHPPE::_t("<!dump test_arr>") != "<b style='font-family:monospace;'>test_arr:</b><pre style='margin:0;'>Array
+if( PHPPE::_t("<!dump test_arr>") != "<b style='font:monospace;'>test_arr:</b><pre>Array
 (
     [0] =&gt; a
     [1] =&gt; b

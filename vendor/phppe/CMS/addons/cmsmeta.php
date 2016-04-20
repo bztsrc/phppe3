@@ -1,4 +1,7 @@
 <?php
+/**
+ * Addon to edit meta tags of a page
+ */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as PHPPE;
 
@@ -8,6 +11,7 @@ class cmsmeta extends \PHPPE\AddOn
 	{
 		PHPPE::addon("cmsmeta", "CMS Meta info", "", "*");
 	}
+
 	function show(  )
 	{
 		$m=PHPPE::lib("CMS")->metas;
@@ -18,6 +22,7 @@ class cmsmeta extends \PHPPE\AddOn
 		$r.="</table>";
 		return $r;
 	}
+
 	function edit(  )
 	{
 		$m=PHPPE::lib("CMS")->metas;
@@ -28,6 +33,7 @@ class cmsmeta extends \PHPPE\AddOn
 		$r.="</table>";
 		return $r;
 	}
+
 	static function validate($n, &$v, $a=[], $t=[])
 	{
 		$v=[];

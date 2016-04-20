@@ -46,8 +46,10 @@ class Chart
  * Register Chart
  *
  * @param cfg not used
+ * @return true if libgd found
  */
 	function init($cfg) {
+
         if(!function_exists("gd_info")) return false;
 		PHPPE::lib("Chart","Chart generator");
 		self::$self=$this;

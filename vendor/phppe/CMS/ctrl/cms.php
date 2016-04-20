@@ -1,4 +1,7 @@
 <?php
+/**
+ * Global CMS controller
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
@@ -35,11 +38,14 @@ class CMS extends \PHPPE\Ctrl {
 
 	function action($item)
 	{
+		//get models
 		include_once("vendor/phppe/CMS/libs/views.php");
 		include_once("vendor/phppe/CMS/libs/pages.php");
+		//defaults
 		PHPPE::$core->noframe = true;
 		PHPPE::$core->nopanel = true;
 		PHPPE::$core->template="cms_".PHPPE::$core->action;
+		//page specific actions
 		switch(PHPPE::$core->action){
 			case "layoutdelete":
 				if(PHPPE::istry()){

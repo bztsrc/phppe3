@@ -1,4 +1,7 @@
 <?php
+/**
+ * Testing addons
+ */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as PHPPE;
 

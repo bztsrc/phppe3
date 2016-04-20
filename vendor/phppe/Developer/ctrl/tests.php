@@ -1,4 +1,7 @@
 <?php
+/**
+ * Controller for tests
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
@@ -36,6 +39,7 @@ class Tests extends \PHPPE\Ctrl {
 
 	function action_run($item)
 	{
+
 		//run a specific test. If not exists, show error
 		if(!empty($item) && empty($this->testCases[$item])) {
 		    PHPPE::$core->template="404";
@@ -52,7 +56,7 @@ class Tests extends \PHPPE\Ctrl {
 			if($key) echo(str_repeat("-",80)."\n");
 			echo(L("Running test").": ".$test."\n\n");
 			flush();
-			$t=microtime(true);
+			$t=microtime(true); $asserts=0;
 			$ret=include("vendor/phppe/Developer/tests/".$test.".php");
 			if($ret===true && preg_match_all("/return/",file_get_contents("vendor/phppe/Developer/tests/".$test.".php"),$m)) {
 			    $asserts=count($m[0])-1;

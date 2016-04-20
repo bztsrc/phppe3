@@ -1,4 +1,9 @@
 <?php
+/**
+ * Example configuration
+ * See vendor/phppe/composer.json for a full list of options
+ */
+
 //! primary datasource
 $core->db = "sqlite:data/sqlite.db";
 //$core->db = "mysql:host=localhost;dbname=test@user:pass";
@@ -9,7 +14,7 @@ $core->db = "sqlite:data/sqlite.db";
 //$core->cache="unix:/tmp/memcache_sock";
 //$core->cache="apc";
 //$core->cache="files";
-//$core->nominify = true;
+$core->nominify = true;
 
 //! set up master password
 //$core->masterpasswd = password_hash( "changeme", PASSWORD_BCRYPT );
@@ -20,11 +25,15 @@ $core->masterpasswd = '$2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjY
 //!  1 - testing
 //!  2 - developer
 //!  3 - debug
-$core->runlevel=2;
+$core->runlevel=3;
+$core->trace=1;
+//$core->noanim=1;
 
 //! set up list of allowed functions in templater
 //$core->allowed = array( "number_format", "sprintf" );
 
 //!turn on maintenance mode
 //$core->maintenance = true;
+
+//$core->repos[]="http://phppe.turdus.hu/phppe3/";
 ?>

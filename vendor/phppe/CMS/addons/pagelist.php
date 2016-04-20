@@ -1,4 +1,7 @@
 <?php
+/**
+ * Addon for page lists
+ */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as PHPPE;
 
@@ -12,6 +15,7 @@ class pagelist extends \PHPPE\AddOn\setsel
 	{
 		\PHPPE\Core::addon( "pagelist", "CMS Page List Selector", "", "*(templates) obj.field options [skipids [onchangejs [cssclass]]]" );
 	}
+
 	function edit()
 	{
 		$t=!empty($this->args[0])?$this->args[0]:[];

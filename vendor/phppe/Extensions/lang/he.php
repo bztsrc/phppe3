@@ -34,6 +34,7 @@ return array(
 	"Proprietary"=>"קניינית",
 	"Framework"=>"מִסגֶרֶת",
 	"Connections"=>"חיבורים",
+	"Themes"=>"ערכות נושא",
 	"Content"=>"תוֹכֶן",
 	"Security"=>"בִּטָחוֹן",
 	"Business"=>"עֵסֶק",

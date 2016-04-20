@@ -69,9 +69,9 @@
 <!if core.runlevel==2>Developer mode. Extra verbose level, warnings on screen<!/if>
 <!if core.runlevel==3>Debug mode. Insane verbose level, warnings on screen<!/if>
 </td></tr>
-<tr><td>Data domain:</td><td dir='ltr'><!if core.lib('DS').primary><span style="color:green;"><!=core.lib('DS').primary></span><!else><span style="color:blue;">files</span><!/if>
+<tr><td>Data domain:</td><td dir='ltr'><!if core.lib('ds').primary><span style="color:green;"><!=core.lib('ds').primary></span><!else><span style="color:blue;">files</span><!/if>
 </td><td class='comment'>
-<!if core.lib('DS').primary>Primary datasource<!else>Local files only in <i>data</i> directory<!/if>
+<!if core.lib('ds').primary>Primary datasource<!else>Local files only in <i>data</i> directory<!/if>
 </td></tr>
 <tr><td>Diagnostic mode:</td><td dir='ltr'>
 <!if core.diag><span style='color:red;'><!=L("Enabled")></span><!else><span style='color:green;'><!=L("Disabled")></span><!/if>

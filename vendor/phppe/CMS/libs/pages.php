@@ -1,4 +1,7 @@
 <?php
+/**
+ * minimal page model for ORM
+ */
 namespace PHPPE;
 use \PHPPE\Core as PHPPE;
 

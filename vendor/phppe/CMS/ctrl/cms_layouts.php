@@ -1,4 +1,7 @@
 <?php
+/**
+ * Controller for CMS layouts
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 

@@ -23,6 +23,9 @@
  * @brief quick and dirty tool to generate packages.json for tarballs and manage community packages
  */
 error_reporting(0);ini_set("display_errors",0);
+/**
+ * this code is ughly, you've been warned!
+ */
 
 // helpers
 function readpkg($pkg,$fn){$body="";if(function_exists("bzopen"))$f=bzopen($pkg,"r");if($f){$data=bzread($f,512);if(substr($data,0,13)!="composer.json" && substr($data,110,13)!="composer.json"){bzclose($f);$f=gzopen($pkg,"rb");$data=gzread($f,512);gzclose($f);$f=gzopen($pkg,"rb");$read="gzread";$close="gzclose";} else {bzclose($f);$f=bzopen($pkg,"rb");$read="bzread";$close="bzclose";}} else {$f=gzopen($pkg,"r");if($f){$data=gzread($f,512);gzclose($f);$f=gzopen($pkg,"rb");$read="gzread";$close="gzclose";}}if(!$f||!$data) return;$ustar=substr($data,257,5)=="ustar"?1:0;if(substr($data,0,13)!="composer.json"&&substr($data,110,13)!="composer.json") {$close($f);return;}while(!feof($f)&&$data){if($ustar){$data=$read($f,512);$size=octdec(substr($data,124,12));if($size>0)$body=$read($f,floor(($size+511)/512)*512);if(substr($data,0,strlen($fn))==$fn) break;$body="";} else {$data=$read($f,110);if(substr($data,0,6)!="070701") break;$size=floor((hexdec(substr($data,54,8))+3)/4)*4;$len=hexdec(substr($data,94,8));$len+=floor((110+$len+3)/4)*4-110-$len;$name=trim($read($f,$len));$body="";if($name=="TRAILER!!!") break;$body=$read($f,$size);if($name==$fn) break;}if(strlen($data)==0) break;}$close($f);return trim($body);}

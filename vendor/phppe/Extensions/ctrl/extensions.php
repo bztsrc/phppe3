@@ -1,4 +1,7 @@
 <?php
+/**
+ * Controller for Extension Manager
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 
@@ -23,6 +26,9 @@ class Extensions extends \PHPPE\Ctrl {
 		PHPPE::jslib( "extensions.js" );
 	}
 
+/**
+ * These actions are called via AJAX
+ */
 	function action_install( $item )
 	{
 		header( "Cache-Control: no-cache,no-store,private,must-revalidate" );

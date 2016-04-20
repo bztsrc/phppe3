@@ -142,6 +142,8 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   return s.join(dec);
 }
 
+var buggybrowser=navigator.userAgent.match(/chrome/i);
+
 function getpos(obj)
 {
     var x=0,y=0,a=obj;
@@ -320,13 +322,13 @@ function cal_open(obj,fo,fi)
 	    tb.appendChild(cal_table);
 	    cal_div=document.createElement('div');
 	    cal_div.setAttribute('class','cal_div');
-	    cal_div.setAttribute('style','position:absolute;top:0px;left:0px;z-index:0;display:none;');
+	    cal_div.setAttribute('style','position:'+(buggybrowser?'fixed':'absolute')+';top:0px;left:0px;z-index:0;display:none;');
 	    cal_year=fo[fi+':y'].cloneNode(true);
 	    cal_year.setAttribute('style','margin-right:4px;');
 	    cal_year.setAttribute('onchange','cal_redraw();');
 	    cal_month=fo[fi+':m'].cloneNode(true);
 	    cal_month.setAttribute('onchange','cal_redraw();');
-//	    tbl.setAttribute('style','width:'+w+'px;');
+	    tbl.setAttribute('style','width:'+w+'px;');
 	    tblimgp.innerHTML='◀';
 	    tbltdp.setAttribute('onclick','cal_prev();');
 	    tbltdp.setAttribute('style','cursor:pointer;text-align:center;font-weight:bold;font-size:'+Math.round(cal_cellwidth*0.6)+'px;');
@@ -460,7 +462,7 @@ function cal_redraw()
     td.setAttribute('onclick','cal_settomorrow();');
     td.innerHTML='<small>'+cal_tomorrow+'</small>';
     tr.appendChild(td);
-    cal_table.appendChild(tr);
+//    cal_table.appendChild(tr);
     if(cal_div.offsetLeft+cal_div.offsetWidth>document.body.offsetWidth-20)
       cal_div.style.left=(document.body.offsetWidth-20-cal_div.offsetWidth)+'px';
     if(cal_div.offsetTop+cal_div.offsetHeight>document.body.offsetHeight)
@@ -577,7 +579,8 @@ function popup_open(triggerobj,id,deltax,deltay,abs)
         x=Math.round(document.body.offsetWidth-20-obj.offsetWidth);
       if(y+obj.offsetHeight>document.body.offsetHeight)
         y=Math.round(document.body.offsetHeight-obj.offsetHeight);
-			obj.style.position='absolute';
+			//chrome suxx
+			obj.style.position=buggybrowser?'fixed':'absolute';
 			obj.style.top=y+'px';
 			obj.style.left=x+'px';
 		}

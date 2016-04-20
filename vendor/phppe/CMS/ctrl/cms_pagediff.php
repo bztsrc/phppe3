@@ -1,4 +1,7 @@
 <?php
+/**
+ * Controller for page difference
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 

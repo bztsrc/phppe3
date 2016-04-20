@@ -55,12 +55,13 @@ class GPIO
  * Register GPIO
  *
  * @param cfg not used
+ * @return true if GPIO interface found
  */
 	function init($cfg) {
-        if(!@is_dir(self::PATH_GPIO)) return false;
+		if(!@is_dir(self::PATH_GPIO)) return false;
 		PHPPE::lib("GPIO","Raspberry Pi GPIO");
 		self::$self=$this;
-        return true;
+		return true;
 	}
 
 /**
@@ -75,13 +76,13 @@ class GPIO
 		if(!empty($cfg['pins']))
 			$this->pins=PHPPE::str2arr($cfg['pins']);
 		if(empty($this->pins)) {
-            $rpi=self::RPiPCB();
+			$rpi=self::RPiPCB();
 			if ($rpi < 16)
 				//! original GPIO without DNC
-            	$this->pins = [ 2=>3,3=>5,4=>7,7=>26,8=>24,9=>21,10=>19,11=>23,17=>11,18=>12,22=>15,23=>16,24=>18,25=>22,27=>13 ];
-	        else
-    	        //! new GPIO layout (B+ J8)
-                $this->pins = [ 2=>3,3=>5,4=>7,5=>29,6=>31,7=>26,8=>24,9=>21,10=>19,11=>23,12=>32,13=>33,14=>8,15=>10,16=>36,17=>11,18=>12,19=>35,20=>38,21=>40,22=>15,23=>16,24=>18,25=>22,26=>37,27=>13 ];
+            			$this->pins = [ 2=>3,3=>5,4=>7,7=>26,8=>24,9=>21,10=>19,11=>23,17=>11,18=>12,22=>15,23=>16,24=>18,25=>22,27=>13 ];
+	    		else
+    	    			//! new GPIO layout (B+ J8)
+            			$this->pins = [ 2=>3,3=>5,4=>7,5=>29,6=>31,7=>26,8=>24,9=>21,10=>19,11=>23,12=>32,13=>33,14=>8,15=>10,16=>36,17=>11,18=>12,19=>35,20=>38,21=>40,22=>15,23=>16,24=>18,25=>22,26=>37,27=>13 ];
 		}
 	}
 
@@ -159,7 +160,7 @@ class GPIO
             self::export($pin);
             if(trim(@file_get_contents(self::PATH_GPIO.$pin.'/direction'))!=$dir){
                 @file_put_contents(self::PATH_GPIO.$pin.'/direction', $dir);
-    		@file_put_contents(self::PATH_GPIO.$pin.'/value',"1");
+    		//@file_put_contents(self::PATH_GPIO.$pin.'/value',"1");
 	    }
             self::$self->hdlr[$pin] = $dir;
         } catch(\Exception $e) {
@@ -193,7 +194,7 @@ class GPIO
         $pin=intval($pin);
         if(empty(self::$self->pins[$pin])||@self::$self->hdlr[$pin]!="out") throw new GPIOException("bad pin");
         @self::export($pin);
-        file_put_contents(self::PATH_GPIO.$pin.'/value',$value?"0":"1");
+        file_put_contents(self::PATH_GPIO.$pin.'/value',empty($value)?"0":"1");
     }
 
 /**

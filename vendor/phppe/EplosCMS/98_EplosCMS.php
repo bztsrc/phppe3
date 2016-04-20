@@ -29,6 +29,7 @@ use PHPPE\Core as PHPPE;
  * NOTE: normally you never extend a Model from App.
  *
  * we do it to allow route() to use the same class as controller
+ * this is a hack required by third party CMS
  */
 class EplosCMS extends App
 {

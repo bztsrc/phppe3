@@ -35,6 +35,7 @@ return array(
 	"Framework"=>"骨架",
 	"Connections"=>"连接",
 	"Content"=>"内容",
+	"Themes"=>"主题",
 	"Security"=>"安全",
 	"Business"=>"商业",
 	"Sales"=>"销售",

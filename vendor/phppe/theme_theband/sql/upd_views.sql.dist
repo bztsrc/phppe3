@@ -1,0 +1,1 @@
+REPLACE INTO `views` VALUES ('theband','The Band','','["theband.css"]','','','theband',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);

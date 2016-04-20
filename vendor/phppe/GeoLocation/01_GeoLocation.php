@@ -48,7 +48,7 @@ class GeoLocation
 			if(PHPPE::$core->app=="geo" && !empty($_REQUEST['pe_s']) && $_REQUEST['pe_s']==$_SESSION['pe_s']['geo.action']) {
 				foreach($_GET as $k=>$v)
 					if($k!="pe_s")
-						$_SESSION['pe_geoclient'][$k]=$v;
+						$_SESSION['pe_geo'][$k]=$v;
 				//! mark that we have a high accuracy latitude and longitude values from client
 				$_SESSION['pe_geoclient']=1;
 				die("OK");

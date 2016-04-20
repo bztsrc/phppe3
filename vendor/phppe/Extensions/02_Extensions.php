@@ -28,6 +28,11 @@ use PHPPE\Core as PHPPE;
 class Extensions {
 	public $version="1.0.0";
 
+/**
+ * Initialize module
+ *
+ * @param configuration array
+ */
 	function init ($cfg)
 	{
 		//register module and menu
@@ -135,13 +140,17 @@ class Extensions {
 
 		if( empty($pkgs) )
 		{
+			PHPPE::log('D',"getpkgs cache miss, reading repositories","extensions");
 			$p=array();
-			$list = [ "http://phppe.org/", "https://raw.githubusercontent.com/bztsrc/phppe3/master/" ];
+			$list = [ "https://raw.githubusercontent.com/bztsrc/phppe3/master/" ];
 			if(!empty(PHPPE::$core->repos)) $list=array_merge(PHPPE::$core->repos,$list);
+//fallback to local repo for testing. REMOVE IT!!!
+$list=["data/.."];
 			foreach($list as $r)
 			{
-				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json?lang=".PHPPE::$client->lang;
+				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json".(substr($r,4)=="http"?"?lang=".PHPPE::$client->lang:"");
 				$d2 = file_get_contents($url);
+				PHPPE::log('D',"Adding repo: ".$url." (".strlen($d2)." bytes)","extensions");
 				if(empty($d2)) $d2=PHPPE::get($url);
 				$d = json_decode($d2,true,8);
 				if(json_last_error()==4)
@@ -190,7 +199,7 @@ class Extensions {
 				}
 			}
 //			usort($p,function($a,$b){ if($a['category']==$b['category'])return 0;return $a['category']>=$b['category']; });
-			//fuck, this fails...
+			//f*ck, this fails with memory error...
 			//$pkgs=json_encode($p);
 			$pkgs=""; foreach($p as $v) $pkgs.=($pkgs?",":"").json_encode($v);
 			if( !empty($p) ) {

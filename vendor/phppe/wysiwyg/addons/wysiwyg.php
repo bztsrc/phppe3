@@ -1,4 +1,7 @@
 <?php
+/**
+ * What You See is What You Get editor Addon
+ */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as PHPPE;
 
@@ -8,10 +11,12 @@ class wysiwyg extends \PHPPE\AddOn
 	{
 		PHPPE::addon("wysiwyg", "WYSiWYG", "", "*");
 	}
+
 	function show(  )
 	{
-		return PHPPE::_t(substr($this->name,0,6)=="frame."?PHPPE::getval("frame")[substr($this->name,6)]:$this->value);
+		return PHPPE::_t(substr($this->name,0,6)=="frame."?@PHPPE::getval("frame")[substr($this->name,6)]:$this->value);
 	}
+
 	function edit(  )
 	{
 		PHPPE::jslib("wysiwyg.js", "wysiwyg_init();");

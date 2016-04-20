@@ -38,11 +38,14 @@ class DBA
  * @param cfg not used
  */
 	function init($cfg) {
+		//register module
 		PHPPE::lib("DBA","DataBase Administrator");
+		//add to panel menu
 		PHPPE::menu(L("Database"),"dba");
 		PHPPE::menu(L("Users"),"users");
+		//save singleton instance
 		self::$self=$this;
-        return true;
+    		return true;
 	}
 
 /**

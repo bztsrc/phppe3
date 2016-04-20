@@ -20,7 +20,7 @@
  * @file vendor/phppe/LDAP/01_LDAP.php
  * @author bzt@phppe.org
  * @date 1 Jan 2016
- * @brief Provides LDAP or Active Directorz authentication
+ * @brief Provides LDAP or Active Directory authentication
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;
@@ -40,7 +40,7 @@ class LDAP
 	function init($cfg) {
 		PHPPE::lib("LDAP","LDAP Authentication");
 		self::$self=$this;
-        return true;
+    		return true;
 	}
 
 /**

@@ -1,6 +1,9 @@
 <?php
 use PHPPE\Core as PHPPE;
 
+//fix float point decimal separator
+setlocale(LC_NUMERIC, 'en_US.utf-8');
+
 // data converter tests
 
 //data for tests

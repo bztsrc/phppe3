@@ -25,14 +25,14 @@
 namespace PHPPE;
 
 //validation defaults to lower and uppercase letters
-//plus number, at least 6 characters
+//plus numbers, at least 6 characters
 
 //this function can also be overridden in app/libs/pass.php
 
 /**
- * value validator, returns boolean and a failure reason
+ * value validator, returns boolean and a failure reason string in an array
  *
- * @param name of value to valudate, for error reporting
+ * @param name of value to validate, for error reporting
  * @param reference to value
  * @param arguments
  * @param attributes

@@ -38,7 +38,7 @@ class Users extends User {
 	static protected $_table = "users";
 
 /**
- * Register DBA
+ * Register Users
  *
  * @param cfg not used
  */
@@ -47,7 +47,7 @@ class Users extends User {
 		//! if DBA Extension is not installed
 		if(!PHPPE::isInst("DBA"))
 			PHPPE::menu(L("Users"),"usrs");
-        return true;
+		return true;
 	}
 
 	function login($name,$pass) {

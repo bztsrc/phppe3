@@ -20,7 +20,7 @@
  * @file vendor/phppe/CookieAlert/01_CookieAlert.php
  * @author bzt@phppe.org
  * @date 1 Jan 2016
- * @brief Chart generator
+ * @brief Cookie alert an example JavaScript module
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;
@@ -37,10 +37,12 @@ class CookieAlert
  * @param cfg configuration
  */
 	function init($cfg) {
+		//register module
 		PHPPE::lib("CookieAlert","Cookie Alert");
+		//load assets
 		PHPPE::jslib("cookiealert.js","cookiealert_init(".json_encode($cfg).");");
 		PHPPE::css("cookiealert.css");
-        return true;
+    		return true;
 	}
 
 }

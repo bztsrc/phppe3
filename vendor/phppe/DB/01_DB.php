@@ -20,7 +20,7 @@
  * @file vendor/phppe/DB/01_DB.php
  * @author bzt@phppe.org
  * @date 1 Jan 2016
- * @brief A very basic SQL Query Builder
+ * @brief A very basic SQL Query Builder, included in Pack
  */
 namespace PHPPE;
 use PHPPE\Core as PHPPE;

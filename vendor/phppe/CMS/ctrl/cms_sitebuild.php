@@ -1,4 +1,7 @@
 <?php
+/**
+ * Sitebuild importer controller
+ */
 namespace PHPPE\Ctrl;
 use PHPPE\Core as PHPPE;
 

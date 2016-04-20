@@ -3,13 +3,13 @@ PHP Portal Engine - single file framework
 
 PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only 64k in size, so small, that it fits on your clipboard!
 Unlike other existing OpenSource PHP frameworks, PHPPE was written with security, MVC, [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
-As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and makes your life easier.
+As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and make your life easier.
 It's not bloated, and with simplicity cames stability and high performance.
 
 Of course one single file is very limited, so here's the PHPPE Pack (~100KiB) to save the day and give you an easy start.
 Includes normalize.css and JQuery2 to standardize views; eye candies like image zoomer, pop-up divs; SQL Query Builder, CSV, RSS and JSON output, Email interface and even more!
 
-For full CMS capability install the Content Editor too with PHPPE CMS (70KiB), because PHPPE Core on it's own only serves contents.
+For full CMS capability install the Content Editor too with PHPPE CMS (70KiB), because PHPPE Core on it's own serves contents only.
 
 See documentation for more (phppe3.html above) or visit the site [http://phppe.org/](http://phppe.org).
 
@@ -129,7 +129,7 @@ You can also use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to in
 
     $ composer create-project "bztsrc/phppe3:dev-master"
 
-Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
+Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6, 7.0; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
 
 License
 -------

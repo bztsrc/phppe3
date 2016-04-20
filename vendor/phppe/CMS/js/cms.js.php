@@ -1,4 +1,7 @@
 <?php
+/**
+ * CMS JavaScript functions. PHP only used to get list of Addons
+ */
 use PHPPE\Core as PHPPE;
 
 $addons=PHPPE::addon();
@@ -104,7 +107,7 @@ function cms_edit(o,t,i,c)
     var nw=i==null||t.substr(t.length-4)=="list"?Math.round(ww*0.6):w;
     var nh=i==null&&h<100||t.substr(t.length-4)=="list"?Math.round(wh*0.6):(h+26+(t=="wysiwyg"?21:0));
     if(ny+nh>wh) ny=wh-nh; if(ny<8) ny=8;
-    cms_editdiv.src='cms/'+(i!=null&&t!="pagepublish"?'param/'+i:t)+'?w='+w+'&h='+h;
+    cms_editdiv.src='cms/'+(i!=null&&t!="pagepublish"?'param/'+i:t)+'?w='+w+'&h='+h+'&<?php echo(session_name()."=".session_id())?>';
     cms_editdiv.setAttribute('data-zoom-nodecor',true);
     cms_editdiv.setAttribute('data-zoom-x',nx);
     cms_editdiv.setAttribute('data-zoom-y',ny);

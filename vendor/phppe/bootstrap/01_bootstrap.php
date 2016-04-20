@@ -27,6 +27,9 @@ use PHPPE\Core as PHPPE;
 
 class Bootstrap {
 
+/**
+ * Initialize
+ */
 	function init($cfg) {
 		//register
 		PHPPE::lib("bootstrap","Bootstrap");
@@ -44,6 +47,9 @@ class Bootstrap {
 		return true;
 	}
 
+/**
+ * Diagnostics hook
+ */
 	function diag()
 	{
 		//patch: fix font paths for good

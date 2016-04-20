@@ -28,8 +28,8 @@ use PHPPE\Core as PHPPE;
 
 //! if not autoloaded so far, use a fallback version
 //! of the ToolKit packed with this Extension
-if(!class_exists("SforceBaseClient")) {
-	//! the guys at SF have never heard of relative paths...
+if(!class_exists("SforceEnterpriseClient")) {
+	//! those guys at SF have never heard of relative paths...
 	chdir("vendor/phppe/SF/libs");
 	require_once("SforceEnterpriseClient.php");
 	chdir("../../../..");

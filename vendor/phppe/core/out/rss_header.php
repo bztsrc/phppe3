@@ -1,4 +1,8 @@
 <?php
+/**
+ * Generate RSS header
+ */
+
 echo("<"."?xml version=\"1.0\" encoding=\"utf-8\" ?".">\n");
 if(file_exists("public/css/style.xsl"))echo("<"."?xml-stylesheet title=\"XSL_formatting\" type=\"text/xsl\" href=\"".url("/")."css/style.xsl\"?".">\n");
 $app = \PHPPE\Core::getval("app");
