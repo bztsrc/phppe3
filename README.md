@@ -124,12 +124,10 @@ or
 
 This will provide you utilities like
 
-    ``` sh
     $ php public/index.php mkrepo
     $ php public/index.php create model myExtension myModel
     $ php public/index.php create controller myExtension myController
     $ php public/index.php create route myExtension myurl myController myAction
-    ```
 
 You can use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole developer repository (including tarballs):
 
