@@ -68,7 +68,7 @@
 
     "require": {
         "php": ">=7.0"
-    }
+    },
     
     "suggests": {
         "phppe/bootstrap": "*",
