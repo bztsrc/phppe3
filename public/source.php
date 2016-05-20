@@ -1519,6 +1519,10 @@ namespace PHPPE {
 			self::$hdr["meta"][ "viewport" ] = "width=device-width,initial-scale=1.0";
 			if(!empty(Core::$core->link) && is_array(Core::$core->link))
 				self::$hdr["link"]=Core::$core->link;
+			//! add core.js with language code in name. This allows separate client side caches
+			$js="vendor/phppe/Core/js/core.js.php";
+			if(file_exists($js))
+				self::$hdr["jslib"][ "core.".Core::$client->lang.".js" ] = "01$js";
 			self::$tc = 0;
 		}
 
@@ -1565,17 +1569,19 @@ namespace PHPPE {
  *
  * @param name of the js library
  * @param if it needs to be initialized, the code to do that
+ * @param priority
  */
-		static function jslib($l = "", $i = "")
+		static function jslib($l = "", $i = "", $p=9)
 		{
 			if(empty($l))
 				return self::$hdr["jslib"];
+			if($p<0 || $p>99) $p=99;
 			//! add a new javascript library to output
 			$a = View::dir(). "/js/" . @explode("?", $l)[ 0 ];
 			if(! file_exists($a))
 				$a .= ".php";
 			if(! isset(self::$hdr["jslib"][ $l ]) && file_exists($a))
-				self::$hdr["jslib"][ $l ] = realpath($a);
+				self::$hdr["jslib"][ $l ] = sprintf("%02d",$p).realpath($a);
 			//! also register init hook and call it on onload event
 			$i = trim($i);
 			if(! empty($i) && (empty(self::$hdr["js"][ "init()" ]) || strpos(self::$hdr["js"][ "init()" ], $i) === false)) {
@@ -1671,7 +1677,9 @@ namespace PHPPE {
 				if(preg_match("/<!app>/ims", $d, $m, PREG_OFFSET_CAPTURE))
 					$T = substr($d, 0, $m[ 0 ][ 1 ]) . $T . substr($d, $m[ 0 ][ 1 ] + 6);
 			}
-			//save to cache
+			//! sort jslibs to applu priority
+			asort(self::$hdr["jslib"],SORT_FLAG_CASE|SORT_STRING);
+			//! save to cache
 			if(!empty($T) && !empty($N))
 				Cache::set($N, [
 					"m" => self::$hdr["meta"],
@@ -2297,7 +2305,7 @@ namespace PHPPE {
 								//! skip dynamic assets (they use a different caching mechanism)
 								foreach(self::$hdr["jslib"] as $u => $v)
 									if($v && substr($v, - 3) != "php")
-										$da .= Assets::minify(file_get_contents($v), "js") . "\n";
+										$da .= Assets::minify(file_get_contents(substr($v,0,2)), "js") . "\n";
 								Cache::set("c_$n", [ "m" => "text/javascript", "d" => $da ]);
 								// @codeCoverageIgnoreEnd
 							}
@@ -2316,7 +2324,7 @@ namespace PHPPE {
 					}
 					//load PHPPE\Users' JS library if it's not aggregated already and PHPPE panel is shown
 					$c = "users.js";
-					$i=file_exists("vendor/phppe/Users/js/" . $c . ".php");
+					$i=file_exists("vendor/phppe/Core/js/" . $c . ".php");
 					if($P && ! isset(self::$hdr["jslib"][ $c ]) && $i) $O .= "$d$a$c'>$e";
 					//! add javascript functions
 					$c = self::$hdr["js"];
@@ -2486,7 +2494,7 @@ namespace PHPPE {
 									$t = json_decode($p[ $c ],true);
 									if(is_array($t))
 										foreach($t as $v)
-											self::$hdr[$c][ basename($v) ] = $v;
+											self::$hdr[$c][ basename($v) ] = ($c=="jslib"?"99":"").$v;
 								}
 								$t = $p[ 'data' ];
 								break;

@@ -19,9 +19,9 @@
 
 	"suggest": {
 		"phppe/bootstrap": "*",
-		"phppe/ClassMap": "*",
-		"phppe/DataLibrary": "*",
-		"phppe/DBA": "*",
+		"phppe/CMS": "*",
+		"phppe/Extensions": "*",
+		"phppe/Developer": "*",
 		"phppe/GPIO": "*"
 	},
 

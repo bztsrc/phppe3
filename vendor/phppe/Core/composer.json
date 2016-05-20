@@ -68,6 +68,13 @@
 
     "require": {
         "php": ">=7.0"
+    }
+    
+    "suggests": {
+        "phppe/bootstrap": "*",
+        "phppe/CMS": "*",
+        "phppe/Extensions": "*",
+        "phppe/Developer": "*"
     },
 
 	"support": {
