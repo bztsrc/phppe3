@@ -1,0 +1,7 @@
+{
+	"desc_en": "SQL update",
+	"args": [ "extension" ],
+	"file": "vendor/phppe/@EXTENSION@/sql/upd_@@DATETIME.sql"
+}
+ALTER TABLE...
+UPDATE...

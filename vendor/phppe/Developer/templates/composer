@@ -1,0 +1,39 @@
+{
+	"desc_en": "create composer.json package information",
+	"args": [ "extension" ],
+	"file": "vendor/phppe/@EXTENSION@/composer.json"
+}
+{
+	"name": "phppe/@EXTENSION@",
+	"name_en": "@Extension@",
+	"name_hu": "",
+	"name_ru": "",
+	"name_de": "",
+	"name_es": "",
+	"name_fr": "",
+	"name_ch": "",
+	"name_he": "",
+	"name_ar": "",
+
+	"description": "English description for @Extension@",
+	"description_hu": "",
+	"description_ru": "",
+	"description_de": "",
+	"description_es": "",
+	"description_fr": "",
+	"description_ch": "",
+	"description_he": "",
+	"description_ar": "",
+
+	"version": "0.0.1",
+	"version_normalized": "0.0.1.0",
+
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe/core": "3.*"
+	},
+
+	"maintainer": { "name": "@@USERNAME" }
+}

@@ -1,0 +1,1 @@
+<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id><!field pass pass><!field submit></form>

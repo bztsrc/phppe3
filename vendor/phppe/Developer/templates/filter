@@ -1,0 +1,20 @@
+{
+	"desc_en": "url filter template",
+	"args": [ "extension", "class" ],
+	"file": "vendor/phppe/@EXTENSION@/libs/@CLASS@.php"
+}
+<?php
+@@BRIEF
+
+namespace PHPPE\Filter;
+use PHPPE\Core as Core;
+use PHPPE\View as View;
+use PHPPE\Http as Http;
+
+class @CLASS@ extends \PHPPE\Filter
+{
+	public function filter()
+	{
+		return true;
+	}
+}

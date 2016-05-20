@@ -1,0 +1,11 @@
+{
+	"desc_en": "configuration file",
+	"args": [ "extension" ],
+	"file": "vendor/phppe/@EXTENSION@/config.php"
+}
+<?php
+@@BRIEF
+
+return [
+    "key" => "value",
+];

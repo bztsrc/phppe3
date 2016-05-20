@@ -1,0 +1,22 @@
+{
+	"desc_en": "action template",
+	"args": [ "extension", "name" ],
+	"file": "vendor/phppe/@EXTENSION@/ctrl/@name@.php"
+}
+<?php
+@@BRIEF
+
+namespace PHPPE\Ctrl;
+use PHPPE\Core as Core;
+use PHPPE\View as View;
+use PHPPE\Http as Http;
+
+class @Name@
+{
+/**
+ * default action
+ */
+	function action($item)
+	{
+	}
+}

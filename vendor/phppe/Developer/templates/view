@@ -1,0 +1,6 @@
+{
+	"desc_en": "create a view",
+	"args": [ "extension", "name" ],
+	"file": "vendor/phppe/@EXTENSION@/view/@name@.tpl"
+}
+<h1>@Extension@ / @NAME@</h1>

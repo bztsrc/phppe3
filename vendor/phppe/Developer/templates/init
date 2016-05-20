@@ -1,0 +1,15 @@
+{
+	"desc_en": "extension initialization",
+	"args": [ "extension" ],
+	"file": "vendor/phppe/@EXTENSION@/init.php"
+}
+<?php
+@@LICENSE
+//! include your libraries here
+//include_once(__DIR__."/libs/@EXTENSION@.php");
+
+//! add your routes here
+//\PHPPE\Http::route("@extension@", "@Extension@Controller", "action");
+
+//! return your service class here
+//return new @EXTENSION@;
