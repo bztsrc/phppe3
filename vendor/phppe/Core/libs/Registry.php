@@ -18,7 +18,7 @@
  *   <http://www.gnu.org/licenses/>
  *
  * @file vendor/phppe/Core/libs/Registry.php
- * @author bzt@phppe.org
+ * @author bzt
  * @date 1 Jan 2016
  * @brief key-value registry for Extension configuration, included in Pack
  */

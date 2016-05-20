@@ -18,7 +18,7 @@
  *   <http://www.gnu.org/licenses/>
  *
  * @file vendor/phppe/Developer/libs/Templates.php
- * @author bzt@phppe.org
+ * @author bzt
  * @date 1 Jan 2016
  * @brief Utility to create php files from templates
  */

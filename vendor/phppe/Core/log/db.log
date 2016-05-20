@@ -1,0 +1,120 @@
+2016-05-20T13:23:02Z-A-DB: pages created.
+2016-05-20T13:23:02Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T13:23:04Z-A-DB: views created.
+2016-05-20T13:23:06Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T13:23:06Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T13:23:06Z-A-DB: test created.
+2016-05-20T13:23:06Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T13:23:06Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T13:23:06Z-A-DB: test created.
+2016-05-20T13:23:06Z-A-DB: views created.
+2016-05-20T16:41:58Z-A-DB: pages created.
+2016-05-20T16:41:58Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:42:01Z-A-DB: views created.
+2016-05-20T16:42:02Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:42:02Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:42:02Z-A-DB: test created.
+2016-05-20T16:42:02Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:42:02Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:42:02Z-A-DB: test created.
+2016-05-20T16:42:02Z-A-DB: views created.
+2016-05-20T16:42:47Z-A-DB: pages created.
+2016-05-20T16:42:47Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:42:49Z-A-DB: views created.
+2016-05-20T16:42:50Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:42:50Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:42:50Z-A-DB: test created.
+2016-05-20T16:42:50Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:42:50Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:42:50Z-A-DB: test created.
+2016-05-20T16:42:50Z-A-DB: views created.
+2016-05-20T16:43:11Z-A-DB: pages created.
+2016-05-20T16:43:11Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:43:13Z-A-DB: views created.
+2016-05-20T16:43:14Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:43:14Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:43:14Z-A-DB: test created.
+2016-05-20T16:43:14Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:43:14Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:43:14Z-A-DB: test created.
+2016-05-20T16:43:14Z-A-DB: views created.
+2016-05-20T16:43:47Z-A-DB: pages created.
+2016-05-20T16:43:47Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:43:49Z-A-DB: views created.
+2016-05-20T16:43:50Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:43:50Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:43:50Z-A-DB: test created.
+2016-05-20T16:43:50Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:43:50Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:43:50Z-A-DB: test created.
+2016-05-20T16:43:50Z-A-DB: views created.
+2016-05-20T16:44:16Z-A-DB: pages created.
+2016-05-20T16:44:16Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:44:18Z-A-DB: views created.
+2016-05-20T16:44:20Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:44:20Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:44:20Z-A-DB: test created.
+2016-05-20T16:44:20Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:44:20Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:44:20Z-A-DB: test created.
+2016-05-20T16:44:20Z-A-DB: views created.
+2016-05-20T16:44:51Z-A-DB: pages created.
+2016-05-20T16:44:51Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:44:53Z-A-DB: views created.
+2016-05-20T16:44:54Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:44:54Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:44:54Z-A-DB: test created.
+2016-05-20T16:44:54Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:44:54Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:44:54Z-A-DB: test created.
+2016-05-20T16:44:54Z-A-DB: views created.
+2016-05-20T16:46:22Z-A-DB: pages created.
+2016-05-20T16:46:22Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:46:24Z-A-DB: views created.
+2016-05-20T16:46:25Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:46:25Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:46:25Z-A-DB: test created.
+2016-05-20T16:46:25Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:46:25Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:46:25Z-A-DB: test created.
+2016-05-20T16:46:26Z-A-DB: views created.
+2016-05-20T16:47:18Z-A-DB: pages created.
+2016-05-20T16:47:18Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:47:20Z-A-DB: views created.
+2016-05-20T16:47:21Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:47:21Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:47:21Z-A-DB: test created.
+2016-05-20T16:47:21Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:47:21Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:47:21Z-A-DB: test created.
+2016-05-20T16:47:21Z-A-DB: views created.
+2016-05-20T16:48:07Z-A-DB: pages created.
+2016-05-20T16:48:07Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:48:09Z-A-DB: views created.
+2016-05-20T16:48:10Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:48:10Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:48:10Z-A-DB: test created.
+2016-05-20T16:48:10Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:48:10Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:48:10Z-A-DB: test created.
+2016-05-20T16:48:10Z-A-DB: views created.
+2016-05-20T16:48:40Z-A-DB: pages created.
+2016-05-20T16:48:40Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:48:42Z-A-DB: views created.
+2016-05-20T16:48:43Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:48:43Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:48:43Z-A-DB: test created.
+2016-05-20T16:48:43Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:48:43Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:48:43Z-A-DB: test created.
+2016-05-20T16:48:43Z-A-DB: views created.
+2016-05-20T16:49:07Z-A-DB: pages created.
+2016-05-20T16:49:07Z-E-DB: SELECT nosuchcolumn; [] SQLSTATE[HY000]: General error: 1 no such column: nosuchcolumn
+2016-05-20T16:49:09Z-A-DB: views created.
+2016-05-20T16:49:11Z-E-DB: SQLSTATE[HY000]: General error: 1 no such table: nosuchtable
+2016-05-20T16:49:11Z-E-DB: creating badtable at line:1 SQLSTATE[HY000]: General error: 1 near "name": syntax error
+2016-05-20T16:49:11Z-A-DB: test created.
+2016-05-20T16:49:11Z-E-DB: SELECT nocolumn FROM test; [] SQLSTATE[HY000]: General error: 1 no such column: nocolumn
+2016-05-20T16:49:11Z-E-DB: Unable to initialize: nodrv:, could not find driver
+2016-05-20T16:49:11Z-A-DB: test created.
+2016-05-20T16:49:11Z-A-DB: views created.

@@ -18,7 +18,7 @@
  *   <http://www.gnu.org/licenses/>
  *
  * @file vendor/phppe/Developer/init.php
- * @author bzt@phppe.org
+ * @author bzt
  * @date 1 Jan 2016
  * @brief Initialize Developer extension
  */

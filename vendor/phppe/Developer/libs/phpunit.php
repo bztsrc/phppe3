@@ -18,7 +18,7 @@
  *   <http://www.gnu.org/licenses/>
  *
  * @file vendor/phppe/Developer/libs/phpunit.php
- * @author bzt@phppe.org
+ * @author bzt
  * @date 1 Jan 2016
  * @brief A very simple PHPUnit implementation
  */

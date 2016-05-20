@@ -1,0 +1,70 @@
+[20-May-2016 14:06:16 Europe/London] PHP Notice:  Undefined variable: file in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 116
+[20-May-2016 14:06:16 Europe/London] PHP Stack trace:
+[20-May-2016 14:06:16 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 14:06:16 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 14:06:16 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 14:06:16 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 14:06:16 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:10:07 Europe/London] PHP Notice:  Undefined index: args in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 93
+[20-May-2016 15:10:07 Europe/London] PHP Stack trace:
+[20-May-2016 15:10:07 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:10:07 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:10:07 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:10:07 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:10:07 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP Notice:  Undefined variable: a in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 84
+[20-May-2016 15:21:05 Europe/London] PHP Stack trace:
+[20-May-2016 15:21:05 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:21:05 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   6. Templates::loadVars() /var/www/phppe/vendor/phppe/Developer/libs/Templates.php:110
+[20-May-2016 15:21:05 Europe/London] PHP Notice:  Undefined variable: k in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 84
+[20-May-2016 15:21:05 Europe/London] PHP Stack trace:
+[20-May-2016 15:21:05 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:21:05 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   6. Templates::loadVars() /var/www/phppe/vendor/phppe/Developer/libs/Templates.php:110
+[20-May-2016 15:21:05 Europe/London] PHP Notice:  Undefined variable: a in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 85
+[20-May-2016 15:21:05 Europe/London] PHP Stack trace:
+[20-May-2016 15:21:05 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:21:05 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   6. Templates::loadVars() /var/www/phppe/vendor/phppe/Developer/libs/Templates.php:110
+[20-May-2016 15:21:05 Europe/London] PHP Notice:  Undefined variable: k in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 85
+[20-May-2016 15:21:05 Europe/London] PHP Stack trace:
+[20-May-2016 15:21:05 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:21:05 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   6. Templates::loadVars() /var/www/phppe/vendor/phppe/Developer/libs/Templates.php:110
+[20-May-2016 15:21:05 Europe/London] PHP Notice:  Undefined variable: a in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 86
+[20-May-2016 15:21:05 Europe/London] PHP Stack trace:
+[20-May-2016 15:21:05 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:21:05 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   6. Templates::loadVars() /var/www/phppe/vendor/phppe/Developer/libs/Templates.php:110
+[20-May-2016 15:21:05 Europe/London] PHP Notice:  Undefined variable: k in /var/www/phppe/vendor/phppe/Developer/libs/Templates.php on line 86
+[20-May-2016 15:21:05 Europe/London] PHP Stack trace:
+[20-May-2016 15:21:05 Europe/London] PHP   1. {main}() /var/www/phppe/public/index.php:0
+[20-May-2016 15:21:05 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   4. PHPPE\Ctrl\Developer->__construct() /var/www/phppe/public/index.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   5. Templates::create() /var/www/phppe/vendor/phppe/Developer/ctrl/create.php:22
+[20-May-2016 15:21:05 Europe/London] PHP   6. Templates::loadVars() /var/www/phppe/vendor/phppe/Developer/libs/Templates.php:110
+[20-May-2016 17:42:03 Europe/London] PHP Warning:  fopen(/var/www/phppe/public/coverage): failed to open stream: Is a directory in phar:///usr/local/bin/phpunit/phpunit/Util/Printer.php on line 65
+[20-May-2016 17:42:03 Europe/London] PHP Stack trace:
+[20-May-2016 17:42:03 Europe/London] PHP   1. {main}() /usr/local/bin/phpunit:0
+[20-May-2016 17:42:03 Europe/London] PHP   2. PHPUnit_TextUI_Command::main() /usr/local/bin/phpunit:525
+[20-May-2016 17:42:03 Europe/London] PHP   3. PHPUnit_TextUI_Command->run() phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php:110
+[20-May-2016 17:42:03 Europe/London] PHP   4. PHPUnit_TextUI_TestRunner->doRun() phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php:159
+[20-May-2016 17:42:03 Europe/London] PHP   5. PHPUnit_Util_Printer->__construct() phar:///usr/local/bin/phpunit/phpunit/TextUI/TestRunner.php:535
+[20-May-2016 17:42:03 Europe/London] PHP   6. fopen() phar:///usr/local/bin/phpunit/phpunit/Util/Printer.php:65

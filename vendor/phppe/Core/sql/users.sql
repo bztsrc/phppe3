@@ -15,4 +15,4 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `name` (`name`)
 );
-INSERT INTO users VALUES (0,'bzt','$2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO','{"siteadm":1}','bzt@phppe.org',0,1,CURRENT_TIMESTAMP,0,0,'{"remote":{"host":"localhost","user":"bzt"},"homepage":"http://phppe.org"}');
+INSERT INTO users VALUES (0,'bzt','$2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO','{"siteadm":1}','',0,1,CURRENT_TIMESTAMP,0,0,'{"remote":{"host":"localhost","user":"bzt"}}');

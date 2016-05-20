@@ -21,7 +21,7 @@
  */
 /**
  * @file public/source.php
- * @author bzt@phppe.org
+ * @author bzt
  * @date 1 Jan 2016
  * @brief PHPPE micro-framework's Core
  * @see https://raw.githubusercontent.com/bztsrc/phppe3/master/public/source.php
@@ -2164,6 +2164,7 @@ namespace PHPPE {
 						if(! empty(Cache::$mc) && empty(Core::$core->noaggr)) {
 							$n = sha1($N . "_$e");
 							if(empty(Cache::get("c_$n"))) {
+								// @codeCoverageIgnoreStart
 								$da = "";
 								//! skip dynamic assets (they use a different caching mechanism)
 								foreach(self::$hdr["css"] as $u => $v)
@@ -2171,6 +2172,7 @@ namespace PHPPE {
 										$da .= Assets::minify(file_get_contents($v), $e) . "\n";
 								//! save result to cache
 								Cache::set("c_$n", [ "m" => "text/$e", "d" => $da ]);
+								// @codeCoverageIgnoreEnd
 							}
 							$O .= sprintf($d, $I."?cache=$n");
 							//! add dynamic stylesheets, they were left out from aggregated cache above
@@ -2290,12 +2292,14 @@ namespace PHPPE {
 						if(! empty(Cache::$mc) && empty(Core::$core->noaggr)) {
 							$n = sha1($N . "_js");
 							if(empty(Cache::get("c_$n"))) {
+								// @codeCoverageIgnoreStart
 								$da = "";
 								//! skip dynamic assets (they use a different caching mechanism)
 								foreach(self::$hdr["jslib"] as $u => $v)
 									if($v && substr($v, - 3) != "php")
 										$da .= Assets::minify(file_get_contents($v), "js") . "\n";
 								Cache::set("c_$n", [ "m" => "text/javascript", "d" => $da ]);
+								// @codeCoverageIgnoreEnd
 							}
 							$O .= "$d src='${I}js/?cache=$n'>$e";
 							//! add dynamic javascripts, they were left out from aggregated cache above

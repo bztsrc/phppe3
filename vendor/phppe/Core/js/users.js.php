@@ -1,6 +1,6 @@
 /*
  *   PHP Portal Engine v3.0.0
- *   http://phppe.org/
+ *   https://github.com/bztsrc/phppe3/
  *
  *   Copyright LGPL 2016 bzt
  *
