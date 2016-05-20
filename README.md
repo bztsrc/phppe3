@@ -1,52 +1,47 @@
 PHP Portal Engine - single file framework
 =========================================
 
-PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only 64k in size, so small, that it fits on your clipboard!
+PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only a few kilobytes in size, so small, that it fits on your clipboard!
 Unlike other existing OpenSource PHP frameworks, PHPPE was written with security, MVC, [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
 As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and make your life easier.
 It's not bloated, and with simplicity cames stability and high performance.
 
-Of course one single file is very limited, so here's the PHPPE Pack (~100KiB) to save the day and give you an easy start.
-Includes normalize.css and JQuery2 to standardize views; eye candies like image zoomer, pop-up divs; SQL Query Builder, CSV, RSS and JSON output, Email interface and even more!
+Of course one single file is limited, so here's the PHPPE Pack (~100KiB) to save the day and give you an easy start.
 
-For full CMS capability install the Content Editor too with PHPPE CMS (70KiB), because PHPPE Core on it's own serves contents only.
-
-See documentation for more (phppe3.html above) or visit the site [http://phppe.org/](http://phppe.org).
+For full CMS capability you'll also need the Content Editor with PHPPE CMS (70KiB), because PHPPE Core on it's own only serves contents.
 
 Features
 --------
-This 64k bytes of PHP code will give you:
+This 80k bytes of PHP code will give you:
 - Stand alone environment, optional dependencies only. Single file deployment.
-- Very low footprint, can run on a [Raspberry Pi](https://www.raspberrypi.org/)
 - [PHP Composer](https://getcomposer.org/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
+- Very low footprint, can run on a [Raspberry Pi](https://www.raspberrypi.org/)
 - Has modular, easy to expand structure
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
 - Clever, regular expression capable and filterable, standard URL to class::method routing mechanism
 - PDO driven Database abstraction layer with transparent on demand scheme installation
-- Convient and easy to use controller interface
+- Convient and easy to use controller and ORM model interface
 - Fast and safe templater system for views
-- Powerful caching with integrated [memcached](http://memcached.org/) support (can use others as well with Extensions)
+- Powerful caching with integrated [memcached](http://memcached.org/) and file cache support
 - Automatic form data validation and security checks
 - Access control lists
 - Multilanguage support
 - Logging to files as well as to syslog
-- Library for common tasks with exactly 42 functions :-)
-- Monitoring support (nagios can get status info and benchmark statistics easily from it's output)
+- Monitoring support (nagios can get performance and status info easily from it's output)
 - Thumbnail generation and image manipulation support (with libGD)
 - Built-in Content Server for CMS support
-- WYSIWYG web-based interface (editor available as an Extension)
 - Uses View layer to detect Models (flexibility you've never seen)
 
 Requirements
 ------------
 
-At least PHP 5.5 (5.6 recommended). If you install the full environment (with Pack, CMS and Extensions), no more than 768k disk space needed.
+At least PHP 7.0. If you install the full environment (with Pack, CMS, Extensions and Developer), no more than 768k disk space needed.
 
 Installation with Packagist
 ---------------------------
-1. Create a new project
+1. Create a new project that ships production version of the PHPPE framework with
 
     ``` sh
     $ composer create-project "bztsrc/phppe3"
@@ -56,7 +51,8 @@ Installation with Packagist
 Installation without Packagist
 ------------------------------
 
-For detailed instructions and alternatives see [documentation](http://phppe.org/phppe3.html#install).
+There are many ways to install PHPPE if you don't want Packagist. You can use git, Composer alone, or use wget utility.
+For detailed instructions and alternatives see documentation.
 
 1. Create a webserver's document root in your project root
 
@@ -85,7 +81,7 @@ For detailed instructions and alternatives see [documentation](http://phppe.org/
     or without Composer
 
     ``` sh
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_pack.tgz | tar -xz -C vendor/phppe && sudo php public/index.php --diag
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_core.tgz | tar -xz -C vendor/phppe/Core && sudo php public/index.php --diag
     ```
 
 Content Management
@@ -99,7 +95,7 @@ or
 
     $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
-One CMS can feed several Content Servers. See [documentation](http://phppe.org/phppe3.html#contents) for more details on load balancing.
+One Content Editor can feed several Content Servers. See documentation for more details on load balancing.
 
 Extensions
 ----------
@@ -114,27 +110,35 @@ or
 
 This will give you the standard webadmin feeling you're used to, but unlike the competition, works in a secure way.
 
-Testing
--------
+Developing
+----------
 
-Unit tests (over 100) and source are included in the Developer package
+If you plan to develop with PHPPE framework, you have to install the Developer package! It will give you a nice templater to generate php files,
+and also ships a minimal, PHPUnit compatible testing framework.
 
     $ composer require "phppe/Developer"
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_devel.tgz | tar -xz -C vendor/phppe/Developer
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_developer.tgz | tar -xz -C vendor/phppe/Developer
 
-You can also use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole repository from ground up (including core extensions and tarballs):
+This will provide you utilities like
+
+    ``` sh
+    $ php public/index.php mkrepo
+    $ php public/index.php create model myExtension myModel
+    $ php public/index.php create controller myExtension myController
+    $ php public/index.php create route myExtension myurl myController myAction
+    ```
+
+You can use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole developer repository (including tarballs):
 
     $ composer create-project "bztsrc/phppe3:dev-master"
-
-Tested under BSD, Darwin, Linux; apache2, nginx; php 5.5, 5.6, 7.0; Firefox, Safari, Chrome. (Feed back on Win/IE would be nice).
 
 License
 -------
 
-PHPPE Core, PHPPE Pack, PHPPE CMS as well as PHPPE Extensions are free and OpenSource softwares, licensed under [LGPL-3.0+](http://www.gnu.org/licenses/). See vendor/phppe/LICENSE for details.
+PHPPE Core, PHPPE Pack, PHPPE Developer, PHPPE CMS as well as PHPPE Extensions are free and OpenSource softwares, licensed under [LGPL-3.0+](http://www.gnu.org/licenses/). See vendor/phppe/LICENSE for details.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -152,4 +156,4 @@ PHPPE Core, PHPPE Pack, PHPPE CMS as well as PHPPE Extensions are free and OpenS
 Author
 ------
 
-bzt AT phppe DOT org
+zoltan DOT baldaszti AT gmail DOT com

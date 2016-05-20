@@ -1,3 +1,0 @@
-<a href='<!=url()><!=urlencode(core.item)><!=(!isset(_REQUEST['nodiff'])?'?nodiff':'')>'><img id='cms_pagedifftoggle' src='images/cms/<!=(!isset(_REQUEST['nodiff'])?'no':'')>diff.png' style='position:fixed;top:0px;right:0px;border:0px;z-index:9999;'></a>
-<img onclick='if(window.opener.parent!=null&&window.opener.parent.document!=null)window.opener.parent.document.getElementById("cms_editdiv").style.display="none";window.opener.location.href="<!=url("cms","pagehistory")><!=urlencode(core.item)>";window.close();' id='cms_pagediffrevert' src='images/cms/revert.png' style='position:fixed;top:0px;right:42px;border:0px;z-index:9999;cursor:pointer;'>
-<!=app._result>

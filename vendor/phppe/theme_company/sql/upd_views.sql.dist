@@ -1,1 +1,0 @@
-REPLACE INTO `views` VALUES ('company','Company','','["company.css"]','','','company',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);

@@ -1,1 +1,0 @@
-<div id="header" class="mosaicwide"><!cms wysiwyg frame.header></div><!cms pagelist mainmenu><!foreach mainmenu><div class="mosaic"><!=name></div><!/foreach><div id="content" class="splitmosaic"><!app></div><div id="footer" class="mosaicwide"><!cms wysiwyg frame.footer></div>
