@@ -26,7 +26,7 @@
 	},
 
 	"support": {
-		"source": "https://github.com/bztsrc/phppe3/",
+		"source": "https://github.com/bztsrc/phppe3/"
 	},
 
 	"maintainer": { "name": "bzt" },
