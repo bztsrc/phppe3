@@ -442,14 +442,10 @@
 			"type":"library",
 			"license":"LGPL-3.0+",
 			"require":{
-				"phppe/DB":"*",
-				"phppe/Users":"*",
-				"phppe/Email":"*",
-				"phppe/Registry":"*"
+				"php":">=7.0"
 			},
 			"support":{
-				"source":"https://github.com/bztsrc/phppe3/",
-				"wiki":"http://phppe.org/phppe3.html"
+				"source":"https://github.com/bztsrc/phppe3/"
 			},
 			"maintainer":{
 				"name":"bzt"
@@ -462,9 +458,9 @@
 
 			},
 			"price":"0",
-			"time":"2016-05-20 16:21:24",
-			"size":"15411",
-			"sha1":"094fbffc8d87e28df7344c2d60a5033363ab5609"
+			"time":"2016-05-20 17:28:40",
+			"size":"15377",
+			"sha1":"a8509e41740f9e4da5e79b438f1637e515cbb035"
 		  }
 		},
 		"phppe/Developer": {

@@ -14,7 +14,7 @@
 
 	"require": {
 		"php": ">=7.0",
-		"phppe/core": ">=3.0"
+		"phppe/Core": ">=3.0"
 	},
 
 	"suggest": {
