@@ -1,6 +1,6 @@
 <!--
- @file phppe/views/index.tpl
- @author bzt@phppe.org
+ @file vendor/phppe/Core/views/index.tpl
+ @author bzt
  @date 1 Jan 2016
  @brief Self test view for PHPPE Core
 -->
