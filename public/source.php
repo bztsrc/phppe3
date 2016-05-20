@@ -1263,7 +1263,7 @@ namespace PHPPE {
 					//! cache miss, we'll have to generate the asset
 					//! remove language code from core.js url. This "alias" allows per language cache
 					foreach([ Core::$core->url, 
-							preg_replace("/^core\.[^\.]+\.js/", "core.js", Core::$core->url) . ".php" ] as $p) {
+							preg_replace("/core\.[^\.]+\.js/", "core.js", Core::$core->url) . ".php" ] as $p) {
 						$A = "vendor/phppe/*/" . strtr($p, [ "*" => "", ".." => "" ]);
 						$c = @glob($A, GLOB_NOSORT)[ 0 ];
 						if(empty($c))
