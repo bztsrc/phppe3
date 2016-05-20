@@ -7,18 +7,14 @@
 	"version_normalized": "3.0.0.0",
 	"type": "project",
 	"license": "LGPL-3.0+",
-	"homepage": "http://phppe.org/",
 
 	"repositories":[
 		{"type":"composer","url":"https://raw.githubusercontent.com/bztsrc/phppe3/master/"}
 	],
 
 	"require": {
-		"php": ">=5.5",
-		"phppe": ">=3.0",
-		"phppe/wysiwyg": "*",
-		"phppe/CMS": "*",
-		"phppe/Extensions": "*"
+		"php": ">=7.0",
+		"phppe/core": ">=3.0"
 	},
 
 	"suggest": {
@@ -31,7 +27,6 @@
 
 	"support": {
 		"source": "https://github.com/bztsrc/phppe3/",
-		"wiki": "http://phppe.org/phppe3.html"
 	},
 
 	"maintainer": { "name": "bzt" },
