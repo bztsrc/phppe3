@@ -1,8 +1,0 @@
-2016-05-20T12:38:01Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(47): Call to undefined function print_()
-2016-05-20T12:51:45Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(47): syntax error, unexpected 'readTemplates' (T_STRING), expecting '('
-2016-05-20T12:52:05Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(63): Cannot use object of type stdClass as array
-2016-05-20T12:53:03Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(63): Cannot use object of type stdClass as array
-2016-05-20T13:20:08Z-C-CREATE: Exception vendor/phppe/aaa/init.php(35): syntax error, unexpected ':'
-2016-05-20T14:05:47Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(75): Call to undefined method Templates::checkMeta()
-2016-05-20T14:20:38Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(110): Call to undefined method Templates::loadVars()
-2016-05-20T14:58:17Z-C-CREATE: Exception vendor/phppe/Developer/libs/Templates.php(134): syntax error, unexpected 'foreach' (T_FOREACH)

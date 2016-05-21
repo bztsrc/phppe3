@@ -1,0 +1,46 @@
+{
+	"name": "phppe/CMS",
+	"name_en": "Content Editor",
+	"name_hu": "Tartalomszerkesztő",
+	"name_ru": "редактор контент",
+	"name_de": "Inhalts Editor",
+	"name_es": "Editor de Contenido",
+	"name_fr": "Éditeur de Contenu",
+	"name_ch": "内容编辑器",
+	"name_he": "עורך תוכן",
+	"name_ar": "محرر المحتوى",
+
+	"description": "Content Editor for Content Servers to create a full Content Management System.",
+	"description_hu": "Tartalomszerkesztő a Tartalom kiszolgálókhoz, hogy együtt egy teljes Tartalom Szerkesztő Rendszert alkossanak.",
+	"description_ru": "Содержимое редактор контента серверов, чтобы создать полный системы управления контентом.",
+	"description_de": "Inhalts-Editor für Inhalts-Server, um eine vollständige Content Management System erstellen.",
+	"description_es": "Editor de contenidos para servidores de contenido para crear un sistema de gestión de contenido completo.",
+	"description_fr": "Éditeur de contenu pour les serveurs de contenu pour créer un système complet de gestion de contenu.",
+	"description_ch": "内容编辑器的内容服务器，以创建一个完整的内容管理系统。",
+	"description_he": "עורך תוכן לשרתי תוכן כדי ליצור מערכת ניהול תוכן מלאה.",
+	"description_ar": "محرر المحتوى للخوادم المحتوى لخلق نظام إدارة المحتوى الكامل.",
+
+	"version": "3.0.0",
+	"version_normalized": "3.0.0.0",
+
+	"conf": { "expert":"boolean","pagehistory":"notboolean", "purge":"select(8=default 8,3,4,5,6,7,8,9,10,15,20,25,50,99)","metas":"*string(copyright,description,keywords)" },
+
+	"conf_en": { "expert":"Expert", "pagehistory":"Page history", "purge":"History max size","metas":"Meta names" },
+	"conf_hu": { "expert":"Haladó", "pagehistory":"Vátozáskövetés", "purge":"Változatok max száma","metas":"Meta kulcsok","default 8":"alapért. 8" },
+	"conf_ru": { "expert":"эксперт", "pagehistory":"История страницы", "purge":"История Максимальный размер","metas":"Мета имена","default 8":"по умолчанию 8" },
+	"conf_de": { "expert":"Experte", "pagehistory":"Versionsgeschichte", "purge":"Geschichte maximale Größe","metas":"Meta-Namen","default 8":"default 8" },
+	"conf_es": { "expert":"Experto", "pagehistory":"Historia página", "purge":"Historia tamaño máximo","metas":"Meta nombres","default 8":"por defecto 8" },
+	"conf_fr": { "expert":"Expert", "pagehistory":"Historique de la page", "purge":"Histoire taille maximale","metas":"Noms meta","default 8":"8 par défaut" },
+	"conf_ch": { "expert":"专家", "pagehistory":"页面历史", "purge":"历史最大规模","metas":"元的名字","default 8":"默认的8" },
+	"conf_he": { "expert":"מוּמחֶה", "pagehistory":"היסטורית דף", "purge":"גודל מרבי היסטוריה","metas":"שמות Meta","default 8":"ברירת מחדל 8" },
+	"conf_ar": { "expert":"خبير", "pagehistory":"تاريخ الصفحة", "purge":"التاريخ أقصى حجم","metas":"أسماء ميتا","default 8":"افتراضي 8" },
+
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe/Core": ">=3.0"
+	},
+
+	"maintainer": { "name": "bzt" }
+}
