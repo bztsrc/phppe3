@@ -103,7 +103,7 @@ class Repository
 			echo("  ".$ext.": ");
 			//! create tarball if not exists or older than extension's files
 			chdir($dir);
-			if(!file_exists($tarball) || trim(exec("find . -cnewer ".$tarball." 2>/dev/null"))!="")
+			if(!file_exists($tarball) || trim(exec("find . -cnewer ".$tarball." |grep -v /log/ 2>/dev/null"))!="")
 			{
 				//! copy sql.dists
 				$sql=glob("sql/upd_*.dist");

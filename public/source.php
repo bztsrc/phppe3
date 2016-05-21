@@ -1210,7 +1210,7 @@ namespace PHPPE {
 	static function set($k, $v, $ttl=0)
 	{
 		if(!empty(self::$mc) && empty(Core::$core->nocache))
-			return self::$mc->set($k, $v, MEMCACHE_COMPRESSED, $ttl>0?$ttl:Core::$core->cachettl);
+			return @self::$mc->set($k, $v, MEMCACHE_COMPRESSED, $ttl>0?$ttl:Core::$core->cachettl);
 		return false;
 	}
 

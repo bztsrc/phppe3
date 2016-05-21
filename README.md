@@ -17,7 +17,7 @@ This 80k bytes of PHP code will give you:
 - [PHP Composer](https://getcomposer.org/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
 - Very low footprint, can run on a [Raspberry Pi](https://www.raspberrypi.org/)
-- Has modular, easy to expand structure
+- Highly modular, easy to expand structure
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
 - Clever, regular expression capable and filterable, standard URL to class::method routing mechanism
@@ -51,7 +51,7 @@ Installation with Packagist
 Installation without Packagist
 ------------------------------
 
-There are many ways to install PHPPE if you don't want Packagist. You can use git, Composer alone, or use wget utility.
+There are many ways to install PHPPE if you don't want Packagist. You can use git, Composer alone, or use curl/wget.
 For detailed instructions and alternatives see documentation.
 
 1. Create a webserver's document root in your project root
@@ -106,7 +106,7 @@ If you want a web based interface for extension management, install
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extmgr.tgz | tar -xz -C vendor/phppe/Extensions
+    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extensions.tgz | tar -xz -C vendor/phppe/Extensions
 
 This will give you the standard webadmin feeling you're used to, but unlike the competition, works in a secure way.
 
@@ -124,10 +124,11 @@ or
 
 This will provide you utilities like
 
-    $ php public/index.php mkrepo
     $ php public/index.php create model myExtension myModel
     $ php public/index.php create controller myExtension myController
     $ php public/index.php create route myExtension myurl myController myAction
+    $ php public/index.php tests run
+    $ php public/index.php mkrepo
 
 You can use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole developer repository (including tarballs):
 
@@ -136,7 +137,7 @@ You can use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install
 License
 -------
 
-PHPPE Core, PHPPE Pack, PHPPE Developer, PHPPE CMS as well as PHPPE Extensions are free and OpenSource softwares, licensed under [LGPL-3.0+](http://www.gnu.org/licenses/). See vendor/phppe/LICENSE for details.
+PHPPE Core, PHPPE Pack, PHPPE CMS, PHPPE Extensions as well as PHPPE Developer are free and OpenSource softwares, licensed under [LGPL-3.0+](http://www.gnu.org/licenses/). See vendor/phppe/LICENSE for details.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
