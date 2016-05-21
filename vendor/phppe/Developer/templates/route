@@ -1,6 +1,0 @@
-{
-	"desc_en": "adds a new route",
-	"args": [ "extension", "url", "controller", "action" ],
-	"append": "vendor/phppe/@EXTENSION@/init.php"
-}
-\PHPPE\Http::route("@URL@", "@CONTROLLER@", "@ACTION@");
