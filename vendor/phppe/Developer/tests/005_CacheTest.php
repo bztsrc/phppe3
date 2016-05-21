@@ -15,15 +15,25 @@ class Cache extends PHPUnit_Framework_TestCase
 	{
 		$files = new \PHPPE\Cache\Files("files");
 		$files->set("key2","value",false,1);
-		$this->assertNotNull($files->get("key2"),"Files");
-		sleep(1.001);
+		$this->assertNotNull($files->get("key2"),"Files set/get");
+		sleep(1.01);
 		$files->cronMinute("");
-		$this->assertNull($files->get("key2"),"Files");
+		$this->assertNull($files->get("key2"),"Files ttl");
+	}
+
+	public function testMemcache()
+	{
+		\PHPPE\Cache::$mc=null;
+		$mem = new \PHPPE\Cache("127.0.0.1:11211");
+		$this->assertNotNull(\PHPPE\Cache::$mc,"Memcached connection");
+		\PHPPE\Cache::$mc->set("key2","value",false,1);
+		$this->assertEquals("value",\PHPPE\Cache::$mc->get("key2"),"Memcached set/get");
 	}
 
 	//! overall cache tests
 	public function testCache()
 	{
+		\PHPPE\Core::$core->nocache=false;
 
 		//dirty hack required when run through phpunit
 		//as it does not call run(), and SCRIPT_FILENAME
@@ -46,12 +56,9 @@ class Cache extends PHPUnit_Framework_TestCase
 		$cache->get('aaa');
 		\PHPPE\Cache::$mc=$mc;
 
-		//use file cache if otherwise not configured
+		//use memcached cache if otherwise not configured
 		if(empty($mc) || empty(\PHPPE\Core::$core->cache))
-		{
-			\PHPPE\Cache::$mc=new \PHPPE\Cache\Files("files");
-			\PHPPE\Core::$core->cache="files";
-		}
+			$mem = new \PHPPE\Cache("127.0.0.1:11211");
 		\PHPPE\Core::$core->nocache=false;
 
 		$this->assertNotEmpty(\PHPPE\Cache::$mc,"Cache initialized");
@@ -60,24 +67,13 @@ class Cache extends PHPUnit_Framework_TestCase
 
 		\PHPPE\Core::$core->nocache=true;
 		$this->assertFalse(\PHPPE\Cache::set($var,"aaa"),"Set with nocache");
+		$this->assertNull(\PHPPE\Cache::get($var),"Get with nocache");
 		\PHPPE\Core::$core->nocache=false;
 		$this->assertNotFalse(\PHPPE\Cache::set($var,"aaa"),"Set");
-
 		$this->assertEquals("aaa",\PHPPE\Cache::get($var),"Get");
 
 		$tn = 't_' . sha1(\PHPPE\Core::$core->base."_cachetest");
 		\PHPPE\Cache::set($tn,"",1);
-		\PHPPE\Cache::set($var,"bbb",1);
-		sleep(1.001);
-		if(method_exists(\PHPPE\Cache::$mc,"cronMinute")) \PHPPE\Cache::$mc->cronMinute("");
-
-		//this check always fail on APC, because it's cleared on
-		//next request only, and there's no way to trigger that...
-		if(get_class(\PHPPE\Cache::$mc)!="PHPPE\Cache\APC")
-			$this->assertNull(\PHPPE\Cache::get($var),"Cache TTL");
-
-		if(get_class(\PHPPE\Cache::$mc)!="PHPPE\Cache\Files")
-			$this->assertEmpty(\PHPPE\Cache::get($tn),"Cache empty");
 
 		$txt = \PHPPE\View::template("cachetest");
 		$this->assertNotEmpty(\PHPPE\Cache::get($tn),"Template caching $tn");
@@ -85,12 +81,12 @@ class Cache extends PHPUnit_Framework_TestCase
 		$url=url("tests","http")."cachetest";
 
 		$N = 'p_' . sha1(\PHPPE\Core::$core->base . "tests/http/cachetest/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang);
-		@unlink("data/cache/".substr($N,0,2)."/".substr($N,2,2)."/".substr($N,4));
+		\PHPPE\Cache::set($N,"",1);
 		$this->assertEmpty(\PHPPE\View::fromCache($N),"Page cache #1");
 		file_get_contents($url); //make sure the output gets to the cache
 		$d1 = file_get_contents($url); //this must be served from cache
 
-		$this->assertNotEmpty(\PHPPE\View::fromCache($N),"Page cache #2\nrun php public/index.php --diag and retry");
+		$this->assertNotEmpty(\PHPPE\View::fromCache($N),"Page cache #2\nCache not configured in config.php or memcached not running");
 
 		$d2 = file_get_contents($url."?skipcache=1"); //trigger nocache flag set in constructor
 

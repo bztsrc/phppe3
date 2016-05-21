@@ -68,3 +68,878 @@
 [20-May-2016 17:42:03 Europe/London] PHP   4. PHPUnit_TextUI_TestRunner->doRun() phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php:159
 [20-May-2016 17:42:03 Europe/London] PHP   5. PHPUnit_Util_Printer->__construct() phar:///usr/local/bin/phpunit/phpunit/TextUI/TestRunner.php:535
 [20-May-2016 17:42:03 Europe/London] PHP   6. fopen() phar:///usr/local/bin/phpunit/phpunit/Util/Printer.php:65
+[20-May-2016 18:32:23 Europe/London] PHP Warning:  file_get_contents(/var/www/phppe/vendor/phppe/Core/js/jquery.min.js): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 2300
+[20-May-2016 18:32:23 Europe/London] PHP Stack trace:
+[20-May-2016 18:32:23 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[20-May-2016 18:32:23 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3768
+[20-May-2016 18:32:23 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2893
+[20-May-2016 18:32:23 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3192
+[20-May-2016 18:32:23 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2300
+[20-May-2016 18:34:36 Europe/London] PHP Warning:  include_once(/var/www/phppe/vendor/phppe/Core/js/core.js.php): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 1284
+[20-May-2016 18:34:36 Europe/London] PHP Stack trace:
+[20-May-2016 18:34:36 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[20-May-2016 18:34:36 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3768
+[20-May-2016 18:34:36 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2893
+[20-May-2016 18:34:36 Europe/London] PHP   4. PHPPE\Core::event() /var/www/phppe/public/source.php:3070
+[20-May-2016 18:34:36 Europe/London] PHP   5. call_user_func_array:{/var/www/phppe/public/source.php:3470}() /var/www/phppe/public/source.php:3470
+[20-May-2016 18:34:36 Europe/London] PHP   6. PHPPE\Assets->route() /var/www/phppe/public/source.php:3470
+[20-May-2016 18:34:36 Europe/London] PHP Warning:  include_once(): Failed opening 'vendor/phppe/Core/js/core.js.php' for inclusion (include_path='.:') in /var/www/phppe/public/source.php on line 1284
+[20-May-2016 18:34:36 Europe/London] PHP Stack trace:
+[20-May-2016 18:34:36 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[20-May-2016 18:34:36 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3768
+[20-May-2016 18:34:36 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2893
+[20-May-2016 18:34:36 Europe/London] PHP   4. PHPPE\Core::event() /var/www/phppe/public/source.php:3070
+[20-May-2016 18:34:36 Europe/London] PHP   5. call_user_func_array:{/var/www/phppe/public/source.php:3470}() /var/www/phppe/public/source.php:3470
+[20-May-2016 18:34:36 Europe/London] PHP   6. PHPPE\Assets->route() /var/www/phppe/public/source.php:3470
+[20-May-2016 18:09:25 UTC] PHP Notice:  Trying to get property of non-object in /var/www/phppe/public/source.php on line 1525
+[20-May-2016 18:09:25 UTC] PHP Stack trace:
+[20-May-2016 18:09:25 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[20-May-2016 18:09:25 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3776
+[20-May-2016 18:09:25 UTC] PHP   3. PHPPE\View::init() /var/www/phppe/public/source.php:2818
+[21-May-2016 08:07:44 UTC] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2308
+[21-May-2016 08:07:44 UTC] PHP Stack trace:
+[21-May-2016 08:07:44 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 08:07:44 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3776
+[21-May-2016 08:07:44 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2901
+[21-May-2016 08:07:44 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3200
+[21-May-2016 08:07:44 UTC] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2308
+[21-May-2016 08:07:44 UTC] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2308
+[21-May-2016 08:07:44 UTC] PHP Stack trace:
+[21-May-2016 08:07:44 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 08:07:44 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3776
+[21-May-2016 08:07:44 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2901
+[21-May-2016 08:07:44 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3200
+[21-May-2016 08:07:44 UTC] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2308
+[21-May-2016 09:12:22 Europe/London] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2308
+[21-May-2016 09:12:22 Europe/London] PHP Stack trace:
+[21-May-2016 09:12:22 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:12:22 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3778
+[21-May-2016 09:12:22 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2903
+[21-May-2016 09:12:22 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3202
+[21-May-2016 09:12:22 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2308
+[21-May-2016 09:12:22 Europe/London] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2308
+[21-May-2016 09:12:22 Europe/London] PHP Stack trace:
+[21-May-2016 09:12:22 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:12:22 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3778
+[21-May-2016 09:12:22 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2903
+[21-May-2016 09:12:22 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3202
+[21-May-2016 09:12:22 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2308
+[21-May-2016 09:14:51 Europe/London] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2311
+[21-May-2016 09:14:51 Europe/London] PHP Stack trace:
+[21-May-2016 09:14:51 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:14:51 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3781
+[21-May-2016 09:14:51 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2906
+[21-May-2016 09:14:51 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3205
+[21-May-2016 09:14:51 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2311
+[21-May-2016 09:14:51 Europe/London] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2311
+[21-May-2016 09:14:51 Europe/London] PHP Stack trace:
+[21-May-2016 09:14:51 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:14:51 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3781
+[21-May-2016 09:14:51 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2906
+[21-May-2016 09:14:51 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3205
+[21-May-2016 09:14:51 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2311
+[21-May-2016 09:16:09 Europe/London] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2312
+[21-May-2016 09:16:09 Europe/London] PHP Stack trace:
+[21-May-2016 09:16:09 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:16:09 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3782
+[21-May-2016 09:16:09 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2907
+[21-May-2016 09:16:09 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3206
+[21-May-2016 09:16:09 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2312
+[21-May-2016 09:16:09 Europe/London] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2312
+[21-May-2016 09:16:09 Europe/London] PHP Stack trace:
+[21-May-2016 09:16:09 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:16:09 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3782
+[21-May-2016 09:16:09 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2907
+[21-May-2016 09:16:09 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3206
+[21-May-2016 09:16:09 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2312
+[21-May-2016 09:17:26 Europe/London] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2313
+[21-May-2016 09:17:26 Europe/London] PHP Stack trace:
+[21-May-2016 09:17:26 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:17:26 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3783
+[21-May-2016 09:17:26 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2908
+[21-May-2016 09:17:26 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3207
+[21-May-2016 09:17:26 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2313
+[21-May-2016 09:17:26 Europe/London] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2313
+[21-May-2016 09:17:26 Europe/London] PHP Stack trace:
+[21-May-2016 09:17:26 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:17:26 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3783
+[21-May-2016 09:17:26 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2908
+[21-May-2016 09:17:26 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3207
+[21-May-2016 09:17:26 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2313
+[21-May-2016 09:17:46 Europe/London] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2313
+[21-May-2016 09:17:46 Europe/London] PHP Stack trace:
+[21-May-2016 09:17:46 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:17:46 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3783
+[21-May-2016 09:17:46 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2908
+[21-May-2016 09:17:46 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3207
+[21-May-2016 09:17:46 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2313
+[21-May-2016 09:17:46 Europe/London] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2313
+[21-May-2016 09:17:46 Europe/London] PHP Stack trace:
+[21-May-2016 09:17:46 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:17:46 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3783
+[21-May-2016 09:17:46 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2908
+[21-May-2016 09:17:46 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3207
+[21-May-2016 09:17:46 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2313
+[21-May-2016 09:19:25 Europe/London] PHP Warning:  file_get_contents(01): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2314
+[21-May-2016 09:19:25 Europe/London] PHP Stack trace:
+[21-May-2016 09:19:25 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:19:25 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3784
+[21-May-2016 09:19:25 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2909
+[21-May-2016 09:19:25 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3208
+[21-May-2016 09:19:25 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2314
+[21-May-2016 09:19:25 Europe/London] PHP Warning:  file_get_contents(00): failed to open stream: No such file or directory in /var/www/phppe/public/source.php on line 2314
+[21-May-2016 09:19:25 Europe/London] PHP Stack trace:
+[21-May-2016 09:19:25 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:19:25 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3784
+[21-May-2016 09:19:25 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2909
+[21-May-2016 09:19:25 Europe/London] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3208
+[21-May-2016 09:19:25 Europe/London] PHP   5. file_get_contents() /var/www/phppe/public/source.php:2314
+[21-May-2016 09:22:55 Europe/London] PHP Warning:  preg_replace(): Unknown modifier 'c' in /var/www/phppe/public/source.php on line 1270
+[21-May-2016 09:22:55 Europe/London] PHP Stack trace:
+[21-May-2016 09:22:55 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:22:55 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3783
+[21-May-2016 09:22:55 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2908
+[21-May-2016 09:22:55 Europe/London] PHP   4. PHPPE\Core::event() /var/www/phppe/public/source.php:3085
+[21-May-2016 09:22:55 Europe/London] PHP   5. call_user_func_array:{/var/www/phppe/public/source.php:3485}() /var/www/phppe/public/source.php:3485
+[21-May-2016 09:22:55 Europe/London] PHP   6. PHPPE\Assets->route() /var/www/phppe/public/source.php:3485
+[21-May-2016 09:22:55 Europe/London] PHP   7. preg_replace() /var/www/phppe/public/source.php:1270
+[21-May-2016 09:40:54 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:40:54 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:40:54 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:40:54 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:40:54 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:40:54 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:40:54 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:40:54 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:40:54 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:40:54 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:40:54 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:40:54 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:40:54 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:40:54 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:40:54 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:40:54 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:40:54 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:40:54 UTC] PHP Stack trace:
+[21-May-2016 09:40:54 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:40:54 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:40:54 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:40:54 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:40:54 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:40:54 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:45:28 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:45:28 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:45:28 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:45:28 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:45:28 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:45:28 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:45:28 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:45:28 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:45:28 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:45:28 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:45:28 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:45:28 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:45:28 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:45:28 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:45:28 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:45:28 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:45:28 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:45:28 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:45:28 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:2196
+[21-May-2016 09:45:28 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:45:28 UTC] PHP Stack trace:
+[21-May-2016 09:45:28 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:45:28 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:45:28 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:45:28 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:45:28 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:2323
+[21-May-2016 09:46:09 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:46:09 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:46:09 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:46:09 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:46:09 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:46:09 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:46:09 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:46:09 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:46:09 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:46:09 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:46:09 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:46:09 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:46:09 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:46:09 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:46:09 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:46:09 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:46:09 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:46:09 UTC] PHP Stack trace:
+[21-May-2016 09:46:09 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:46:09 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:46:09 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:46:09 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:46:09 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:46:09 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:47:05 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:47:05 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:47:05 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:47:05 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:47:05 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:47:05 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:47:05 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:47:05 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:47:05 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:47:05 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:47:05 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:47:05 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:47:05 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:47:05 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:47:05 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:47:05 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:47:05 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:47:05 UTC] PHP Stack trace:
+[21-May-2016 09:47:05 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:05 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:47:05 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:47:05 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:47:05 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:47:05 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:47:48 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1215
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3202
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1676
+[21-May-2016 09:47:48 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1721
+[21-May-2016 09:47:48 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2540
+[21-May-2016 09:47:48 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3847
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3202
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1676
+[21-May-2016 09:47:48 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1721
+[21-May-2016 09:47:48 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2540
+[21-May-2016 09:47:48 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1215
+[21-May-2016 09:47:48 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3847
+[21-May-2016 09:47:48 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1215
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3202
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1689
+[21-May-2016 09:47:48 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1721
+[21-May-2016 09:47:48 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2540
+[21-May-2016 09:47:48 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1215
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3202
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1705
+[21-May-2016 09:47:48 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3847) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3218
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2146
+[21-May-2016 09:47:48 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:47:48 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3847) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3218
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2146
+[21-May-2016 09:47:48 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:47:48 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3847) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:47:48 UTC] PHP Stack trace:
+[21-May-2016 09:47:48 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:47:48 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3794
+[21-May-2016 09:47:48 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2918
+[21-May-2016 09:47:48 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3218
+[21-May-2016 09:47:48 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2146
+[21-May-2016 09:47:48 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:49:53 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:49:53 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:49:53 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:49:53 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:49:53 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:49:53 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:49:53 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:49:53 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:49:53 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:49:53 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:49:53 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:49:53 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:49:53 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:49:53 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:49:53 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:49:53 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:49:53 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:49:53 UTC] PHP Stack trace:
+[21-May-2016 09:49:53 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:49:53 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:49:53 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:49:53 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:49:53 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:49:53 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:52:17 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:52:17 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:52:17 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:52:17 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:52:17 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:52:17 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:52:17 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:52:17 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:52:17 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:52:17 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:52:17 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:52:17 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:52:17 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:52:17 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:52:17 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:52:17 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:52:17 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:52:17 UTC] PHP Stack trace:
+[21-May-2016 09:52:17 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:17 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:17 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:17 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:52:17 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:52:17 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:52:43 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:52:43 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:52:43 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:52:43 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:52:43 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:52:43 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:52:43 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:52:43 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:52:43 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:52:43 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:52:43 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:52:43 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:52:43 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:52:43 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:52:43 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:52:43 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:52:43 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:52:43 UTC] PHP Stack trace:
+[21-May-2016 09:52:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:52:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:52:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:52:43 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:52:43 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:52:43 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:56:24 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:56:24 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:56:24 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:56:24 UTC] PHP Warning:  file_put_contents(data/cache/t_/af/ce99c8d0736a2e1c3077d8ae7c8b302eb56e90): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3846
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 09:56:24 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:56:24 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:56:24 UTC] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/public/source.php:1214
+[21-May-2016 09:56:24 UTC] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3846
+[21-May-2016 09:56:24 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 09:56:24 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 09:56:24 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 09:56:24 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 09:56:24 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:56:24 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 09:56:24 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:56:24 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 09:56:24 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:3846) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 09:56:24 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 09:56:24 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:2196
+[21-May-2016 09:56:24 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 09:56:24 UTC] PHP Stack trace:
+[21-May-2016 09:56:24 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 09:56:24 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 09:56:24 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 09:56:24 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 09:56:24 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:2323
+[21-May-2016 10:12:42 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:12:42 UTC] PHP Stack trace:
+[21-May-2016 10:12:42 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:42 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:42 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:42 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:12:42 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 10:12:42 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 10:12:42 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 10:12:42 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:12:42 UTC] PHP Stack trace:
+[21-May-2016 10:12:42 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:42 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:42 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:42 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:12:42 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 10:12:42 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 10:12:42 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 10:12:42 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:12:42 UTC] PHP Stack trace:
+[21-May-2016 10:12:42 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:42 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:42 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:42 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:12:42 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 10:12:42 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 10:12:42 UTC] PHP Stack trace:
+[21-May-2016 10:12:42 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:42 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:42 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:42 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:12:42 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:12:42 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 10:12:42 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 10:12:42 UTC] PHP Stack trace:
+[21-May-2016 10:12:42 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:42 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:42 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:42 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:12:42 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:12:42 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 10:12:42 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 10:12:42 UTC] PHP Stack trace:
+[21-May-2016 10:12:42 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:42 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:42 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:42 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:12:42 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:12:42 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 10:12:43 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:12:43 UTC] PHP Stack trace:
+[21-May-2016 10:12:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:43 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:12:43 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:2196
+[21-May-2016 10:12:43 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:12:43 UTC] PHP Stack trace:
+[21-May-2016 10:12:43 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:12:43 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:12:43 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:12:43 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:12:43 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:2323
+[21-May-2016 10:14:32 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:14:32 UTC] PHP Stack trace:
+[21-May-2016 10:14:32 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:14:32 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:14:32 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:14:32 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:14:32 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 10:14:32 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 10:14:32 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 10:14:32 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:14:32 UTC] PHP Stack trace:
+[21-May-2016 10:14:32 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:14:32 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:14:32 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:14:32 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:14:32 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 10:14:32 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 10:14:32 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 10:14:32 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:14:32 UTC] PHP Stack trace:
+[21-May-2016 10:14:32 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:14:32 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:14:32 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:14:32 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:14:32 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 10:14:32 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 10:14:32 UTC] PHP Stack trace:
+[21-May-2016 10:14:32 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:14:32 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:14:32 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:14:32 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:14:32 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:14:32 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 10:14:32 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 10:14:32 UTC] PHP Stack trace:
+[21-May-2016 10:14:32 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:14:32 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:14:32 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:14:32 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:14:32 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:14:32 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 10:14:32 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 10:14:32 UTC] PHP Stack trace:
+[21-May-2016 10:14:32 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:14:32 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:14:32 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:14:32 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:14:32 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:14:32 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 10:17:14 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:17:14 UTC] PHP Stack trace:
+[21-May-2016 10:17:14 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:17:14 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:17:14 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:17:14 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:17:14 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1675
+[21-May-2016 10:17:14 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 10:17:14 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 10:17:14 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:17:14 UTC] PHP Stack trace:
+[21-May-2016 10:17:14 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:17:14 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:17:14 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:17:14 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:17:14 UTC] PHP   5. PHPPE\View::template() /var/www/phppe/public/source.php:1688
+[21-May-2016 10:17:14 UTC] PHP   6. PHPPE\View::get() /var/www/phppe/public/source.php:1720
+[21-May-2016 10:17:14 UTC] PHP   7. PHPPE\Cache::set() /var/www/phppe/public/source.php:2539
+[21-May-2016 10:17:14 UTC] PHP Notice:  Use of undefined constant MEMCACHE_COMPRESSED - assumed 'MEMCACHE_COMPRESSED' in /var/www/phppe/public/source.php on line 1214
+[21-May-2016 10:17:14 UTC] PHP Stack trace:
+[21-May-2016 10:17:14 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:17:14 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:17:14 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:17:14 UTC] PHP   4. PHPPE\View::generate() /var/www/phppe/public/source.php:3201
+[21-May-2016 10:17:14 UTC] PHP   5. PHPPE\Cache::set() /var/www/phppe/public/source.php:1704
+[21-May-2016 10:17:14 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 571
+[21-May-2016 10:17:14 UTC] PHP Stack trace:
+[21-May-2016 10:17:14 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:17:14 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:17:14 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:17:14 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:17:14 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:17:14 UTC] PHP   6. header() /var/www/phppe/public/source.php:571
+[21-May-2016 10:17:14 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 572
+[21-May-2016 10:17:14 UTC] PHP Stack trace:
+[21-May-2016 10:17:14 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:17:14 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:17:14 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:17:14 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:17:14 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:17:14 UTC] PHP   6. header() /var/www/phppe/public/source.php:572
+[21-May-2016 10:17:14 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/phppe/public/source.php:1214) in /var/www/phppe/public/source.php on line 574
+[21-May-2016 10:17:14 UTC] PHP Stack trace:
+[21-May-2016 10:17:14 UTC] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 10:17:14 UTC] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3793
+[21-May-2016 10:17:14 UTC] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2917
+[21-May-2016 10:17:14 UTC] PHP   4. PHPPE\View::output() /var/www/phppe/public/source.php:3217
+[21-May-2016 10:17:14 UTC] PHP   5. PHPPE\Http::mime() /var/www/phppe/public/source.php:2145
+[21-May-2016 10:17:14 UTC] PHP   6. header() /var/www/phppe/public/source.php:574
+[21-May-2016 11:31:37 Europe/London] PHP Warning:  file_put_contents(data/cache/00/00/key2): failed to open stream: Permission denied in /var/www/phppe/public/source.php on line 3845
+[21-May-2016 11:31:37 Europe/London] PHP Stack trace:
+[21-May-2016 11:31:37 Europe/London] PHP   1. {main}() /var/www/phppe/public/source.php:0
+[21-May-2016 11:31:37 Europe/London] PHP   2. PHPPE\Core->__construct() /var/www/phppe/public/source.php:3792
+[21-May-2016 11:31:37 Europe/London] PHP   3. PHPPE\Core->run() /var/www/phppe/public/source.php:2916
+[21-May-2016 11:31:37 Europe/London] PHP   4. PHPPE\Ctrl\Developer->run() /var/www/phppe/public/source.php:3199
+[21-May-2016 11:31:37 Europe/London] PHP   5. Testing::doTests() /var/www/phppe/vendor/phppe/Developer/ctrl/tests.php:33
+[21-May-2016 11:31:37 Europe/London] PHP   6. PHPUnit_Framework_TestCase->doTests() /var/www/phppe/vendor/phppe/Developer/libs/Testing.php:94
+[21-May-2016 11:31:37 Europe/London] PHP   7. Cache->testFiles() /var/www/phppe/vendor/phppe/Developer/libs/phpunit.php:41
+[21-May-2016 11:31:37 Europe/London] PHP   8. PHPPE\Cache\Files->set() /var/www/phppe/vendor/phppe/Developer/tests/005_CacheTest.php:17
+[21-May-2016 11:31:37 Europe/London] PHP   9. file_put_contents() /var/www/phppe/public/source.php:3845

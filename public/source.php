@@ -1102,7 +1102,7 @@ namespace PHPPE {
 
 /**
  * Cache wrapper. This allow multiple options
- * and fallbacks to php memcached
+ * and fallbacks to php memcache
  */
 	class Cache extends Extension
 	{
@@ -1128,9 +1128,13 @@ namespace PHPPE {
 						break;
 					}
 				}
-				//! if none, fallback to memcached
-				if(! is_object(self::$mc)) {
-				// @codeCoverageIgnoreStart
+				//! give chance to extensions. Cache is loaded so early, they're not
+				//! initialized yet
+				$f="vendor/phppe/".$m[0]."/libs/Cache.php";
+				if(empty(self::$mc) && file_exists($f)) self::$mc = include_once($f);
+				//! if none, fallback to memcache
+				if(empty(self::$mc)) {
+					// @codeCoverageIgnoreStart
 					//! unix file: "unix:/tmp/fifo", "host" or "host:port" otherwise
 					if($m[ 0 ] == "unix") {
 						$p = 0;
@@ -1138,21 +1142,20 @@ namespace PHPPE {
 					}
 					else
 					{
-						$p = $m[ 1 ] + 0;
+						$p = !empty($m[1])?$m[ 1 ] + 0:11211;
 						$h = $m[ 0 ];
 					}
+					// @codeCoverageIgnoreEnd
 					$M = "\\Memcache";
-					if(!class_exists($M))
-						Core::log('E', "unable to initialize cache or no php-memcached", "cache");
-					else {
-						self::$mc = new $M;
-						//Core::$mc->addServer( $h, $p );
-						//$s = @Core::$mc->getExtendedStats(  );
-						if(/*empty( $s[ $h . ( $p > 0 ? ":" . $p : "" ) ] ) || */ ! @self::$mc->pconnect($h, $p, 1)) {
-							usleep(100);
-							if(! @self::$mc->pconnect($h, $p, 1))
-								self::$mc = null;
-						}
+					self::$mc = new $M;
+					//Core::$mc->addServer( $h, $p );
+					//$s = @Core::$mc->getExtendedStats(  );
+					if(/*empty( $s[ $h . ( $p > 0 ? ":" . $p : "" ) ] ) || */ ! self::$mc->pconnect($h, $p, 1)) {
+						// @codeCoverageIgnoreStart
+						usleep(100);
+						if(! self::$mc->pconnect($h, $p, 1))
+							self::$mc = null;
+						// @codeCoverageIgnoreEnd
 					}
 				}
 				//! let rest of the world know about us
@@ -1160,23 +1163,31 @@ namespace PHPPE {
 					$this->name=$M;
 			}
 			//! built-in blobs - referenced as cached objects
-			//! serve them as soon as possible to speed up page load
+			//! this should go to init(), but we serve them as soon
+			//! as possible to speed up page load
+//		}
+				// @codeCoverageIgnoreStart
+
+//		function init($cfg)
+//		{
 			if(! empty($_GET[ "cache" ])) {
 				$d = trim($_GET[ "cache" ]);
 				switch($d) {
+					//! inline PHPPE logo
 					case "logo" :
 						Http::mime("image/png");
 						$c = "vendor/phppe/Core/images/.phppe";
 						die(file_exists($c) ? file_get_contents($c) :
 						base64_decode("R0lGODlhKgAYAMIHAAACAAcAABYAAygBDD4BEFwAGGoBGwWYISH5BAEKAAcALAAAAAAqABgAAAOxeLrcCsDJSSkIoertYOSgBmXh5p3MiT4qJGIw9h3BFZP0LVceU0c91sy1uMwkwQfmYEzhiCwc8sh0QQ+FrMFQIAgY2cIWuUx9LoutWsxNs9udaxDKDb+7Wzth+huRRmlcJANrW148NjJDdF2Db2t7EzUUkwpqAx8EaoWRUyCXgVx5L1QUeQQDBGwFhIYDAxNNHJubBQqPBiWmeWqdWG+6EmrBxJZwxbqjyMnHy87P0BMJADs="));
+					//! Stylesheet for PHPPE Panel
 					case "css" :
 						Http::mime("text/css");
 						$p = "position:fixed;top:";
 						$s = "text-shadow:2px 2px 2px #FFF;";
 						$c = "rgba(136,146,191";
 						die("#pe_p{" . $p . "0;z-index:999;left:0;width:100%;padding:0 2px 0 32px;background-color:$c,0.9);background:linear-gradient($c,0.4),$c,0.6),$c,0.8),$c,0.9),$c,1) 90%,rgba(0,0,0,1));height:31px !important;font-family:helvetica;font-size:14px !important;line-height:20px !important;}#pe_p SPAN{margin:0 5px 0 0;cursor:pointer;}#pe_p UL{list-style-type:none;margin:3px;padding:0;}#pe_p IMG{border:0;vertical-align:middle;padding-right:4px;}#pe_p A{text-decoration:none;color:#000;" . $s . "}#pe_p .menu {position:fixed;top:8px;left:90px;}#pe_p .stat SPAN{display:inline-block;" . $s . "}#pe_p LI{cursor:pointer;}#pe_p LI:hover{background:#F0F0F0;}#pe_p .stat{" . $p . "6px;right:48px;}#pe_p .sub{" . $p . "28px;display:inline;background:#FFF;border:solid 1px #808080;box-shadow:2px 2px 6px #000;z-index:1000;}#pe_p .menu_i{padding:5px 6px 5px 6px;" . $s . "}#pe_p .menu_a{padding:4px 5px 5px 5px;border-top:solid #000 1px;border-left:solid #000 1px;border-right:solid #000 1px;background:#FFF;}@media print{#pe_p{display:none;}}");
+					//! serve real cache requests
 					default :
-						//! serve real cache requests
 						$c = self::get("c_$d");
 						if(is_array($c) && ! empty($c[ 'd' ])) {
 							Http::mime((! empty($c[ 'm' ]) ? $c[ 'm' ] : "text/plain"));
@@ -1199,7 +1210,7 @@ namespace PHPPE {
 	static function set($k, $v, $ttl=0)
 	{
 		if(!empty(self::$mc) && empty(Core::$core->nocache))
-			return @self::$mc->set($k, $v, MEMCACHE_COMPRESSED, $ttl>0?$ttl:Core::$core->cachettl);
+			return self::$mc->set($k, $v, MEMCACHE_COMPRESSED, $ttl>0?$ttl:Core::$core->cachettl);
 		return false;
 	}
 
@@ -1251,7 +1262,7 @@ namespace PHPPE {
 				function b($a, $b)
 				{
 					Http::mime($a == "css" ? "text/css" : ($a == "js" ? "text/javascript" : "image/png"));
-					die(Assets::minify($b, $a));
+					die($b);
 				}
 				//! let's try to get it from cache
 				$N = 'a_' . sha1(url() . Core::$user->id . "/". Core::$client->lang);
@@ -1263,7 +1274,7 @@ namespace PHPPE {
 					//! cache miss, we'll have to generate the asset
 					//! remove language code from core.js url. This "alias" allows per language cache
 					foreach([ Core::$core->url, 
-							preg_replace("/core\.[^\.]+\.js/", "core.js", Core::$core->url) . ".php" ] as $p) {
+							preg_replace("/^js\/core\.[^\.]+\.js/", "js/core.js", Core::$core->url) . ".php" ] as $p) {
 						$A = "vendor/phppe/*/" . strtr($p, [ "*" => "", ".." => "" ]);
 						$c = @glob($A, GLOB_NOSORT)[ 0 ];
 						if(empty($c))
@@ -1286,6 +1297,7 @@ namespace PHPPE {
 							}
 						}
 						if($d) {
+							$d=Assets::minify($d,$app);
 							//! save it to the cache for later
 							Cache::set($N, $d);
 							//! output result
@@ -1311,17 +1323,19 @@ namespace PHPPE {
 			if(!empty(Core::$core->nominify) || ($t != "css" && $t != "js" && $t != "php"))
 				return $d;
 			$d=trim($d);
-		
+
 			//! allow use of third party vendor code
 			if($t == "css" && class_exists("CSSMin") ) return \CSSMin::minify($d);
 			if($t == "js" && class_exists("JSMin") ) return \JSMin::minify($d);
-		
+
+
 			//! do the stuff ourself (fastest, safest, simpliest, and no dependency required at all...)
 			$n = ""; $i=0; $l=strlen($d);
 			while($i<$l)
 			{
+				$c=@substr($n,-1);
 				//! string literals
-				if($d[$i]=="'" || $d[$i]=='"')
+				if(($d[$i]=="'" || $d[$i]=='"') && $c!="\\")
 				{
 					$s=$d[$i];$j=$i;$i++;
 					while($i<$l && $d[$i]!=$s)
@@ -1345,7 +1359,6 @@ namespace PHPPE {
 					$i+=2;
 					continue;
 				}
-				$c=substr($n,-1);
 				//! remove tabs and line endings
 				if($d[$i]=="\t" || $d[$i]=="\r" || $d[$i]=="\n")
 				{
@@ -2305,7 +2318,7 @@ namespace PHPPE {
 								//! skip dynamic assets (they use a different caching mechanism)
 								foreach(self::$hdr["jslib"] as $u => $v)
 									if($v && substr($v, - 3) != "php")
-										$da .= Assets::minify(file_get_contents(substr($v,0,2)), "js") . "\n";
+										$da .= Assets::minify(file_get_contents(substr($v,2)), "js") . "\n";
 								Cache::set("c_$n", [ "m" => "text/javascript", "d" => $da ]);
 								// @codeCoverageIgnoreEnd
 							}
@@ -2331,6 +2344,7 @@ namespace PHPPE {
 					$a = "";
 					//! built-in stuff if core.js is not installed
 					if($P && !$i) {
+						// @codeCoverageIgnoreStart
 						$x = "document.getElementById(";
 						$y = ".style.visibility";
 						$a = "pe_t=setTimeout(function(){pe_p('');},2000)";
@@ -2338,6 +2352,7 @@ namespace PHPPE {
 						$c[ 'pe_p(i)' ] = "var o=i?${x}i):i;if(pe_t!=null)clearTimeout(pe_t);if(pe_c&&pe_c!=i)${x}pe_c)$y='hidden';pe_t=pe_c=null;if(o!=null&&o.style!=null){if(o$y=='visible')o$y='hidden';else{o$y='visible';pe_c=i;$a;}}return false;";
 						$c[ 'pe_w()' ] = "if(pe_t!=null)clearTimeout(pe_t);$a;return false;";
 						$a = ",pe_t,pe_c";
+						// @codeCoverageIgnoreEnd
 					}
 					if(! empty($c)) {
 						$O .= $d . ">\nvar pe_ot=" . ($P ? 31 : 0) . "$a;\n";
@@ -2559,7 +2574,7 @@ namespace PHPPE {
 		{
 //			Http::mime("text/plain", false);
 			echo("<pre>");
-			print_r($_SERVER);
+//			print_r($_SERVER);
 			print_r(self::$o);
 			echo("</pre>");
 			phpinfo();
@@ -3136,6 +3151,10 @@ namespace PHPPE {
 }
 				}
 
+				//! check dump argument here, by now all core properties are populated
+				if((@in_array("--dump", $_SERVER[ 'argv' ]) || isset($_REQUEST[ '--dump' ])) && $this->runlevel > 1)
+					View::dump();
+
 				//! if still no application found
 				if(!class_exists($appCls))
 				{
@@ -3188,9 +3207,6 @@ namespace PHPPE {
 				if(empty($T))
 					$T = L("Maintenance mode is on");
 			}
-			//! check dump argument here, by now all core properties are populated
-			if((@in_array("--dump", $_SERVER[ 'argv' ]) || isset($_REQUEST[ '--dump' ])) && $this->runlevel > 1)
-				View::dump();
 
 			//! close all database connections before output
 			DS::close();
@@ -3834,9 +3850,9 @@ namespace PHPPE\Cache {
 		foreach($files as $f) {
 			$ttl = intval(@file_get_contents($f));
 			$cf = substr($f,0,strlen($f)-4);
-			if($ttl<1 || time()-filemtime($cf) >= $ttl) {
-				unlink($f);
-				unlink($cf);
+			if($ttl<1 || time()-@filemtime($cf) >= $ttl) {
+				@unlink($f);
+				@unlink($cf);
 			}
 		}
 	 }
@@ -4212,9 +4228,8 @@ namespace PHPPE\AddOn {
 		{
 			$t = $this;
 			$e = Core::isError($t->name);
-			return($e ? "<span class='errinput'>" : "") .
-				"<input" . @View::v($t, $t->attrs[ 0 ], $t->attrs[ 1 ], $t->args) . " type='file'>&nbsp;(" . round(Core::$fm / 1048576) . "Mb)" .
-				($e ? "</span>" : "");
+			return"<nobr".($e ? " class='errinput'" : "") .
+				"><input" . @View::v($t, $t->attrs[ 0 ], $t->attrs[ 1 ], $t->args) . " type='file' style='display:inline;'>&nbsp;(" . round(Core::$fm / 1048576) . "Mb)</nobr>";
 		}
 	}
 
