@@ -52,7 +52,7 @@ Installation without Packagist
 ------------------------------
 
 There are many ways to install PHPPE if you don't want Packagist. You can use git, Composer alone, or use curl/wget.
-For detailed instructions and alternatives see documentation.
+For detailed instructions and alternatives see [documentation](http://bztsrc.github.io/phppe3/index.html#install).
 
 1. Create a webserver's document root in your project root
 
@@ -60,7 +60,7 @@ For detailed instructions and alternatives see documentation.
     $ mkdir public
     ```
 
-2. Download the framework (networkless alternative: copy it from the documentation and paste it into this command: `cat >public/index.php`)
+2. Download the framework (networkless alternative: copy it from the [documentation](http://bztsrc.github.io/phppe3/index.html#downloads) and paste it into this command: `cat >public/index.php`)
 
     ``` sh
     $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
@@ -95,7 +95,7 @@ or
 
     $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
-One Content Editor can feed several Content Servers. See documentation for more details on load balancing.
+One Content Editor can feed several Content Servers. See [documentation](http://bztsrc.github.io/phppe3/index.html#contents) for more details on load balancing.
 
 Extensions
 ----------
@@ -113,7 +113,7 @@ This will give you the standard webadmin feeling you're used to, but unlike the 
 Developing
 ----------
 
-If you plan to develop with PHPPE framework, you have to install the Developer package! It will give you a nice templater to generate php files,
+Even if you don't want to contribute to the framework, just using it, you have to install the Developer package! It will give you a nice templater to generate php files,
 and also ships a minimal, PHPUnit compatible testing framework.
 
     $ composer require "phppe/Developer"
