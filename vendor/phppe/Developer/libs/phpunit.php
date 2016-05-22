@@ -43,6 +43,13 @@ class PHPUnit_Framework_TestCase
 	    }catch(Exception $e){
 			if($e->getMessage()=="SKIP")
 				return "SKIP";
+			elseif($e->getMessage()=="FAIL")
+				return false;
+			else {
+				$d=$e->getTrace()[0];
+				echo("\nEXCEPTION ".get_class($e)." ".$e->getFile().":".$e->getLine().": " . $e->getMessage().
+					"\ncalled at ".basename($d['file']).":".$d['line']."\n");
+			}
 			return false;
 		}
 		return true;
@@ -52,6 +59,7 @@ class PHPUnit_Framework_TestCase
 	{
 		throw new Exception("SKIP");
 	}
+
 /**
  * common assertion handler
  */
@@ -64,7 +72,7 @@ class PHPUnit_Framework_TestCase
 		{
 			$d=debug_backtrace();
 			echo("FAIL (".$d[1]['function'].", ".basename($d[1]['file']).":".$d[1]['line']." ".$d[2]['function'].")\n");
-			throw new Exception;
+			throw new Exception("FAIL");
 		}
 		else
 			echo("OK\n");
@@ -120,7 +128,7 @@ class PHPUnit_Framework_TestCase
 
 	public function assertNotTrue($actual, $message = '')
 	{
-		$this->assert($actual!=true, $message);
+		$this->assert($actual!==true, $message);
 	}
 
 	public function assertFalse($actual, $message = '')
@@ -130,7 +138,7 @@ class PHPUnit_Framework_TestCase
 
 	public function assertNotFalse($actual, $message = '')
 	{
-		$this->assert($actual!=false, $message);
+		$this->assert($actual!==false, $message);
 	}
 
 	public function assertNull($actual, $message = '')

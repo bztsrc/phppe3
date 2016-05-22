@@ -177,19 +177,20 @@ class DB extends Extension
 		if(is_array($fields))
 			$this->fields += $fields;
 		else
-			$this->fields[] = $fields;
+			$this->fields += Core::x(",",$fields);
 		return $this;
 	}
 
 /**
  * Add where clause to query
  *
- * @param wheres array or string, array elemnt can be [left,condition,right]
+ * @param wheres array or string, array element can be [left,condition,right]
  * @param op operator, 'AND' or 'OR'. Only used if array passed
  * @return DB instance
  */
 	function where($wheres,$op="AND")
 	{
+		$op=strtoupper($op);
 		if($op!="AND"&&$op!="OR")
 			throw new DBException(L("Bad logical operator specified").": ".$op);
 		if(is_array($wheres)) {
@@ -198,16 +199,18 @@ class DB extends Extension
 				if(is_array($v)) {
 					if(empty($v[2])&&$v[1][0]!='I'&&$v[1][1]!='S')
 						throw new DBException(L("No right value")." #".$k.": ".$v[0]." ".$v[1]);
-					if(!in_array($v[1],["=","!=","<","<=",">",">=","LIKE","RLIKE","IS NULL","IS NOT NULL"]))
+					if(!in_array(strtoupper($v[1]),["=","!=","<","<=",">",">=","LIKE","RLIKE","IS NULL","IS NOT NULL"]))
 						throw new DBException(L("Bad conditional")." #".$k.": ".$v[1]);
-					$d[]=$v[0]." ".$v[1].
+					$d[]=$v[0]." ".strtoupper($v[1]).
 					(!empty($v[2])?" ".
 						($v[2]=="?"?$v[2]:
-							"'".str_replace(["\r","\n","\t","\x1a","\x00"],["\\r","\\n","\\t","\\x1a","\\x00"],addslashes($v[1]=="LIKE"?DS::like($v[2]):(is_array($v[2])||is_object($v[2])?json_encode($v[2]):$v[2])))."'")
+							"'".str_replace(["\r","\n","\t","\x1a","\x00"],["\\r","\\n","\\t","\\x1a","\\x00"],addslashes(strtoupper($v[1])=="LIKE"?DS::like($v[2]):(is_array($v[2])||is_object($v[2])?json_encode($v[2]):$v[2])))."'")
 					:"");
-				}
+				} else
+					$d[]=$v;
 			}
-			$this->wheres[] = "(".implode(" ".strtoupper($op)." ",$d).")";
+			if(!empty($d))
+				$this->wheres[] = "(".implode(" ".strtoupper($op)." ",$d).")";
 		} else
 			$this->wheres[] = $wheres;
 		return $this;
@@ -221,8 +224,6 @@ class DB extends Extension
 	function sql()
 	{
 		//! common checks
-		if(empty($this->command))
-			throw new DBException(L("No command specified"));
 		if(empty($this->table))
 			throw new DBException(L("No table specified"));
 		//! build sql
@@ -246,7 +247,10 @@ class DB extends Extension
 				$sql.=" INTO ". $this->table. " (".implode(",",$this->fields).") VALUES (?".str_repeat(",?",count($this->fields)-1).")";
 				if($this->command=="INSERT")
 					$this->wheres=[];
+				// BUG in CodeCoverage. Marks elseif uncovered, while throw is covered...
+				// @codeCoverageIgnoreStart
 				elseif(empty($this->wheres))
+				// @codeCoverageIgnoreEnd
 					throw new DBException(L("No where specified"));
 			break;
 			case "DELETE":
@@ -259,7 +263,9 @@ class DB extends Extension
 				$this->wheres=[];
 			break;
 			default:
+				// @codeCoverageIgnoreStart
 				throw new DBException(L("Unknown command").": ".$this->command);
+				// @codeCoverageIgnoreEnd
 		}
 		//! add where clause
 		if(count($this->wheres))

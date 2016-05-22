@@ -39,6 +39,8 @@ class Templater extends PHPUnit_Framework_TestCase
 			\PHPPE\View::get("test1"),
 			"Raw template file");
 
+		\PHPPE\DS::close();
+		$ds = new \PHPPE\DS("sqlite::memory:");
 		\PHPPE\DS::exec("UPDATE views SET css='[\"a.css\"]' WHERE id='simple'");
 		$this->assertNotEmpty(\PHPPE\View::get("simple"),"Raw template db");
 		\PHPPE\DS::exec("UPDATE views SET css='' WHERE id='simple'");
@@ -173,7 +175,10 @@ class Templater extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$core->runlevel=1;
 		$this->assertEquals(1,preg_match("/stdClass Object/",\PHPPE\View::_t("<!dump obj>")),"Dump #2");
 		\PHPPE\Core::$core->runlevel=2;
-		$this->assertEquals(1,preg_match("/string\(7\) \"dyntest\"/",\PHPPE\View::_t("<!dump obj>")),"Dump #3");
+		$d=\PHPPE\View::_t("<!dump obj>");
+		$this->assertEquals(1,
+			preg_match("/string\(7\) \"dyntest\"/",$d)||
+			preg_match("/var\-dump/",$d),"Dump #3");
 		$this->assertEquals(0,preg_match("/pe_u/",\PHPPE\View::_t("<!dump _SESSION>")),"Dump #4");
 
 		\PHPPE\Core::$core->noframe=false;

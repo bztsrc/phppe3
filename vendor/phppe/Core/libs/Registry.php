@@ -23,7 +23,7 @@
  * @brief key-value registry for Extension configuration, included in Pack
  */
 namespace PHPPE;
-use PHPPE\Core as PHPPE;
+use PHPPE\DS as DS;
 
 class Registry extends Extension {
 
@@ -40,7 +40,7 @@ class Registry extends Extension {
 		$value=null;
 		//try to read from database...
 		try {
-			$value = PHPPE::field("data","registry","name=?","","",[$key]);
+			$value = DS::field("data","registry","name=?","","",[$key]);
 		} catch(\Exception $e) {
 		//...fallback to files
 			$v = trim(@file_get_contents("data/registry/".$key));
@@ -63,11 +63,17 @@ class Registry extends Extension {
 		$value=is_array($value)||is_object($value)?json_encode($value):trim($value);
 		//try to save to database...
 		try {
-			if(!PHPPE::exec("REPLACE INTO registry (name,data) VALUES (?,?)",[$key,$value])) throw new \Exception();
+			if(!DS::exec("REPLACE INTO registry (name,data) VALUES (?,?)",[$key,$value]))
+				//!if exec returns 0 records updated somehow...
+				// @codeCoverageIgnoreStart
+				throw new \Exception();
+				// @codeCoverageIgnoreEnd
+			else
+				return true;
 		} catch(\Exception $e) {
 		//...fallback to files
 			@mkdir("data/registry");
-			file_put_contents("data/registry/".$key,$value);
+			return file_put_contents("data/registry/".$key,$value)>0?true:false;
 		}
 	}
 
@@ -81,12 +87,8 @@ class Registry extends Extension {
 		$key=preg_replace("/[^a-zA-Z0-9_]/","",$key);
 		//remove both database record as well as file
 		try {
-			@PHPPE::exec("DELETE FROM registry WHERE name=?",[$key]);
-		} catch(\Exception $e) {
-		}
-		try {
-			@unlink("data/registry/".$key);
-		} catch(\Exception $e) {
-		}
+			@DS::exec("DELETE FROM registry WHERE name=?",[$key]);
+		} catch(\Exception $e) {}
+		@unlink("data/registry/".$key);
 	}
 }

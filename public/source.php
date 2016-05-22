@@ -981,6 +981,10 @@ namespace PHPPE {
 						Core::log("E", $E, "db");
 						throw $e;
 					}
+					if(is_array($h->s))
+						foreach($h->s as $k => $v)
+							if($k[0]!="_")
+								$c = preg_replace("/".$k."/ims", $v, $c);
 					//! execute schema creation commands
 					$c = Core::x(";", $c);
 					foreach($c as $n => $C) {
@@ -1133,7 +1137,7 @@ namespace PHPPE {
 				$f="vendor/phppe/".$m[0]."/libs/Cache.php";
 				if(empty(self::$mc) && file_exists($f)) self::$mc = include_once($f);
 				//! if none, fallback to memcache
-				if(empty(self::$mc)) {
+				if(!is_object(self::$mc)) {
 					// @codeCoverageIgnoreStart
 					//! unix file: "unix:/tmp/fifo", "host" or "host:port" otherwise
 					if($m[ 0 ] == "unix") {
@@ -1150,10 +1154,10 @@ namespace PHPPE {
 					self::$mc = new $M;
 					//Core::$mc->addServer( $h, $p );
 					//$s = @Core::$mc->getExtendedStats(  );
-					if(/*empty( $s[ $h . ( $p > 0 ? ":" . $p : "" ) ] ) || */ ! self::$mc->pconnect($h, $p, 1)) {
+					if(/*empty( $s[ $h . ( $p > 0 ? ":" . $p : "" ) ] ) || */ ! @self::$mc->pconnect($h, $p, 1)) {
 						// @codeCoverageIgnoreStart
 						usleep(100);
-						if(! self::$mc->pconnect($h, $p, 1))
+						if(! @self::$mc->pconnect($h, $p, 1))
 							self::$mc = null;
 						// @codeCoverageIgnoreEnd
 					}
@@ -1161,6 +1165,8 @@ namespace PHPPE {
 				//! let rest of the world know about us
 				if(is_object(self::$mc))
 					$this->name=$M;
+				else
+					self::$mc=null;
 			}
 			//! built-in blobs - referenced as cached objects
 			//! this should go to init(), but we serve them as soon
@@ -2715,7 +2721,7 @@ namespace PHPPE {
 
 			set_exception_handler(function($e)
 			{
-				self::log('C', "Exception ".$e->getFile()."(".$e->getLine()."): " . $e->getMessage().(\PHPPE\View::$e?"\n".\PHPPE\View::$e:"").(empty(Core::$core->trace)?"":"\n\t".strtr($e->getTraceAsString(),["\n"=>"\n\t"])),$e->getTrace()[0]['function']=="getval"?"view":"");
+				self::log('C', get_class($e)." ".$e->getFile()."(".$e->getLine()."): " . $e->getMessage().(\PHPPE\View::$e?"\n".\PHPPE\View::$e:"").(empty(Core::$core->trace)?"":"\n\t".strtr($e->getTraceAsString(),["\n"=>"\n\t"])),$e->getTrace()[0]['function']=="getval"?"view":"");
 			});
 
 			ini_set("error_log", dirname(__DIR__) . "/phppe/log/php.log");

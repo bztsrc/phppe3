@@ -30,6 +30,13 @@ class Cache extends PHPUnit_Framework_TestCase
 		$this->assertEquals("value",\PHPPE\Cache::$mc->get("key2"),"Memcached set/get");
 	}
 
+	public function testNoServer()
+	{
+		\PHPPE\Cache::$mc=null;
+		$mem = new \PHPPE\Cache("noSuchServer");
+		$this->assertNull(\PHPPE\Cache::$mc,"No memcache server");
+	}
+
 	//! overall cache tests
 	public function testCache()
 	{

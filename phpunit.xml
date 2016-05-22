@@ -7,9 +7,10 @@
  <filter>
   <whitelist processUncoveredFilesFromWhitelist="true">
    <file>public/source.php</file>
+   <directory>vendor/phppe/Core/libs</directory>
   </whitelist>
  </filter>
  <logging>
-  <log type="coverage-text" target="coverage.txt"/>
+  <log type="coverage-html" target="public/coverage"/>
  </logging>
 </phpunit>
