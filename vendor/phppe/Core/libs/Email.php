@@ -201,12 +201,8 @@ class Email extends Extension {
 			return DS::exec("INSERT INTO email_queue (data,created) VALUES (?,?);", [$this->get(),\PHPPE\Core::$core->now] )>0?true:false;
 		} elseif($this->via == "phpmailer") {
 			//! PHP Mailer
-			if( !class_exists("PHPMailer") )
-				@include_once("vendor/phpmailer/PHPMailerAutoload.php");
-			if( !class_exists("PHPMailer") )
-				@include_once("vendor/phpmailer/phpmailer/PHPMailerAutoload.php");
-			if( !class_exists("PHPMailer") )
-				throw new EmailException(L("PHPMailer not loaded!"));
+			if( !\PHPPE\ClassMap::has("PHPMailer") )
+				throw new EmailException(L("PHPMailer not installed!"));
 			// @codeCoverageIgnoreStart
 			$mail = new \PHPMailer();
 			$mail->Subject = $this->header["Subject"];

@@ -23,8 +23,6 @@
  * @brief Initialize Developer extension
  */
 
-include_once(__DIR__."/libs/Testing.php");
-
 use PHPPE\Core as Core;
 
 //! register menu
@@ -37,9 +35,9 @@ use PHPPE\Core as Core;
 //! register url routes.
 \PHPPE\Http::route("tests", "Developer");
 //! these are CLI only
-\PHPPE\Http::route("mkrepo", "Developer");
-\PHPPE\Http::route("deploy", "Developer");
-\PHPPE\Http::route("create", "Developer");
+\PHPPE\Http::route("mkrepo", "MkRepoController");
+\PHPPE\Http::route("deploy", "DeployController");
+\PHPPE\Http::route("create", "CreateController");
 
 //for event testing
 return new Testing();

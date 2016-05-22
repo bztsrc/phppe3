@@ -1,7 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
-class System extends PHPUnit_Framework_TestCase
+class SystemTest extends PHPUnit_Framework_TestCase
 {
 	public function testEvent()
 	{
@@ -12,6 +12,7 @@ class System extends PHPUnit_Framework_TestCase
 
 	public function testCore()
 	{
+		@unlink("vendor/phppe/autoload.php");
 		@$core = new \PHPPE\Core(true);
 		$this->assertNotEmpty($core->base,"Base");
 		$this->assertNotEmpty($core->url,"Url");
@@ -213,5 +214,6 @@ class System extends PHPUnit_Framework_TestCase
 		$this->assertFalse(is_dir("data/a"),"Removing directories");
 		
 	}
+
 }
 ?>

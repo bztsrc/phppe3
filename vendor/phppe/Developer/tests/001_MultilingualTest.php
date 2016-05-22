@@ -1,7 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
-class Multilingual extends PHPUnit_Framework_TestCase
+class MultilingualTest extends PHPUnit_Framework_TestCase
 {
 	public function testMultilingual()
 	{

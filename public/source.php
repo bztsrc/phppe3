@@ -146,6 +146,29 @@ namespace PHPPE {
 		public $screen=[];		//!< screen dimensions
 		public $geo=[];			//!< geo location data (filled in by a third party extension)
 
+		function __construct()
+		{
+			Core::$client=$this;
+			//! start user session
+			session_name(! empty(Core::$core->sessionvar) ? Core::$core->sessionvar : "pe_sid");
+			@session_start();
+			//! refresh session cookie
+			if(ini_get("session.use_cookies"))
+				@setcookie(session_name(), session_id(), Core::$core->now + Core::$core->timeout,
+				 "/", Core::$core->base, ! empty(Core::$core->secsession) ? 1 : 0, 1);
+			//! destroy user session if requested
+			if(isset($_REQUEST[ 'clear' ])) {
+				// @codeCoverageIgnoreStart
+				//! save logged in user if any
+				$d='pe_u';
+				$u = @$_SESSION[ $d ];
+				$_SESSION = [];
+				$_SESSION[ $d ] = $u;
+				//! redirect user to reload everything
+				Http::redirect();
+				// @codeCoverageIgnoreEnd
+			}
+		}
 /**
  * Initialize event
  * 
@@ -155,7 +178,6 @@ namespace PHPPE {
 		function init($cfg=[])
 		{
 			Core::$l = [];
-			Core::$client=$this;
 			View::assign("client",$this);
 			//! set up client's prefered language
 			$L = 'pe_l';
@@ -1126,18 +1148,14 @@ namespace PHPPE {
 				foreach([$m[0],ucfirst($m[0]),strtoupper($m[0])] as $M)
 				{
 					$d="\\PHPPE\\Cache\\".$M;
-					if(class_exists($d))
+					if(ClassMap::has($d))
 					{
 						self::$mc=new $d($cfg);
 						break;
 					}
 				}
-				//! give chance to extensions. Cache is loaded so early, they're not
-				//! initialized yet
-				$f="vendor/phppe/".$m[0]."/libs/Cache.php";
-				if(empty(self::$mc) && file_exists($f)) self::$mc = include_once($f);
 				//! if none, fallback to memcache
-				if(!is_object(self::$mc)) {
+				if(empty(self::$mc)) {
 					// @codeCoverageIgnoreStart
 					//! unix file: "unix:/tmp/fifo", "host" or "host:port" otherwise
 					if($m[ 0 ] == "unix") {
@@ -2101,9 +2119,7 @@ namespace PHPPE {
 								$v = self::getval($n);
 							//find appropriate class for AddOn
 							$d = "\\PHPPE\\Addon\\".$f;
-							if(! class_exists($d) && $D = @glob("vendor/phppe/*/addons/" . $f . ".php")[ 0 ])
-								include_once($D);
-							if(class_exists($d) && is_subclass_of($d, "\\PHPPE\\AddOn")) {
+							if(ClassMap::has($d)) {
 								//ok, got it
 								$F = new $d($a, $n, $v, $A, $R);
 								//if it has an init() method, and not called yet, call it
@@ -2113,7 +2129,7 @@ namespace PHPPE {
 									else
 										Core::addon($f, "addon $f");
 								//add validators
-								if($R || $f == "check" || $f == "file" || method_exists("\\PHPPE\\Addon\\".$f, "validate"))
+								if($R || $f == "check" || $f == "file" || method_exists($d, "validate"))
 									$_SESSION[ "pe_v" ][ $n ][ $f ] = [ $R, $a, $A ];
 								//find out method to use to draw AddOn
 								$m = !$G && ($t == "field" || ! empty($_SESSION[ $V ? "pe_e" : "pe_c" ])) && method_exists($F, "edit") ? "edit" : "show";
@@ -2578,12 +2594,13 @@ namespace PHPPE {
  */
 		static function dump()
 		{
-//			Http::mime("text/plain", false);
-			echo("<pre>");
-//			print_r($_SERVER);
+			Http::mime("text/plain", false);
+//			echo("<pre>");
+			print_r($_SERVER);
 			print_r(self::$o);
-			echo("</pre>");
-			phpinfo();
+			print_r(Http::route());
+//			echo("</pre>");
+//			phpinfo();
 			die;
 		}
 // @codeCoverageIgnoreEnd
@@ -2651,6 +2668,123 @@ namespace PHPPE {
 		}
 	}
 // @codeCoverageIgnoreEnd
+
+/**
+ * ClassMap autoloader
+ */
+class ClassMap extends Extension
+{
+	static $file = "vendor/phppe/autoload.php";
+	static $map = [];
+
+/**
+ * Contructor
+ */
+	function __construct()
+	{
+		//! generate classmap file if it's not exists or forced
+		if(!file_exists(self::$file) || @$_SERVER[ "argv" ][ 1 ] == "--diag")
+			$this->diag();
+		//! load it
+		if(empty(self::$map))
+			// @codeCoverageIgnoreStart
+			self::$map=@include_once(self::$file);
+			// @codeCoverageIgnoreEnd
+		if(!is_array(self::$map)) self::$map = [];
+		//! register class loader
+		spl_autoload_register(function($c){
+			$m=\PHPPE\ClassMap::$map;if(!class_exists($c) && !empty($m[strtolower($c)])) include_once($m[strtolower($c)]);
+		});
+	}
+
+/**
+ * Check if a class exists
+ *
+ * @param classname
+ * @return true if it's exists or loadable
+ */
+	static function has($c)
+	{
+		return class_exists($c) || isset(self::$map[strtolower($c)]);
+	}
+
+/**
+ * Diagnostics hook
+ * Generate classmap for autoload
+ */
+    public function diag()
+    {
+		//! get list of php files
+		$D=[]; $R=[];
+		foreach(["*/*","*/*/*","*/*/*/*","*/*/*/*/*","*/*/*/*/*/*"] as $v)
+			$D+=array_fill_keys(@glob("vendor/".$v.".php"),0);
+		//iterate on list
+		foreach($D as $fn=>$v) {
+			//! skip generated autoload.php, and directories marked
+			if(strpos(strtolower($fn),"autoload")!==false||
+				file_exists(dirname($fn)."/.skipautoload")) continue;
+				//! load php code
+				$d=file_get_contents($fn);
+				//! skip if file marked
+				if(strpos($d,"/*!SKIPAUTOLOAD!*/")!==false) continue;
+				$i=0;$l=strlen($d);$ns="";
+				while($i<$l && substr($d,$i,2)!="<"."?") $i++;
+				while($i<$l)
+				{
+					if(substr($d,$i,2)=="?".">") {
+						while($i<$l && substr($d,$i,2)!="<"."?") $i++;
+						continue;
+					}
+					//! string literals
+					if(($d[$i]=="'" || $d[$i]=='"'))
+					{
+						$s=$d[$i];$j=$i;$i++;
+						while($i<$l && $d[$i]!=$s)
+						{
+							if($d[$i]=="\\") $i++;
+							$i++;
+						}
+						$i++;
+						continue;
+					}
+					//! remove comments
+					if($d[$i]=='/' && $d[$i+1]=='/') {
+						$s=$i; $i+=2;
+						while($i<$l && $d[$i]!="\n") $i++;
+						continue;
+					}
+					if($d[$i]=='/' && $d[$i+1]=='*') {
+						$s=$i; $i+=2;
+						while($i+1<$l && ($d[$i]!='*' || $d[$i+1]!='/')) $i++;
+						$i+=2;
+						continue;
+					}
+					//! check for namespace and class declarations
+					if(($d[$i]=='n'||$d[$i]=='c') &&
+						preg_match("/^(namespace|class)[\ \t\n]+([^\ \t\n;{\[\(\]\)\$]+)/ims",substr($d,$i),$m) &&
+						ctype_alpha(trim($m[2])[0]))
+					{
+						$c=trim($m[2]);
+						if(strtolower($m[1][0])=="n")
+							$ns=$c;
+						else
+							$R[strtolower($ns.($ns?"\\":"").$c)]=$fn;
+						$i+=strlen($m[0]);
+					}
+					$i++;
+				}
+		}
+		//! sort list of classes alphabetically
+		ksort($R);
+		//! save new autoload.php
+		@mkdir(dirname(self::$file), 0750, true);
+        $ret="<"."?php\n/**\n *  PHP Portal Engine v".VERSION."\n *  https://github.com/bztsrc/phppe3/\n *\n *  Copyright LGPL 2016 bzt\n *\n * @file ".self::$file."\n * @date ".@date("r",Core::$core->now)."\n * @brief This file was generated by PHPPE ClassMap\n * @regenwith php public/index.php --diag\n */\nreturn [\n";
+        foreach($R as $k=>$v)
+            $ret.="  \"".addslashes($k)."\" => \"".addslashes($v)."\",\n";
+        $ret.="];\n";
+		file_put_contents(self::$file,$ret,LOCK_EX);
+    }
+}
 
 /****** PHPPE Core ******/
 /**
@@ -2723,7 +2857,6 @@ namespace PHPPE {
 			{
 				self::log('C', get_class($e)." ".$e->getFile()."(".$e->getLine()."): " . $e->getMessage().(\PHPPE\View::$e?"\n".\PHPPE\View::$e:"").(empty(Core::$core->trace)?"":"\n\t".strtr($e->getTraceAsString(),["\n"=>"\n\t"])),$e->getTrace()[0]['function']=="getval"?"view":"");
 			});
-
 			ini_set("error_log", dirname(__DIR__) . "/phppe/log/php.log");
 			ini_set("log_errors", 1);
 			//! php version check
@@ -2838,16 +2971,18 @@ namespace PHPPE {
 			//! session restore may require models, so we have to
 			//! load all classes *before* session_start()
 
-			//! PHP Composer / PHPPE ClassMap autoload support (if exists)
+			//! PHP Composer autoload support (if exists)
 			@include_once("vendor/autoload.php");
+
+			//! PHP ClassMap autoload
+			$this->libs["ClassMap"]=new ClassMap;
 			//! register built-in modules
 			$this->libs["DS"]=new DS($this->db);
 			$this->libs["Client"]=new Client;
 			$cls = "\\PHPPE\\User";
 			//! this code is tricky. Core defines PHPPE\User, while Pack ships PHPPE\Users.
 			//! we'll use the later if found, and fallback to the former.
-			@include_once("vendor/phppe/Core/libs/Users.php");
-			if(class_exists($cls."s")) $cls .= "s";
+			if(ClassMap::has($cls."s")) $cls .= "s";
 			$this->libs["Users"]=new $cls;
 			$this->libs["Cache"]=new Cache($this->cache);
 			$this->libs["Assets"]=new Assets;
@@ -2860,38 +2995,18 @@ namespace PHPPE {
 				$c=basename($f);
 				self::$paths[strtolower($c)]=$f;
 				//! look for init code. This file should
-				//!  1. load required classes under libs/ if any
-				//!  2. set routes if any
-				//!  3. return a service instance if any
+				//!  1. set routes if any
+				//!  2. return a service instance if any
 				//! an empty init.php will also load the extension
 				if(!in_array($c, $this->disabled) &&
 					file_exists($f."/init.php"))
 				{
 					$cls="\\PHPPE\\".$c;
 					$o = include_once($f."/init.php");
-					if(!is_object($o) && class_exists($cls) && $c!="Core") $o = new $cls;
+					if(!is_object($o) && $c!="Core" && ClassMap::has($cls)) $o = new $cls;
 					if(empty($this->libs[ $c ]))
 						$this->libs[ $c ] = is_object($o) ? $o : new Extension;
 				}
-			}
-			//! start user session
-			session_name(! empty($this->sessionvar) ? $this->sessionvar : "pe_sid");
-			session_start();
-			//! refresh session cookie
-			if(ini_get("session.use_cookies"))
-				setcookie(session_name(), session_id(), $this->now + $this->timeout,
-				 "/", $this->base, ! empty($this->secsession) ? 1 : 0, 1);
-			//! destroy user session if requested
-			if(isset($_REQUEST[ 'clear' ])) {
-				// @codeCoverageIgnoreStart
-				//! save logged in user if any
-				$d='pe_u';
-				$u = @$_SESSION[ $d ];
-				$_SESSION = [];
-				$_SESSION[ $d ] = $u;
-				//! redirect user to reload everything
-				Http::redirect();
-				// @codeCoverageIgnoreEnd
 			}
 
 			//! detect bootstrap type
@@ -2931,7 +3046,6 @@ namespace PHPPE {
 		private function bootdiag()
 		{
 			//! we'll need some information from the client
-			Core::$client=new Client;
 			Core::$client->init();
 			ini_set( "display_errors", 1 );
 			//! extensions checks and webserver group id
@@ -3038,7 +3152,7 @@ namespace PHPPE {
 			//! create files
 			umask(0027);
 			i("app/config.php", "");
-			i("app/init.php", "<"."?php\n//! include your classes here (if any)\n//include_once(__DIR__.'/libs/...');\n\n//! set your routes here (if any)\n//\\PHPPE\\Http::route('myurl','myClass','myMethod');\n\n//! return service instance (if any)\n//return new myService;\n");
+			i("app/init.php", "<"."?php\n//! set your routes here (if any)\n//\\PHPPE\\Http::route('myurl','myClass','myMethod');\n\n//! return service instance (if any)\n//return new myService;\n");
 			i( "public/.htaccess","RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n");
 			i("public/favicon.ico", "");
 			i("vendor/phppe/Core/config.php", "");
@@ -3092,9 +3206,9 @@ namespace PHPPE {
 
 			if(empty($this->maintenance))
 			{
-
 				//! get application and action
 				list($app,$ac,$args) = HTTP::urlMatch($app,$ac,$this->url);
+
 				//! *** ROUTE Event ***
 				list($app,$ac) = self::event("route", [ $app, $ac ]);
 
@@ -3108,54 +3222,10 @@ namespace PHPPE {
 					$this->template = $app."_".$ac;
 
 				//! canonize application's controller class
-				$cls = get_declared_classes();
-				$appCls = $app;
-				foreach($cls as $c)
-				{
-					if(substr($c,0,10)=="PHPPE\\Ctrl" &&
-						strtolower(substr($c,-strlen($app)-1))=="\\".strtolower($app))
-					{
-						$appCls=$c;
-						break;
-					}
-				}
-
-				//! look for controller in a separate file
-				if(!method_exists($appCls,$ac))
-				{
-					foreach([
-						//! in app you can override extension's controller
-						//! but application name mandatory
-						"app/ctrl/".$app."_".$ac.".php",
-						"app/ctrl/".$this->app."_".$this->action.".php",
-						//! best practice: extension name equals app name
-						//! and ctrl directory holds action.php
-						@self::$paths[strtolower($app)]."/ctrl/".$ac.".php",
-						//! in case an extension ships more applications
-						@self::$paths[strtolower($app)]."/ctrl/".$app."_".$ac.".php",
-						@self::$paths[strtolower($app)]."/ctrl/".$this->app."_".$this->action.".php",
-						@self::$paths[strtolower($app)]."/ctrl/".$this->app.".php"
-						] as $d){
-						if(!empty($d) && file_exists($d))
-						{
-							//! get the first controller class declared in that file
-							$cnt = count($cls);
-							include_once($d);
-							$cls2 = get_declared_classes();
-							for($i=$cnt;$i<count($cls2);$i++)
-							{
-								if(substr($cls2[$i],0,10)=="PHPPE\\Ctrl")
-								{
-									$appCls=$cls2[$i];
-									unset($cls2);
-									break 2;
-								}
-							}
-							unset($cls2);
-							break;
-						}
-}
-				}
+				if(ClassMap::has("PHPPE\\Ctrl\\".$app))
+					$appCls = "PHPPE\\Ctrl\\".$app;
+				else
+					$appCls = $app;
 
 				//! check dump argument here, by now all core properties are populated
 				if((@in_array("--dump", $_SERVER[ 'argv' ]) || isset($_REQUEST[ '--dump' ])) && $this->runlevel > 1)
@@ -3345,10 +3415,9 @@ namespace PHPPE {
 		static function isInst($n)
 		{
 			//! check for installed module or..
-			return (isset(self::$core->libs[ $n ]) ||
-			//! ...available addon. The latter maybe not loaded yet
-				isset(self::$core->addons[ $n ]) || class_exists("\\PHPPE\\AddOn\\".$n) ||
-				! empty(@glob("vendor/phppe/*/addons/" . $n . ".php")[ 0 ]));
+			return (isset(self::$core->libs[ $n ]) || ClassMap::has("\\PHPPE\\".$n) ||
+			//! ...available addon.
+				isset(self::$core->addons[ $n ]) || ClassMap::has("\\PHPPE\\AddOn\\".$n) || ClassMap::has($n));
 		}
 
 /**

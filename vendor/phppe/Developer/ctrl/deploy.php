@@ -4,9 +4,7 @@
  */
 namespace PHPPE\Ctrl;
 
-include_once(__DIR__."/../libs/Repository.php");
-
-class Developer {
+class DeployController {
 
 	function __construct()
 	{

@@ -1,5 +1,5 @@
 <?php
-class Picture extends PHPUnit_Framework_TestCase
+class PictureTest extends PHPUnit_Framework_TestCase
 {
 	public function testPicture()
 	{

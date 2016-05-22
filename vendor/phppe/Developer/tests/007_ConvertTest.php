@@ -1,5 +1,5 @@
 <?php
-class Convert extends PHPUnit_Framework_TestCase
+class ConvertTest extends PHPUnit_Framework_TestCase
 {
 	public function testConvert()
 	{

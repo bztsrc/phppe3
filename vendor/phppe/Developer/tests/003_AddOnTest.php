@@ -1,7 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
-class BuiltInAddon extends PHPUnit_Framework_TestCase
+class AddonTest extends PHPUnit_Framework_TestCase
 {
 	public function testBuiltInAddons()
 	{

@@ -1,11 +1,11 @@
 <?php
 use PHPPE\Core as Core;
 
-class Users extends PHPUnit_Framework_TestCase
+class UsersTest extends PHPUnit_Framework_TestCase
 {
 	public function testUsers()
 	{
-		if(!class_exists("PHPPE\Users"))
+		if(!\PHPPE\ClassMap::has("PHPPE\Users"))
 			$this->markTestSkipped();
 
 		$user = new \PHPPE\Users;

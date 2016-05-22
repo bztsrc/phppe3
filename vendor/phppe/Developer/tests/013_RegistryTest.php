@@ -1,7 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
-class Registry extends PHPUnit_Framework_TestCase
+class RegistryTest extends PHPUnit_Framework_TestCase
 {
 	public function testRegistry()
 	{

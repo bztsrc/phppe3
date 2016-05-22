@@ -1,5 +1,5 @@
 <?php
-class Cache extends PHPUnit_Framework_TestCase
+class CacheTest extends PHPUnit_Framework_TestCase
 {
 	//! driver specific tests
 	public function testAPC()

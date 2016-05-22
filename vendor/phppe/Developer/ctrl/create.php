@@ -5,9 +5,7 @@
  */
 namespace PHPPE\Ctrl;
 
-include_once(__DIR__."/../libs/Templates.php");
-
-class Developer {
+class CreateController {
 
 	function __construct()
 	{

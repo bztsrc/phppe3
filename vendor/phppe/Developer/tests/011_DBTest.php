@@ -1,11 +1,11 @@
 <?php
 use PHPPE\Core as Core;
 
-class DB extends PHPUnit_Framework_TestCase
+class DBTest extends PHPUnit_Framework_TestCase
 {
 	public function testDB()
 	{
-		if(!class_exists("PHPPE\DB"))
+		if(!\PHPPE\ClassMap::has("PHPPE\DB"))
 			$this->markTestSkipped();
 
 		$this->assertEquals(

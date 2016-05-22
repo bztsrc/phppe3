@@ -23,12 +23,5 @@
  * @brief PHPPE Users
  */
 
-//! register libraries shipped with Pack
-foreach(["DB", "Email", "Registry"] as $lib)
-{
-	include_once(__DIR__."/libs/".$lib.".php");
-	\PHPPE\Core::lib($lib, "\\PHPPE\\".$lib);
-}
-
 //! add JavaScript library to output with highest priority
 \PHPPE\View::jslib("jquery.min.js","",0);

@@ -1,5 +1,5 @@
 <?php
-class DataSource extends PHPUnit_Framework_TestCase
+class DataSourceTest extends PHPUnit_Framework_TestCase
 {
 	public function testDataSource()
 	{
@@ -133,6 +133,9 @@ class DataSource extends PHPUnit_Framework_TestCase
 	{
 		include_once(__DIR__."/../libs/TestModel.php");
 
+		//@\PHPPE\DS::db("mysql:host=localhost;dbname=testdb");
+		@include_once("vendor/phppe/Core/libs/ds_mysql.php");
+		
 		\PHPPE\DS::close();
 		\PHPPE\DS::db("sqlite::memory:");
 
