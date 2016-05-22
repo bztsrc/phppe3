@@ -9,7 +9,7 @@
 	"license": "LGPL-3.0+",
 
 	"repositories":[
-		{"type":"composer","url":"https://raw.githubusercontent.com/bztsrc/phppe3/master/"}
+		{"type":"composer","url":"http://bztsrc.github.io/phppe3/"}
 	],
 
 	"require": {
