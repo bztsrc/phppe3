@@ -81,7 +81,7 @@ For detailed instructions and alternatives see [documentation](http://bztsrc.git
     or without Composer
 
     ``` sh
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_core.tgz | tar -xz -C vendor/phppe/Core && sudo php public/index.php --diag
+    $ curl https://bztsrc.github.io/phppe3/phppe3_core.tgz | tar -xz -C vendor/phppe/Core && sudo php public/index.php --diag
     ```
 
 Content Management
@@ -93,7 +93,7 @@ This single file also serves as a Content Server. You can install the CMS Conten
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
+    $ curl https://bztsrc.github.io/phppe3/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
 One Content Editor can feed several Content Servers. See [documentation](http://bztsrc.github.io/phppe3/index.html#contents) for more details on load balancing.
 
@@ -106,7 +106,7 @@ If you want a web based interface for extension management, install
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_extensions.tgz | tar -xz -C vendor/phppe/Extensions
+    $ curl https://bztsrc.github.io/phppe3/phppe3_extensions.tgz | tar -xz -C vendor/phppe/Extensions
 
 This will give you the standard webadmin feeling you're used to, but unlike the competition, works in a secure way.
 
@@ -120,7 +120,7 @@ and also ships a minimal, PHPUnit compatible testing framework.
 
 or
 
-    $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/phppe3_developer.tgz | tar -xz -C vendor/phppe/Developer
+    $ curl https://bztsrc.github.io/phppe3/phppe3_developer.tgz | tar -xz -C vendor/phppe/Developer
 
 This will provide you utilities like
 
