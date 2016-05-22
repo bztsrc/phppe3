@@ -7,7 +7,7 @@
 	"version_normalized": "3.0.0.0",
 	"type": "project",
 	"license": "LGPL-3.0+",
-    "homepage: "https://bztsrc.github.io/phppe3/",
+    "homepage": "https://bztsrc.github.io/phppe3/",
 
 	"repositories":[
 		{"type":"composer","url":"https://bztsrc.github.io/phppe3/"}
