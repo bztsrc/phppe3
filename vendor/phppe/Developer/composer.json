@@ -27,7 +27,7 @@
 	"license": "LGPL-3.0+",
 
 	"require": {
-		"phppe/core": "3.*"
+		"phppe/Core": ">=3.0"
 	},
 
 	"maintainer": { "name": "bzt" }

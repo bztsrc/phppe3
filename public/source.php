@@ -3156,7 +3156,7 @@ class ClassMap extends Extension
 			i( "public/.htaccess","RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n");
 			i("public/favicon.ico", "");
 			i("vendor/phppe/Core/config.php", "");
-			$U = "https://raw.githubusercontent.com/bztsrc/phppe3/master/";
+			$U = "http://bztsrc.github.io/phppe3/";
 			$D = "vendor/phppe/Core/views/";
 			$e = ".tpl";
 			$c = "<!dump core.req2arr('obj')>";

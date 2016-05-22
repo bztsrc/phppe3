@@ -78,7 +78,9 @@
     },
 
 	"support": {
-		"source": "https://github.com/bztsrc/phppe3/"
+		"source": "https://github.com/bztsrc/phppe3/",
+        "wiki": "http://bztsrc.github.io/phppe3/"
 	},
+
 	"maintainer": { "name": "bzt" }
 }

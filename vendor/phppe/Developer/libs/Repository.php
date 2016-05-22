@@ -29,7 +29,8 @@ class Repository
 	static $sourceFile="public/source.php";
 	static $deployFile="public/index.php";
 	//! This can be overridden from command line
-	static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
+    static $repoBase="http://bztsrc.github.io/phppe3/";
+	//static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
 	//! valid extension categories
 	static $categories=["Connections","Content","Security","Business","Sales","Office","Games","Banners","Hardware"];
 
