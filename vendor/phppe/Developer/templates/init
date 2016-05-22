@@ -5,6 +5,8 @@
 }
 <?php
 @@LICENSE
+namespace PHPPE;
+
 //! add your routes here
 //\PHPPE\Http::route("@extension@", "@Extension@Controller", "action");
 

@@ -1,0 +1,21 @@
+{
+	"name": "phppe/CookieAlert",
+	"name_en": "Cookie Alert",
+	"name_hu": "Süti figyelmeztetés",
+	"keywords": [ "Content" ],
+
+	"description": "Displays a warning on page until cookie policy accepted.",
+	"description_hu": "Egy figyelmeztetést dob fel, amíg a süti házirendet el nem fogadják.",
+
+	"version": "1.0.0",
+	"version_normalized": "1.0.0.0",
+
+	"conf":{"cookiename":"string(cookiealert_acked)","message":"string(This site uses cookies. By continuing to browse the site, you are agreeing to our use of cookies.)","morelabel":"Find out more.","moreurl":"cookiepolicy","acceptlabel":"Acknoledged"},
+	"conf_en":{"cookiename":"Name of the cookie","message":"Message","morelabel":"More link text","moreurl":"More link url","acceptlabel":"Accept button text"},
+	"conf_hu":{"cookiename":"Süti neve","message":"Üzenet","morelabel":"Tovább link felirat","moreurl":"Tovább link url","acceptlabel":"Elfogadom gomb felirat"},
+
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

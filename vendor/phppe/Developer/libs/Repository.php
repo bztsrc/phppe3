@@ -29,7 +29,7 @@ class Repository
 	static $sourceFile="public/source.php";
 	static $deployFile="public/index.php";
 	//! This can be overridden from command line
-    static $repoBase="http://bztsrc.github.io/phppe3/";
+    static $repoBase="https://bztsrc.github.io/phppe3/";
 	//static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
 	//! valid extension categories
 	static $categories=["Connections","Content","Security","Business","Sales","Office","Games","Banners","Hardware"];
@@ -165,8 +165,8 @@ class Repository
 
 		//! sort packages
 		usort($packages,function($a,$b){
-			if(@$a['keywords'][0]!=@$b['keywords'][0]) return $a['keywords'][0]>=$b['keywords'][0];
-			if($a['prio']+0!=$b['prio']+0)return($a['prio']+0<$b['prio']+0?1:-1);
+			if(@$a['keywords'][0]!=@$b['keywords'][0]) return @$a['keywords'][0]>=@$b['keywords'][0];
+			if(@$a['prio']+0!=@$b['prio']+0)return(@$a['prio']+0<@$b['prio']+0?1:-1);
 			return ($a['name']<$b['name']?-1:1);
 		});
 		//! generate json
