@@ -122,21 +122,21 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals("A",\PHPPE\View::_t("<!if true>A<!else>B<!/if>"),"If true");
 		$this->assertEquals("B",\PHPPE\View::_t("<!if false>A<!else>B<!/if>"),"If false");
 
-		$this->assertEquals(1,preg_match("|<form role='form' name='a' action='[^']+' class='form-vertical' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+		$this->assertEquals(1,preg_match("|<form name='a' action='[^']+' class='form-vertical' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
 			\PHPPE\View::_t("<!form a>")),
 			"Form #1");
 
-		$this->assertEquals(1,preg_match("|<form role='form' name='a' action='([^']+)' class='form-vertical' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+		$this->assertEquals(1,preg_match("|<form name='a' action='([^']+)' class='form-vertical' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
 			\PHPPE\View::_t("<!form a form-vertical b/c>"),$m),
 			"Form #2");
 		$this->assertEquals("b/c/",substr($m[1],-4),"Form #2 url");
 
 		$this->assertEquals(1,preg_match("|<form role='form' name='a' action='([^']+)' class='form-vertical' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
-			\PHPPE\View::_t("<!form a - b/c d()>"),$m),
+			\PHPPE\View::_t("<!form a - b/c d() role>"),$m),
 			"Form #3");
 		$this->assertEquals("b/c/",substr($m[1],-4),"Form #3 url");
 
-		$this->assertEquals(1,preg_match("|<form role='form' name='a' action='([^']+)' class='form-vertical' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
+		$this->assertEquals(1,preg_match("|<form name='a' action='([^']+)' class='form-vertical' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
 			\PHPPE\View::_t("<!form a - - d()>")),
 			"Form #4");
 
