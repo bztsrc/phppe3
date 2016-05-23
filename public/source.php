@@ -1593,12 +1593,18 @@ namespace PHPPE {
 		{
 			if(empty($c))
 				return self::$hdr["css"];
-			//! add a new stylesheet to output
-			$a = View::dir(). "/css/" . @explode("?", $c)[ 0 ];
-			if(! file_exists($a))
-				$a .= ".php";
-			if(! isset(self::$hdr["css"][ $c ]) && file_exists($a))
-				self::$hdr["css"][ $c ] = realpath($a);
+			//! add cdn stylesheet
+			if(substr($c,0,4)=="http")
+				self::$hdr["link"][$c]="stylesheet";
+			else
+			{
+				//! add a new stylesheet to output
+				$a = View::dir(). "/css/" . @explode("?", $c)[ 0 ];
+				if(! file_exists($a))
+					$a .= ".php";
+				if(! isset(self::$hdr["css"][ $c ]) && file_exists($a))
+					self::$hdr["css"][ $c ] = realpath($a);
+			}
 		}
 
 /**
@@ -1613,12 +1619,18 @@ namespace PHPPE {
 			if(empty($l))
 				return self::$hdr["jslib"];
 			if($p<0 || $p>99) $p=99;
-			//! add a new javascript library to output
-			$a = View::dir(). "/js/" . @explode("?", $l)[ 0 ];
-			if(! file_exists($a))
-				$a .= ".php";
-			if(! isset(self::$hdr["jslib"][ $l ]) && file_exists($a))
-				self::$hdr["jslib"][ $l ] = sprintf("%02d",$p).realpath($a);
+			//! add cdn javascript
+			if(substr($l,0,4)=="http")
+				self::$hdr["jslib"][ $l ] = sprintf("%02d",$p).$l;
+			else
+			{
+				//! add a new javascript library to output
+				$a = View::dir(). "/js/" . @explode("?", $l)[ 0 ];
+				if(! file_exists($a))
+					$a .= ".php";
+				if(! isset(self::$hdr["jslib"][ $l ]) && file_exists($a))
+					self::$hdr["jslib"][ $l ] = sprintf("%02d",$p).realpath($a);
+			}
 			//! also register init hook and call it on onload event
 			$i = trim($i);
 			if(! empty($i) && (empty(self::$hdr["js"][ "init()" ]) || strpos(self::$hdr["js"][ "init()" ], $i) === false)) {
@@ -1640,10 +1652,8 @@ namespace PHPPE {
 				$C = Assets::minify($c, "js");
 				$C .= ($C[ strlen($C) - 1 ] != ";" ? ";" : "");
 				if($a) {
-					if(! isset(self::$hdr["js"][ $f ]))
-						self::$hdr["js"][ $f ] = "";
-					if(strpos(self::$hdr["js"][ $f ], $C) === false)
-						self::$hdr["js"][ $f ] .= $C;
+					if(strpos(@self::$hdr["js"][ $f ], $C) === false)
+						@self::$hdr["js"][ $f ] .= $C;
 			}
 			else
 				self::$hdr["js"][ $f ] = $C;
@@ -2080,7 +2090,7 @@ namespace PHPPE {
 								print_r($s);
 								$n = "<pre>" . htmlspecialchars(ob_get_clean()) . "</pre>";
 							}
-							$w = "<b style='font:monospace;'>" . $A[ 0 ] . ":</b>" . preg_replace("/<small>.*?<\/small>\n?/","",$n);
+							$w = "<div class='dump'><b style='font:monospace;'>" . $A[ 0 ] . ":</b>" . preg_replace("/<small>.*?<\/small>\n?/","",$n)."</div>";
 						}
 						break;
 						//hook for cms editor icons
@@ -2185,14 +2195,13 @@ namespace PHPPE {
 						if($k && $m)
 							echo("<meta name='$k' content='" . htmlspecialchars($m) . "'/>\n");
 					//! favicon
-					if(!empty(self::$o["app"]->favicon))
-						self::$hdr["link"]["shortcut icon"]=self::$o["app"]->favicon;
-					if(empty(self::$hdr["link"]["shortcut icon"]))
-						self::$hdr["link"]["shortcut icon"]="favicon.ico";
+					self::$hdr["link"][
+						!empty(self::$o["app"]->favicon)?self::$o["app"]->favicon:"favicon.ico"
+					]="shortcut icon";
 					//! link tags
 					foreach(self::$hdr["link"] as $k => $m)
-						if($m)
-							echo("<link rel='$k' href='" . htmlspecialchars($m) . "'/>\n");
+						if(!empty($m) && $m!="js")
+							echo("<link rel='$m' href='" . $k . "'/>\n");
 					//! add style sheets (async)
 					$O = "<style media='all'>\n";
 					$d = "@import url('%s');\n";
@@ -2337,9 +2346,9 @@ namespace PHPPE {
 							if(empty(Cache::get("c_$n"))) {
 								// @codeCoverageIgnoreStart
 								$da = "";
-								//! skip dynamic assets (they use a different caching mechanism)
+								//! skip dynamic assets and cdn links (they use a different caching mechanism)
 								foreach(self::$hdr["jslib"] as $u => $v)
-									if($v && substr($v, - 3) != "php")
+									if($v && substr($v, - 3) != "php" && substr($u,0,4)!="http")
 										$da .= Assets::minify(file_get_contents(substr($v,2)), "js") . "\n";
 								Cache::set("c_$n", [ "m" => "text/javascript", "d" => $da ]);
 								// @codeCoverageIgnoreEnd
@@ -2347,20 +2356,26 @@ namespace PHPPE {
 							$O .= "$d src='${I}js/?cache=$n'>$e";
 							//! add dynamic javascripts, they were left out from aggregated cache above
 							foreach(self::$hdr["jslib"] as $u => $v)
-								if($v && ($u[ 0 ] == "?" || substr($v, - 3) == "php"))
+								if(substr($u,0,4)=="http")
+									$O .= "$d src='$u'>$e";
+								elseif($u[ 0 ] == "?" || substr($v, - 3) == "php")
 									$O .= "$d$a$u'>$e";
 						}
 						else
 						{
 							foreach(self::$hdr["jslib"] as $u => $v)
-								if($v)
+								if(substr($u,0,4)=="http")
+									$O .= "$d src='$u'>$e";
+								else
 									$O .= "$d$a$u'>$e";
+
 						}
 					}
 					//load PHPPE\Users' JS library if it's not aggregated already and PHPPE panel is shown
 					$c = "users.js";
 					$i=file_exists("vendor/phppe/Core/js/" . $c . ".php");
 					if($P && ! isset(self::$hdr["jslib"][ $c ]) && $i) $O .= "$d$a$c'>$e";
+
 					//! add javascript functions
 					$c = self::$hdr["js"];
 					$a = "";
@@ -3163,7 +3178,7 @@ class ClassMap extends Extension
 			i($D . "403$e", "<h1>403</h1><!=L('Access denied')>");
 			i($D . "404$e", "<h1>404</h1><!=L('Not found')>: <b><!=core.url></b>");
 			i($D . "frame$e", "<div id='content'><!app></div>");
-			i($D . "index$e", "<h1>PHPPE works!</h1>Next step: install <a href='" . $U . "phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td valign='top'>$c</td></tr></table>\n");
+			i($D . "index$e", "<h1>PHPPE works!</h1>Next step: install <a href='" . $U . "phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
 			i($D . "login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id><!field pass pass><!field submit></form>");
 			i($D . "maintenance$e", "<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>");
 			i("composer.json", "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");

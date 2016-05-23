@@ -17,7 +17,7 @@ This 80k bytes of PHP code will give you:
 - [PHP Composer](https://getcomposer.org/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
 - Very low footprint, can run on a [Raspberry Pi](https://www.raspberrypi.org/)
-- Highly modular, easy to expand structure
+- Highly modular, easy to expand structure with Class autoloader
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
 - Clever, regular expression capable and filterable, standard URL to class::method routing mechanism

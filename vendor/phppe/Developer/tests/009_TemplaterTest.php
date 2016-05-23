@@ -13,10 +13,14 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\View::assign("dir",$dir);
 		\PHPPE\View::css("test.css");
 		\PHPPE\View::css("test2.css");
+		\PHPPE\View::css(url("css","test.css"));
 		$this->assertNotEmpty(\PHPPE\View::css(),"CSS");
 		\PHPPE\View::jslib("test.js","testjs();");
 		\PHPPE\View::jslib("test2.js","testjs();");
+		\PHPPE\View::jslib(url("js","test.js"),"testjs();");
 		$this->assertNotEmpty(\PHPPE\View::jslib(),"JSLib");
+		\PHPPE\View::js("some()","thing();");
+		\PHPPE\View::js("some2()","thing();",true);
 		\PHPPE\View::menu("a","b");
 		\PHPPE\View::menu("c",["d"=>"e"]);
 		$this->assertNotEmpty(\PHPPE\View::menu(),"Menu");
