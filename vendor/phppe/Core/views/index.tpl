@@ -342,10 +342,10 @@ Calls edit hook in cms page edit mode, shows value otherwise.
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-&lt;!field label obj.label Password>
+&lt;!field label obj.text0 Some_string>
 		</div>
 		<div class="col-sm-4" dir="ltr">
-<!field label obj.label Password>
+<!field label obj.text0 Some_string>
 		</div>
 		<div class="col-sm-6 text-muted small">
 Shows a translated label for a field.
@@ -593,18 +593,18 @@ HTML5 button with javascript handler
   <div class="panel-heading"><b><!=L("Environment dump")></b></div>
   <div class="panel-body">
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-lg-6">
 <!dump _SERVER>
 		</div>
-		<div class="col-sm-6">
+		<div class="col-lg-6">
 <!dump _SESSION>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-lg-6">
 <!dump core>
 		</div>
-		<div class="col-sm-6">
+		<div class="col-lg-6">
 <!dump array_reverse(get_declared_classes())>
 		</div>
 	</div>

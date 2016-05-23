@@ -1398,7 +1398,7 @@ namespace PHPPE {
 				//! remove extra spaces
 				if($d[$i]==" " &&
 					(!(($c>='a'&&$c<='z') || ($c>='A'&&$c<='Z')) ||
-					!($d[$i+1]=="\\" || $d[$i+1]=="/" || $d[$i+1]=="_" || ($d[$i+1]>='a'&&$d[$i+1]<='z') || ($d[$i+1]>='A'&&$d[$i+1]<='Z') || ($d[$i+1]>='0'&&$d[$i+1]<='9') || $d[$i+1]=='#')))
+					!($d[$i+1]=="\\" || $d[$i+1]=="/" || $d[$i+1]=="_" || ($d[$i+1]>='a'&&$d[$i+1]<='z') || ($d[$i+1]>='A'&&$d[$i+1]<='Z') || ($d[$i+1]>='0'&&$d[$i+1]<='9') || $d[$i+1]=='#' ||($t=="js"&&$d[$i+1]=='$'))))
 				{
 					$i++;
 					continue;
@@ -2022,7 +2022,7 @@ namespace PHPPE {
 						self::$tc = 0;
 						$c = sha1(url());
 						$n = ! empty($A[ 0 ]) && $A[ 0 ] != "-" ? urlencode($A[ 0 ]) : "form";
-						$w = "<form role='form' name='" . $n . "' action='" . url(! empty($A[ 2 ]) && $A[ 2 ] != "-" ? $A[ 2 ] : "") .
+						$w = "<form".(!empty($A[4])?" role='form'":"")." name='" . $n . "' action='" . url(! empty($A[ 2 ]) && $A[ 2 ] != "-" ? $A[ 2 ] : "") .
 							"' class='".(!empty($A[1]) && $A[1]!="-"?$A[1]:"form-vertical").
 							"' method='post' enctype='multipart/form-data'" .
 							(! empty($A[ 3 ]) && $A[ 3 ] != "-" ? " onsubmit=\"" . strtr($A[ 3 ], ["\""=>"\\\""]) . "\"" : "") .
@@ -2819,7 +2819,7 @@ class ClassMap extends Extension
 		public $now;				//!< current server timestamp, from primary datasource if available
 		//configurable properties
 		public $title;				//!< title of the site
-		public $runlevel = 2;		//!< 0-production,1-test,2-development,3-debug
+		public $runlevel = 1;		//!< 0-production,1-test,2-development,3-debug
 		public $syslog = false;		//!< send logs to syslog
 		public $trace = false;		//!< save trace to log messages
 		public $timeout;			//!< session timeout
@@ -4321,8 +4321,8 @@ namespace PHPPE\AddOn {
 		{
 			$t = $this;
 			$e = Core::isError($t->name);
-			return"<nobr".($e ? " class='errinput'" : "") .
-				"><input" . @View::v($t, $t->attrs[ 0 ], $t->attrs[ 1 ], $t->args) . " type='file' style='display:inline;'>&nbsp;(" . round(Core::$fm / 1048576) . "Mb)</nobr>";
+			return
+				"<input" . @View::v($t, $t->attrs[ 0 ], $t->attrs[ 1 ], $t->args) . " type='file' style='display:inline;' title='" . round(Core::$fm / 1048576) . "Mb'>";
 		}
 	}
 

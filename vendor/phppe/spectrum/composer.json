@@ -1,0 +1,32 @@
+{
+	"name": "phppe/spectrum",
+	"name_en": "Spectrum ColorPicker",
+	"name_hu": "",
+	"name_ru": "",
+	"name_de": "",
+	"name_es": "",
+	"name_fr": "",
+	"name_ch": "",
+	"name_he": "",
+	"name_ar": "",
+
+	"description": "Color picker polyfill for color inputs",
+	"description_hu": "",
+	"description_ru": "",
+	"description_de": "",
+	"description_es": "",
+	"description_fr": "",
+	"description_ch": "",
+	"description_he": "",
+	"description_ar": "",
+
+	"keywords": [ "Content" ],
+
+	"version": "0.0.1",
+	"version_normalized": "0.0.1.0",
+
+	"type": "library",
+	"license": "MIT",
+
+	"maintainer": { "name": "Brian Grinstead" }
+}
