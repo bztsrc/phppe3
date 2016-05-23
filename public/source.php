@@ -2003,7 +2003,7 @@ namespace PHPPE {
 							foreach($d as $k => $v) {
 								self::$c[ self::$n ]->KEY = $k;
 								self::$c[ self::$n ]->VALUE = $v;
-								$w .= self::_t($t, $re + 1);
+								$w .= @self::_t($t, $re + 1);
 								self::$c[ self::$n ]->IDX++ ;
 							}
 						$k = $m[ 3 ];
@@ -2022,9 +2022,10 @@ namespace PHPPE {
 						self::$tc = 0;
 						$c = sha1(url());
 						$n = ! empty($A[ 0 ]) && $A[ 0 ] != "-" ? urlencode($A[ 0 ]) : "form";
-						$w = "<form name='" . $n . "' action='" . url(! empty($A[ 1 ]) && $A[ 1 ] != "-" ? $A[ 1 ] : "") .
+						$w = "<form role='form' name='" . $n . "' action='" . url(! empty($A[ 2 ]) && $A[ 2 ] != "-" ? $A[ 2 ] : "") .
+							"' class='".(!empty($A[1]) && $A[1]!="-"?$A[1]:"form-vertical").
 							"' method='post' enctype='multipart/form-data'" .
-							(! empty($A[ 2 ]) && $A[ 2 ] != "-" ? " onsubmit=\"" . strtr($A[ 2 ], ["\""=>"\\\""]) . "\"" : "") .
+							(! empty($A[ 3 ]) && $A[ 3 ] != "-" ? " onsubmit=\"" . strtr($A[ 3 ], ["\""=>"\\\""]) . "\"" : "") .
 							"><input type='hidden' name='MAX_FILE_SIZE' value='" . Core::$fm .
 							"'><input type='hidden' name='pe_s' value='" . @$_SESSION[ "pe_s" ][ $c ] .
 							"'><input type='hidden' name='pe_f' value='" . $n . "'>" . (! empty(Core::$core->item) ?
@@ -2508,12 +2509,12 @@ namespace PHPPE {
 /**
  * Helper function to generate html for built-in fields
  */
-		static function v($a, $b, $e = "", $f = [], $p = "")
+		static function v($a, $b, $e = "", $f = [], $p = "", $i="", $n="")
 		{
 			return (@$a->css[0]=="r"?" required":"").
 				($p?" pattern='".$p."'":"").
-				" class='" . $a->css .(! empty($b) && $b != "-" ? " " . $b : "") . "'" .
-				($a->name ? " name='" . $a->fld . "'" : "") .
+				" class='" . $a->css ." ".(! empty($b) && $b != "-" ? $b : "form-control") . "'" .
+				($a->fld ? " id='" . $a->fld.$i . "' name='" . $a->fld.$n . "'" : "") .
 				($e && $e != "-" ? " onchange='" . $e . "'" : "") .
 				(! empty($f[ 0 ]) && $f[ 0 ] > 0 ? " maxlength='" . $f[ 0 ] . "'" : "");
 		}
@@ -4019,7 +4020,7 @@ namespace PHPPE\AddOn {
 		{
 			$t = $this;
 			$a=$t->attrs;
-			return "<button class='" . (! empty($a[ 1 ]) && $a[ 1 ] != "-" ? $a[ 1 ] : "button") . "' onclick=\"" . strtr(! empty($a[ 0 ]) && $a[ 0 ] != "-" ? $a[ 0 ] : "alert('" . L("No action") . "');", ["\""=>"\\\""]) . "\">" . L(! empty($t->name) ? $t->name : "Press me") . "</button>";
+			return "<button class='" . (! empty($a[ 1 ]) && $a[ 1 ] != "-" ? $a[ 1 ] : "btn btn-default") . "' onclick=\"" . strtr(! empty($a[ 0 ]) && $a[ 0 ] != "-" ? $a[ 0 ] : "alert('" . L("No action") . "');", ["\""=>"\\\""]) . "\">" . L(! empty($t->name) ? $t->name : "Press me") . "</button>";
 		}
 	}
 
@@ -4034,7 +4035,7 @@ namespace PHPPE\AddOn {
 		{
 			$t = $this;
 			$a=$t->attrs;
-			return "<input class='" . (! empty($a[ 1 ]) && $a[ 1 ] != "-" ? $a[ 1 ] : "button") . "' name='pe_try" . View::tc() . "' type='submit' value=\"" . htmlspecialchars(L(! empty($t->name) ? $t->name : "Okay")) . "\"" . (! empty($a[ 0 ]) && $a[ 0 ] != "-" ? " onclick=\"return " . strtr($a[ 0 ], ["\""=>"\\\""]) . "\"" : "") . ">";
+			return "<button class='" . (! empty($a[ 1 ]) && $a[ 1 ] != "-" ? $a[ 1 ] : "btn btn-default") . "' name='pe_try" . View::tc() . "' type='submit'" . (! empty($a[ 0 ]) && $a[ 0 ] != "-" ? " onclick=\"return " . strtr($a[ 0 ], ["\""=>"\\\""]) . "\"" : "") . ">".L(! empty($t->name) ? $t->name : "Okay") . "</button>";
 		}
 	}
 
@@ -4084,7 +4085,7 @@ namespace PHPPE\AddOn {
 /**
  * password field element
  *
- * @usage (size[,maxlen]) obj.field [cssclass]
+ * @usage (size[,maxlen]) obj.field [cssclass [placeholder]]
  */
 	class pass extends \PHPPE\AddOn
 	{
@@ -4098,7 +4099,9 @@ namespace PHPPE\AddOn {
 			return "<input" . 
 			@View::v($t, $t->attrs[ 0 ], "", $t->args) . 
 			" type='password' value=\"" . htmlspecialchars(trim($t->value)) . 
-			"\" onfocus='this.className=this.className.replace(\" errinput\",\"\")'>";
+			"\" onfocus='this.className=this.className.replace(\" errinput\",\"\")'".
+			(!empty($t->attrs[1])?" placeholder=\"".htmlspecialchars(trim($t->attrs[1]))."\"":"").
+			">";
 		}
 		static function validate($n, &$v, $a, $t)
 		{
@@ -4179,7 +4182,7 @@ namespace PHPPE\AddOn {
 			else $skip = array_flip($skip);
 			if(!empty($b[1]))
 				$t->name.="[]";
-			$r = "<select" . @View::v($t, $a[ 3 ], $a[ 2 ]) . (! empty($b[ 1 ]) ? " multiple" : "") .
+			$r = "<select" . @View::v($t, $a[ 3 ], $a[ 2 ],[],"","",!empty($b[1])?"[]":"") . (! empty($b[ 1 ]) ? " multiple" : "") .
 				(! empty($b[ 0 ]) && $b[ 0 ] > 0 ? " size='" . intval($b[ 0 ]) . "'" : "") .
 				" onfocus='this.className=this.className.replace(\" errinput\",\"\")'>";
 			if(is_array($opts))
@@ -4214,8 +4217,8 @@ namespace PHPPE\AddOn {
 			$a = $t->attrs;
 			$e = Core::isError($t->name);
 			return($e ? "<span class='errinput'>" : "") .
-			"<input" . @View::v($t, $a[ 2 ], $a[ 1 ]) . " id='" . $t->name . "' type='checkbox'" . (! empty($t->value) ? " checked" : "") . " value=\"" . htmlspecialchars(trim(! empty($t->args[ 0 ]) ? $t->args[ 0 ] : "1")) . "\">" .
-			(! empty($a[ 0 ]) ? "<label for='" . $t->name . "'>" . L($a[ 0 ]) . "</label>" : "") .
+			"<label><input" . @View::v($t, empty($a[ 2 ])?"checkbox":$a[2], $a[ 1 ]) . " type='checkbox'" . (! empty($t->value) ? " checked" : "") . " value=\"" . htmlspecialchars(trim(! empty($t->args[ 0 ]) ? $t->args[ 0 ] : "1")) . "\">" .
+			(! empty($a[ 0 ]) ?  L($a[ 0 ]):"") . "</label>" .
 			($e ? "</span>" : "");
 		}
 	}
@@ -4239,9 +4242,9 @@ namespace PHPPE\AddOn {
 			$t = $this;
 			$a = $t->args;
 			$b = $t->attrs;
-			return "<input" . @View::v($t, $b[ 2 ], $b[ 1 ]) . " id='" . $t->name . "_" . sha1($a[ 0 ]) . "' type='radio'" .
+			return "<label><input" . @View::v($t, empty($b[ 2 ])?"radiobutton":$b[2], $b[ 1 ],[],"","_".sha1($a[0])) . " type='radio'" .
 			($t->value == $a[ 0 ] ? " checked" : "") . " value=\"" . htmlspecialchars(trim(! empty($a[ 0 ]) ? $a[ 0 ] : "1")) . "\">" .
-			(! empty($b[ 0 ]) ? "<label for='" . $t->name . "_" . sha1($a[ 0 ]) . "'>" . L($b[ 0 ]) . "</label>" : "");
+			(! empty($b[ 0 ]) ? L($b[ 0 ]):"") . "</label>";
 		}
 	}
 
@@ -4332,13 +4335,27 @@ namespace PHPPE\AddOn {
 	{
 		function show()
 		{
-			return "span style='width:10px;height:10px;background-color:".$this->value.";'></span> ".$this->value;
+			return "<span style='width:10px;height:10px;background-color:".$this->value.";'></span> ".$this->value;
 		}
 		function edit()
 		{
 			$t = $this;
 			$a = $t->attrs;
 			return "<input" . @View::v($t, $a[ 1 ], "", $t->args) . " type='color' " . (! empty($a[ 0 ]) && $a[ 0 ] != "-" ? " onchange='".$a[ 0 ]."'" : "") . " value=\"" . htmlspecialchars(trim($t->value)) . "\">";
+		}
+	}
+
+/**
+ * field label
+ *
+ * @usage obj.field label [cssclass]
+ */
+	class label extends \PHPPE\AddOn
+	{
+		function show() { return $this->edit(); }
+		function edit() {
+			return "<label".(!empty($this->attrs[1])?" class='".$this->attrs[1]."'":"")." for='".$this->fld."'>".
+				L($this->attrs[0]).":</label>";
 		}
 	}
 

@@ -9,7 +9,6 @@
 namespace PHPPE\AddOn;
 use PHPPE\Core as Core;
 use PHPPE\View as View;
-use PHPPE\Http as Http;
 
 class @NAME@ extends \PHPPE\AddOn
 {
@@ -25,8 +24,8 @@ class @NAME@ extends \PHPPE\AddOn
 
 	function edit(  )
 	{
-		PHPPE::jslib("@name@.js", "@name@_init('".$this->fld."');");
-		PHPPE::css("@name@.css");
+		View::jslib("@name@.js", "@name@_init('".$this->fld."');");
+		View::css("@name@.css");
 		return "<div id='".$this->fld.":container'>".
 			"<input type='text' name='".$this->fld."' value=\"".htmlspecialchars($this->value)."\"></div>";
 	}

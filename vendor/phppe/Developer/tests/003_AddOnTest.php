@@ -110,6 +110,11 @@ class AddonTest extends PHPUnit_Framework_TestCase
 		$fld = new \PHPPE\AddOn\color([],"obj.fld",$value);
 		$this->assertGreaterThan(0,strpos($fld->edit(),"color"),"Color edit");
 		$this->assertGreaterThan(0,strpos($fld->show(),"2233"),"Color show");
+
+		$value="";
+		$fld = new \PHPPE\AddOn\label([],"obj.fld",$value,["Label"]);
+		$this->assertGreaterThan(0,strpos($fld->edit(),"Label"),"field label");
+
 	}
 }
 ?>

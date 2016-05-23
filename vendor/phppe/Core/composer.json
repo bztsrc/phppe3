@@ -66,16 +66,19 @@
 	"type": "library",
 	"license": "LGPL-3.0+",
 
-    "require": {
-        "php": ">=7.0"
-    },
-    
-    "suggests": {
-        "phppe/bootstrap": "*",
-        "phppe/CMS": "*",
-        "phppe/Extensions": "*",
-        "phppe/Developer": "*"
-    },
+	"require": {
+		"php": ">=7.0"
+	},
+	"require-dev": {
+		"phppe/Developer": "*"
+	},
+
+	"suggests": {
+		"phppe/bootstrap": "*",
+		"phppe/CMS": "*",
+		"phppe/Extensions": "*",
+		"phppe/Developer": "*"
+	},
 
 	"support": {
 		"source": "https://github.com/bztsrc/phppe3/",
