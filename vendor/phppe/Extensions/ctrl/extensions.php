@@ -19,7 +19,7 @@ class Extensions extends \PHPPE\Extensions {
 		if(!Core::isInst("bootstrap"))
 			\PHPPE\View::css("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
 
-		//\PHPPE\View::css("extensions.css");
+		\PHPPE\View::css("extensions.css");
 		\PHPPE\View::jslib("sha256.js");
 		\PHPPE\View::jslib( "extensions.js" );
 

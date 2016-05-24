@@ -77,6 +77,11 @@ class DBTest extends PHPUnit_Framework_TestCase
 			"delete table");
 
 		$this->assertEquals(
+			"DELETE a FROM users a",
+			\PHPPE\DB::delete("users","a")->sql(),
+			"delete alias");
+
+		$this->assertEquals(
 			"DELETE user_posts FROM user_posts LEFT JOIN users ON user_posts.userId=users.id WHERE (users.id IS NULL)",
 			\PHPPE\DB::delete("user_posts")->join("LEFT","users","user_posts.userId=users.id")->where([["users.id","IS NULL"]]),
 			"delete where");

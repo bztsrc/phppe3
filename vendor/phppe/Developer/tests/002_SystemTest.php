@@ -13,7 +13,10 @@ class SystemTest extends PHPUnit_Framework_TestCase
 	public function testCore()
 	{
 		@unlink("vendor/phppe/autoload.php");
-		$_SERVER['REQUEST_URI']="/source.php/test/something?arg=1";
+		$_SERVER['REQUEST_URI']="";
+		$_SERVER['argv'][1]="test";
+		@$core = new \PHPPE\Core(true);
+		$_SERVER['REQUEST_URI']="/test/something?arg=1";
 		@$core = new \PHPPE\Core(true);
 		$this->assertNotEmpty($core->base,"Base");
 		$this->assertNotEmpty($core->url,"Url");

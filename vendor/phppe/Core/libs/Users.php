@@ -1,7 +1,7 @@
 <?php
 /**
  *  PHP Portal Engine v3.0.0
- *  https://github.com/bztsrc/phppe3/
+ *  https://github.com/bztsrc/phppe3/.
  *
  *  Copyright LGPL 2016 bzt
  *
@@ -18,30 +18,32 @@
  *   <http://www.gnu.org/licenses/>
  *
  * @file vendor/phppe/Core/libs/Users.php
+ *
  * @author bzt
  * @date 1 Jan 2016
  * @brief PHPPE Users
  */
+
 namespace PHPPE;
-use PHPPE\Core as Core;
 
 //inherited from \PHPPE\Model and \PHPPE\User
-class Users extends \PHPPE\User {
-	//properties
-	public $id;
-	public $name;
-	public $email;
-	public $parentid;
-	public $active;
+class Users extends \PHPPE\User
+{
+    //properties
+    public $id;
+    public $name;
+    public $email;
+    public $parentid;
+    public $active;
 
-	//database table name for model methods
-	static protected $_table = "users";
+    //database table name for model methods
+    protected static $_table = 'users';
 
-	function login($name,$pass) {
-	}
+    public function login($name, $pass)
+    {
+    }
 
-	function logout() {
-	}
-
+    public function logout()
+    {
+    }
 }
-?>

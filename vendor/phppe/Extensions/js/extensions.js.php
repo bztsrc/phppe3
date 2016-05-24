@@ -71,7 +71,7 @@ function extensions_search(str,installed)
 			} else if(extensions_pkgs[i].installed<extensions_pkgs[i].version) t+="<input type='button' class='button' onclick='extensions_cmd(this,\"install\","+i+");' value='<?=L("Upgrade to")?> "+extensions_pkgs[i].version+"' style='color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);'>";
 			else if(extensions_pkgs[i].installed>extensions_pkgs[i].version) t+="<input type='button' class='button' onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"install\","+i+");' value='<?=L("Downgrade to")?> "+extensions_pkgs[i].version+"'>";
 			else t+="<input type='button' class='button' onclick='extensions_cmd(this,\"install\","+i+");' value='⟳' style='font-size:24px;line-height:24px;' title='<?=L("Reinstall")?>'>";
-			if(extensions_pkgs[i].config!="" && window.XMLHttpRequest && (extensions_pkgs[i].installed||extensions_pkgs[i].id=="phppe")) t+="<input type='button' class='button' onclick='extensions_conf(this,"+i+");' value='⚒' style='font-size:22px;line-height:24px;' title='<?=L("Configure")?>'>";
+			if(extensions_pkgs[i].config!="" && window.XMLHttpRequest && (extensions_pkgs[i].installed||extensions_pkgs[i].id=="phppe/Core")) t+="<input type='button' class='button' onclick='extensions_conf(this,"+i+");' value='⚒' style='font-size:22px;line-height:24px;' title='<?=L("Configure")?>'>";
 			if(extensions_pkgs[i].installed) {
 				t+="&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' class='button' onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"uninstall\","+i+");' value='♻' title='<?=L("Remove")?>' style='line-height:24px;font-size:18px;background:#F0B0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);'>";
 			}
@@ -343,22 +343,23 @@ function extensions_init()
 	for(j=1;j<extensions_installed.length;j++)
 		if(extensions_installed[j].idx==null||extensions_installed[j].idx==undefined)
 			extensions_pkgs.push({"id":extensions_installed[j].id,"name":"NA "+extensions_installed[j].id,"version":"?.?.?","installed":(extensions_installed[j].version!=undefined&&extensions_installed[j].version!=""?extensions_installed[j].version:"?.?.?"),"desc":"*<?=L("installed, but not in repo")?>*"});
-	t="<br style='line-height:1px;clear:both;'><div id='extensions_panel'>";
-	t+="<div style='float:right;width:50%;'><nobr><input id='search' type='text' style='width:70%;height:26px;' onkeyup='return extensions_searchbg();'><input type='button' class='button' style='font-size:28px;padding-top:0px;line-height:24px;vertical-align:middle;width:8%;' onclick='extensions_search(document.getElementById(\"search\").value);' value='⌕'></nobr></div>";
-	t+="<div style='padding:5px 10px;'><b>"+(extensions_installed[0]!=null?extensions_installed[0].name:"<?=L("No name")?>")+"</b><br><small>&nbsp;&nbsp;<?=(!empty(Core::$user->data['remote']['user'])?Core::$user->data['remote']['user']."@":"").Core::$user->data['remote']['host'].(!empty(Core::$user->data['remote']['path'])?":".Core::$user->data['remote']['path']:"")?></small></div>";
-	t+="<center><nobr><button class='button' style='margin:5px;line-height:20px;width:20%;' onclick='document.getElementById(\"search\").value=\"\";extensions_search();'><?=L("All")?> <small dir='ltr'>("+extensions_pkgs.length+")</small></button>";
-	t+="<button class='button' style='margin:5px;line-height:20px;width:20%;' onclick='document.getElementById(\"search\").value=\"<?=L("installed")?>\";extensions_search();'><?=L("Installed")?> <small dir='ltr'>("+(extensions_installed.length-1)+")</small></button>";
-	t+="<button id='upbtn' class='button' style='margin:5px;line-height:20px;width:20%;"+(cnt>0?"color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"' onclick='document.getElementById(\"search\").value=\"<?=L("upgrade")?>\";extensions_search();'><?=L("Upgrade")?> <small dir='ltr'>("+cnt+")</small></button>";
-	t+="<button class='button' style='margin:5px;line-height:20px;width:20%;' onclick='extensions_cmd(this,\"bootstrap\",-1);'><?=L("Diagnostics")?></button></nobr></center>";
-	t+="<div style='display:inline-block;margin-right:30px;'>";
+	t="<div id='extensions_panel'><div class='row'>";
+	t+="<div class='col-md-6'><b>"+(extensions_installed[0]!=null?extensions_installed[0].name:"<?=L("No name")?>")+"</b><br><small>&nbsp;&nbsp;<?=(!empty(Core::$user->data['remote']['user'])?Core::$user->data['remote']['user']."@":"").Core::$user->data['remote']['host'].(!empty(Core::$user->data['remote']['path'])?":".Core::$user->data['remote']['path']:"")?></small></div>";
+	t+="<div class='col-md-6'><input id='search' type='text' class='form-control' onkeyup='return extensions_searchbg();'  placeholder='<?=L("Search")?>'></div>";
+    t+="</div><div class='row'><div class='col-md-3'>";
+    t+="<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"\";extensions_search();'><?=L("All")?> <small dir='ltr'>("+extensions_pkgs.length+")</small></button></div><div class='col-md-3'>";
+	t+="<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"<?=L("installed")?>\";extensions_search();'><?=L("Installed")?> <small dir='ltr'>("+(extensions_installed.length-1)+")</small></button></div><div class='col-md-3'>";
+	t+="<button id='upbtn' style='margin:5px;line-height:20px;width:99%;"+(cnt>0?"color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"' onclick='document.getElementById(\"search\").value=\"<?=L("upgrade")?>\";extensions_search();'><?=L("Upgrade")?> <small dir='ltr'>("+cnt+")</small></button></div><div class='col-md-3'>";
+	t+="<button style='margin:5px;line-height:20px;width:99%;' onclick='extensions_cmd(this,\"bootstrap\",-1);'><?=L("Diagnostics")?></button>";
+	t+="</div></div><div class='row'><div class='col-md-6 text-center'>";
 	for(i=0;i<extensions_licenses.length;i++){
 		t+="<span><input class='input' type='checkbox' name='license_filter"+i+"' id='license_filter"+i+"' value='"+extensions_licenses[i]+"' checked onchange='extensions_search(document.getElementById(\"search\").value);'><label for='license_filter"+i+"'><small style='padding-"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"left":"right")+":8px;'>"+L(extensions_licenses[i])+"</small></label></span>";
 	}
-	t+="</div><div style='display:inline-block;'>";
+	t+="</div><div class='col-md-6 text-center'>";
 	for(i=0;i<extensions_cats.length;i++){
 		t+="<span><input class='input' type='checkbox' name='category_filter"+i+"' id='category_filter"+i+"' value='"+extensions_cats[i]+"' checked onchange='extensions_search(document.getElementById(\"search\").value);'><a href='extensions#category_label"+i+"'><small style='padding-"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"left":"right")+":8px;'>"+L(extensions_cats[i]!=""?extensions_cats[i]:"Framework")+"</small></a></span>";
 	}
-	t+="</div></div>";
+	t+="</div></div></div>";
 	t+="<div id='pkgs'></div><div id='statusbg' onclick='extensions_exitcmd();'></div>";
 	if (window.XMLHttpRequest)
 		t+="<pre id='status'><?=L("Connecting to host")?>...</pre>";
@@ -380,6 +381,8 @@ function extensions_init()
         window.attachEvent( "onscroll", extensions_header );
     else
         window["onscroll"]=extensions_header;
+	document.getElementById('status').style.visibility='hidden';
+	document.getElementById('statusbg').style.visibility='hidden';
 }
 function extensions_header(evt) {
 	var scrx=window.pageXOffset?window.pageXOffset:document.body.scrollLeft,scry=window.pageYOffset?window.pageYOffset:document.body.scrollTop;
