@@ -23,6 +23,7 @@
  * @brief Initialize Developer extension
  */
 
+/*!SKIPAUTOLOAD!*/
 use PHPPE\Core as Core;
 
 //! register menu

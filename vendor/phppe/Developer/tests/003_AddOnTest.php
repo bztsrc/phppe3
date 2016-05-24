@@ -49,10 +49,15 @@ class AddonTest extends PHPUnit_Framework_TestCase
 		$val = \PHPPE\AddOn\num::validate("obj.fld",$value,[100,200],[]);
 		$this->assertEquals(200,$value,"Num validate #3");
 
-		$arr=[1=>"one",2=>"two"]; $value=1;
+		$arr=[1=>"one",2=>"two"]; $value=1; $list="a,b,c";
+		\PHPPE\View::assign("lst",$list);
+		$obj=new \stdClass; $obj->a=1; $obj->b=2;
 		$fld = new \PHPPE\AddOn\select([],"obj.fld",$value,[$arr,""]);
-		$this->assertGreaterThan(0,strpos($fld->edit(),"option"),"Select edit");
 		$this->assertEquals(1,$fld->show(),"Select show");
+		$this->assertGreaterThan(0,strpos($fld->edit(),"option"),"Select edit #1");
+		$fld = new \PHPPE\AddOn\select([],"obj.fld",$value,["lst",$obj]);
+		$fld = new \PHPPE\AddOn\select([1,1],"obj.fld",$value,["lst",$obj]);
+		$this->assertGreaterThan(0,strpos($fld->edit(),"fld[]"),"Select edit #2");
 
 		$obj = new \stdClass;
 		$obj->txt="a,b,c";
@@ -113,7 +118,8 @@ class AddonTest extends PHPUnit_Framework_TestCase
 
 		$value="";
 		$fld = new \PHPPE\AddOn\label([],"obj.fld",$value,["Label"]);
-		$this->assertGreaterThan(0,strpos($fld->edit(),"Label"),"field label");
+		$this->assertGreaterThan(0,strpos($fld->edit(),"Label"),"field label #1");
+		$this->assertEquals($fld->show(),$fld->edit(),"field label #2");
 
 	}
 }

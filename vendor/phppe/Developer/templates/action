@@ -1,7 +1,7 @@
 {
 	"desc_en": "action template",
 	"args": [ "extension", "name" ],
-	"file": "vendor/phppe/@EXTENSION@/ctrl/@name@.php"
+	"file": "vendor/phppe/@EXTENSION@/ctrl/@extension@.php"
 }
 <?php
 @@BRIEF
@@ -11,12 +11,12 @@ use PHPPE\Core as Core;
 use PHPPE\View as View;
 use PHPPE\Http as Http;
 
-class @Name@
+class @EXTENSION@
 {
 /**
- * default action
+ * Action handler
  */
-	function action($item)
+	function @name@($item)
 	{
 	}
 }

@@ -14,6 +14,7 @@ class ConvertTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf("stdClass",$obj,"req2obj");
 		$this->assertFalse(\PHPPE\Core::isError("obj.phone"),"validator");
 
+		$_REQUEST['obj_phone']="abc";
 		$obj2 = \PHPPE\Core::req2arr("obj");
 		$this->assertInternalType("array",$obj2,"req2arr");
 		$this->assertTrue(\PHPPE\Core::isError("obj.chk.me"),"validator");
@@ -23,6 +24,10 @@ class ConvertTest extends PHPUnit_Framework_TestCase
 		$obj->field2 = "field2's";
 		$obj->field3 = 3;
 		$obj->field4 = 1.2;
+
+		$this->assertEmpty(
+			\PHPPE\Core::arr2str("aaa"),
+			"arr2str str");
 
 		$this->assertEquals(
 			"field1='field1' field2='field2\\'s' field3='3' field4='1.2'",

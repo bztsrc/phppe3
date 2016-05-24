@@ -32,6 +32,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($wasExc,"Bad route");
 
 		$new = \PHPPE\Http::route();
+
 		$this->assertGreaterThan(count($routes),count($new),"New routes");
 
 		$this->assertNotEmpty($new[sha1("test1|Tests|")],"Route added");
@@ -74,6 +75,12 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 			'["Tests","action_run",[]]',
 			json_encode(\PHPPE\Http::urlMatch("","","test4/")),
 			"urlMatch #2");
+
+        \PHPPE\Core::$user->id=0;
+		$this->assertEquals(
+			'["403","run",[]]',
+			json_encode(\PHPPE\Http::urlMatch("","run","test9/")),
+			"urlMatch #3");
 
 	}
 

@@ -59,10 +59,11 @@ class Repository
 		//! calculate new checksum
 		$chksum=sha1(preg_replace("/\'([^\']+)\'\!\=sha1/","''!=sha1",$out));
 		$out=preg_replace("/\'([^\']+)\'\!\=sha1/","'".$chksum."'!=sha1",$out);
+		$old=@filesize(self::$deployFile);
 		//! write out deployment file
 		if(!file_put_contents(self::$deployFile,$out))
 			die("unable to write ".self::$deployFile."\n");
-		echo($chksum." ".strlen($out)." OK\n");
+		echo($chksum." ".strlen($out)." (".(strlen($out)>$old?"+":"").(strlen($out)-$old).") OK\n");
 	}
 
 /**
@@ -111,7 +112,7 @@ class Repository
 				if(!empty($sql))
 					foreach($sql as $s)
 						copy($s,substr($s,0,strlen($s)-5));
-				$files=implode(" ",array_diff(glob("*"),["composer.json","preview","log"]));
+				$files=implode(" ",array_diff(glob("*"),["composer.json","preview","log",$ext=="Extensions"?"config.php":""]));
 				exec($tar." --exclude=*.dist -czf ".$tarball." composer.json ".$files."\n");
 				//! remove sqls
 				if(!empty($sql))
