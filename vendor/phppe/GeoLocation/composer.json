@@ -16,7 +16,7 @@
 	"conf_en": {
 		"type":"GeoLocation type"
 	},
-	"conf_en": {
+	"conf_hu": {
 		"type":"GeoLokáció típusa",
 		"none":"nincs",
 		"server side GeoIP2":"szerver oldali GeoIP2",
