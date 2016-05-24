@@ -23,14 +23,14 @@ class Developer {
 			if(empty(\PHPPE\Cache::$mc))
 				\PHPPE\Cache::$mc=new \PHPPE\Cache\Files("files");
 		}
-        $this->testCases = \Testing::getTests();
+        $this->testCases = \PHPPE\Testing::getTests();
 	}
 
 	function run($item)
 	{
         \PHPPE\Http::mime("text/plain",false);
 
-        $ret = \Testing::doTests($this->testCases, $item);
+        $ret = \PHPPE\Testing::doTests($this->testCases, $item);
 
 		if($ret===null) {
 		    \PHPPE\Core::$core->template="404";

@@ -14,10 +14,10 @@ class CreateController {
 			die(L("Run from command line")."\n");
 
 		if(empty($_SERVER['argv'][2]))
-			die(\Templates::getUsage());
+			die(\PHPPE\Templates::getUsage());
 
 		//! create file from template
-		\Templates::create($_SERVER['argv'][2]);
+		\PHPPE\Templates::create($_SERVER['argv'][2]);
 		die;
 	}
 

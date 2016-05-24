@@ -22,6 +22,8 @@
  * @date 1 Jan 2016
  * @brief Utilities to run unit tests
  */
+namespace PHPPE;
+
 class Testing extends \PHPPE\Extension {
 	public $testCases;
     public $eventTestRun = false;

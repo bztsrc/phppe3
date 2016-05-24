@@ -13,7 +13,7 @@ class DeployController {
 			die(L("Run from command line")."\n");
 
 		//! convert source to deployment format
-		\Repository::compress();
+		\PHPPE\Repository::compress();
 		die;
 	}
 

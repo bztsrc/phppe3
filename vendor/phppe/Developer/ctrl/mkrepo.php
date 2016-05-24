@@ -17,7 +17,7 @@ class MkRepoController {
 		{
 			echo("Running tests: ");
 			ob_start();
-			$tests = \Testing::doTests();
+			$tests = \PHPPE\Testing::doTests();
 			$d = ob_get_clean();
 			if(!$tests)
 				die("FAILED\n$d");
@@ -26,7 +26,7 @@ class MkRepoController {
 		}
 
 		//! create repository
-		\Repository::make();
+		\PHPPE\Repository::make();
 		die;
 	}
 

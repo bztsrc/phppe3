@@ -370,9 +370,7 @@ class Email extends Extension
             $message = "This is a multi-part message in MIME format.\r\n--".$boundary."\n".$message;
             foreach ($this->attach as $attach) {
                 $data = !empty($attach['data']) ? $attach['data'] : (substr($attach['file'], 0, 4) == 'http' ? Core::get($attach['file']) : file_get_contents(substr($attach['file'], 0, 6) == 'images' ? @glob('vendor/phppe/*/'.$attach['file'])[0] : $attach['file']));
-                if (!$data) {
-                    continue;
-                }
+                if (!$data) continue;
                 $message .= '--'.$boundary."\n".
                     'Content-type: '.(!empty($attach['mime']) ? $attach['mime'] : 'application-octet-stream')."\n".
                     'Content-Disposition: attachment'.(!empty($attach['file']) ? ";\n filename=\"".basename($attach['file']).'"' : '')."\n".

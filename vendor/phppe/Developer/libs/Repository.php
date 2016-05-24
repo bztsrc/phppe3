@@ -22,6 +22,7 @@
  * @date 1 Jan 2016
  * @brief Utilities to create a repository (packages.json)
  */
+namespace PHPPE;
 
 class Repository
 {

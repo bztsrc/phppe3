@@ -24,8 +24,4 @@
  */
 namespace PHPPE;
 
-//! add your routes here
-//\PHPPE\Http::route("eploscms", "EplosCMSController", "action");
-
-//! return your service class here
 return new EplosCMS;

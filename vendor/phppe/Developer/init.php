@@ -24,6 +24,8 @@
  */
 
 /*!SKIPAUTOLOAD!*/
+namespace PHPPE;
+
 use PHPPE\Core as Core;
 
 //! register menu
@@ -41,5 +43,5 @@ use PHPPE\Core as Core;
 \PHPPE\Http::route("create", "CreateController");
 
 //for event testing
-return new Testing();
+return new Testing;
 ?>

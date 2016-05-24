@@ -22,6 +22,7 @@
  * @date 1 Jan 2016
  * @brief Utility to create php files from templates
  */
+namespace PHPPE;
 
 class Templates
 {

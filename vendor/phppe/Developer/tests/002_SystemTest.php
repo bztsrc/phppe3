@@ -12,12 +12,13 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 	public function testCore()
 	{
-		@unlink("vendor/phppe/autoload.php");
+		@unlink(\PHPPE\ClassMap::$file);
 		$_SERVER['REQUEST_URI']="";
 		$_SERVER['argv'][1]="test";
 		@$core = new \PHPPE\Core(true);
 		$_SERVER['REQUEST_URI']="/test/something?arg=1";
 		@$core = new \PHPPE\Core(true);
+        $this->assertFileExists(\PHPPE\ClassMap::$file, "New classmap");
 		$this->assertNotEmpty($core->base,"Base");
 		$this->assertNotEmpty($core->url,"Url");
 		$this->assertEquals(\PHPPE\Core::$core->output,$core->output,"Output");
