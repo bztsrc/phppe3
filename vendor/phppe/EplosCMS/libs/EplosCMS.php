@@ -44,22 +44,9 @@ class EplosCMS extends Extension
 		if(empty($cfg["sqldir"]))   $cfg["sqldir"] = "data/temp";
 		if(empty($cfg["pagesdir"])) $cfg["pagesdir"] = "pages";
 		$this->pagesdir=$cfg["pagesdir"];
-		//! get page name from url
-		$c = $_SERVER['SCRIPT_NAME'];
-		@list($d) = explode("?",$_SERVER['REQUEST_URI']);
-		foreach(array($c,dirname($c))as$C)
-		    if(substr($d,0,strlen($C))==$C) {
-			$d=substr($d,strlen($C)+1);
-			break;
-		    }
-		//remove lead and trailer slashes
-		if(!empty($d) && $d[0]=="/")
-		    $d=substr($d,1);
-		if(!empty($d) && $d[strlen($d)-1]=="/")
-		    $d=substr($d,0,strlen($d)-1);
 
 		//! if it's a special sql refresh request
-		if($d == "sqlrefresh" || isset($_REQUEST["sqlrefresh"])) {
+		if(Core::$core->url == "sqlrefresh" || isset($_REQUEST["sqlrefresh"])) {
 			//look data source
 			if(!\PHPPE\DS::db())
 				die("ERROR: no db");
@@ -77,12 +64,12 @@ class EplosCMS extends Extension
 		}
 		//! check if there's a CMS generated file for the url
 		//! if so, add route for it
-		$c = @explode("/",$d);
+		$c = @explode("/",Core::$core->url);
 		while(!empty($c)) {
 			$f=implode("-SLASH-",$c);
 			if( file_exists($cfg["pagesdir"]."/".$f.".php") ) {
 				self::$page = $cfg["pagesdir"]."/".$f.".php";
-				\PHPPE\Http::route($d,"\PHPPE\EplosCMS");
+				\PHPPE\Http::route(Core::$core->url,"\PHPPE\EplosCMS");
 				break;
 			}
 			//if not found, put last part in parameters array

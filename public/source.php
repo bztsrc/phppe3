@@ -3696,7 +3696,7 @@ class ClassMap extends Extension
                         'PHPPE\\'.$app,
                         $app,] as $a) {
                     if (ClassMap::has($a)) {
-                        $appCls = 'PHPPE\\Ctrl\\'.$app;
+                        $appCls = $a;
                         break;
                     }
                 }
