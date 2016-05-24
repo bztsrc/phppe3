@@ -49,6 +49,7 @@ class Developer {
 			die();
 		}
 		\PHPPE\View::js("runtest(t)", "document.getElementById('testsdiv').style.display='none';document.getElementById('loadingdiv').style.display='block';document.location.href='".url()."run/'+t;");
+        \PHPPE\View::css("test.css");
 	}
 
 	//actions for http test cases

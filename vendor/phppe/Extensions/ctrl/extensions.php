@@ -28,7 +28,7 @@ class Extensions extends \PHPPE\Extensions {
 /**
  * These actions are called via AJAX
  */
-	function install( $item )
+	function install( $item , $re="")
 	{
 		header( "Cache-Control: no-cache,no-store,private,must-revalidate" );
 		header( "Content-Type: text/plain;charset=utf-8" );
@@ -42,25 +42,25 @@ class Extensions extends \PHPPE\Extensions {
 		die( parent::uninstall( $item ) );
 	}
 
-	function bootstrap( $item )
+	function bootstrap( $item="" )
 	{
 		header( "Cache-Control: no-cache,no-store,private,must-revalidate" );
 		header( "Content-Type: text/plain;charset=utf-8" );
-		die( parent::bootstrap() );
+		die( parent::bootstrap($item) );
 	}
 
 	function getconf( $item )
 	{
 		header( "Cache-Control: no-cache,no-store,private,must-revalidate" );
 		header( "Content-Type: text/plain;charset=utf-8" );
-		die( parent::getconf( $item ) );
+		die( parent::getConf( $_REQUEST['item'] ) );
 	}
 
 	function setconf( $item )
 	{
 		header( "Cache-Control: no-cache,no-store,private,must-revalidate" );
 		header( "Content-Type: text/plain;charset=utf-8" );
-		die( parent::setconf( $item ) );
+		die( parent::setConf( $_REQUEST['item'] ) );
 	}
 
 	function action($item)

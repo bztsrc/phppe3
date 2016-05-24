@@ -1,2 +1,3 @@
-.test {
+TABLE.tests TR:nth-child(odd) {
+    background:#F0F0F0;
 }

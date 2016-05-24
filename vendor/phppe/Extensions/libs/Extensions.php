@@ -45,7 +45,7 @@ class Extensions {
 		if( empty($s) )
 			return false;
 		//typical error indicators at beginning of line
-		foreach( array("ssh:","curl:","tar:","find:","rm:","grep:","sed:") as $c )
+		foreach( array("sh:", "ssh:","curl:","tar:","find:","rm:","grep:","sed:") as $c )
 			if( substr($s,0,strlen($c)) == $c )
 				return true;
 		//typical messages - must contain a space
@@ -65,8 +65,9 @@ class Extensions {
 
 
 	private static function formatvalue($v) {
-		if($v=="true"||$v=="false"||$v=="null"||$v=="0"||intval($v)!=0||$v[0]=="[") return $v;
-		return "'".addslashes($v)."'";
+		return ($v=="true"||$v=="false"||$v=="null"||
+			$v=="0"||intval($v)!=0||
+			@$v[0]=="["||@$v[0]=="{")? $v : "\"".addslashes($v)."\"";
 	}
 
 	private static function identity($privkey)
@@ -91,16 +92,13 @@ class Extensions {
 			!empty(Core::$user->data['remote']['host']) &&
 			!empty(Core::$user->data['remote']['path']) ) {
 			//get list from remote server
-			ob_start();
-			$idfile = $this->identity(Core::$user->data['remote']['identity']);
-			$cmd="ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(Core::$user->data['remote']['user']).
-				(!empty(Core::$user->data['remote']['port'])&&Core::$user->data['remote']['port']>0?" -p ".intval(Core::$user->data['remote']['port']):"").
-				" ".escapeshellarg(Core::$user->data['remote']['host']).
-				" sh -c \\\"cat ".escapeshellarg(Core::$user->data['remote']['path']."/composer.json")." \|grep name \| head -1 \; find ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/phppe")." -type f -name composer.json -exec sh -c \\'cat {} \\| grep -e name[^_] \\|head -1 \\| tr -d \\\\'\\\\n\\\\' \\; cat {} \\| grep -e version[^_] \\' \\\\\; 2>&1 \\\"";
-			Core::log('D',$cmd,"extensions");
-			passthru($cmd);
-			$r=explode("\n",trim(ob_get_clean()));
-			unlink($idfile);
+			try {
+				$r=explode("\n", trim(\PHPPE\Tools::ssh(
+					"cat ".escapeshellarg(Core::$user->data['remote']['path']."/composer.json")." \|grep name \| head -1 \; find ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/phppe")." -type f -name composer.json -exec sh -c \\'cat {} \\| grep -e name[^_] \\|head -1 \\| tr -d \\\\'\\\\n\\\\' \\; cat {} \\| grep -e version[^_] \\' \\\\\; 2>&1"
+				)));
+			} catch(\Exception $e) {
+				$r[0]=$e->getMessage();
+			}
 			//get site title
 			if( !self::isErr($r[0]) ) {
 				$d=explode('"',$r[0]);if(empty($d[3])||$d[3]=="phppe3") $d[3]="No name";
@@ -179,7 +177,7 @@ $list=["data/.."];
 						$p[$pkg]['category']=!empty($ver[$v[0]]['keywords_'.Core::$client->lang][0])?$ver[$v[0]]['keywords_'.Core::$client->lang][0]:(!empty($ver[$v[0]]['keywords_en'][0])?$ver[$v[0]]['keywords_en']:(!empty($ver[$v[0]]['keywords'][0])?$ver[$v[0]]['keywords'][0]:""));
 						$p[$pkg]['maintainer']=$ver[$v[0]]['maintainer']['name'];
 						$p[$pkg]['url']=$ver[$v[0]]['dist']['url'];
-						$p[$pkg]['depends']=!empty($ver[$v[0]]['require'])?array_keys($ver[$v[0]]['require']):[];
+						$p[$pkg]['depends']=!empty($ver[$v[0]]['require'])?array_diff(array_keys($ver[$v[0]]['require']),["php"]):[];
 						foreach(array("version","license","time","size","sha1","price","preview") as $f)
 							@$p[$pkg][$f]=$ver[$v[0]][$f];
 						if(empty($p[$pkg]["version"])) $p[$pkg]['version']=$v[0];
@@ -210,75 +208,57 @@ $list=["data/.."];
 	}
 
 	//bootstrap PHPPE environament on remote server
-	function bootstrap()
+	function bootstrap($item="")
 	{
-		if( !PHPPE::$user->has("install") ) {
-			PHPPE::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
+		if( !Core::$user->has("install") ) {
+			Core::log('A',"Suspicious behavior ".$url." ".$this->getSiteUrl(), "extensions");
 			return "PHPPE-E: ".L("Access denied");
 		}
-		//check for remote configuration
-		if( empty(PHPPE::$user->data['remote']['identity']) || empty(PHPPE::$user->data['remote']['user']) || empty(PHPPE::$user->data['remote']['host']) || empty(PHPPE::$user->data['remote']['path']) )
-			return "PHPPE-E: ".L("configure remote access in Extensions");
 		//get live image
 		$data = @file_get_contents("public/index.php");
 		if( empty($data) )
 			return "PHPPE-E: ".L("No PHPPE Core?");
-
-		//we cannot install localy, that would use webserver's user, forbidden to write.
-		//So we must use remote user identity even when host is localhost.
-		ob_start();
-		$idfile = $this->identity(PHPPE::$user->data['remote']['identity']);
-		$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-			" sh -c \\\"mkdir -p ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public")." \&\& cat \>".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." \\\" 2>&1";
-		PHPPE::log('D',$cmd,"extensions");
-		$p=popen($cmd, "w");
-		if($p){
-			fwrite($p,$data);
-			pclose($p);
+		//! we cannot install localy, that would use webserver's user, forbidden to write.
+		//! So we must use remote user identity even when host is localhost.
+		try {
+			\PHPPE\Tools::ssh(
+				"mkdir -p ".escapeshellarg(Core::$user->data['remote']['path']."/public")." \&\& cat \>".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php"),
+				$data
+			);
+			$r=explode("\n", \PHPPE\Tools::ssh(
+				"php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag\;sudo php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag"
+			));
+		} catch(\Exception $e) {
+			return "PHPPE-E: ".$e->getMessage();
 		}
-		$cmd="ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-			" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag\;sudo php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
-		PHPPE::log('D',$cmd,"extensions");
-		passthru($cmd);
-		$r=explode("\n",trim(ob_get_clean()));
-		unlink($idfile);
-		if( Extensions::iserr($r[0]) ) {
-			PHPPE::log('E',"Failed to bootstrap PHPPE to ".$this->getsiteurl(),"extensions");
-			return "PHPPE-E: ".sprintf(L("Failed to install %s"),"Core")."\nPHPPE-E: ".$this->getsiteurl()."\n\n".implode("\n",$r);
-		} else {
-			PHPPE::log('A',"Installed PHPPE to ".$this->getsiteurl(),"extensions");
-			return "PHPPE-I: ".sprintf(L("Installed %d files from %s"),1,"public/index.php")."\nPHPPE-I: ".$this->getsiteurl()."\n\n".implode("\n",$r);
+		if( Extensions::isErr($r[0]) ) {
+			Core::log('E', "Failed to bootstrap PHPPE to ".$this->getSiteUrl(), "extensions");
+			return "PHPPE-E: ".sprintf(L("Failed to install %s"),"Core")."\nPHPPE-E: ".$this->getSiteUrl()."\n\n".implode("\n", $r);
 		}
+		Core::log('A', "Installed PHPPE to ".$this->getSiteUrl(), "extensions");
+		return "PHPPE-I: ".sprintf(L("Installed %d files from %s"), 1, "public/index.php")."\nPHPPE-I: ".$this->getSiteUrl()."\n\n".implode("\n", $r);
 	}
 
 	//install a tarball via ssh to remote server
 	function install($param,$instdep=true)
 	{
 		$out="";
-		if(strtolower($_REQUEST['item'])==strtolower($param))
-			$param=$_REQUEST['item'];
 
 		list($url,$dir)=explode("#",$param);
-		if(empty($dir)) $dir="phppe";
-		//$dir=strtolower($dir);
-		if( !PHPPE::$user->has("install") ) {
-			PHPPE::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
+		if( !Core::$user->has("install") ) {
+			Core::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
 			return "PHPPE-E: ".L("Access denied");
 		}
 
 		//installation check
-		$inst=json_decode("[".$this->getinstalled()."]",true);
+		$inst=json_decode("[".$this->getInstalled()."]",true);
 		$instidx=[];
 		foreach($inst as $i) if(!empty($i['id'])) $instidx[strtolower($i['id'])]=$i['version'];
 		//also install dependencies if this is the first install
 		if($instdep && empty($instidx[strtolower($dir)])){
 			//build dependency tree
 			$pkg=[];
-			$pkgs=json_decode("[".preg_replace("/,\"preview\":\"[^\"]+\"/","",$this->getpkgs())."]",true);
+			$pkgs=json_decode("[".preg_replace("/,\"preview\":\"[^\"]+\"/","",$this->getPkgs())."]",true);
 			foreach($pkgs as $p) {
 				if(strtolower($p['id'])==strtolower($dir)) $pkg=$p;
 				$pkgidx[strtolower($p['id'])]=$p;
@@ -290,58 +270,38 @@ $list=["data/.."];
 					return "PHPPE-E: ".sprintf(L("Failed dependency %s for %s"),$d,$url);
 				if(empty($instidx[strtolower($d)])) {
 					$out.=$this->install($pkgidx[strtolower($d)]['url']."#".$pkgidx[strtolower($d)]['id'],false)."\n----------------------------------------\n";
-}
+				}
 			}
 		}
-		//check for remote configuration
-		if( empty(PHPPE::$user->data['remote']['identity']) || empty(PHPPE::$user->data['remote']['user']) || empty(PHPPE::$user->data['remote']['host']) || empty(PHPPE::$user->data['remote']['path']) )
-			return "PHPPE-E: ".L("configure remote access in Extensions");
-		//we cannot install localy, that would use webserver's user, forbidden to write.
-		//So we must use remote user identity even when host is localhost.
-		$d=array(0=>array("pipe","r"),1=>array("pipe","w"));
-		if(substr($url,0,6)=="https:")
-			$ca=@file_get_contents("vendor/phppe/extensions/.rootca");
-		$idfile = $this->identity(PHPPE::$user->data['remote']['identity']);
-		$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-			" sh -c \\\"mkdir -p ".escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/".$dir)." \&\& curl ".(!empty($ca)?"--cacert '/dev/stdin'":"")." -sL ".escapeshellarg($url)." \\| tar -xzv --exclude preview -C ".escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/".$dir)." \\\" 2>&1";
-		PHPPE::log('D',$cmd,"extensions");
-		$pr=proc_open($cmd,
-			$d,$p
-		);
-		if(is_array($p)) {
-			if( !empty($ca) )
-				fwrite($p[0],$ca);
-			fclose($p[0]);
-			$r=trim(stream_get_contents($p[1]));
-			fclose($p[1]);
-			proc_close($pr);
-			//run diagnostics to check newly created file's access rights
-			$cmd="ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-				(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-				" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-				" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
-			PHPPE::log('D',$cmd,"extensions");
-			ob_start();
-			passthru($cmd);
-			$r=explode("\n",$r."\n\n".ob_get_clean());
-		} else $r=array();
-		unlink($idfile);
-		if( Extensions::iserr($r[0]) || Extensions::iserr(@$r[1]) || Extensions::iserr(@$r[2]) ) {
+		if (substr($url,0,6)=="https:")
+			$ca = @file_get_contents(dirname(__DIR__)."/.rootca");
+		try {
+			$dest = escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir);
+			$r = \PHPPE\Tools::ssh(
+				"mkdir -p ".$dest." \&\& curl ".(!empty($ca)?"--cacert '/dev/stdin'":"")." -sL ".escapeshellarg($url)." \\| tar -xzv --exclude preview -C ".$dest,
+				$ca
+			);
+			$r=explode("\n", $r."\n\n".\PHPPE\Tools::ssh(
+				"php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag"
+			));
+		} catch(\Exception $e) {
+			return "PHPPE-E: ".$e->getMessage();
+		}
+		if( self::isErr($r[0]) || self::isErr(@$r[1]) || self::isErr(@$r[2]) ) {
 			foreach($r as $k=>$v) if(strpos($v,".rootca")!==false) unset($r[$k]);
-			PHPPE::log('E',"Failed to install ".$url." to ".$this->getsiteurl().", ".implode(" ",$r),"extensions");
-			return $out."PHPPE-E: ".sprintf(L("Failed to install %s"),$url)."\n\n".implode("\n",$r);
+			Core::log('E', "Failed to install ".$url." to ".$this->getSiteUrl().", ".implode(" ",$r), "extensions");
+			return $out."PHPPE-E: ".sprintf(L("Failed to install %s"), $url)."\n\n".implode("\n", $r);
 		} else {
 			$c=0;
 			foreach($r as $k=>$v) {
+				if(empty($v)) continue;
 				if($v[strlen($v)-1]=="/"||strpos($v,".rootca")!==false)
 					unset($r[$k]);
-				else if($v[0]=="x" && $v[1]==" ") $r[$k]="vendor/".$dir."/".substr($v,2);
-				if(substr($r[$k],0,6)=="vendor"&&strpos($r[$k],"DIAG-")===false) $c++;
+				else if($v[0]=="x" && $v[1]==" ") $r[$k]=substr($v,2);
+				if(!empty($r[$k]) && strpos($r[$k],"DIAG-")===false) $c++;
 			}
-			PHPPE::log('A',"Installed ".$url." to ".$this->getsiteurl().", ".($c+0)." files".(PHPPE::$core->runlevel>1?": ".implode(" ",$r):""),"extensions");
-			return $out."PHPPE-I: ".sprintf(L("Installed %d files from %s"),$c+0,$url)."\n\n".implode("\n",$r);
+			Core::log('A', "Installed ".$url." to ".$this->getSiteUrl().", ".($c+0)." files".(Core::$core->runlevel>2?": ".implode(" ", $r):""), "extensions");
+			return $out."PHPPE-I: ".sprintf(L("Installed %d files from %s"),$c+0, $url)."\n\n".implode("\n", $r);
 		}
 	}
 
@@ -350,80 +310,38 @@ $list=["data/.."];
 	{
 		list($url,$dir)=explode("#",$_REQUEST['item']);
 		if(empty($dir)) $dir="phppe";
-		//$dir=strtolower($dir);
-		if( !PHPPE::$user->has("install") ) {
-			PHPPE::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
+
+		if( !Core::$user->has("install") ) {
+			Core::log('A',"Suspicious behavior ".$url." ".$this->getSiteUrl(), "extensions");
 			return "PHPPE-E: ".L("Access denied");
 		}
-		//check for remote configuration
-		if( empty(PHPPE::$user->data['remote']['identity']) || empty(PHPPE::$user->data['remote']['user']) || empty(PHPPE::$user->data['remote']['host']) || empty(PHPPE::$user->data['remote']['path']) )
-			return "PHPPE-E: ".L("configure remote access in Extensions");
-		//we cannot remove localy, that would use webserver's user, forbidden to write.
-		//So we must use remote user identity even when host is localhost.
-		$d=array(0=>array("pipe","r"),1=>array("pipe","w"));
-		if(substr($url,0,6)=="https:")
-			$ca=@file_get_contents("vendor/phppe/extensions/.rootca");
-		$idfile = $this->identity(PHPPE::$user->data['remote']['identity']);
-		$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-			//don't allow removal of vendor/phppe
-			(strpos($dir,"/")===false?
-			" sh -c \\\"curl ".(!empty($ca)?"--cacert '/dev/stdin'":"")." -sL ".escapeshellarg($url)." \\| tar -tz \\| grep -v preview \\| grep -v core/config.php \\| grep -v \'/\$\' \\| ".
-			"sed \'s#^#".escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/".$dir)."/#\' \\| xargs rm -vf \\\" 2>&1"
-			:
-			" rm -rvf ".escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/".$dir)." 2>&1");
-		PHPPE::log('D',$cmd,"extensions");
-		$pr=proc_open($cmd,$d,$p);
-		if(is_array($p)) {
-			if( !empty($ca) )
-				fwrite($p[0],$ca);
-			fclose($p[0]);
-			$r=trim(stream_get_contents($p[1]));
-			fclose($p[1]);
-			proc_close($pr);
-		} else $r="";
-		//extra cleanup when removing PHPPE Pack
-		if($dir=="phppe/Core") {
-			//remove empty additional directories
-			$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-				(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-				" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-				" rm -vf ".
-					escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/phppe/autoload.php")." ".
-					"2>&1";
-			PHPPE::log('D',$cmd,"extensions");
-			ob_start();
-			passthru($cmd);
-			$r.="\n".trim(ob_get_clean());
+
+		if (substr($url,0,6)=="https:")
+			$ca = @file_get_contents(dirname(__DIR__)."/.rootca");
+		try {
+			$r=explode("\n", \PHPPE\Tools::ssh(
+				"rm -rvf ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir)." \; echo \; php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag"
+			));
+		} catch(\Exception $e) {
+			return "PHPPE-E: ".$e->getMessage();
 		}
-		//call diag mode to create default files
-		$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-			" sh -c \\\"php ".escapeshellarg(PHPPE::$user->data['remote']['path']."/public/index.php")." --diag \\\" 2>&1";
-		PHPPE::log('D',$cmd,"extensions");
-		ob_start();
-		passthru($cmd);
-		$r=explode("\n",$r."\n\n".trim(ob_get_clean()));
-		unlink($idfile);
-		if( Extensions::iserr($r[0]) || Extensions::iserr(@$r[1]) || Extensions::iserr(@$r[2]) ) {
+		if( self::isErr($r[0]) || self::isErr(@$r[1]) || self::isErr(@$r[2]) ) {
 			foreach($r as $k=>$v) if(strpos($v,".rootca")!==false) unset($r[$k]);
-			PHPPE::log('E',"Failed to uninstall ".$url." ".$this->getsiteurl().", ".implode(" ",$r),"extensions");
-			return "PHPPE-E: ".sprintf(L("Failed to uninstall %s"),$url)."\n\n".implode("\n",$r);
+			Core::log('E', "Failed to uninstall ".$url." ".$this->getSiteUrl().", ".implode(" ", $r), "extensions");
+			return "PHPPE-E: ".sprintf(L("Failed to uninstall %s"),$url)."\n\n".implode("\n", $r);
 		} else {
 			$c=0;
 			foreach($r as $k=>$v) {
-				if(strpos($v,".rootca")!==false) unset($r[$k]);
-				elseif(substr($v,0,strlen(PHPPE::$user->data['remote']['path']))==PHPPE::$user->data['remote']['path']) $r[$k]=substr($v,strlen(PHPPE::$user->data['remote']['path'])+1);
-				if(substr($r[$k],0,6)=="vendor"&&strpos($r[$k],"DIAG-")===false) $c++;
+				if($v[strlen($v)-1]=="/"||strpos($v,".rootca")!==false)
+					unset($r[$k]);
+				if(strpos($r[$k],"DIAG-")===false) $c++;
 			}
-			PHPPE::log('A',"Uninstalled ".$url." ".$this->getsiteurl().", ".($c+0)." files".(PHPPE::$core->runlevel>1?": ".implode(" ",$r):""),"extensions");
-			if( explode(".",basename($url))[0] == "phppe3_extmgr" ) {
+			Core::log('A',"Uninstalled ".$url." ".$this->getsiteurl().", ".($c+0)." files".(Core::$core->runlevel>2?": ".implode(" ",$r):""), "extensions");
+			if( $dir == "phppe/Extensions" ) {
 				session_destroy();
 				unset($_SESSION);
 			}
-			return "PHPPE-I: ".sprintf(L("Uninstalled %d files of %s"),$c+0,$url)."\n\n".implode("\n",$r);
+			return "PHPPE-I: ".sprintf(L("Uninstalled %d of %s"), $c+0, $url)."\n\n".implode("\n", $r);
 		}
 	}
 
@@ -436,32 +354,18 @@ $list=["data/.."];
 			return "PHPPE-E: ".L("Access denied");
 		}
 
-		//check for remote configuration
-		if( empty(Core::$user->data['remote']['identity']) || empty(Core::$user->data['remote']['user']) || empty(Core::$user->data['remote']['host']) || empty(Core::$user->data['remote']['path']) )
-			return "PHPPE-E: ".L("configure remote access in Extensions");
-		$idfile = $this->identity(Core::$user->data['remote']['identity']);
-		//we cannot install localy, that would use webserver's user, forbidden to write.
-		//So we must use remote user identity even when host is localhost.
-		$d=array(0=>array("pipe","r"),1=>array("pipe","w"));
-		$cmd = "ssh -i ".escapeshellarg($idfile).
-			" -l ".escapeshellarg(Core::$user->data['remote']['user']).
-			(!empty(Core::$user->data['remote']['port'])&&Core::$user->data['remote']['port']>0?" -p ".intval(Core::$user->data['remote']['port']):"").
-			" ".escapeshellarg(Core::$user->data['remote']['host']).
-			" sh -c \\\"cat ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php")." \\\" 2>&1";
-		Core::log('D',$cmd,"extensions");
-		$pr=proc_open($cmd,$d,$p);
-		if(is_array($p)) {
-			fclose($p[0]);
-			$r=trim(stream_get_contents($p[1]));
-			fclose($p[1]);
-			proc_close($pr);
-		} else $r="";
-		unlink($idfile);
+		try {
+			$r=\PHPPE\Tools::ssh(
+				"cat ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php")
+			);
+		} catch(\Exception $e) {
+			return "PHPPE-E: ".$e->getMessage();
+		}
+
 		if( self::isErr($r) || substr($r,0,5)!="<"."?p"."hp" ) {
-			Core::log('E',"Failed to get configuration for ".$dir." ".$this->getsiteurl().", ".str_replace("\n"," ",$r),"extensions");
-			return "";
+			Core::log('D',"Failed to get configuration for ".$dir." ".$this->getSiteUrl().", ".str_replace("\n"," ",$r),"extensions");
+			return L("Error reading configuration");
 		} else {
-			$core = new \stdClass();
 			$ret = eval("?".">".$r);
 			return json_encode($ret);
 		}
@@ -470,42 +374,32 @@ $list=["data/.."];
 	//set configuration for an extension
 	function setConf($dir)
 	{
-		if(empty($dir) || empty($_POST)) return;
-		if( !PHPPE::$user->has("install") ) {
-			PHPPE::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
+		if(empty($dir) || empty($_POST)) return "PHPPE-E: ".L("Bad arguments");
+
+		if( !Core::$user->has("install") ) {
+			Core::log('A',"Suspicious behavior ".$url." ".$this->getsiteurl(),"extensions");
 			return "PHPPE-E: ".L("Access denied");
 		}
-		//check for remote configuration
-		if( empty(PHPPE::$user->data['remote']['identity']) || empty(PHPPE::$user->data['remote']['user']) || empty(PHPPE::$user->data['remote']['host']) || empty(PHPPE::$user->data['remote']['path']) )
-			return "PHPPE-E: ".L("configure remote access in Extensions");
 		//construct new configuration file
-		$conf="<"."?p"."hp\nreturn array(\n";
-		foreach($_POST as $k=>$v) $conf.="\t\"".addslashes($k)."\" => ".$this->formatvalue($v).",\n";
-		$conf.=");\n";
-		//we cannot install localy, that would use webserver's user, forbidden to write.
-		//So we must use remote user identity even when host is localhost.
-		$d=array(0=>array("pipe","r"),1=>array("pipe","w"));
-		$idfile = $this->identity(PHPPE::$user->data['remote']['identity']);
-		$cmd = "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(PHPPE::$user->data['remote']['user']).
-			(!empty(PHPPE::$user->data['remote']['port'])&&PHPPE::$user->data['remote']['port']>0?" -p ".intval(PHPPE::$user->data['remote']['port']):"").
-			" ".escapeshellarg(PHPPE::$user->data['remote']['host']).
-			" sh -c \\\"cat \>".escapeshellarg(PHPPE::$user->data['remote']['path']."/vendor/".$dir."/config.php")." \\\" 2>&1";
-		PHPPE::log('D',$cmd,"extensions");
-		$pr=proc_open($cmd,$d,$p);
-		if(is_array($p)) {
-			fwrite($p[0],$conf);
-			fclose($p[0]);
-			$r=trim(stream_get_contents($p[1]));
-			fclose($p[1]);
-			proc_close($pr);
-		} else $r="";
-		unlink($idfile);
-		if( Extensions::iserr($r) ) {
-			PHPPE::log('E',"Failed to set configuration for ".$dir." ".$this->getsiteurl().", ".str_replace("\n"," ",$r),"extensions");
+		$conf = "<"."?p"."hp\nreturn [\n";
+		foreach($_POST as $k=>$v)
+			$conf.="\t\"".addslashes($k)."\" => ".$this->formatvalue($v).",\n";
+		$conf .= "];\n";
+
+		try {
+			$r = \PHPPE\Tools::ssh(
+				"cat \>".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php"),
+				$conf
+			);
+		} catch(\Exception $e) {
+			return "PHPPE-E: ".$e->getMessage();
+		}
+		if( self::isErr($r) ) {
+			Core::log('E',"Failed to set configuration for ".$dir." ".$this->getSiteUrl().", ".str_replace("\n"," ",$r),"extensions");
 			return "PHPPE-E: ".L("Failed set configuration!")."\n\n".str_replace("\n"," ",$r);
 		} else {
 			die(L("Configuration saved.")."\n".$r);
 		}
 	}
 }
-?>
+

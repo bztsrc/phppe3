@@ -281,8 +281,8 @@ namespace PHPPE {
                 //! no IP for tty
                 $this->ip = 'CLI';
                 //! query tty size. If you know a better, exec()-less way, let me know!!!
-                $c = exec('tput cols') + 0;
-                $d = exec('tput lines') + 0;
+                $c = exec('tput cols 2>/dev/null') + 0;
+                $d = exec('tput lines 2>/dev/null') + 0;
                 $this->screen = [$c < 1 ? 80 : $c, $d < 1 ? 25 : $d];
                 //! agent is a terminal
                 $d = getenv('TERM');
@@ -626,7 +626,7 @@ namespace PHPPE {
         {
             //on cli this will most probably report an error
             //as usually cli action handlers have already echoed output by now
-            if ($c) {
+            if ($c && empty(Core::$core->nocache)) {
                 header('Pragma:cache');
                 header('Cache-Control:cache,public,max-age='.Core::$core->cachettl);
                 header('Connection:close');
@@ -1381,11 +1381,11 @@ namespace PHPPE {
         public function route($app, $action)
         {
             //! proxy dynamic assets (vendor directory is not accessable by the webserver, only public dir)
-            if (in_array($app, ['css', 'js', 'images'])) {
+            if (in_array($app, ['css', 'js', 'images', 'fonts'])) {
                 //! helper function to specify mime header and minify assets
                 function b($a, $b)
                 {
-                    Http::mime($a == 'css' ? 'text/css' : ($a == 'js' ? 'text/javascript' : 'image/png'));
+                    Http::mime($a == 'css' ? 'text/css' : ($a == 'js' ? 'text/javascript' : ($a == 'images'?'image/png':'application/octet-stream')));
                     die($b);
                 }
                 //! let's try to get it from cache
@@ -1440,7 +1440,7 @@ namespace PHPPE {
  *
  * @return minified data
  */
-        public static function minify($d, $t = 'js')
+        public static function minify(&$d, $t = 'js')
         {
             //! check input, return output just as is if type unknown
             if (!empty(Core::$core->nominify) || ($t != 'css' && $t != 'js' && $t != 'php')) {
@@ -2980,6 +2980,48 @@ namespace PHPPE {
         }
 
 /**
+ * Execute a shell command on remote server
+ *
+ * @param command
+ * @param input string
+ * @param command to generate input
+ *
+ * @return command output
+ */
+        public static function ssh($cmd, $input="", $precmd="")
+        {
+            //! check for remote configuration
+            if (empty(Core::$user->data['remote']['identity']) || empty(Core::$user->data['remote']['user']) || empty(Core::$user->data['remote']['host']) || empty(Core::$user->data['remote']['path'])) {
+                throw new \Exception(L('configure remote access'));
+            }
+
+            //! we cannot install localy, that would use webserver's user, forbidden to write.
+            //! So we must use remote user identity even when host is localhost.
+            $idfile = tempnam('.tmp', '.id_');
+            file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n");
+            chmod($idfile, 0400);
+            $ssh = ($precmd?$precmd."|":"").
+                "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(Core::$user->data['remote']['user']).
+                (!empty(Core::$user->data['remote']['port'])&&Core::$user->data['remote']['port']>0?" -p ".intval(Core::$user->data['remote']['port']):"")." ".escapeshellarg(Core::$user->data['remote']['host']).
+                " sh -c \\\" ".$cmd." \\\" 2>&1";
+            Core::log('D', $ssh, "remote");
+            $d=[0=>["pipe", "r"], 1=>["pipe", "w"]];
+            $pr=proc_open($ssh, $d, $p);
+            if($pr!==false && is_array($p)) {
+                if( !empty($input) )
+                    fwrite($p[0],$input);
+                fclose($p[0]);
+                $r=trim(stream_get_contents($p[1]));
+                fclose($p[1]);
+                proc_close($pr);
+            } else {
+                $r="ssh: unable to execute";
+            }
+            unlink($idfile);
+            return $r;
+        }
+
+/**
  * Copy files to a remote server over a secure channel
  *
  * @param array of filenames
@@ -2987,32 +3029,18 @@ namespace PHPPE {
  */
         public static function copy($files, $dest = '')
         {
-            //! check for remote configuration
-            if (empty(Core::$user->data['remote']['identity']) || empty(Core::$user->data['remote']['user']) || empty(Core::$user->data['remote']['host']) || empty(Core::$user->data['remote']['path'])) {
-                throw new \Exception('PHPPE-E: '.L('configure remote access'));
-            }
-
-            //! we cannot install localy, that would use webserver's user, forbidden to write.
-            //! So we must use remote user identity even when host is localhost.
-            ob_start();
-            $idfile = tempnam('.tmp', '.id_');
-            file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n");
-            chmod($idfile, 0400);
             if (is_string($files)) {
                 $files = [$files];
             }
             foreach ($files as $k => $v) {
                 $files[$k] = escapeshellarg($v);
             }
-            $cmd = 'tar -cz '.implode(' ', $files).'|ssh -i '.escapeshellarg($idfile).' -l '.escapeshellarg(Core::$user->data['remote']['user']).
-                (!empty(Core::$user->data['remote']['port']) && Core::$user->data['remote']['port'] > 0 ? ' -p '.intval(Core::$user->data['remote']['port']) : '').
-                ' '.escapeshellarg(Core::$user->data['remote']['host']).
-                ' sh -c \\" tar -xvz '.($dest ? ' -C '.escapeshellarg(Core::$user->data['remote']['path'].'/'.$dest) : '')." 2>\&1 \\\" 2>&1";
-            passthru($cmd);
-            $r = trim(ob_get_clean());
-            unlink($idfile);
+            $r = self::ssh(
+                "tar -xvz ".($dest ? ' -C '.escapeshellarg(Core::$user->data['remote']['path'].'/'.$dest) : '')." 2>\&1",
+                "",
+                "tar -cz ".implode(' ', $files));
             if (in_array(substr($r, 0, 4), ['ssh:', 'tar:']) || substr($r, 0, 3) == 'sh:') {
-                throw new \Exception('PHPPE-E: '.sprintf(L('failed to copy %d files to %s'), count($files), Core::$user->data['remote']['user'].'@'.Core::$user->data['remote']['host'].':'.Core::$user->data['remote']['path'].'/'.$dest)
+                throw new \Exception(sprintf(L('failed to copy %d files to %s'), count($files), Core::$user->data['remote']['user'].'@'.Core::$user->data['remote']['host'].':'.Core::$user->data['remote']['path'].'/'.$dest)
                     .': '.explode("\n", $r)[0]);
             }
 
@@ -3164,6 +3192,7 @@ class ClassMap extends Extension
         }
         $ret .= "];\n";
         file_put_contents(self::$file, $ret, LOCK_EX);
+        @chmod(self::$file,0640);
     }
 }
 
@@ -3523,7 +3552,7 @@ class ClassMap extends Extension
             $D = ['.tmp' => $W,
                     'data' => $W,
                     'app' => 0,
-                    'vendor' => 0755,
+                    'vendor' => 0,
                     'vendor/bin' => 0,
                     'vendor/phppe' => 0,
                     'vendor/phppe/Core' => 0,
@@ -3600,7 +3629,7 @@ class ClassMap extends Extension
             i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id><!field pass pass><!field submit></form>");
             i($D."maintenance$e", "<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>");
-            i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
+            i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
             if ($E) {
                 self::log('E', "Wrong permissions:\n$E", 'diag');
@@ -3661,6 +3690,7 @@ class ClassMap extends Extension
                 }
 
                 //! canonize application's class' name
+                $appCls = $app;
                 foreach (['PHPPE\\Ctrl\\'.$app.ucfirst($ac),
                         'PHPPE\\Ctrl\\'.$app,
                         'PHPPE\\'.$app,
@@ -3896,6 +3926,7 @@ class ClassMap extends Extension
             if (empty($n)) {
                 $n = !empty(self::$core->app) ? self::$core->app : 'core';
             }
+            $n = str_replace("--", $n);
             //! remove sensitive information from message
             $m = trim(strtr($m, [dirname(dirname(__FILE__)).'/' => '']));
             $g = !empty(self::$l[$m]) ? L($m) : $m;

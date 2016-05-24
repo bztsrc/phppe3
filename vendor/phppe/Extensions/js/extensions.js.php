@@ -22,13 +22,13 @@ header("Content-type:text/javascript;charset=utf8");
 /*PRIVATE VARS*/
 var extensions_installed=[ <?=Core::lib("Extensions")->getInstalled()?> ];
 var extensions_pkgs=[ <?=Core::lib("Extensions")->getPkgs()?> ];
-var extensions_licenses=[],extensions_cats=[];
+var extensions_licenses=[];
 var extensions_tmr=null, extensions_me=false, extensions_lastcmd="", extensions_param="",extensions_return="",extensions_url="";
 
 /*PUBLIC METHODS*/
 function extensions_search(str,installed)
 {
-	var t="<a name='category_label0'></a>",up=false,down=false;
+	var t="",up=false,down=false;
 	if(str==""||str==null||str==undefined)str=document.getElementById("search").value;
 	if(str=="<?=L("installed")?>"<?=(L("installed")!="installed"?"||str==\"installed\"":"")?>){str="";installed=true;}
 	if(str=="<?=L("upgrade")?>"<?=(L("upgrade")!="upgrade"?"||str==\"upgrade\"":"")?>){str="";up=true;}
@@ -48,32 +48,35 @@ function extensions_search(str,installed)
 		   extensions_pkgs[i].installed<=extensions_pkgs[i].version)
 		) continue;
 		try{
-		if(up==false && down==false && (!document.getElementById('license_filter'+extensions_licenses.indexOf(extensions_pkgs[i].license)).checked ||
-		   !document.getElementById('category_filter'+extensions_cats.indexOf(extensions_pkgs[i].category)).checked
-		)) continue;
+		if(up==false && down==false && !document.getElementById('license_filter'+extensions_licenses.indexOf(extensions_pkgs[i].license)).checked) continue;
 		}catch(e){}
 		if(extensions_pkgs[i].category!=null && extensions_pkgs[i].category!=cat) {
 			cat=extensions_pkgs[i].category;
-			t+="<br style='clear:both;'><a name='category_label"+extensions_cats.indexOf(cat)+"'><b>"+L(cat)+"</b></a><br style='clear:both;'>"
+			t+="<br style='clear:both;'><b>"+L(cat)+"</b></a><br style='clear:both;'>"
 		}
-		t+="<div class='extension' dir='ltr'><img class='preview' title='"+extensions_pkgs[i].url+"' src='data:image/png;base64,"+(extensions_pkgs[i].preview?extensions_pkgs[i].preview:'iVBORw0KGgoAAAANSUhEUgAAAIAAAAB5CAMAAADGfdkoAAAAUVBMVEUAAADDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8OOFo/iAAAAGnRSTlMA+Mgje5u258wWvleUTwtvrUQspPCGYTne1lzKNFwAAAPaSURBVGje7ZrJlqsgEEALBAdUBFHU+v8PfadHTToRRAlvkbvJok8nF6kJEoiC1MzkVKim6yEBVuDKYCZ4LR3BO5ZXKkwFPkBJeBEdPmZ4USyM+JSXbEOHzyEZRGfCPShEp8RdGESmxn2G2Kkg0EEH8ZASMnSRQxx6JophWCi6KKLsQU/RmxiZ2OAB+FTBxeR4kLK71EFhALyKXnpflY8VwUCEjNv73AyXJMSC4ZAeTtPjGYoqbvNxI4IXbhnrWhmUA+fbczUWPwvILJ4kO/7xOa6QAU9iDn8+QwdxHkE9svani8hM112TL+vq40eBLklBzWh1v0kcmU0ta/KyiJ8I/WbXZ2HGrt2KQDXVncBQ+rByR2aqmq1IcGxYj8DbK6ezUOO0zqNRgkC73+REX27AifXayBbD4Oda7rqMOp6A8komFm8LSq+KyuMFYeH1LgbDqE9k4cr0WY/atUJfORZN6EZvK7TuGkWL60qxRQ+KJW+6m1ZRacu4cHqwgCzcL4zbAv27MTPBJ1TgICy8Z8GZ1dnGo9dNYBUAgcEUHx1LZ3KdYEOurWY8y7Dk3eOCwiCgF4YPfyZoGpnwGqa/Nb2Qh88eM+eUBA8ey97hUEqPLGRfiWV5edyiBTncrv/m8+0wiLF9FJNs+P2PaZvenZoPzt/93vFcfT9ixfS9hextk8+fNaPqb+NTM7X4ZsLtyEIsbLn948I7Lf8eB1vQAxb5WN8aZvWoiqMTwyhd5Wag3P7pU/QnFPOxre70hHvwUd+Lp1Z63vXM+SYs7vN4UUxvLdrCdSfEqDKcaXmw3syq09WTkkAW3v1aVMtuEpwr+SW3k3wynBHa1F8Gw6kDkHXGsRifSs6t4wBBJLiQeIp6f3wtwU1+/qBfdWYJv4ho8RTqp3k93KcRPCB4Crn3KC14YE5Gwd5KJvBAX3Xpx4/NnivDyT14Hk0zuFnNT991ZI7jR/w9KBzTd6w96Ne2eQe78uunxfDHGP0bBPyO/rrbd1JDTGaP6Toqo8+NjmVumg/GzQtv2kv2oAVool4LL26B0vvLGIrfveHrrUvwgLkLvkA3FP4KGAoeZOcF1tIr8PvM8aVDr/gNRu05uFBjlCGojFJm+HgxuWc57EIF3DTgQ+UUmJcsCMzBC+ESKCgE4StgnQJlXAGZWgBEaoE6tYBMLQAqtUCbWkCSxAJgUgvo1AIwpBJwj4ZtVIEVmloAeGoBqGq+JBNYJRpKEgmsEu0oSEKBVSKZwHo1LwZEm0BgRepxSiSw8hZ4C7wF3gJvgbfAW+At8Bb4HwRoYoEZSRCXCdSqpAGURsMT/gG5cUM2oGYBXgAAAABJRU5ErkJggg==');
-		t+="' style='"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"padding-left:16px;":"")+"position:absolute;width:128px !important;' alt='"+extensions_pkgs[i].id+"'><div"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?" dir='rtl'":"")+">";
-		t+=extensions_pkgs[i].name+" "+extensions_pkgs[i].version+(extensions_pkgs[i].installed?" <span class='installed' style='color:green;'>(<?=L("installed")?> "+extensions_pkgs[i].installed+")</span>":"")+"<br>";
+		t+=[
+        "<div class='col-lg-4'>",
+            "<div class='extension well well-sm' dir='ltr'>",
+            "<img class='preview' title='"+extensions_pkgs[i].url+"' src='data:image/png;base64,"+(extensions_pkgs[i].preview?extensions_pkgs[i].preview:'iVBORw0KGgoAAAANSUhEUgAAAIAAAAB5CAMAAADGfdkoAAAAUVBMVEUAAADDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8OOFo/iAAAAGnRSTlMA+Mgje5u258wWvleUTwtvrUQspPCGYTne1lzKNFwAAAPaSURBVGje7ZrJlqsgEEALBAdUBFHU+v8PfadHTToRRAlvkbvJok8nF6kJEoiC1MzkVKim6yEBVuDKYCZ4LR3BO5ZXKkwFPkBJeBEdPmZ4USyM+JSXbEOHzyEZRGfCPShEp8RdGESmxn2G2Kkg0EEH8ZASMnSRQxx6JophWCi6KKLsQU/RmxiZ2OAB+FTBxeR4kLK71EFhALyKXnpflY8VwUCEjNv73AyXJMSC4ZAeTtPjGYoqbvNxI4IXbhnrWhmUA+fbczUWPwvILJ4kO/7xOa6QAU9iDn8+QwdxHkE9svani8hM112TL+vq40eBLklBzWh1v0kcmU0ta/KyiJ8I/WbXZ2HGrt2KQDXVncBQ+rByR2aqmq1IcGxYj8DbK6ezUOO0zqNRgkC73+REX27AifXayBbD4Oda7rqMOp6A8komFm8LSq+KyuMFYeH1LgbDqE9k4cr0WY/atUJfORZN6EZvK7TuGkWL60qxRQ+KJW+6m1ZRacu4cHqwgCzcL4zbAv27MTPBJ1TgICy8Z8GZ1dnGo9dNYBUAgcEUHx1LZ3KdYEOurWY8y7Dk3eOCwiCgF4YPfyZoGpnwGqa/Nb2Qh88eM+eUBA8ey97hUEqPLGRfiWV5edyiBTncrv/m8+0wiLF9FJNs+P2PaZvenZoPzt/93vFcfT9ixfS9hextk8+fNaPqb+NTM7X4ZsLtyEIsbLn948I7Lf8eB1vQAxb5WN8aZvWoiqMTwyhd5Wag3P7pU/QnFPOxre70hHvwUd+Lp1Z63vXM+SYs7vN4UUxvLdrCdSfEqDKcaXmw3syq09WTkkAW3v1aVMtuEpwr+SW3k3wynBHa1F8Gw6kDkHXGsRifSs6t4wBBJLiQeIp6f3wtwU1+/qBfdWYJv4ho8RTqp3k93KcRPCB4Crn3KC14YE5Gwd5KJvBAX3Xpx4/NnivDyT14Hk0zuFnNT991ZI7jR/w9KBzTd6w96Ne2eQe78uunxfDHGP0bBPyO/rrbd1JDTGaP6Toqo8+NjmVumg/GzQtv2kv2oAVool4LL26B0vvLGIrfveHrrUvwgLkLvkA3FP4KGAoeZOcF1tIr8PvM8aVDr/gNRu05uFBjlCGojFJm+HgxuWc57EIF3DTgQ+UUmJcsCMzBC+ESKCgE4StgnQJlXAGZWgBEaoE6tYBMLQAqtUCbWkCSxAJgUgvo1AIwpBJwj4ZtVIEVmloAeGoBqGq+JBNYJRpKEgmsEu0oSEKBVSKZwHo1LwZEm0BgRepxSiSw8hZ4C7wF3gJvgbfAW+At8Bb4HwRoYoEZSRCXCdSqpAGURsMT/gG5cUM2oGYBXgAAAABJRU5ErkJggg=='),
+            "' style='"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"padding-left:16px;":"")+"position:absolute;width:128px !important;' alt='"+extensions_pkgs[i].id+"'>",
+            "<div"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?" dir='rtl'":"")+">",
+            extensions_pkgs[i].name+" "+extensions_pkgs[i].version,
+            (extensions_pkgs[i].installed?" <span class='installed' style='color:green;'>(<?=L("installed")?> "+extensions_pkgs[i].installed+")</span>":"")+"<br>"].join("");
 		if( extensions_pkgs[i].url != undefined ) {
 			var u="",s=extensions_pkgs[i].size;
 			if(s>1024*1024) { u="M"; s=Math.round(s/1024/1024); }
 			if(s>1024) { u="K"; s=Math.round(s/1024); }
 			t+="<small dir='ltr' class='details' style='font-style:italic;'>"+extensions_pkgs[i].id+" ("+s+" "+u+"b, "+L(extensions_pkgs[i].license)+", "+extensions_pkgs[i].maintainer+")</small><br>";
 			if(Math.floor(extensions_pkgs[i].price)!=0)
-			t+="<input type='button' class='button' onclick='"+(extensions_pkgs[i].homepage? "window.open(\""+extensions_pkgs[i].homepage : "alert(\"<?=L("No webshop url given")?>" )+"\");' value='<?=L("Buy")?> ("+extensions_pkgs[i].price+"&euro;)' style='background:#B0B0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);'>&nbsp;&nbsp;&nbsp;&nbsp;";
+			t+="<button class='btn btn-warning glyphicon glyphicon-shopping-cart' onclick='"+(extensions_pkgs[i].homepage? "window.open(\""+extensions_pkgs[i].homepage : "alert(\"<?=L("No webshop url given")?>" )+"\");' ></button>&nbsp;&nbsp;&nbsp;";
 			if(!extensions_pkgs[i].installed) {
-				t+="<input type='button' class='button' onclick='extensions_cmd(this,\"install\","+i+");' value='⬇' style='width:24px;font-size:16px;line-height:24px;' title='<?=L("Install")?>' style='"+(Math.floor(extensions_pkgs[i].price)!=0?"background:#B0B0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"'>";
-			} else if(extensions_pkgs[i].installed<extensions_pkgs[i].version) t+="<input type='button' class='button' onclick='extensions_cmd(this,\"install\","+i+");' value='<?=L("Upgrade to")?> "+extensions_pkgs[i].version+"' style='color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);'>";
-			else if(extensions_pkgs[i].installed>extensions_pkgs[i].version) t+="<input type='button' class='button' onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"install\","+i+");' value='<?=L("Downgrade to")?> "+extensions_pkgs[i].version+"'>";
-			else t+="<input type='button' class='button' onclick='extensions_cmd(this,\"install\","+i+");' value='⟳' style='font-size:24px;line-height:24px;' title='<?=L("Reinstall")?>'>";
-			if(extensions_pkgs[i].config!="" && window.XMLHttpRequest && (extensions_pkgs[i].installed||extensions_pkgs[i].id=="phppe/Core")) t+="<input type='button' class='button' onclick='extensions_conf(this,"+i+");' value='⚒' style='font-size:22px;line-height:24px;' title='<?=L("Configure")?>'>";
+				t+="<button onclick='extensions_cmd(this,\"install\","+i+");' class='btn btn-default glyphicon glyphicon-arrow-down' title='<?=L("Install")?>' style='"+(Math.floor(extensions_pkgs[i].price)!=0?"background:#B0B0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"'><span></span></button>";
+			} else if(extensions_pkgs[i].installed<extensions_pkgs[i].version) t+="<button onclick='extensions_cmd(this,\"install\","+i+");' class='btn btn-warning'><?=L("Upgrade to")?> "+extensions_pkgs[i].version+"</button>";
+			else if(extensions_pkgs[i].installed>extensions_pkgs[i].version) t+="<button onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"install\","+i+");' class='btn btn-info'><?=L("Downgrade to")?> "+extensions_pkgs[i].version+"</button>";
+			else t+="<button onclick='extensions_cmd(this,\"install\","+i+");' class='btn btn-default glyphicon glyphicon-repeat' title='<?=L("Reinstall")?>'></button>";
+			if(extensions_pkgs[i].config!="" && window.XMLHttpRequest && (extensions_pkgs[i].installed||extensions_pkgs[i].id=="phppe/Core")) t+="&nbsp;<button onclick='extensions_conf(this,"+i+");' title='<?=L("Configure")?>' class='btn btn-default glyphicon glyphicon-cog'></button>";
 			if(extensions_pkgs[i].installed) {
-				t+="&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' class='button' onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"uninstall\","+i+");' value='♻' title='<?=L("Remove")?>' style='line-height:24px;font-size:18px;background:#F0B0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);'>";
+				t+="&nbsp;&nbsp;&nbsp;<button onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"uninstall\","+i+");'  title='<?=L("Remove")?>' class='btn btn-danger glyphicon glyphicon-trash'></button>";
 			}
 				try {
 					var j,k,l;
@@ -86,7 +89,7 @@ function extensions_search(str,installed)
 						t+="<br><small"+(extensions_pkgs[i].installed?" style='color:red;'":"")+">"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small>";
 				} catch(e) {}
 		}
-		t+="<br><small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div>";
+		t+="<br><small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div></div>";
 	}
 	if(t=="") t="<br style='clear:both;'><i><?=L("No match found.")?></i>";
 	document.getElementById('pkgs').innerHTML=t;
@@ -105,7 +108,7 @@ function extensions_conf(obj,i)
 		else alert('HTTP-E: '+r.status);
 		} catch(e) {
 			if(r.responseText!=null&&r.responseText!=undefined&&r.responseText!='')
-			    waserr=L('Error reading configuration')+': '+r.responseText;
+			    waserr=r.responseText;
 			cfg=new Array();
 		}
 	} else return;
@@ -216,7 +219,7 @@ function extensions_conftab(i,tn)
 function extensions_walk(n, f) {
 	f(n);
 	n = n.firstChild;
-	while(n) {
+    while(n) {
 		extensions_walk(n,f);
 		n = n.nextSibling;
 	}
@@ -228,7 +231,7 @@ function extensions_saveconf(i)
 	if( window.XMLHttpRequest ) {
 		var r = new XMLHttpRequest();
 		extensions_param="";
-		extensions_walk(document.getElementById('status').firstChild, function(n) {
+		extensions_walk(document.getElementById('status').firstChild.nextSibling, function(n) {
 				if(n.tagName=="INPUT" && n.type!="button") {
 					extensions_param+=(extensions_param?"&":"")+n.name+"="+encodeURIComponent(n.value);
 				}
@@ -274,15 +277,9 @@ function extensions_cmd(obj,cmd,i)
 			document.getElementById('status').style.visibility='visible';
 			extensions_loadmodal();
 		} else {
-			obj.style.position='relative';
-		    var a=obj,x=0,y=0;
+            var r=obj.getBoundingClientRect();
+		    var a=obj,x=r.left,y=r.top;
 		    var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
-			do {
-			    x += a.offsetLeft - a.scrollLeft ;//+ a.clientLeft;
-			    y += a.offsetTop - a.scrollTop ;//+ a.clientTop;
-			} while (a = a.offsetParent);
-			x-=Math.floor((window.pageXOffset?window.pageXOffset:document.body.scrollLeft));
-			y-=Math.floor((window.pageYOffset?window.pageYOffset:document.body.scrollTop));
 		    document.getElementById('status').setAttribute('style','left:'+x+'px;top:'+y+'px;width:'+obj.offsetWidth+'px;height:'+obj.offsetHeight+'px;visibility:visible;');
 			extensions_return={left:x+'px',top:y+'px',width:obj.offsetWidth+'px',height:obj.offsetHeight+'px'};
 			x=Math.floor(/*(window.pageXOffset?window.pageXOffset:document.body.scrollLeft)+*/ww*0.2);
@@ -306,7 +303,7 @@ function extensions_loadmodal()
 function extensions_hidestatus()
 {
 	document.getElementById('status').style.visibility='hidden';
-	document.getElementById('status').innerHTML='';
+	document.getElementById('status').innerHTML='<?=L("Connecting to host")?>...';
 	if(extensions_lastcmd!='conf')
 		document.location.href=(extensions_me?"<?=url("/")?>":"<?=url("extensions")?>");
 }
@@ -330,8 +327,6 @@ function extensions_init()
 	for(i=0;i<extensions_pkgs.length;i++) {
 		if(extensions_licenses.indexOf(extensions_pkgs[i].license)==-1)
 			extensions_licenses.push(extensions_pkgs[i].license);
-		if(extensions_cats.indexOf(extensions_pkgs[i].category)==-1)
-			extensions_cats.push(extensions_pkgs[i].category);
 		for(j=1;j<extensions_installed.length;j++) {
 			if(extensions_pkgs[i].id==extensions_installed[j].id) {
 				extensions_installed[j].idx=i;
@@ -343,24 +338,37 @@ function extensions_init()
 	for(j=1;j<extensions_installed.length;j++)
 		if(extensions_installed[j].idx==null||extensions_installed[j].idx==undefined)
 			extensions_pkgs.push({"id":extensions_installed[j].id,"name":"NA "+extensions_installed[j].id,"version":"?.?.?","installed":(extensions_installed[j].version!=undefined&&extensions_installed[j].version!=""?extensions_installed[j].version:"?.?.?"),"desc":"*<?=L("installed, but not in repo")?>*"});
-	t="<div id='extensions_panel'><div class='row'>";
-	t+="<div class='col-md-6'><b>"+(extensions_installed[0]!=null?extensions_installed[0].name:"<?=L("No name")?>")+"</b><br><small>&nbsp;&nbsp;<?=(!empty(Core::$user->data['remote']['user'])?Core::$user->data['remote']['user']."@":"").Core::$user->data['remote']['host'].(!empty(Core::$user->data['remote']['path'])?":".Core::$user->data['remote']['path']:"")?></small></div>";
-	t+="<div class='col-md-6'><input id='search' type='text' class='form-control' onkeyup='return extensions_searchbg();'  placeholder='<?=L("Search")?>'></div>";
-    t+="</div><div class='row'><div class='col-md-3'>";
-    t+="<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"\";extensions_search();'><?=L("All")?> <small dir='ltr'>("+extensions_pkgs.length+")</small></button></div><div class='col-md-3'>";
-	t+="<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"<?=L("installed")?>\";extensions_search();'><?=L("Installed")?> <small dir='ltr'>("+(extensions_installed.length-1)+")</small></button></div><div class='col-md-3'>";
-	t+="<button id='upbtn' style='margin:5px;line-height:20px;width:99%;"+(cnt>0?"color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"' onclick='document.getElementById(\"search\").value=\"<?=L("upgrade")?>\";extensions_search();'><?=L("Upgrade")?> <small dir='ltr'>("+cnt+")</small></button></div><div class='col-md-3'>";
-	t+="<button style='margin:5px;line-height:20px;width:99%;' onclick='extensions_cmd(this,\"bootstrap\",-1);'><?=L("Diagnostics")?></button>";
-	t+="</div></div><div class='row'><div class='col-md-6 text-center'>";
+	t=["<div id='extensions_panel'>",
+        "<div class='row'>",
+            "<div class='col-md-6'>",
+                "<b>"+(extensions_installed[0]!=null?extensions_installed[0].name:"<?=L("No name")?>")+"</b><br><small>&nbsp;&nbsp;<?=(!empty(Core::$user->data['remote']['user'])?Core::$user->data['remote']['user']."@":"").Core::$user->data['remote']['host'].(!empty(Core::$user->data['remote']['path'])?":".Core::$user->data['remote']['path']:"")?></small>",
+            "</div>",
+            "<div class='col-md-6'>",
+                "<input id='search' type='text' class='form-control' onkeyup='return extensions_searchbg();'  placeholder='<?=L("Search")?>'>",
+            "</div>",
+        "</div>",
+        "<div class='row'>",
+            "<div class='col-xs-3'>",
+                "<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"\";extensions_search();'><?=L("All")?> <small dir='ltr'>("+extensions_pkgs.length+")</small></button>",
+            "</div>",
+            "<div class='col-xs-3'>",
+                "<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"<?=L("installed")?>\";extensions_search();'><?=L("Installed")?> <small dir='ltr'>("+(extensions_installed.length-1)+")</small></button>",
+            "</div>",
+            "<div class='col-xs-3'>",
+                "<button id='upbtn' style='margin:5px;line-height:20px;width:99%;"+(cnt>0?"color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"' onclick='document.getElementById(\"search\").value=\"<?=L("upgrade")?>\";extensions_search();'><?=L("Upgrade")?> <small dir='ltr'>("+cnt+")</small></button>",
+            "</div>",
+            "<div class='col-xs-3'>",
+                "<button style='margin:5px;line-height:20px;width:99%;' onclick='extensions_cmd(this,\"bootstrap\",-1);'><?=L("Diagnostics")?></button>",
+            "</div>",
+        "</div>",
+        "<div class='row'>",
+            "<div class='text-center'>"].join("");
 	for(i=0;i<extensions_licenses.length;i++){
 		t+="<span><input class='input' type='checkbox' name='license_filter"+i+"' id='license_filter"+i+"' value='"+extensions_licenses[i]+"' checked onchange='extensions_search(document.getElementById(\"search\").value);'><label for='license_filter"+i+"'><small style='padding-"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"left":"right")+":8px;'>"+L(extensions_licenses[i])+"</small></label></span>";
 	}
-	t+="</div><div class='col-md-6 text-center'>";
-	for(i=0;i<extensions_cats.length;i++){
-		t+="<span><input class='input' type='checkbox' name='category_filter"+i+"' id='category_filter"+i+"' value='"+extensions_cats[i]+"' checked onchange='extensions_search(document.getElementById(\"search\").value);'><a href='extensions#category_label"+i+"'><small style='padding-"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"left":"right")+":8px;'>"+L(extensions_cats[i]!=""?extensions_cats[i]:"Framework")+"</small></a></span>";
-	}
 	t+="</div></div></div>";
-	t+="<div id='pkgs'></div><div id='statusbg' onclick='extensions_exitcmd();'></div>";
+	t+="<div id='pkgs'></div>";
+    t+="<div id='statusbg' onclick='extensions_exitcmd();'></div>";
 	if (window.XMLHttpRequest)
 		t+="<pre id='status'><?=L("Connecting to host")?>...</pre>";
 	else
