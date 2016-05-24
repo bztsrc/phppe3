@@ -11,7 +11,7 @@
 	"version_normalized": "1.0.0.0",
 
 	"conf": {
-		"type":"select(0=none,1=server side GeoIP2,2-client side HTML5,3-client tracking HTML5,4-remote ipinfo.io JSON)"
+		"type":"select(0=none,1=server side GeoIP2,2=client side HTML5,3=client tracking HTML5,4=remote ipinfo.io JSON)"
 	},
 	"conf_en": {
 		"type":"GeoLocation type"
