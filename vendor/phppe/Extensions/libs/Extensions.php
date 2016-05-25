@@ -240,7 +240,7 @@ $list=["data/.."];
 	}
 
 	//install a tarball via ssh to remote server
-	function install($param,$instdep=true)
+	function installPkg($param,$instdep=true)
 	{
 		$out="";
 
@@ -258,7 +258,7 @@ $list=["data/.."];
 		if($instdep && empty($instidx[strtolower($dir)])){
 			//build dependency tree
 			$pkg=[];
-			$pkgs=json_decode("[".preg_replace("/,\"preview\":\"[^\"]+\"/","",$this->getPkgs())."]",true);
+			$pkgs=json_decode("[".$this->getPkgs()."]",true);
 			foreach($pkgs as $p) {
 				if(strtolower($p['id'])==strtolower($dir)) $pkg=$p;
 				$pkgidx[strtolower($p['id'])]=$p;
@@ -269,7 +269,7 @@ $list=["data/.."];
 				if(empty($pkgidx[strtolower($d)]))
 					return "PHPPE-E: ".sprintf(L("Failed dependency %s for %s"),$d,$url);
 				if(empty($instidx[strtolower($d)])) {
-					$out.=$this->install($pkgidx[strtolower($d)]['url']."#".$pkgidx[strtolower($d)]['id'],false)."\n----------------------------------------\n";
+					$out.=$this->installPkg($pkgidx[strtolower($d)]['url']."#".$pkgidx[strtolower($d)]['id'], false)."\n----------------------------------------\n";
 				}
 			}
 		}

@@ -32,7 +32,7 @@ class Extensions extends \PHPPE\Extensions {
 	{
 		header( "Cache-Control: no-cache,no-store,private,must-revalidate" );
 		header( "Content-Type: text/plain;charset=utf-8" );
-		die( parent::install( $item ) );
+		die( parent::installPkg( $item ) );
 	}
 
 	function uninstall( $item )
