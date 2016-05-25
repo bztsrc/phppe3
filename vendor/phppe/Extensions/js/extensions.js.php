@@ -183,15 +183,8 @@ function extensions_conf(obj,i)
 	if(<?=empty(Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
 		document.getElementById('status').style.visibility='visible';
 	} else {
-	    var a=obj,x=0,y=0;
-	    if(a.offsetParent) {
-		do {
-		    x += a.offsetLeft - a.scrollLeft ;//+ a.clientLeft;
-		    y += a.offsetTop - a.scrollTop ;//+ a.clientTop;
-		} while (a = a.offsetParent);
-		x-=Math.floor((window.pageXOffset?window.pageXOffset:document.body.scrollLeft));
-		y-=Math.floor((window.pageYOffset?window.pageYOffset:document.body.scrollTop));
-	    }
+        var r=obj.getBoundingClientRect();
+        var a=obj,x=r.left,y=r.top;
 	    document.getElementById('status').style.left=x+'px';
 	    document.getElementById('status').style.top=y+'px';
 	    document.getElementById('status').style.width=obj.offsetWidth+'px';
@@ -280,7 +273,7 @@ function extensions_cmd(obj,cmd,i)
             var r=obj.getBoundingClientRect();
 		    var a=obj,x=r.left,y=r.top;
 		    var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
-		    document.getElementById('status').setAttribute('style','left:'+x+'px;top:'+y+'px;width:'+obj.offsetWidth+'px;height:'+obj.offsetHeight+'px;visibility:visible;');
+		    document.getElementById('status').setAttribute('style','left:'+x+'px;top:'+y+'px;width:'+obj.offsetWidth+'px;height:'+obj.offsetHeight+'px;position:fixed;visibility:visible;');
 			extensions_return={left:x+'px',top:y+'px',width:obj.offsetWidth+'px',height:obj.offsetHeight+'px'};
 			x=Math.floor(/*(window.pageXOffset?window.pageXOffset:document.body.scrollLeft)+*/ww*0.2);
 			y=Math.floor(/*(window.pageYOffset?window.pageYOffset:document.body.scrollTop)+*/wh*0.2);
@@ -298,7 +291,7 @@ function extensions_loadmodal()
 			document.getElementById('status').style.color=(t.substr(0,7)!="PHPPE-I"&&t.substr(0,5)!="DIAG-"?'#FF6060':'#60FF60');
 			document.getElementById('status').innerHTML=t;
 		} else
-			document.getElementById('status').src=url;
+			document.getElementById('status').src=extensions_url;
 }
 function extensions_hidestatus()
 {
