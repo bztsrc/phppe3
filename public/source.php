@@ -3550,8 +3550,6 @@ class ClassMap extends Extension
             }
             //! create directory structure
             $o = umask(0);
-            //! hide errors here, target may not exists or the symlink may be already there
-            @symlink('vendor/phppe/Core', 'phppe');
             //! directory skeleton
             $D = ['.tmp' => $W,
                     'data' => $W,
@@ -3616,6 +3614,8 @@ class ClassMap extends Extension
                 }
                 @symlink("../public/$v", "app/$v");
             }
+            //! hide errors here, target may not exists or the symlink may be already there
+            @symlink('vendor/phppe/Core', 'phppe');
             //! create files
             umask(0027);
             i('app/config.php', '');
