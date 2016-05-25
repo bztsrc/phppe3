@@ -3064,15 +3064,17 @@ class ClassMap extends Extension
     {
         //! generate classmap file if it's not exists or in diag mode
         if (!file_exists(self::$file) || @$_SERVER['argv'][1] == '--diag') {
-            $this->generate();
+            self::$map = $this->generate();
         }
         //! load it
         // @codeCoverageIgnoreStart
-        if (empty(self::$map)) {
+        elseif (empty(self::$map)) {
             self::$map = json_decode(@file_get_contents(self::$file), true);
         }
+        //! force regeneration if file corrupted and decoding failed
+        //! or somehow map got corrupted in memory
         if (!is_array(self::$map)) {
-            self::$map = [];
+            self::$map = $this->generate();
         }
         // @codeCoverageIgnoreEnd
         //! register class loader
@@ -3096,7 +3098,9 @@ class ClassMap extends Extension
     }
 
 /**
- * Generate classmap for autoload.
+ * Generate classmap cache for autoloading.
+ *
+ * @return new map
  */
     public function generate()
     {
@@ -3113,51 +3117,51 @@ class ClassMap extends Extension
                 file_exists(dirname($fn).'/.skipautoload')) {
                 continue;
             }
-                //! load php code
-                $d = file_get_contents($fn);
-                //! skip if file marked
-                if (strpos($d, '/*!SKIPAUTOLOAD!*/') !== false) {
-                    continue;
-                }
-                //! look for namespace and class definitions
-                $i = 0;
+            //! load php code
+            $d = file_get_contents($fn);
+            //! skip if file marked
+            if (strpos($d, '/*!SKIPAUTOLOAD!*/') !== false) {
+                continue;
+            }
+            //! look for namespace and class definitions
+            $i = 0;
             $l = strlen($d);
             $ns = '';
-                //! find first php block
-                while ($i < $l && substr($d, $i, 2) != '<'.'?') {
-                    $i++;
-                }
+            //! find first php block
+            while ($i < $l && substr($d, $i, 2) != '<'.'?') {
+                $i++;
+            }
             while ($i < $l) {
                 //! on php block end, skip to the next
-                    if (substr($d, $i, 2) == '?'.'>') {
-                        while ($i < $l && substr($d, $i, 2) != '<'.'?') {
+                if (substr($d, $i, 2) == '?'.'>') {
+                    while ($i < $l && substr($d, $i, 2) != '<'.'?') {
+                        $i++;
+                    }
+                    continue;
+                }
+                //! skip over string literals
+                if (($d[$i] == "'" || $d[$i] == '"')) {
+                    $s = $d[$i];
+                    $j = $i;
+                    ++$i;
+                    while ($i < $l && $d[$i] != $s) {
+                        if ($d[$i] == '\\') {
                             $i++;
                         }
-                        continue;
+                        $i++;
                     }
-                    //! skip over string literals
-                    if (($d[$i] == "'" || $d[$i] == '"')) {
-                        $s = $d[$i];
-                        $j = $i;
-                        ++$i;
-                        while ($i < $l && $d[$i] != $s) {
-                            if ($d[$i] == '\\') {
-                                $i++;
-                            }
-                            ++$i;
-                        }
-                        ++$i;
-                        continue;
+                    $i++;
+                    continue;
+                }
+                //! don't take comments into account
+                if ($d[$i] == '/' && $d[$i + 1] == '/') {
+                    $s = $i;
+                    $i += 2;
+                    while ($i < $l && $d[$i] != "\n") {
+                        $i++;
                     }
-                    //! don't take comments into account
-                    if ($d[$i] == '/' && $d[$i + 1] == '/') {
-                        $s = $i;
-                        $i += 2;
-                        while ($i < $l && $d[$i] != "\n") {
-                            $i++;
-                        }
-                        continue;
-                    }
+                    continue;
+                }
                 if ($d[$i] == '/' && $d[$i + 1] == '*') {
                     $s = $i;
                     $i += 2;
@@ -3167,19 +3171,19 @@ class ClassMap extends Extension
                     $i += 2;
                     continue;
                 }
-                    //! check for declarations
-                    if (($d[$i] == 'n' || $d[$i] == 'c') &&
-                        preg_match("/^(namespace|class)[\ \t\n]+([^\ \t\n;{\[\(\]\)\$]+)/ims", substr($d, $i), $m) &&
-                        ctype_alpha(trim($m[2])[0])) {
-                        $c = trim($m[2]);
-                        if (strtolower($m[1][0]) == 'n') {
-                            $ns = $c;
-                        } else {
-                            $R[strtolower($ns.($ns ? '\\' : '').$c)] = $fn;
-                        }
-                        $i += strlen($m[0]);
+                //! check for declarations
+                if (($d[$i] == 'n' || $d[$i] == 'c') &&
+                    preg_match("/^(namespace|class)[\ \t\n]+([^\ \t\n;{\[\(\]\)\$]+)/ims", substr($d, $i), $m) &&
+                    ctype_alpha(trim($m[2])[0])) {
+                    $c = trim($m[2]);
+                    if (strtolower($m[1][0]) == 'n') {
+                        $ns = $c;
+                    } else {
+                        $R[strtolower($ns.($ns ? '\\' : '').$c)] = $fn;
                     }
-                ++$i;
+                    $i += strlen($m[0]);
+                }
+                $i++;
             }
         }
         //! sort list of classes alphabetically
@@ -3192,6 +3196,7 @@ class ClassMap extends Extension
         }
         file_put_contents(self::$file, "{\n".$ret."\n}", LOCK_EX);
         @chmod(self::$file,0664);
+        return $R;
     }
 }
 
