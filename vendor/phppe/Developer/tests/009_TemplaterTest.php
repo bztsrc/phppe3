@@ -220,6 +220,9 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$core->url = "aaa";
 
 		//save it to cache
+        $sha = \PHPPE\Core::$core->base . "aaa/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
+		\PHPPE\Cache::set("c_".sha1($sha."_css"),"");
+		\PHPPE\Cache::set("c_".sha1($sha."_js"),"");
 		ob_start();
 		@\PHPPE\View::output($txt);
 		$this->assertEquals(1,preg_match("/div class='menu'/",ob_get_clean()),"Output #2");

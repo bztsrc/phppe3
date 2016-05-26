@@ -1353,10 +1353,11 @@ namespace PHPPE {
  * @param key
  * @param value
  * @param ttl, optional
+ * @param force use of cache, optional
  */
-    public static function set($k, $v, $ttl = 0)
+    public static function set($k, $v, $ttl = 0, $force=false)
     {
-        if (!empty(self::$mc) && empty(Core::$core->nocache)) {
+        if (!empty(self::$mc) && (empty(Core::$core->nocache)||$force)) {
             return @self::$mc->set($k, $v, MEMCACHE_COMPRESSED, $ttl > 0 ? $ttl : Core::$core->cachettl);
         }
 
@@ -1367,10 +1368,11 @@ namespace PHPPE {
  * Get a value from cache.
  *
  * @param key
+ * @param force use of cache
  */
-        public static function get($k)
+        public static function get($k, $force=false)
         {
-            if (!empty(self::$mc) && empty(Core::$core->nocache)) {
+            if (!empty(self::$mc) && (empty(Core::$core->nocache)||$force)) {
                 return self::$mc->get($k);
             }
 
@@ -1466,7 +1468,7 @@ namespace PHPPE {
  *
  * @return minified data
  */
-        public static function minify(&$d, $t = 'js')
+        public static function minify($d, $t = 'js')
         {
             //! check input, return output just as is if type unknown
             if (!empty(Core::$core->nominify) || ($t != 'css' && $t != 'js' && $t != 'php')) {
@@ -2447,8 +2449,7 @@ namespace PHPPE {
                         //! if aggregation allowed
                         if (!empty(Cache::$mc) && empty(Core::$core->noaggr)) {
                             $n = sha1($N."_$e");
-                            if (empty(Cache::get("c_$n"))) {
-                                // @codeCoverageIgnoreStart
+                            if (empty(Cache::get("c_$n", true))) {
                                 $da = '';
                                 //! skip dynamic assets (they use a different caching mechanism)
                                 foreach (self::$hdr['css'] as $u => $v) {
@@ -2457,8 +2458,7 @@ namespace PHPPE {
                                     }
                                 }
                                 //! save result to cache
-                                Cache::set("c_$n", ['m' => "text/$e", 'd' => $da]);
-                                // @codeCoverageIgnoreEnd
+                                Cache::set("c_$n", ['m' => "text/$e", 'd' => $da], 0, true);
                             }
                             $O .= sprintf($d, $I."?cache=$n");
                             //! add dynamic stylesheets, they were left out from aggregated cache above
@@ -2589,8 +2589,7 @@ namespace PHPPE {
                         //! if aggregation allowed
                         if (!empty(Cache::$mc) && empty(Core::$core->noaggr)) {
                             $n = sha1($N.'_js');
-                            if (empty(Cache::get("c_$n"))) {
-                                // @codeCoverageIgnoreStart
+                            if (empty(Cache::get("c_$n", true))) {
                                 $da = '';
                                 //! skip dynamic assets and cdn links (they use a different caching mechanism)
                                 foreach (self::$hdr['jslib'] as $u => $v) {
@@ -2598,8 +2597,7 @@ namespace PHPPE {
                                         $da .= Assets::minify(file_get_contents(substr($v, 2)), 'js')."\n";
                                     }
                                 }
-                                Cache::set("c_$n", ['m' => 'text/javascript', 'd' => $da]);
-                                // @codeCoverageIgnoreEnd
+                                Cache::set("c_$n", ['m' => 'text/javascript', 'd' => $da], 0, true);
                             }
                             $O .= "$d src='${I}js/?cache=$n'>$e";
                             //! add dynamic javascripts, they were left out from aggregated cache above

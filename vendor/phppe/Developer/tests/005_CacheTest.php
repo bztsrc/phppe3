@@ -87,7 +87,9 @@ class CacheTest extends PHPUnit_Framework_TestCase
 
 		$url=url("tests","http")."cachetest";
 
-		$N = 'p_' . sha1(\PHPPE\Core::$core->base . "tests/http/cachetest/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang);
+        $sha = \PHPPE\Core::$core->base . "tests/http/cachetest/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
+
+		$N = 'p_' . sha1($sha);
 		\PHPPE\Cache::set($N,"",1);
 		$this->assertEmpty(\PHPPE\View::fromCache($N),"Page cache #1");
 		file_get_contents($url); //make sure the output gets to the cache
