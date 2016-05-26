@@ -5,7 +5,9 @@
  @brief Self test view for PHPPE Core
 -->
 <style type='text/css' scoped>
+<!if !core.isInst("bootstrap")>
 @import url('http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
+<!/if>
 DIV.panel DIV.row { padding:2px; }
 DIV.panel DIV.row:nth-of-type(even) { background:#f8f8f8; }
 DIV.dump PRE { overflow:auto;max-height:300px; }
@@ -50,11 +52,11 @@ DIV.dump PRE { overflow:auto;max-height:300px; }
 	<div class="row">
 		<div class="col-sm-2">Data domain:</div>
 		<div class="col-sm-4" dir="ltr">
-<!if core.lib('ds').primary><span class="text-success"><!=core.lib('ds').primary></span>
+<!if core.lib('DS').name><span class="text-success"><!=core.lib('DS').name></span>
 <!else><span class="text-info">files</span><!/if>
 		</div>
 		<div class="col-sm-6 text-muted small">
-<!if core.lib('ds').primary>Primary datasource<!else>Local files only in <i>data</i> directory<!/if>
+<!if core.lib('DS').name>Primary datasource<!else>Local files only in <i>data</i> directory<!/if>
 		</div>
 	</div>
 	<div class="row">
@@ -320,6 +322,29 @@ Shows widget configuration (edit method) in conf mode, outputs widget face (show
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
+&lt;!cms text cms0>
+		</div>
+		<div class="col-sm-4" dir="ltr">
+<!cms text cms0>
+		</div>
+		<div class="col-sm-6 text-muted small">
+Shows a CMS edit icon when user is logged in has site administrator or web administrator access.
+Otherwise just displays the formatted value of the given property. Icon onclick will raise a modal.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
+&lt;!cms(400,100) text cms1>
+		</div>
+		<div class="col-sm-4" dir="ltr">
+<!cms(400,100) text(200,10) cms1>
+		</div>
+		<div class="col-sm-6 text-muted small">
+Specify dimensions of the modal, in case autodetection is not working for some reason.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
 &lt;!field text obj.field>
 		</div>
 		<div class="col-sm-4" dir="ltr">
@@ -327,17 +352,6 @@ Shows widget configuration (edit method) in conf mode, outputs widget face (show
 		</div>
 		<div class="col-sm-6 text-muted small">
 Shows edit hook.
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2">
-&lt;!cms text obj.cms>
-		</div>
-		<div class="col-sm-4" dir="ltr">
-<!cms text obj.cms>
-		</div>
-		<div class="col-sm-6 text-muted small">
-Calls edit hook in cms page edit mode, shows value otherwise.
 		</div>
 	</div>
 	<div class="row">

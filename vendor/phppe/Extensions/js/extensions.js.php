@@ -272,7 +272,8 @@ function extensions_cmd(obj,cmd,i)
 		} else {
             var r=obj.getBoundingClientRect();
 		    var a=obj,x=r.left,y=r.top;
-		    var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
+		    var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);
+		    var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
 		    document.getElementById('status').setAttribute('style','left:'+x+'px;top:'+y+'px;width:'+obj.offsetWidth+'px;height:'+obj.offsetHeight+'px;position:fixed;visibility:visible;');
 			extensions_return={left:x+'px',top:y+'px',width:obj.offsetWidth+'px',height:obj.offsetHeight+'px'};
 			x=Math.floor(/*(window.pageXOffset?window.pageXOffset:document.body.scrollLeft)+*/ww*0.2);

@@ -51,7 +51,8 @@ class Repository
 		$i=strpos($data,"*/")+2;
 		//! make sure minifier is not turned off
 		\PHPPE\Core::$core->nominify=false;
-		$out=substr($data,0,$i)."\n".\PHPPE\Assets::minify(substr($data,$i),"php");
+        $code=substr($data,$i);
+		$out=substr($data,0,$i)."\n".\PHPPE\Assets::minify($code,"php");
 		$l=strlen($out);
 		if($l>99999)
 			die("file too big, ".$l." bytes\n");

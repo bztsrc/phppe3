@@ -54,6 +54,11 @@ namespace PHPPE {
         //function filter(){}
         //function cronX($retCode){}
         //function stat()
+
+        function __toString()
+        {
+            return get_class($this);
+        }
     }
 
 /**
@@ -131,6 +136,11 @@ namespace PHPPE {
         //! {
         //!	  return [true, "Dummy validator that always pass"];
         //! }
+
+        function __toString()
+        {
+            return get_class($this)."(".$this->name.")";
+        }
     }
 
 /**
@@ -139,6 +149,11 @@ namespace PHPPE {
     class Filter
     {
         //static function filter()
+
+        function __toString()
+        {
+            return __CLASS__;
+        }
     }
 
 /**
@@ -304,8 +319,21 @@ namespace PHPPE {
     {
         public $id;
         public $name;
-        //! this breaks PSR-2, but required to exclude table name prop
+        //! this breaks PSR-2, but required to exclude table name from sql
         protected static $_table;
+
+/**
+ * Default model constructor. Load object with data if id given
+ *
+ * @param id
+ */
+        function __construct($id="")
+        {
+            if(!empty($id)) {
+                $this->id = $id;
+                $this->load($id);
+            }
+        }
 
 /**
  * Find objects of the same kind in database.
@@ -330,6 +358,7 @@ namespace PHPPE {
  *
  * @param id of the object to load, or (if second argument given) search phrase
  * @param where clause with placeholders
+ * @param order by (optional)
  *
  * @return true on success
  */
@@ -357,6 +386,8 @@ namespace PHPPE {
 
 /**
  * Save the current object into database. May also alter $id property (and that only).
+ *
+ * @param bool, force insert
  *
  * @return true on success
  */
@@ -2108,8 +2139,9 @@ namespace PHPPE {
                 return $L;
             }
             //check if we're in cms edit mode
-            $J = /*Core::$core->app == "cms" && Core::$core->action == "pages" &&*/ method_exists('\\PHPPE\\CMS', 'icon');
-//$J=1;
+            $J = ClassMap::has("PHPPE\\CMS") &&
+                get_class(self::$o['app'])=="PHPPE\\Content" &&
+                Core::$user->has("siteadm|webadm");
             //get tags
             if (preg_match_all("/<!([^\[\-][^>]+)>[\r\n]*/ms", $x, $T, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
                 //get opening/closing pairs
@@ -2137,14 +2169,16 @@ namespace PHPPE {
                     $w = '';
                     $a = '';
                     if ($H[0] == '=') {
-                        $t = '=';
+                        $t = $g = '=';
                     } else {
-                        $t = trim(strstr($H, ' ', true));
+                        $g = trim(strstr($H, ' ', true));
+                        $t = trim(strstr($g, '(', true));
+                        if(empty($t)) $t = $g;
                     }
                     if (empty($t)) {
-                        $t = $H;
+                        $t = $g = $H;
                     } else {
-                        $a = trim(substr($H, strlen($t)));
+                        $a = trim(substr($H, strlen($g)));
                     }
                     $A = Core::x(' ', $a);
                     $N = $m[0][1];
@@ -2271,7 +2305,8 @@ namespace PHPPE {
                                 print_r($s);
                                 $n = '<pre>'.htmlspecialchars(ob_get_clean()).'</pre>';
                             }
-                            $w = "<div class='dump'><b style='font:monospace;'>".$A[0].':</b>'.preg_replace("/<small>.*?<\/small>\n?/", '', $n).'</div>';
+                            $w = "<div class='dump'><b style='font:monospace;'>".$A[0].':</b>'.
+                            preg_replace("/<small>.*?<\/small>\n?/", '', preg_replace("/PRIVATE KEY.*?PRIVATE KEY\n?/ims", '', $n)).'</div>';
                         }
                         break;
                         //hook for cms editor icons
@@ -2280,14 +2315,16 @@ namespace PHPPE {
                         case 'widget' :
                         case 'var' :
                         case 'field' :
-                        $Z = $R = $m = false; $G = $t == 'cms'; $V = $t == 'var';
+                        $Z = $R = $m = false;
+                        $w="";
+                        $G = $t == 'cms';
+                        $V = $t == 'var';
                         //if first attribute starts with an at sign, it's an ace definition
                         if ($A[0][0] == '@') {
                             $Z = substr($A[0], 1);
                             array_shift($A);
                         }
                         $Z = empty($Z) || Core::$user->has($Z);
-                        if ($G && $J && $Z) $w = CMS::icon($A);
                         //if type starts with an asterix, it's a mandatory field
                         //equal sign does not show error on missing addon, but display plain value
                         if ($A[0][0] == '*') {
@@ -2306,9 +2343,7 @@ namespace PHPPE {
                             $n = !empty($A[0]) ? $A[0] : '';
                             array_shift($A);
                             //value (if applicable)
-                            if (!in_array($f, ['update', 'cancel', 'button'])) {
-                                $v = self::getval($n);
-                            }
+                            $v = self::getval($n);
                             //find appropriate class for AddOn
                             $d = '\\PHPPE\\Addon\\'.$f;
                             if (ClassMap::has($d)) {
@@ -2322,19 +2357,28 @@ namespace PHPPE {
                                         Core::addon($f, "addon $f");
                                     }
                                 }
-                                //add validators
-                                if ($R || $f == 'check' || $f == 'file' || method_exists($d, 'validate')) {
-                                    $_SESSION['pe_v'][$n][$f] = [$R, $a, $A];
+                                //! cms icon
+                                if ($G) {
+                                    if ($J && $Z)
+                                        $w = CMS::icon($g, $f, $F);
+                                    //! we use the (otherwise here useless) required marker
+                                    //! for showing value in non-edit mode
+                                    $m = $R ? "show" : "";                                        
+                                } else {
+                                    //add validators and check for required fields
+                                    if ($R || $f == 'check' || $f == 'file' || method_exists($d, 'validate')) {
+                                        $_SESSION['pe_v'][$n][$f] = [$R, $a, $A];
+                                    }
+                                    //find out method to use to draw AddOn
+                                    $m = $t == 'field' || !empty($_SESSION[$V ? 'pe_e' : 'pe_c']) && method_exists($F, 'edit') ? 'edit' : 'show';
                                 }
-                                //find out method to use to draw AddOn
-                                $m = !$G && ($t == 'field' || !empty($_SESSION[$V ? 'pe_e' : 'pe_c'])) && method_exists($F, 'edit') ? 'edit' : 'show';
                                 //get output
-                                $w .= method_exists($F, $m) && $Z ? $F->$m() : $v;
+                                $w .= $m && method_exists($F, $m) && $Z ? $F->$m() : "";
                                 unset($F);
                                 break;
                             }
                         }
-                        $w .= /*$G ||*/ ($V && empty($_SESSION['pe_e'])) ? (is_scalar($v) ? $v.'' : $v && json_encode($v)) : self::e('W', 'UNKADDON', $f);
+                        $w .= ($V && empty($_SESSION['pe_e'])) ? (is_scalar($v) ? $v.'' : $v && json_encode($v)) : self::e('W', 'UNKADDON', $f);
                         break;
                         default : $w = self::e('W', 'UNKTAG', $t);
                     }
@@ -2836,8 +2880,8 @@ namespace PHPPE {
         public static function dump()
         {
             Http::mime('text/plain', false);
-            print_r($_SERVER);
             print_r(self::$o);
+            print_r($_SERVER);
             print_r(Http::route());
             die;
         }
@@ -3725,11 +3769,6 @@ class ClassMap extends Extension
                 View::setPath(self::$paths[strtolower($app)]);
                 View::assign('app', $appObj);
 
-                //! check dump argument here, by now all core properties are populated
-                if ((@in_array('--dump', $_SERVER['argv']) || isset($_REQUEST['--dump'])) && $this->runlevel > 0) {
-                    View::dump();
-                }
-
                 //! Application constructor may altered template, so we have to log this after "new App"
                 self::log('D', $this->url." ->$app::$ac ".$this->template, 'routes');
 
@@ -3762,6 +3801,11 @@ class ClassMap extends Extension
                 if (empty($T)) {
                     $T = L('Maintenance mode is on');
                 }
+            }
+
+            //! check dump argument here, by now all core properties are populated
+            if ((@in_array('--dump', $_SERVER['argv']) || isset($_REQUEST['--dump'])) && $this->runlevel > 0) {
+                View::dump();
             }
 
             //! close all database connections before output

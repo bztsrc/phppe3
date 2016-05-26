@@ -1,0 +1,29 @@
+.accept {
+	cursor:pointer;
+	position:fixed;
+	bottom:5px;
+	right:5px;
+}
+.setsel SPAN {
+	color:#D0D0D0;
+}
+.setsel_item {
+	border:outset 1px #202020 !important;
+	color:#D0D0D0;
+	background:rgb(95, 95, 95);
+    padding:2px;
+    cursor:move;
+    text-shadow:2px 2px 3px rgb(0, 0, 0);
+
+}
+.setsel_title {
+	color:#D0D0D0;
+    padding:2px;
+    text-shadow:2px 2px 3px rgb(0, 0, 0);
+    font-weight:bold;
+    font-size:20px;
+}
+.setsel_item:hover {
+    background:#808080;
+    color:#fff;
+}

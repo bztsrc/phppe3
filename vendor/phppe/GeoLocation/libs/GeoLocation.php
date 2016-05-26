@@ -23,7 +23,7 @@
  * @brief Provides PHPPE::$client->geo array.
  */
 namespace PHPPE;
-use PHPPE\Core as PHPPE;
+use PHPPE\Core as Core;
 
 /**
  * Main class
@@ -56,7 +56,7 @@ class GeoLocation extends Extension
 			//! 1-server side
 			if(function_exists("geoip_record_by_name")) {
 				if(empty($_SESSION['pe_geo']))
-					$_SESSION['pe_geo']=geoip_record_by_name(PHPPE::$client->ip);
+					$_SESSION['pe_geo']=geoip_record_by_name(Core::$client->ip);
 			}
 			//! 2-client side
 			if($cfg['type']==2 && empty($_SESSION['pe_geoclient']))
@@ -80,7 +80,7 @@ class GeoLocation extends Extension
 			}
 			//! both 2 and 3 needs this helper function to make an AJAX call
 			if($cfg['type']==2 && empty($_SESSION['pe_geoclient']) || $cfg['type']==3)
-				\PHPPE\View::js("pe_geo(p)","var s='',k,h=new XMLHttpRequest();if(p.code){if(document.body.getAttribute('data-geowarn')==null){document.body.setAttribute('data-geowarn',1);alert('E-GEO: '+L(p.message));}return;}else{document.body.removeAttribute('data-geowarn');for(k in p.coords)if(p.coords.hasOwnProperty(k)){s+='&'+encodeURIComponent(k)+'='+encodeURIComponent(p.coords[k]);}h.open('GET','".PHPPE::url("geo")."?pe_s=".urlencode($_SESSION['pe_s']['geo.action'])."&timestamp='+(p.timestamp?p.timestamp:0)+s,true);h.send(null);}");
+				\PHPPE\View::js("pe_geo(p)","var s='',k,h=new XMLHttpRequest();if(p.code){if(document.body.getAttribute('data-geowarn')==null){document.body.setAttribute('data-geowarn',1);alert('E-GEO: '+L(p.message));}return;}else{document.body.removeAttribute('data-geowarn');for(k in p.coords)if(p.coords.hasOwnProperty(k)){s+='&'+encodeURIComponent(k)+'='+encodeURIComponent(p.coords[k]);}h.open('GET','".\PHPPE\Http::url("geo")."?pe_s=".urlencode($_SESSION['pe_s']['geo.action'])."&timestamp='+(p.timestamp?p.timestamp:0)+s,true);h.send(null);}");
 
 			//! validation
 			if(!is_array($_SESSION['pe_geo']))
