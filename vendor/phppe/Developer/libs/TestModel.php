@@ -7,9 +7,9 @@ class TestModel extends \PHPPE\Model {
 	public $parentId;
 	protected static $_table="test";
 
-	function __construct($name) {
-		$this->name=$name;
+	function __construct($id=0) {
 		$this->parentId=0;
+		parent::__construct($id);
 	}
 }
 

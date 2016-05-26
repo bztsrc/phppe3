@@ -98,6 +98,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$user->id = 1;
 		$this->assertTrue(\PHPPE\Core::cf("loggedin"),"loggedin");
 		\PHPPE\Core::$user->id = $old;
+
 	}
 }
 ?>

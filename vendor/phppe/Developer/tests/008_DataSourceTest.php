@@ -139,7 +139,7 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
 		\PHPPE\DS::close();
 		\PHPPE\DS::db("sqlite::memory:");
 
-		$testModel = new TestModel("something");
+		$testModel = new TestModel;
 
 		$this->assertEquals(
 			'a:4:{i:0;a:3:{s:2:"id";s:1:"1";s:4:"name";s:5:"first";s:8:"parentId";s:1:"0";}i:1;a:3:{s:2:"id";s:1:"2";s:4:"name";s:6:"second";s:8:"parentId";s:1:"0";}i:2;a:3:{s:2:"id";s:1:"3";s:4:"name";s:5:"third";s:8:"parentId";s:1:"1";}i:3;a:3:{s:2:"id";s:1:"4";s:4:"name";s:6:"fourth";s:8:"parentId";s:1:"0";}}',
@@ -170,6 +170,9 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
 		$testModel->name="sssss";
 		$this->assertEquals(3,$testModel->load(3),"ORM load reload");
 		$this->assertNotEquals("sssss",$testModel->name,"ORM load name");
+
+		$testModel = new TestModel(1);
+        $this->assertEquals(1,$testModel->id,"Creating with id");
 
 		\PHPPE\DS::close();
 		$wasExc=false;

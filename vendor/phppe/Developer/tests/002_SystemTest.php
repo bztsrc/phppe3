@@ -49,6 +49,9 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf("\\PHPPE\\Extension",Core::lib("TestLib1"),"Classof 1");
 		$this->assertInstanceOf("\\PHPPE\\Client",Core::lib("TestLib2"),"Classof 2");
+
+		$this->assertEquals("PHPPE\\Extension",Core::lib("TestLib1"),"Extension toString");
+
 	}
 
 	public function testAddon()
@@ -71,6 +74,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 		$value="<";
 		$addon = new \PHPPE\AddOn([],"test3",$value,[],1);
+		$this->assertEquals("PHPPE\\AddOn(test3)",$addon,"AddOn toString");
 
 		$this->assertEquals("&lt;",$addon->show(),"Show method");
 
@@ -79,6 +83,8 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$addons2 = Core::addon();
 
 		$this->assertEquals(count($addons),count($addons2),"Failed AddOn dep");
+
+
 	}
 
 	public function testClient()

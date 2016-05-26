@@ -165,6 +165,16 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals("show1",\PHPPE\View::_t('<!var @noacl test1 test>'),"var tag (noacl admin)");
 		$this->assertEquals("edit1",\PHPPE\View::_t('<!field @noacl test1 test>'),"field tag (noacl admin)");
 
+        $u = \PHPPE\Core::$user->id;
+        \PHPPE\Core::$user->id=0;
+		$this->assertEquals("",\PHPPE\View::_t('<!cms test1 test>'),"cms tag #1");
+		$this->assertEquals("show1",\PHPPE\View::_t('<!cms *test1 test>'),"cms tag #2");
+        \PHPPE\Core::$user->id=-1;
+        $app = new \PHPPE\Content;
+        \PHPPE\View::assign("app",$app);
+		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!cms test1 test>'),"cms_edit"),"cms tag #3");
+        \PHPPE\Core::$user->id=$u;
+
 		\PHPPE\Core::$l['dateformat']="Y-m-d";
 		\PHPPE\Core::$l['testdate']="2001-02-03 04:05:06";
 		date_default_timezone_set( "UTC" );

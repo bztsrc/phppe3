@@ -149,11 +149,6 @@ namespace PHPPE {
     class Filter
     {
         //static function filter()
-
-        function __toString()
-        {
-            return __CLASS__;
-        }
     }
 
 /**
@@ -2140,7 +2135,7 @@ namespace PHPPE {
             }
             //check if we're in cms edit mode
             $J = ClassMap::has("PHPPE\\CMS") &&
-                get_class(self::$o['app'])=="PHPPE\\Content" &&
+                get_class(View::getval('app'))=="PHPPE\\Content" &&
                 Core::$user->has("siteadm|webadm");
             //get tags
             if (preg_match_all("/<!([^\[\-][^>]+)>[\r\n]*/ms", $x, $T, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
@@ -3106,8 +3101,10 @@ class ClassMap extends Extension
  */
     public function __construct()
     {
-        //! generate classmap file if it's not exists or in diag mode
-        if (!file_exists(self::$file) || @$_SERVER['argv'][1] == '--diag') {
+        //! generate classmap file if it's not exists,
+        //! it's older than extensions directory or forced
+        if (!file_exists(self::$file) || filemtime(self::$file)<filemtime("vendor/phppe") ||
+            isset($_REQUEST['clear']) || @$_SERVER['argv'][1] == '--diag') {
             self::$map = $this->generate();
         }
         //! load it
@@ -3116,7 +3113,6 @@ class ClassMap extends Extension
             self::$map = json_decode(@file_get_contents(self::$file), true);
         }
         //! force regeneration if file corrupted and decoding failed
-        //! or somehow map got corrupted in memory
         if (!is_array(self::$map)) {
             self::$map = $this->generate();
         }
