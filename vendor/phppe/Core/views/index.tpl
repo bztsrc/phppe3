@@ -322,10 +322,10 @@ Shows widget configuration (edit method) in conf mode, outputs widget face (show
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-&lt;!cms text cms0>
+&lt;!cms *text cms0>
 		</div>
 		<div class="col-sm-4" dir="ltr">
-<!cms text cms0>
+<!cms *text cms0>
 		</div>
 		<div class="col-sm-6 text-muted small">
 Shows a CMS edit icon when user is logged in has site administrator or web administrator access.
@@ -340,7 +340,7 @@ Otherwise just displays the formatted value of the given property. Icon onclick 
 <!cms(400,100) text(200,10) cms1>
 		</div>
 		<div class="col-sm-6 text-muted small">
-Specify dimensions of the modal, in case autodetection is not working for some reason.
+Specify dimensions of the modal, in case autodetection is not working for some reason. Without asterisk, the value is not shown.
 		</div>
 	</div>
 	<div class="row">

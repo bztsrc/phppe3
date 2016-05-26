@@ -89,7 +89,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh)
         $('#cmsbox').animate({left:x+'px',top:y+'px',width:w+'px',height:h+'px'},500);
     }
     //! load form into editbox during animation
-    cmsbox.src='cms/param/'+paramidx+'?w='+w+'&h='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
+    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?w='+w+'&h='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
 }
 
 function cms_close(reload)
@@ -99,8 +99,6 @@ function cms_close(reload)
     //! scroll back page where it was
     window.scrollTo(0,0);
     window.scrollBy(cms_scrx,cms_scry);
-    //! close editor box and hide background
-    document.getElementById('cmsbg').style.visibility='hidden';
     if(cms_return==null || typeof jQuery=='undefined'){
         cms_hideedit();
     } else {
@@ -110,6 +108,8 @@ function cms_close(reload)
 
 function cms_hideedit()
 {
+    //! close editor box and hide background
+    document.getElementById('cmsbg').style.visibility='hidden';
     document.getElementById('cmsbox').style.visibility='hidden';
     if(cms_reload)
         document.location.href=document.location.href;

@@ -175,6 +175,8 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!cms test1 test>'),"cms_edit"),"cms tag #3");
         \PHPPE\Core::$user->id=$u;
 
+		$this->assertEquals("show3",\PHPPE\View::_t('<!var test3 test>'), "Addon init");
+
 		\PHPPE\Core::$l['dateformat']="Y-m-d";
 		\PHPPE\Core::$l['testdate']="2001-02-03 04:05:06";
 		date_default_timezone_set( "UTC" );

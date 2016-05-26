@@ -28,6 +28,7 @@ CREATE TABLE `pages_list` (
 );
 
 
+INSERT INTO `pages` VALUES ('index','','PHPPE3 Self Test and Cheat Sheet Page','','index','{"cms0":"test0","cms1":"test1","meta":{"description":"example"}}','','',0,0,'2016-01-01 00:00:00',CURRENT_TIMESTAMP,0,0,-1);
 INSERT INTO `pages` VALUES ('cmstest','','Test Page','','simple','{"body":"test2","meta":{"description":"example"}}','','',0,0,'2016-01-01 00:00:00',CURRENT_TIMESTAMP,0,0,-1);
 INSERT INTO `pages` VALUES ('cmstest','','Test Page','','simple','{"body":"test","meta":{"description":"example"}}','','',0,0,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,0,0,-1);
 INSERT INTO `pages` VALUES ('cmstest/2','hu','Test Page #2','','simple','{"body":"test2","meta":{}}','','',0,0,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,0,0,-1);

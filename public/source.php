@@ -368,7 +368,7 @@ namespace PHPPE {
             if ($r) {
                 foreach ($this as $k => $v) {
                     if ($k[0] != '_') {
-                        $this->$k = is_string($r[$k]) &&
+                        $this->$k = is_string($r[$k]) && !empty($r[$k]) &&
                         ($r[$k][0] == '{' || $r[$k][0] == '[') ? json_decode($r[$k], true) : $r[$k];
                     }
                 }
@@ -1716,6 +1716,22 @@ namespace PHPPE {
             }
             //! try button counter
             self::$tc = 0;
+			//! register built-in fields and widgets all at once
+			//! this is required for \PHPPE\Core::isinst() to always return true for built-ins
+			Core::addon( "hidden", "Hidden value", "", "*obj.field" );
+			Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
+			Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
+			Core::addon( "text", "Text", "", "*(size[,maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue]]]]" );
+			Core::addon( "pass", "Password", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+			Core::addon( "num", "Decimal number", "", "*(size[,maxlen[,min[,max]]]) obj.field [onchangejs [cssclass]" );
+			Core::addon( "select", "Option list", "", "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]" );
+			Core::addon( "check", "Checkbox", "", "*(truevalue) obj.field [label [cssclass]]" );
+			Core::addon( "radio", "Radiobutton", "", "*(value) obj.field [label [cssclass]]" );
+			Core::addon( "phone", "Phone", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+			Core::addon( "email", "Email", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+			Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
+			Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
+			Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
         }
 
 /**
@@ -1982,8 +1998,8 @@ namespace PHPPE {
                 if ((ctype_alpha($c) || $c == '_') && !ctype_alnum($l) && $l != '.' && $l != '_') {
                     $j = $i;
                     $b = $d[$j];
-                    while ($b && (ctype_alnum($b) || $b == '_')) {
-                        ++$j;
+                    while (($b||$b=='0') && (ctype_alnum($b) || $b == '_')) {
+                        $j++;
                         $b = isset($d[$j]) ? $d[$j] : '';
                     }
                     if ($b != '(' && $b != ':') {
@@ -2011,7 +2027,7 @@ namespace PHPPE {
                                 $Y = self::$n - 1;
                                 while (substr($d, $j, 7) == '.parent') {
                                     $j += 7;
-                                    --$Y;
+                                    $Y--;
                                 }
                                 $n = substr($d, $j + 1, 3);
                                 $j += 4 + ($n == 'VAL' ? 2 : 0);
@@ -2287,7 +2303,6 @@ namespace PHPPE {
                                 $s = $_SESSION;
                                 unset($s['pe_u']);
                                 unset($s['pe_s']);
-                                unset($s['pe_v']);
                             } else {
                                 $s = self::getval($A[0]);
                             }
@@ -2345,9 +2360,9 @@ namespace PHPPE {
                             $d = '\\PHPPE\\Addon\\'.$f;
                             if (ClassMap::has($d)) {
                                 //ok, got it
-                                $F = new $d($a, $n, $v, $A, $R);
+                                $F = new $d($a, $n, $v, $A, !$G&&$R);
                                 //if it has an init() method, and not called yet, call it
-                                if (empty(Core::$core->addons[$f])) {
+                                if (!Core::addon($f)) {
                                     if (method_exists($F, 'init')) {
                                         $F->init();
                                     } else {
@@ -2363,7 +2378,7 @@ namespace PHPPE {
                                     $m = $R ? "show" : "";                                        
                                 } else {
                                     //add validators and check for required fields
-                                    if ($R || $f == 'check' || $f == 'file' || method_exists($d, 'validate')) {
+                                    if ($R || method_exists($d, 'validate')) {
                                         $_SESSION['pe_v'][$n][$f] = [$R, $a, $A];
                                     }
                                     //find out method to use to draw AddOn
@@ -3124,15 +3139,21 @@ class ClassMap extends Extension
     }
 
 /**
- * Check if a class exists.
+ * Check if a class or method exists.
  *
  * @param classname
+ * @param methodname optional
  *
  * @return true if it's exists or at least loadable
  */
-    public static function has($c)
+    public static function has($c, $m="")
     {
-        return class_exists($c) || isset(self::$map[strtolower($c)]);
+        $c=strtolower($c[0]=="\\"?substr($c,1):$c);
+        $i = isset(self::$map[$c]);
+        if(empty($m))
+            return class_exists($c) || $i;
+        if(!class_exists($c) && $i) include_once(self::$map[$c]);
+        return method_exists($c, $m);
     }
 
 /**
@@ -3255,7 +3276,7 @@ class ClassMap extends Extension
         public $now;                     //!< current server timestamp, from primary datasource if available
         //configurable properties
         public $title;                   //!< title of the site
-        public $runlevel = 1;            //!< 0-production,1-test,2-development,3-debug
+        public $runlevel = 2;            //!< 0-production,1-test,2-development,3-debug
         public $syslog = false;          //!< send logs to syslog
         public $trace = false;           //!< save trace to log messages
         public $timeout;                 //!< session timeout
@@ -3669,7 +3690,7 @@ class ClassMap extends Extension
             i($D."404$e", "<h1>404</h1><!=L('Not found')>: <b><!=core.url></b>");
             i($D."frame$e", "<div id='content'><!app></div>");
             i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
-            i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id><!field pass pass><!field submit></form>");
+            i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>");
             i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
@@ -3879,6 +3900,8 @@ class ClassMap extends Extension
             if (empty($n)) {
                 return self::$core->addons;
             }
+            if (empty($l))
+                return isset(self::$core->addons[$n]);
             //! register an add-on with dependency check
             $d = '';
             //! check dependencies
@@ -3895,7 +3918,7 @@ class ClassMap extends Extension
             if (empty($d)) {
                 self::lang($n);
                 self::$core->addons[$n] = [
-                    'name' => L(empty($l) ? "addon $n" : $l),
+                    'name' => L($l),
                     'conf' => $c,
                ];
             } else {
@@ -4123,7 +4146,7 @@ class ClassMap extends Extension
  */
         public static function validate($f, $v, $r = 0, $a = [], $t = [])
         {
-            if (method_exists('\\PHPPE\\Addon\\'.$v, 'validate') || $v == 'check' || $v == 'file') {
+            if (ClassMap::has('\\PHPPE\\Addon\\'.$v, 'validate')) {
                 self::$v[$f][$v] = [!empty($r), $a, $t];
             }
         }
@@ -4162,12 +4185,13 @@ class ClassMap extends Extension
                 $V += self::$v;
             }
             $R = $_REQUEST;
-            $E = 'error';
             //! patch missing elements
             foreach ($V as $K => $v) {
                 if (substr($K, 0, strlen($p) + 1) == $p.'.') {
-                    $d = substr($K, strlen($p) + 1);
-                    $r = $p.'_'.$d;
+                    $r = $p.'_'.substr($K, strlen($p) + 1);
+                    if(empty($R[$r]))
+                        $R[$r]='';
+/*
                     foreach ($v as $T => $C) {
                         //! browsers do not send false for checkboxes
                         if (($T == 'check' || !empty($C[0])) && empty($R[$r])) {
@@ -4182,9 +4206,10 @@ class ClassMap extends Extension
                             $R[$r] = isset($f[$E]) && $f[$E] == 0 ? $f : [];
                         }
                     }
+*/
                 }
             }
-            ksort($R);
+//            ksort($R);
             //! iterate through form elements with validation
             foreach ($R as $k => $v) {
                 if (substr($k, 0, strlen($p) + 1) == $p.'_' && $k[strlen($k) - 2] != ':') {
@@ -4194,19 +4219,17 @@ class ClassMap extends Extension
                         //iterate on validators for this key
                         foreach ($V[$K] as $T => $C) {
                             $t = '\\PHPPE\\AddOn\\'.$T;
-                            if ($T == 'check') {
-                                $v = $v ? ($v == 1 || $v == '1' ? true : $v) : false;
-                            }
-                            if (!empty($C[0]) && empty($v)) {
-                                $v = null;
-                                self::error(L(ucfirst($d)).' '.L('is a required field.'), $K);
-                            } elseif (!empty($v) && method_exists($t, 'validate')) {
+                            if ((!empty($v)||$T=="check"||$T=="file") && ClassMap::has($t, 'validate')) {
                                 list($r, $m) = $t::validate($K, $v, $C[1], $C[2]);
                                 if (!$r && $m) {
                                     $O = explode('.', $K);
                                     //field name and translated error message for user
                                     self::error(L(ucfirst(!empty($O[1]) ? $O[1] : $O[0])).' '.L($m), $K);
                                 }
+                            }
+                            if (!empty($C[0]) && empty($v)) {
+                                $v = null;
+                                self::error(L(ucfirst($d)).' '.L('is a required field.'), $K);
                             }
                         }
                     }
@@ -4218,7 +4241,6 @@ class ClassMap extends Extension
                     }
                 }
             }
-
             return $o;
         }
 
@@ -4647,7 +4669,7 @@ namespace PHPPE\AddOn {
 /**
  * text field element.
  *
- * @usage (maxlen[,rows]) obj.field [onkeyupjs [cssclass [fakevalue [pattern]]]]
+ * @usage (maxlen[,rows]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue [pattern]]]]]
  */
     class text extends \PHPPE\AddOn
     {
@@ -4851,6 +4873,11 @@ namespace PHPPE\AddOn {
             (!empty($a[0]) ?  L($a[0]) : '').'</label>'.
             ($e ? '</span>' : '');
         }
+        public static function validate($n, &$v, $a, $t)
+        {
+            $v = !empty($v) ? ($v == 1 || $v == '1' ? true : $v) : false;
+            return [ true, "OK" ];
+        }
     }
 
 /**
@@ -4961,6 +4988,16 @@ namespace PHPPE\AddOn {
             return
                 '<input'.@View::v($t, $t->attrs[0], $t->attrs[1], $t->args)." type='file' style='display:inline;' title='".round(Core::$fm / 1048576)."Mb'>";
         }
+
+        public static function validate($n, &$v, $a, $t)
+        {
+            //! get field name
+            $n = strtr($n,["."=>"_"]);
+            $ok = empty($_FILES[$n]) || $_FILES[$n]['error']==4;
+            //! copy data from $_FILES
+            $v = $ok? [] : $_FILES[$n];
+            return [$ok, 'failed to upload file.'];
+        }
     }
 
 /**
@@ -4978,8 +5015,7 @@ namespace PHPPE\AddOn {
         {
             $t = $this;
             $a = $t->attrs;
-
-            return '<input'.@View::v($t, $a[1], '', $t->args)." type='color' ".(!empty($a[0]) && $a[0] != '-' ? " onchange='".$a[0]."'" : '').' value="'.htmlspecialchars(trim($t->value)).'">';
+            return '<input'.@View::v($t, $a[1], $a[0], $t->args)." type='color' value=\"".htmlspecialchars(empty($t->value)?"#000000":trim($t->value)).'">';
         }
     }
 

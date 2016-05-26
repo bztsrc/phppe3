@@ -12,6 +12,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 	public function testCore()
 	{
+        $this->assertTrue(\PHPPE\ClassMap::has("NotLoaded", "oneMethod"), "ClassMap has");
 		@unlink(\PHPPE\ClassMap::$file);
 		$_SERVER['REQUEST_URI']="";
 		$_SERVER['argv'][1]="test";
@@ -21,7 +22,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
         $this->assertFileExists(\PHPPE\ClassMap::$file, "New classmap");
 		$this->assertNotEmpty($core->base,"Base");
 		$this->assertNotEmpty($core->url,"Url");
-		$this->assertEquals(\PHPPE\Core::$core->output,$core->output,"Output");
+		$this->assertEquals(\PHPPE\Core::$core->output,$core->output, "Output");
 
 		$test = Core::x(",","a,\"b,c\",,d");
 		$this->assertEquals(4,count($test),"explode");
