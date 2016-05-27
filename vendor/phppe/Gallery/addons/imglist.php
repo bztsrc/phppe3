@@ -5,7 +5,7 @@
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;
 
-class pagelist extends \PHPPE\AddOn\setsel
+class imglist extends \PHPPE\AddOn\setsel
 {
     public $heightClass = "setsel_box";
     public $headerHeight = 30;
@@ -13,7 +13,7 @@ class pagelist extends \PHPPE\AddOn\setsel
 
 	function init()
 	{
-		\PHPPE\Core::addon( "pagelist", "CMS Page List Selector", "", "*(templates) obj.field options [cssclass]" );
+		\PHPPE\Core::addon( "imglist", "Image List Selector", "", "*(templates) obj.field options [cssclass]" );
 	}
 
 	function edit()
@@ -27,16 +27,16 @@ class pagelist extends \PHPPE\AddOn\setsel
 			$t=[];
 
 		$this->args[0]=0;//intval($_REQUEST['height'])-24;
-		$this->args[1]='lang,tid:template';
-		$this->args[2]="<img src='images/lang_%lang%.png' alt='%lang%' style='pointer-events: none;'> %name%";
-		$this->args[3]=L("Edit Page List");
-		$this->attrs[0]=\PHPPE\Page::getPages();
+		$this->args[1]='';//'lang,tid:template';
+		$this->args[2]="<img src='gallery/%id%' alt='%id%' height='64' style='pointer-events: none;margin:2px;'> %name%";
+		$this->args[3]=L("Edit Image List");
+		$this->attrs[0]=\PHPPE\Gallery::getImages();
 		return parent::edit();
 	}
 
     function save($params)
     {
-        return \PHPPE\Page::savePageList($this->name, Core::x(",", $params['value']));
+        return \PHPPE\Gallery::saveImageList($this->name, Core::x(",", $params['value']));
     }
 }
 

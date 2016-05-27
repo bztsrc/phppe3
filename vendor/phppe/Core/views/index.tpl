@@ -623,6 +623,18 @@ Select multiple values from a set. Drag'n'drop elements and reaarange them as yo
 
 	<div class="row">
 		<div class="col-sm-2">
+&lt;!field imglist obj.imglist crousel>
+		</div>
+		<div class="col-sm-6" dir="ltr">
+<!field imglist obj.imglist crousel>
+		</div>
+		<div class="col-sm-4 text-muted small">
+Select images for crousel, rearrange them as you like.
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-2">
 		</div>
 		<div class="col-sm-4" dir="ltr">
 		</div>
