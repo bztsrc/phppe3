@@ -46,7 +46,7 @@ class Page extends \PHPPE\Model
         //! write audit log
         \PHPPE\Core::log('A',
             sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
-            (\PHPPE\Core::$core->runlevel > 2 ? "'".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
+            (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
             addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
         //! set parameter
         $this->data[$name] = $value;
@@ -83,7 +83,24 @@ class Page extends \PHPPE\Model
     }
 
 /**
- * Unlock pages that are locked by a given user
+ * Release a page lock. Called when a page parameter saved.
+ *
+ * @return bool success
+ */
+    function release()
+    {
+        //! check input
+        if(empty($this->id))
+            throw new \Exception(L('No page id'));
+        //! release
+        $this->ownerid = 0;
+        return \PHPPE\DS::exec("UPDATE ".static::$_table.
+            " SET ownerid=0,lockd=0 WHERE id=? AND lang=? AND created=?",
+            [ $this->id, $this->lang, $this->created]) > 0;
+    }
+
+/**
+ * Unlock all pages that are locked by a given user
  *
  * @param userid
  *
@@ -140,6 +157,26 @@ class Page extends \PHPPE\Model
             (static::$_history ? max([ intval(\PHPPE\Core::lib("CMS")->purge), 1]) : 1).")",
         [$this->id, $this->lang, $this->id, $this->lang]);
 
+        return true;
+    }
+
+/**
+ * Function to save page lists
+ *
+ * @param name
+ * @param array of page ids
+ */
+    static function savePageList($name, $pages)
+    {
+        //! check input
+        if (empty($name))
+            throw new \Exception(L('No pagelist name'));
+        if (is_string($pages))
+            $pages = \PHPPE\Core::x(",", $pages);
+        \PHPPE\DS::exec("DELETE FROM pages_list WHERE list_id=?",[$name]);
+        foreach($pages as $k=>$v)
+            if(!empty($v)&&trim($v)!="null")
+                \PHPPE\DS::exec("INSERT INTO pages_list (list_id,page_id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
         return true;
     }
 

@@ -363,18 +363,6 @@ Occupy percentage of screen.
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-&lt;!cms *setsel cms3>
-		</div>
-		<div class="col-sm-4" dir="ltr">
-<!cms *setsel cms3>
-		</div>
-		<div class="col-sm-6 text-muted small">
-Shows a CMS edit icon when user is logged in has site administrator or web administrator access.
-Otherwise just displays the formatted value of the given property. Icon onclick will raise a modal.
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2">
 &lt;!field text obj.field>
 		</div>
 		<div class="col-sm-4" dir="ltr">

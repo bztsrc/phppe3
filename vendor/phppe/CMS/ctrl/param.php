@@ -70,9 +70,18 @@ class CMSParam
         $this->editable = $page->lock();
 
         //! save page parameter
-        if(Core::isTry() && $this->editable) {
+        if (Core::isTry() && $this->editable) {
             $param = Core::req2arr("param");
-            $page->setParameter($F->name, $param['value']);
+            if (method_exists($F, "save")) {
+                //! if it's a special field with it's own save mechanism
+                $param['pageid'] = $page->id;
+                $F->save($param);
+            } else {
+                //! otherwise standard page parameter
+                $page->setParameter($F->name, $param['value']);
+            }
+            //! release the page lock
+            $page->release();
             //! close the modal
             die("<html><script>window.parent.cms_close(true);</script></html>");
         }
