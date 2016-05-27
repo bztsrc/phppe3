@@ -1720,22 +1720,22 @@ namespace PHPPE {
             }
             //! try button counter
             self::$tc = 0;
-			//! register built-in fields and widgets all at once
-			//! this is required for \PHPPE\Core::isinst() to always return true for built-ins
-			Core::addon( "hidden", "Hidden value", "", "*obj.field" );
-			Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
-			Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
-			Core::addon( "text", "Text", "", "*(size[,maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue]]]]" );
-			Core::addon( "pass", "Password", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
-			Core::addon( "num", "Decimal number", "", "*(size[,maxlen[,min[,max]]]) obj.field [onchangejs [cssclass]" );
-			Core::addon( "select", "Option list", "", "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]" );
-			Core::addon( "check", "Checkbox", "", "*(truevalue) obj.field [label [cssclass]]" );
-			Core::addon( "radio", "Radiobutton", "", "*(value) obj.field [label [cssclass]]" );
-			Core::addon( "phone", "Phone", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
-			Core::addon( "email", "Email", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
-			Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
-			Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
-			Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
+            //! register built-in fields and widgets all at once
+            //! this is required for \PHPPE\Core::isinst() to always return true for built-ins
+            Core::addon( "hidden", "Hidden value", "", "*obj.field" );
+            Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
+            Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
+            Core::addon( "text", "Text", "", "*(size[,maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue]]]]" );
+            Core::addon( "pass", "Password", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+            Core::addon( "num", "Decimal number", "", "*(size[,maxlen[,min[,max]]]) obj.field [onchangejs [cssclass]" );
+            Core::addon( "select", "Option list", "", "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]" );
+            Core::addon( "check", "Checkbox", "", "*(truevalue) obj.field [label [cssclass]]" );
+            Core::addon( "radio", "Radiobutton", "", "*(value) obj.field [label [cssclass]]" );
+            Core::addon( "phone", "Phone", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+            Core::addon( "email", "Email", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
+            Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
+            Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
+            Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
         }
 
 /**

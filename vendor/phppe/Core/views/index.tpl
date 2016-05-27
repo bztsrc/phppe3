@@ -8,9 +8,16 @@
 <!if !core.isInst("bootstrap")>
 @import url('http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
 <!/if>
+/* striped rows */
 DIV.panel DIV.row { padding:2px; }
 DIV.panel DIV.row:nth-of-type(even) { background:#f8f8f8; }
+/* scrollable dumps */
 DIV.dump PRE { overflow:auto;max-height:300px; }
+/* defaults for set selection boxes */
+.setsel_filters { text-align:right; }
+.setsel_box { border: inset 1px; height:300px; overflow:auto; display:inline-box; width:50%; float:left; box-sizing:border-box !important; clear:none;}
+.setsel_item { cursor:move; }
+/* input with validation errors */
 .errinput { background:#fedede; }
 </style>
 <div class="toc"></div>
@@ -600,7 +607,20 @@ HTML5 button with javascript handler
 
 <div class="panel panel-primary">
   <div class="panel-heading"><b><!=L("Library test")></b></div>
+
   <div class="panel-body">
+	<div class="row">
+		<div class="col-sm-2">
+&lt;!field setsel obj.setsel core.addon()>
+		</div>
+		<div class="col-sm-6" dir="ltr">
+<!field setsel obj.setsel core.addon()>
+		</div>
+		<div class="col-sm-4 text-muted small">
+Select multiple values from a set. Drag'n'drop elements and reaarange them as you wish.
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col-sm-2">
 		</div>
