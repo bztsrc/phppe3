@@ -44,11 +44,10 @@ function setsel_drag(evt,id) {
 
 function setsel_droparea(evt) {
 	if(setsel_id==null||dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
-	var i,n=null,l=document.getElementById(setsel_id+':inlist'),o=l.getElementsByTagName('*'),p=getpos(l);
-	p.y-=l.scrollTop;
+	var i,n=null,l=document.getElementById(setsel_id+':inlist'),o=l.getElementsByTagName('*'),p=l.getBoundingClientRect();
 	for(i=0;i<o.length;i++) if(o[i].className=='setsel_item'){
-		var v=0;
-		if((evt.target==o[i]||evt.pageY<p.y+o[i].offsetTop-o[i].offsetHeight) && n==null) { n=o[i]; v=1; }
+        var r=o[i].getBoundingClientRect();
+		if((evt.target==o[i]||evt.clientY<p.top+o[i].offsetTop-o[i].offsetHeight) && n==null) { n=o[i]; }
 		else o[i].style.marginTop='0px';
 	}
 	if(n!=null&&evt.target.className=="setsel_item"){
