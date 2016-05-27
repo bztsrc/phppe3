@@ -81,18 +81,19 @@ class CMS
     {
         //! if we are on an editable page
         if(get_class(\PHPPE\View::getval("app"))=="PHPPE\Content") {
+            //! clear the list of parameters
+            $_SESSION['cms_param'] = [];
+            //! save page url for cms/param action handler
+            $_SESSION['cms_url'] = str_replace("/action", "", Core::$core->url);
             //! load javascript library
             View::jslib("cms.js", "cms_init(".
                 intval(@$_SESSION['cms_scroll'][0]).",".
                 intval(@$_SESSION['cms_scroll'][1]).
                 ");");
             $_SESSION['cms_scroll']=[];
-            //! clear the list of parameters
-            $_SESSION['cms_param'] = [];
-            //! save page url for cms/param action handler
-            $_SESSION['cms_url'] = str_replace("/action", "", Core::$core->url);
         }
     }
+
 
 /**
  * Generate icon for various cms modals. Called by View::_t()
@@ -113,18 +114,22 @@ class CMS
         Core::$core->nocache = true;
 
         //! get forced sizes from tag
-        if(!preg_match("/^cms\(([0-9]+),([0-9]+)\)/", $tag, $sizes))
-            $sizes=["", 0, 0];
+        if(!preg_match("/^cms\(([0-9\%]+),?([0-9\%]*),?([0-9\%]*),?([0-9\%]*)\)/", $tag, $sizes))
+            $sizes=["", 0, 0, 0, 0];
 
         $title = !empty($addon->name)?$addon->name:$type;
         //! save the page parameter
         $idx=sha1($type."_".$addon->fld);
         $_SESSION['cms_param'][$idx] = $addon;
+        //! edit arguments
+        
         //! return icon
-        return "<img style='position:absolute;z-index:997;opacity:0.7;' ".
+        return "<img style='position:absolute;z-index:997;cursor:pointer;opacity:0.7;' ".
             "onclick='cms_edit(this,\"".$idx."\",".
-                (@$addon->adjust+0).",".(@$addon->minWidth+0).",".(@$addon->minHeight+0).",".
-                intval($sizes[1]).",".intval($sizes[2]).");' ".
+                intval(@$addon->adjust).",".intval(@$addon->minWidth).",".intval(@$addon->minHeight).",".
+                intval(!empty($sizes[1])?$sizes[1]:@$addon->forceWidth).",".
+                intval(!empty($sizes[2])?$sizes[2]:@$addon->forceHeight).",".
+                intval(!empty($sizes[3])?$sizes[3]:@$addon->forceFull).");' ".
             "src='images/cms/".(file_exists(__DIR__."/images/cms/".$type.".png")?urlencode($type):"edit").".png' ".
             "alt='[".htmlspecialchars(strtoupper($type)." ".$title)."]' ".
             "title='".htmlspecialchars(L($title))."'>";

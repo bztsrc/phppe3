@@ -339,7 +339,7 @@ namespace PHPPE {
  *
  * @return array of associative arrays
  */
-        final public function find($s = [], $w = '', $o = '')
+        public function find($s = [], $w = '', $o = '')
         {
             if (empty(static::$_table)) {
                 throw new \Exception('no _table');
@@ -357,7 +357,7 @@ namespace PHPPE {
  *
  * @return true on success
  */
-        final public function load($i = 0, $w = '', $o = '')
+        public function load($i = 0, $w = '', $o = '')
         {
             if (empty(static::$_table)) {
                 throw new \Exception('no _table');
@@ -386,7 +386,7 @@ namespace PHPPE {
  *
  * @return true on success
  */
-        final public function save($f = 0)
+        public function save($f = 0)
         {
             if (empty(static::$_table)) {
                 throw new \Exception('no _table');

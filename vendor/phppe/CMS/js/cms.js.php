@@ -9,7 +9,7 @@ var cms_return=null, cms_url=null, cms_reload=false;
 var cms_scrx=null, cms_srcy=null;
 
 //! open cms editor box
-function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh)
+function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
 {
     //! save current scroll position
     cms_scrx=window.pageXOffset?window.pageXOffset:document.body.scrollLeft;
@@ -51,7 +51,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh)
         y=Math.floor(rt.top);
         w=1; h=1;
     }
-    //! get forced dimensions
+    //! get forced position and dimensions
     if(forcew>0) w=forcew;
     if(forceh>0) h=forceh;
     //! adjust position and check minimum width, height
@@ -69,14 +69,23 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh)
     if(w>ww) w=ww;
     if(h>wh) h=wh;
     if(x+w>ww) x=ww-w; if(y+h>wh) y=wh-h;
+    //! big modal?
+    if(forcefull>0) {
+        x=Math.round((100-forcefull)/2)+'%';
+        y=Math.round((100-forcefull)/2)+'%';
+        w=forcefull+'%';
+        h=(Math.round(wh*forcefull/100)-1);
+    } else {
+        x+='px'; y+='px'; w+='px';
+    }
     //! make box and background visible
     cmsbg.style.visibility = 'visible';
     cmsbox.style.visibility = 'visible';
     //! set editor box position and size
     if(<?=empty(\PHPPE\Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
-        cmsbox.style.left=x+'px';
-        cmsbox.style.top=y+'px';
-        cmsbox.style.width=w+'px';
+        cmsbox.style.left=x;
+        cmsbox.style.top=y;
+        cmsbox.style.width=w;
         cmsbox.style.height=h+'px';
         cms_return=null;
     } else {
@@ -86,7 +95,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh)
         cmsbox.style.width=icon.offsetWidth+'px';
         cmsbox.style.height=icon.offsetHeight+'px';
         cms_return={left:cmsbox.style.left,top:cmsbox.style.top,width:icon.offsetWidth+'px',height:icon.offsetHeight+'px'};
-        $('#cmsbox').animate({left:x+'px',top:y+'px',width:w+'px',height:h+'px'},500);
+        $('#cmsbox').animate({left:x,top:y,width:w,height:h+'px'},500);
     }
     //! load form into editbox during animation
     cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?w='+w+'&h='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
@@ -111,6 +120,10 @@ function cms_hideedit()
     //! close editor box and hide background
     document.getElementById('cmsbg').style.visibility='hidden';
     document.getElementById('cmsbox').style.visibility='hidden';
+    //! release lock. We do it synchronously on purpose
+    var r = new XMLHttpRequest();
+    r.open('GET', '<?=url("cms", "unlock")?>', false); r.send(null);
+    //! reload page if requested
     if(cms_reload)
         document.location.href=document.location.href;
 }

@@ -345,6 +345,17 @@ Specify dimensions of the modal, in case autodetection is not working for some r
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
+&lt;!cms(0,0,60) *text(200,2) cms3>
+		</div>
+		<div class="col-sm-4" dir="ltr">
+<!cms(0,0,60) *text(200,2) cms3>
+		</div>
+		<div class="col-sm-6 text-muted small">
+Occupy percentage of screen.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
 &lt;!field text obj.field>
 		</div>
 		<div class="col-sm-4" dir="ltr">
