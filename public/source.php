@@ -3108,7 +3108,7 @@ namespace PHPPE {
  */
 class ClassMap extends Extension
 {
-    public static $file = 'data/classmap';           //!< map file
+    public static $file = '.tmp/.classmap';         //!< map file
     public static $map = [];                        //!< loaded class map
 
 /**
