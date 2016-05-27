@@ -17,6 +17,7 @@ DIV.dump PRE { overflow:auto;max-height:300px; }
 .setsel_filters { text-align:right; }
 .setsel_box { border: inset 1px; height:300px; width:50%; float:left; box-sizing:border-box !important; clear:none;}
 .setsel_item { cursor:move; }
+.setsel_img { display: inline; float:left; }
 /* input with validation errors */
 .errinput { background:#fedede; }
 </style>

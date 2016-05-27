@@ -13,7 +13,7 @@ class pagelist extends \PHPPE\AddOn\setsel
 
 	function init()
 	{
-		\PHPPE\Core::addon( "pagelist", "CMS Page List Selector", "", "*(templates) obj.field options [cssclass]" );
+		\PHPPE\Core::addon( "pagelist", "CMS Page List Selector", "", "*(views) obj.field options [cssclass]" );
 	}
 
 	function edit()
@@ -30,7 +30,7 @@ class pagelist extends \PHPPE\AddOn\setsel
 		$this->args[1]='lang,tid:template';
 		$this->args[2]="<img src='images/lang_%lang%.png' alt='%lang%' style='pointer-events: none;'> %name%";
 		$this->args[3]=L("Edit Page List");
-		$this->attrs[0]=\PHPPE\Page::getPages();
+		$this->attrs[0]=\PHPPE\Page::getPages(0,$t);
 		return parent::edit();
 	}
 

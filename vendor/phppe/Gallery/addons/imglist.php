@@ -13,24 +13,19 @@ class imglist extends \PHPPE\AddOn\setsel
 
 	function init()
 	{
-		\PHPPE\Core::addon( "imglist", "Image List Selector", "", "*(templates) obj.field options [cssclass]" );
+		\PHPPE\Core::addon( "imglist", "Image List Selector", "", "*(itemheight) obj.field options [cssclass]" );
 	}
 
 	function edit()
 	{
-		$t=!empty($this->args[0])?$this->args[0]:[];
-		if(is_string($t)) {
-			if($t[0]=='{'||$t[0]=='[') $t=json_decode($t,true);
-			else $t=explode(",",$t);
-		}
-		if(!is_array($t))
-			$t=[];
+		$h=!empty($this->args[0])?intval($this->args[0]):64;
 
 		$this->args[0]=0;//intval($_REQUEST['height'])-24;
 		$this->args[1]='';//'lang,tid:template';
-		$this->args[2]="<img src='gallery/%id%' alt='%id%' height='64' style='pointer-events: none;margin:2px;'> %name%";
+		$this->args[2]="<img src='gallery/%id%' alt='%id%' height='".$h."' style='pointer-events: none;margin:2px;' title='%name%'>";
 		$this->args[3]=L("Edit Image List");
 		$this->attrs[0]=\PHPPE\Gallery::getImages();
+        $this->attrs[2]="setsel_img";
 		return parent::edit();
 	}
 

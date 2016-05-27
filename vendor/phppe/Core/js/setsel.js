@@ -43,21 +43,21 @@ function setsel_drag(evt,id) {
 }
 
 function setsel_droparea(evt) {
-	if(setsel_id==null||dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
+	if(setsel_id==null||dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className.indexOf("setsel_item")==-1) return;
 	var i,n=null,l=document.getElementById(setsel_id+':inlist'),o=l.getElementsByTagName('*'),p=l.getBoundingClientRect();
-	for(i=0;i<o.length;i++) if(o[i].className=='setsel_item'){
+	for(i=0;i<o.length;i++) if(o[i].className.indexOf('setsel_item')>-1){
         var r=o[i].getBoundingClientRect();
 		if((evt.target==o[i]||evt.clientY<p.top+o[i].offsetTop-o[i].offsetHeight) && n==null) { n=o[i]; }
 		else o[i].style.marginTop='0px';
 	}
-	if(n!=null&&evt.target.className=="setsel_item"){
+	if(n!=null&&evt.target.className.indexOf("setsel_item")>-1){
 		n.style.marginTop='12px';
 	}
 }
 
 function setsel_add(evt) {
 	var id=setsel_id;
-	if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
+	if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className.indexOf("setsel_item")==-1) return;
 	dnd_icon.setAttribute('style','');
 	var i,n=null,o=document.getElementById(id+':inlist').getElementsByTagName('*');
 	for(i=0;i<o.length;i++) {
@@ -86,7 +86,7 @@ function setsel_add(evt) {
 function setsel_remove(evt) {
 	var id=setsel_id;
 	setsel_id=null;
-	if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className!="setsel_item") return;
+	if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className.indexOf("setsel_item")==-1) return;
 	var i,o=document.getElementById(id+':inlist').getElementsByTagName('*');
 	for(i=0;i<o.length;i++) {
 		if(o[i].style.display=='none'||(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')))
@@ -159,8 +159,9 @@ function setsel_searchreal(id,par,srch,flt) {
 			} catch(e) {
 				srch.className+=' errinput';
 			}
-			if((par[i].innerText!=null && !par[i].innerText.match(r))||
-			   (par[i].textContent!=null && !par[i].textContent.match(r))
+			if((par[i].innerText!=null && !par[i].innerText.match(r))&&
+			   (par[i].textContent!=null && !par[i].textContent.match(r))&&
+			   (par[i].getAttribute('data-id')!=null && !par[i].getAttribute('data-id').match(r))
 				) hide=true;
 		}
 		if(hide)
