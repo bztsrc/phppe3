@@ -184,6 +184,8 @@ namespace PHPPE {
                 //! save logged in user if any
                 $d = 'pe_u';
                 $u = @$_SESSION[$d];
+                //! keep user object, but clear remote configuration
+                $u->data['remote']=[];
                 $_SESSION = [];
                 $_SESSION[$d] = $u;
                 //! redirect user to reload everything
