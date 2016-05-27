@@ -17,6 +17,7 @@ class CMSParam
     public $fieldTitle = "";
     public $editable = false;
     public $height=0;
+    public $page;
 
 /**
  * default action
@@ -43,16 +44,10 @@ class CMSParam
             $_SESSION['cms_scroll'] = [$_REQUEST['scrx'], $_REQUEST['scry']];
 
         //! get the field we're editing
-        $F = $_SESSION["cms_param"][$item];
-        $F->fld="param_value";
+        $F = clone $_SESSION["cms_param"][$item];
+        $F->fld="page_value";
         if (method_exists($F, 'init')) {
             $F->init();
-        }
-        if (method_exists($F, 'edit')) {
-            $this->field = $F->edit();
-        } else {
-            //! fallback to a simple input field. Should never happen
-            $this->field = "<input type='text' name='param_value' value=\"".htmlspecialchars($F->value)."\">";
         }
         $this->fieldTitle = $F->name;
         $this->heightClass = @$F->heightClass;
@@ -60,7 +55,7 @@ class CMSParam
 
         //! get the page we're editing
         //! if parameter name starts with "frame", load frame page instead
-        $page = new \PHPPE\Page(substr($F->name,0,6)=="frame." ? "frame" : $_SESSION['cms_url']);
+        $page = new \PHPPE\Page(substr($F->name,0,5)=="frame" ? "frame" : $_SESSION['cms_url']);
         //! if it's a new page, save it
         if (empty($page->name)) {
             $page->name = ucfirst($page->id);
@@ -69,9 +64,23 @@ class CMSParam
         }
         $this->editable = $page->lock();
 
+        \PHPPE\View::assign("page", $page);
+        //! load extra data if any
+        if (method_exists($F, 'load')) {
+            $F->load($this);
+        }
+
+        //! get the input(s)
+        if (method_exists($F, 'edit')) {
+            $this->field = $F->edit();
+        } else {
+            //! fallback to a simple input field. Should never happen
+            $this->field = "<input type='text' name='page_value' value=\"".htmlspecialchars($F->value)."\">";
+        }
+
         //! save page parameter
         if (Core::isTry() && $this->editable) {
-            $param = Core::req2arr("param");
+            $param = Core::req2arr("page");
             if (method_exists($F, "save")) {
                 //! if it's a special field with it's own save mechanism
                 $param['pageid'] = $page->id;

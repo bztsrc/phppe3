@@ -6,6 +6,7 @@
  */
 
 var cms_return=null, cms_url=null, cms_reload=false;
+var cms_border=null;
 var cms_scrx=null, cms_srcy=null;
 
 //! open cms editor box
@@ -136,4 +137,9 @@ function cms_init(scrx,scry)
         window.scrollBy(scrx,scry);
     }
 
+}
+
+function cms_pagedel()
+{
+    confirm('<?=L("Are you sure you want to delete this page?")?>');
 }

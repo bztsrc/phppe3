@@ -4,8 +4,10 @@
  */
 namespace PHPPE;
 
-class View extends \PHPPE\Model {
+class Views extends \PHPPE\Model
+{
     public $ctrl = "";
 
-    static $_table="views";
+    static $_table = "views";
+
 }

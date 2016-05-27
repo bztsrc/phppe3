@@ -341,13 +341,13 @@ namespace PHPPE {
  *
  * @return array of associative arrays
  */
-        public function find($s = [], $w = '', $o = '')
+        public static function find($s = [], $w = '', $o = '', $f = '*')
         {
             if (empty(static::$_table)) {
                 throw new \Exception('no _table');
             }
             //get the records from current datasource
-            return DS::query('*', static::$_table, $w ? $w : ($s ? 'id=?' : ''), '', $o, 0, 0, is_array($s) ? $s : [$s]);
+            return DS::query($f, static::$_table, !empty($w) ? $w : (!empty($s) ? 'id=?' : ''), '', $o, 0, 0, is_array($s) ? $s : [$s]);
         }
 
 /**

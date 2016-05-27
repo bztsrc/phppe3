@@ -55,6 +55,8 @@ class CMS
             $this->purge=128;
         if (!empty($cfg['metas']))
             $this->metas=x(",",$cfg['metas']);
+        else
+            $this->metas=["description", "keywords"];
 
         //! add menu
         if (Core::$user->has("siteadm")) {
@@ -95,7 +97,8 @@ class CMS
                 intval(@$_SESSION['cms_scroll'][1]).
                 ");");
             $_SESSION['cms_scroll']=[];
-        }
+        } else
+            View::jslib("cms.js");
     }
 
 
@@ -134,9 +137,59 @@ class CMS
                 intval(!empty($sizes[1])?$sizes[1]:@$addon->forceWidth).",".
                 intval(!empty($sizes[2])?$sizes[2]:@$addon->forceHeight).",".
                 intval(!empty($sizes[3])?$sizes[3]:@$addon->forceFull).");' ".
-            "src='images/cms/".(file_exists(__DIR__."/images/cms/".$type.".png")?urlencode($type):"edit").".png' ".
+            "src='images/cms/".(file_exists(__DIR__."/../images/cms/".$type.".png")?urlencode($type):"edit").".png' ".
             "alt='[".htmlspecialchars(strtoupper($type)." ".$title)."]' ".
             "title='".htmlspecialchars(L($title))."'>";
+    }
+
+/**
+ * Helper function to create stat icons
+ */
+    private static function statIcon($name)
+    {
+                $d="\\PHPPE\\AddOn\\$name";
+                $addon = new $d([],$name,$name);
+                $idx=sha1($name."_");
+                $_SESSION['cms_param'][$idx] = $addon;
+                return "<img style='cursor:pointer;' ".
+                "onclick='cms_edit(this,\"".$idx."\",".
+                    intval(@$addon->adjust).",".intval(@$addon->minWidth).",".intval(@$addon->minHeight).",".
+                    intval(@$addon->forceWidth).",".
+                    intval(@$addon->forceHeight).",".
+                    intval(@$addon->forceFull).");' ".
+                "src='images/cms/".$name.".png' ".
+                "alt='[".strtoupper($name)."]' ".
+                "title='".htmlspecialchars(L($name))."'>";
+    }
+/**
+ * Status block event handler
+ */
+    function stat()
+    {
+        $ret = "";
+        if (Core::$user->has("siteadm|webadm")) {
+            //! if we are on an editable page
+            if (get_class(\PHPPE\View::getval("app"))=="PHPPE\Content") {
+                //! page info
+                $ret .= self::statIcon("pageinfo");
+                //! page dds icon
+                if (Core::$user->has("siteadm")) {
+                    $ret .= self::statIcon("pagedds");
+                }
+                //! page history
+                if ($this->revert)
+                    $ret .= self::statIcon("pagehist");
+                //! page delete
+                $ret .= "<img style='cursor:pointer;' ".
+                "onclick='cms_pagedel();' ".
+                "src='images/cms/pagedel.png' ".
+                "alt='[PAGEDEL]' ".
+                "title='".htmlspecialchars(L('pagedel'))."'>";
+            }
+            //! page add
+            $ret .= self::statIcon("pageadd");
+        }
+        return $ret;
     }
 
 /**

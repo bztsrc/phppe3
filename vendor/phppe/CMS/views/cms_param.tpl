@@ -6,7 +6,7 @@ BODY {
     width:100%;
     height:100%;
 }
-#param_value {
+#page_value {
     width:100% !important;
     height:<!=app.height>px !important;
     border:0px !important;
@@ -29,12 +29,12 @@ BODY {
     right:5px;
 }
 </style>
-<!form param>
+<!form page>
 <!field hidden height>
 <!field hidden pe.try1>
 <!=field><div style='padding:4px;color:#d0d0d0;text-shadow:#000 2px 2px 3px;'>
 <!if editable>
-<img src='images/cms/accept.png' alt='OK' class='accept' onclick='return document.forms["param"].submit();'>
+<img src='images/cms/accept.png' alt='OK' class='accept' onclick='return document.forms["page"].submit();'>
 <!else>
 <span class='accept' style='color:red;cursor:not-allowed;'><!=L("Page is locked!")></span>
 <!/if>

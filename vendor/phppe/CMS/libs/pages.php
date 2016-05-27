@@ -7,6 +7,7 @@ namespace PHPPE;
 class Page extends \PHPPE\Model
 {
     public $lang = "";
+    public $template = "";
     public $data = [];
     public $dds = [];
     public $created = "";
@@ -14,6 +15,8 @@ class Page extends \PHPPE\Model
     public $modifyid = "";
     public $ownerid = "";
     public $lockd = 0;
+    public $pubd = 0;
+    public $expd = 0;
 
     static $_table = "pages";
     static $_history = false;
