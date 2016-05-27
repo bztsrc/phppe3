@@ -9,7 +9,6 @@ class Page extends \PHPPE\Model
     public $lang = "";
     public $data = [];
     public $dds = [];
-    public $ctrl = "";
     public $created = "";
     public $modifyd = "";
     public $modifyid = "";

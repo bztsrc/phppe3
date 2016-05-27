@@ -23,8 +23,6 @@
  * @brief Content Management Service
  */
 namespace PHPPE;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
 
 class CMS
 {
@@ -59,10 +57,16 @@ class CMS
             $this->metas=x(",",$cfg['metas']);
 
         //! add menu
-        View::menu(L("Contents")."@siteadm|webadm", [
-            L("Pages")."@siteadm|webadm"=>"cms/pages",
-            L("Layouts")."@siteadm"=>"cms/layouts"
-        ]);
+        if (Core::$user->has("siteadm")) {
+            //! two level menu for site adminsitrators
+            View::menu(L("Contents")."@siteadm|webadm", [
+                L("Pages")."@siteadm|webadm"=>"cms/pages",
+                L("Layouts")."@siteadm"=>"cms/layouts"
+            ]);
+        } else {
+            //! simple link for web administrators
+            View::menu(L("Contents")."@webadm", "cms/pages");
+        }
 
         //! disable caching for all cms related applications
         //! also load the stylesheet for them

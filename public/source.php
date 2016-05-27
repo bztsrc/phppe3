@@ -1564,11 +1564,13 @@ namespace PHPPE {
                 //! cache miss, look it up in database - only primary datasource
                 if (empty($data['id'])) {
                     DS::ds(0);
-                    $data = DS::fetch('*', 'pages',
-                        "(id=? OR ? LIKE id||'/%') AND ".
-                        "(lang='' OR lang=?) AND ".
-                        'pubd<=CURRENT_TIMESTAMP AND (expd=0 OR expd>CURRENT_TIMESTAMP)',
-                        '', 'id DESC,created DESC', [Core::$core->url, Core::$core->url, Core::$client->lang]);
+                    $data = DS::fetch('a.*,b.ctrl', 'pages a LEFT JOIN views b ON a.template=b.id',
+                        "(a.id=? OR ? LIKE a.id||'/%') AND ".
+                        "(a.lang='' OR a.lang=?) AND ".
+                        'a.pubd<=CURRENT_TIMESTAMP AND (a.expd=0 OR a.expd>CURRENT_TIMESTAMP)',
+                        '', 'a.id DESC,a.created DESC',
+                        [Core::$core->url, Core::$core->url, Core::$client->lang]
+                    );
                     if (!empty($data['id'])) {
                         Cache::set($C, $data);
                     } else {
@@ -1620,7 +1622,7 @@ namespace PHPPE {
             }
             ob_start();
             //FIXME: sanitize php code
-            eval("namespace PHPPE\Ctrl;\nuse PHPPE\Core as PHPPE;\n".$this->ctrl);
+            eval("namespace PHPPE;\n".$this->ctrl);
 
             return ob_get_clean();
         }
