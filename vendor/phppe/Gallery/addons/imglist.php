@@ -22,8 +22,9 @@ class imglist extends \PHPPE\AddOn\setsel
 
 		$this->args[0]=0;//intval($_REQUEST['height'])-24;
 		$this->args[1]='';//'lang,tid:template';
-		$this->args[2]="<img src='gallery/%id%' alt='%id%' height='".$h."' style='pointer-events: none;margin:2px;' title='%name%'>";
+		$this->args[2]="<img src='gallery/%id%' alt='%id%' height='".$h."' style='pointer-events:none;margin:2px;'>";
 		$this->args[3]=L("Edit Image List");
+        $this->args[4]="id";
 		$this->attrs[0]=\PHPPE\Gallery::getImages();
         $this->attrs[2]="setsel_img";
 		return parent::edit();
