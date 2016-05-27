@@ -15,7 +15,7 @@ DIV.panel DIV.row:nth-of-type(even) { background:#f8f8f8; }
 DIV.dump PRE { overflow:auto;max-height:300px; }
 /* defaults for set selection boxes */
 .setsel_filters { text-align:right; }
-.setsel_box { border: inset 1px; height:300px; overflow:auto; display:inline-box; width:50%; float:left; box-sizing:border-box !important; clear:none;}
+.setsel_box { border: inset 1px; height:300px; width:50%; float:left; box-sizing:border-box !important; clear:none;}
 .setsel_item { cursor:move; }
 /* input with validation errors */
 .errinput { background:#fedede; }
@@ -352,13 +352,25 @@ Specify dimensions of the modal, in case autodetection is not working for some r
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-&lt;!cms(0,0,60) *text(200,2) cms3>
+&lt;!cms(0,0,60) *text(200,2) cms2>
 		</div>
 		<div class="col-sm-4" dir="ltr">
-<!cms(0,0,60) *text(200,2) cms3>
+<!cms(0,0,60) *text(200,2) cms2>
 		</div>
 		<div class="col-sm-6 text-muted small">
 Occupy percentage of screen.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
+&lt;!cms *setsel cms3>
+		</div>
+		<div class="col-sm-4" dir="ltr">
+<!cms *setsel cms3>
+		</div>
+		<div class="col-sm-6 text-muted small">
+Shows a CMS edit icon when user is logged in has site administrator or web administrator access.
+Otherwise just displays the formatted value of the given property. Icon onclick will raise a modal.
 		</div>
 	</div>
 	<div class="row">

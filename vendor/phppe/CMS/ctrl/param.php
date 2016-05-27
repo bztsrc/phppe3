@@ -16,7 +16,7 @@ class CMSParam
     public $field = "";
     public $fieldTitle = "";
     public $editable = false;
-    public $w=0, $h=0;
+    public $height=0;
 
 /**
  * default action
@@ -34,10 +34,8 @@ class CMSParam
             return;
         }
 
-        //! get dimensions
-        $this->w=$_REQUEST['w'];
-        $this->h=intval($_REQUEST['h']);
-        $this->sw=strpos($_REQUEST['w'],'%')?'100%':$_REQUEST['w'];
+        //! get height
+        $this->height=intval($_REQUEST['height']);
         
         //! save current scroll position to session so that on next
         //! page load cms_init will use it
@@ -57,6 +55,8 @@ class CMSParam
             $this->field = "<input type='text' name='param_value' value=\"".htmlspecialchars($F->value)."\">";
         }
         $this->fieldTitle = $F->name;
+        $this->heightClass = @$F->heightClass;
+        $this->boxHeight = $this->height-@$F->headerHeight;
 
         //! get the page we're editing
         //! if parameter name starts with "frame", load frame page instead

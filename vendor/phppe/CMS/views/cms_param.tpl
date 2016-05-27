@@ -7,13 +7,21 @@ BODY {
     height:100%;
 }
 #param_value {
-    width:<!=app.sw> !important;
-    height:<!=app.h>px !important;
+    width:100% !important;
+    height:<!=app.height>px !important;
     border:0px !important;
     border-radius:0px !important;
     padding:0px !important;
     margin:0px !important;
 }
+
+<!if heightClass>
+.<!=heightClass> {
+    height:<!=(app.boxHeight?app.boxHeight:app.height)>px !important;
+}
+<!/if>
+.setsel_filters { text-align:right; }
+.setsel_box { border:inset 1px; width:50%; float:left; }
 .accept {
     cursor:pointer;
     position:fixed;
@@ -22,8 +30,7 @@ BODY {
 }
 </style>
 <!form param>
-<!field hidden w>
-<!field hidden h>
+<!field hidden height>
 <!field hidden pe.try1>
 <!=field><div style='padding:4px;color:#d0d0d0;text-shadow:#000 2px 2px 3px;'>
 <!if editable>

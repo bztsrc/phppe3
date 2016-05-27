@@ -98,7 +98,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         $('#cmsbox').animate({left:x,top:y,width:w,height:h+'px'},500);
     }
     //! load form into editbox during animation
-    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?w='+w+'&h='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
+    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
 }
 
 function cms_close(reload)
