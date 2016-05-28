@@ -25,7 +25,7 @@ BODY {
 .infobox SPAN { color:#d0d0d0 !important; }
 .infobox TD, .infobox B { color:#d0d0d0 !important; text-shadow: #000 2px 2px 3px; }
 .infobox INPUT.input, .infobox TEXTAREA.input, .infobox SELECT.input { background: rgba(32,32,32,0.95); color:#fff !important; }
-.infobox INPUT.reqinput, .infobox TEXTAREA.reqinput, .infobox SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff !important; }
+.infobox INPUT.reqinput, .infobox TEXTAREA.reqinput, .infobox SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff .infobox INPUT.errinput, .infobox TEXTAREA.errinput, .infobox SELECT.errinput { background: rgba(128,32,32,0.95) !important; color:#fff !important; }
 .accept {
     cursor:pointer;
     position:fixed;
@@ -41,7 +41,7 @@ BODY {
 <!if core.isError()><div style='padding:3px;'><!include errorbox></div><!/if><!=field>
 <div style='padding:4px;'>
 <!if editable>
-<img src='images/cms/accept.png' alt='OK' class='accept' onclick='return document.forms["page"].submit();'>
+<button type='submit'><img src='images/cms/accept.png' alt='OK' class='accept'></button>
 <!else>
 <span class='accept' style='color:red;cursor:not-allowed;'><!=L("Page is locked!")></span>
 <!/if>

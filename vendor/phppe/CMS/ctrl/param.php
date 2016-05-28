@@ -97,13 +97,12 @@ class CMSParam
             foreach($param as $k=>$v)
                 $page->$k = $v;
         }
-
         //! get the input(s)
         if (method_exists($F, 'edit')) {
             $this->field = $F->edit();
         } else {
             //! fallback to a simple input field. Should never happen
-            $this->field = "<input type='text' name='page_value' value=\"".htmlspecialchars($F->value)."\">";
+            $this->field = "<input type='text' class='input".(Core::isError("page.value")?" errinput":"")."' name='page_value' value=\"".htmlspecialchars($F->value)."\">";
         }
 
     }

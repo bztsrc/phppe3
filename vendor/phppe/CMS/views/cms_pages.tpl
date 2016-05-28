@@ -2,7 +2,7 @@
 <span style='display:block;padding:5px;'>
 <button onclick='document.location.href="cms/pages?order=0";'><!=L("By layout")></button>
 <button onclick='document.location.href="cms/pages?order=1";'><!=L("Recent")></button>
-<nobr><input id='search' type='text' style='width:30%;height:20px;' onkeyup='return cms_tablesearch(this,"results");'><input type='button' class='button' style='font-size:28px;padding-top:0px;line-height:24px;vertical-align:middle;width:8%;' onclick='cms_tablesearch(this.previousSibling,"results");' value='⌕'></nobr>
+<nobr><input id='search' class='input form-control' type='text' style='display:inline;width:50%;' onkeyup='return cms_tablesearch(this,"results");' placeholder='<!=L('Search')>'></nobr>
 </span>
 <table id="results" class="cmstable">
 	<tr>
@@ -19,16 +19,16 @@
 	</tr>
 <!foreach pages>
 <!if KEY>
-<tr><td colspan='10' style='font-weight:bold;' data-skipsearch='1'><!=KEY></td></tr>
+<tr><td colspan='10' style='font-weight:bold;' data-skipsearch='1'><!=L(KEY)></td></tr>
 <!/if>
 <!foreach VALUE>
-	<tr style='cursor:pointer;' onclick='document.location.href="<!=url(id)><!if !empty(lang)>?lang=<!=lang><!/if>";'>
+	<tr style='cursor:pointer;' onclick='document.location.href="<!=url(id=='index'?'/':id)><!if !empty(lang)>?lang=<!=lang><!/if>";'>
 <!if parent.KEY>
 		<td style='color:#808080;font-size:10px;'><!=tid></td>
 <!else>
-		<td class='row<!=ODD>' style='color:#808080;font-size:10px;'><!=L(template)></td>
+		<td style='color:#808080;font-size:10px;'><!if empty(template)><!=L(ucfirst(tid))><!else><!=L(template)><!/if></td>
 <!/if>
-		<td<!if ownerid> style='color:#800000;'<!/if>><img src='images/lang_<!=lang>.png' alt='<!=lang>' title='<!=lang>'></td>
+		<td<!if ownerid> style='color:#800000;'<!/if> width='25'><img src='images/lang_<!=lang>.png' alt='<!=lang>' title='<!=lang>'></td>
 		<td<!if ownerid> style='color:#800000;'<!/if> dir='ltr'><!=id></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!=name></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!=filter></td>

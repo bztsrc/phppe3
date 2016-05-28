@@ -139,6 +139,24 @@ function cms_init(scrx,scry)
 
 }
 
+function cms_tablesearch(obj,id)
+{
+    var r=new RegExp("("+obj.value+")","i");
+    var i,j,tbl=document.getElementById(id);
+    for(j=1;j<tbl.rows.length;j++){
+        var ok=(tbl.rows[j].cells.length==1&&obj.value=='')||obj.value==''?1:0;
+        for(i=0;i<tbl.rows[j].cells.length;i++){
+            if(tbl.rows[j].cells[i].getAttribute('data-skipsearch')) continue;
+            tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent;
+            if(tbl.rows[j].cells[i].textContent.match(r)) {
+                tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent.replace(r,"<ins>$1</ins>");
+                ok=1;
+            }
+        }
+        tbl.rows[j].style.display=ok?'table-row':'none';
+    }
+}
+
 function cms_pagedel(url)
 {
     if(confirm('<?=L("Are you sure you want to delete this page?")?>'))
