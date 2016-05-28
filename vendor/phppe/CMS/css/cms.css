@@ -1,4 +1,4 @@
-.setsel_filters { text-align:right; }
+.setsel_filters { text-align:right; height:30px; }
 .setsel_box { border:inset 1px; width:50%; float:left; }
 .setsel SPAN {
 	color:#D0D0D0;
@@ -22,6 +22,23 @@
 .setsel_item:hover {
     background:#808080;
     color:#fff;
+}
+.setsel_img {
+    display: inline;
+    float: left;
+}
+.setsel_input {
+    margin-left:2px;
+    height:24px;
+	color:#D0D0D0;
+	background:rgb(95, 95, 95);
+    border:inset 1px;
+}
+.setsel_button {
+	color:#D0D0D0;
+    height:24px;
+	background:rgb(95, 95, 95);
+    border:outset 1px;
 }
 TABLE.cmstable TD, TABLE.cmstable TH { padding: 2px; }
 TABLE.cmstable TH { background:#B0B0B0; }

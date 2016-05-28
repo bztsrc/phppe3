@@ -13,7 +13,7 @@ class pageinfo extends \PHPPE\AddOn
     function load(&$app)
     {
         //! load languages
-        $app->langs['']=L("Any");
+        $app->langs['']="*";
         foreach (!empty($_SESSION['pe_ls'])?$_SESSION['pe_ls']:['en'=>1] as $l=>$v)
             $app->langs[$l]=L($l);
         //! get views from database

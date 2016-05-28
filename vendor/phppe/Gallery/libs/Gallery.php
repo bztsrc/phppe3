@@ -37,6 +37,9 @@ class Gallery
  * @param cfg not used
  */
 	function init($cfg) {
+        if(!empty($_FILES['imglist_upload'])) {
+            \PHPPE\Gallery::uploadImage($_FILES['imglist_upload']);
+        }
 	}
 
 /**
@@ -70,10 +73,28 @@ class Gallery
         \PHPPE\DS::exec("DELETE FROM img_list WHERE list_id=?",[$name]);
         foreach($imgs as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
-                \PHPPE\DS::exec("INSERT INTO img_list (list_id,img_url,ordering) values (?,?,?)",[$name,$v,intval($k)]);
+                \PHPPE\DS::exec("INSERT INTO img_list (list_id,id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
         return true;
     }
 
+/**
+ * Handle image upload
+ *
+ * @param file array
+ */
+    static function uploadImage($file)
+    {
+        if ($file['error']==4)
+            return;
+        if ($file['error']!=0 || $file['size']<1)
+            Core::error(ucfirst(L('failed to upload file.')));
+        elseif (substr($file['type'],0,5)!='image')
+            Core::error(L('Only images allowed.'));
+        else
+            //! FIXME: use Core::picture() to generate thumbnails
+            move_uploaded_file($file['tmp_name'], "data/gallery/".basename($file['name']));
+    }
+    
 /**
  * default action
  */

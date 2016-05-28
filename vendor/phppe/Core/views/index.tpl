@@ -39,7 +39,6 @@ DIV.dump PRE { overflow:auto;max-height:300px; }
 </div>
 <!/if>
 
-<!cms pagemeta>
 <div class="panel panel-primary">
   <div class="panel-heading"><b><!=L("Environment")></b></div>
   <div class="panel-body">
@@ -632,6 +631,7 @@ Select multiple values from a set. Drag'n'drop elements and reaarange them as yo
 		</div>
 		<div class="col-sm-4 text-muted small">
 Select images for crousel, rearrange them as you like.
+<!cms imglist(128) crousel>
 		</div>
 	</div>
 

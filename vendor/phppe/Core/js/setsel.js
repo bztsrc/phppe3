@@ -138,9 +138,9 @@ function setsel_setvalue(id) {
 
 function setsel_search(id) {
 	var flt=document.getElementById(id+':filters').getElementsByTagName("SELECT");
-	var srch=document.getElementById(id+':filters').getElementsByTagName("INPUT")[0];
-	setsel_searchreal(id,document.getElementById(id+':inlist').getElementsByTagName("*"),srch,flt);
-	setsel_searchreal(id,document.getElementById(id+':all').getElementsByTagName("*"),srch,flt);
+	var srch=document.getElementById(id+':filters').getElementsByTagName("INPUT");
+	setsel_searchreal(id,document.getElementById(id+':inlist').getElementsByTagName("*"),srch[srch.length-1],flt);
+	setsel_searchreal(id,document.getElementById(id+':all').getElementsByTagName("*"),srch[srch.length-1],flt);
 }
 function setsel_searchreal(id,par,srch,flt) {
 	var i,j;

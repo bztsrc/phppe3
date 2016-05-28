@@ -171,6 +171,7 @@ class Page extends \PHPPE\Model
  */
     static function savePageInfo($params, $new=false)
     {
+        $rename=false;
         //! url checks
         if ($new) {
             if (!empty(\PHPPE\DS::fetch("id", static::$_table, "id=?", "", "", [ $params['id'] ]))) {
@@ -179,8 +180,10 @@ class Page extends \PHPPE\Model
             }
         } else {
             //! if url changed
-            if (!$new && !empty($params['pageid']) && $params['pageid'] != $params['id'])
+            if (!$new && !empty($params['pageid']) && $params['pageid'] != $params['id']) {
+                $rename=true;
                 \PHPPE\DS::exec("UPDATE ".static::$_table." SET id=? WHERE id=?", [ $params['id'], $params['pageid'] ] );
+            }
         }
         //! create page object
         $page = new self($params['id']);
@@ -190,8 +193,8 @@ class Page extends \PHPPE\Model
         //! save it
         if (!$page->save($new))
             \PHPPE\Core::error(L("Unable to save page!"));
-        elseif($new)
-            //! on successful new add, redirect user to the new page
+        elseif($new || $rename)
+            //! on successful new add and renames, redirect user to the new page
             die("<html><script>window.parent.document.location.href='".url($params['id'])."';</script></html>");
     }
 

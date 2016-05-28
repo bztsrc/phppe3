@@ -80,7 +80,7 @@ class setsel extends \PHPPE\AddOn {
 		}
 		$flthtml=!empty($a[3])?$a[3]:"";
 		foreach($filters as $f=>$v) if($f) {
-			$flthtml.="<select name='".$f."' onchange='setsel_search(\"".$this->fld."\");' style='margin-right:5px;'><option value=''>*</option>";
+			$flthtml.="<select class='setsel_input' name='".$f."' onchange='setsel_search(\"".$this->fld."\");' style='margin-right:5px;'><option value=''>*</option>";
 			if(is_array($flt[$f])) foreach($flt[$f] as $F=>$V)
 				if(!empty($F) && !empty($V))
 					$flthtml.="<option value=\"".htmlspecialchars($F)."\"".(@$_REQUEST['setsel_'.$f]==$F?" selected":"").">".L($V)."</option>";
@@ -89,7 +89,7 @@ class setsel extends \PHPPE\AddOn {
 		$out[0]=implode("",$b);
 		return "<div class='setsel'><input type='hidden' id='".$this->fld."' name='".$this->fld."' value='".htmlspecialchars(implode(",", $val))."'>".
 		"<div id='".$this->fld.":filters' class='setsel_filters'>".(!empty($this->args[3])?"<span class='setsel_title' style='float:left;line-height:22px !important;'>".$this->args[3]."</span>":"").$flthtml.
-		"<input name='search' type='text' placeholder='".L("search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
+		"<input name='search' class='setsel_input' type='text' placeholder='".L("search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
 		"<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".
 		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='setsel_droparea(event);' onmouseup=\"dnd_drop(event,'setsel_add');\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;padding-bottom:64px;box-sizing:border-box;overflow:auto;'>".$out[0]."</div>".
 		"<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"dnd_drop(event,'setsel_remove');\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[0])?$this->args[0]:128)."px;box-sizing:border-box;overflow:auto;'>".$out[1]."</div></div>";
