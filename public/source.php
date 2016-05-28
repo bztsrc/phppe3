@@ -1417,7 +1417,7 @@ namespace PHPPE {
                     die($b);
                 }
                 //! let's try to get it from cache
-                $N = 'a_'.sha1(url().Core::$user->id.'/'.Core::$client->lang);
+                $N = 'a_'.sha1(Core::$core->base.Core::$core->url.'/'.Core::$user->id.'/'.Core::$client->lang);
                 $d = Cache::get($N);
                 if (!empty($d)) {
                     b($app, $d);

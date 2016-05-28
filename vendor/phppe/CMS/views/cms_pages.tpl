@@ -1,9 +1,9 @@
-<div class='mosaicbox'><h1><!=L("Pages")></h1>
-<span style='display:block;padding:5px;'>
-<button onclick='document.location.href="cms/pages?order=0";'><!=L("By layout")></button>
-<button onclick='document.location.href="cms/pages?order=1";'><!=L("Recent")></button>
+<h1><!=L("Pages")></h1>
+<div style='padding:5px;'>
+<button onclick='document.location.href="cms/pages?order=0";' class='btn'><!=L("By layout")></button>
+<button onclick='document.location.href="cms/pages?order=1";' class='btn'><!=L("Recent")></button>
 <nobr><input id='search' class='input form-control' type='text' style='display:inline;width:50%;' onkeyup='return cms_tablesearch(this,"results");' placeholder='<!=L('Search')>'></nobr>
-</span>
+</div>
 <table id="results" class="cmstable">
 	<tr>
 		<th><!=L("Layout")></th>
@@ -41,4 +41,3 @@
 <!/foreach>
 <!/foreach>
 </table>
-</div>

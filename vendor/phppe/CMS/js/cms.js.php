@@ -79,6 +79,9 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     } else {
         x+='px'; y+='px'; w+='px';
     }
+    //! load form into editbox during animation
+    cmsbox.src='data:text/plain;charset=utf-8,';
+    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
     //! make box and background visible
     cmsbg.style.visibility = 'visible';
     cmsbox.style.visibility = 'visible';
@@ -98,8 +101,6 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         cms_return={left:cmsbox.style.left,top:cmsbox.style.top,width:icon.offsetWidth+'px',height:icon.offsetHeight+'px'};
         $('#cmsbox').animate({left:x,top:y,width:w,height:h+'px'},500);
     }
-    //! load form into editbox during animation
-    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
 }
 
 function cms_close(reload)
