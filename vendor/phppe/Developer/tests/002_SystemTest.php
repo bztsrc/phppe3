@@ -17,7 +17,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$_SERVER['REQUEST_URI']="";
 		$_SERVER['argv'][1]="test";
 		@$core = new \PHPPE\Core(true);
-		$_SERVER['REQUEST_URI']="/test/something?arg=1";
+		$_SERVER['REQUEST_URI']="/test/something/?arg=1";
 		@$core = new \PHPPE\Core(true);
         $this->assertFileExists(\PHPPE\ClassMap::$file, "New classmap");
 		$this->assertNotEmpty($core->base,"Base");
@@ -176,7 +176,8 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		\PHPPE\DS::close();
 
 		\PHPPE\DS::db("sqlite::memory:");
-		\PHPPE\DS::exec("insert into pages (id,name,data,dds,ctrl,filter) values ('test','Test','{\"body\":\"testbody\"}','{\"testdds\":[\"1\",\"\",\"\"]}','echo(\"OK\");','fail');");
+		\PHPPE\DS::exec("insert into pages (id,name,template,data,dds,filter) values ('test','Test','testview','{\"body\":\"testbody\"}','{\"testdds\":[\"1\",\"\",\"\"]}','fail');");
+        \PHPPE\DS::exec("insert into views (id,ctrl) values ('testview', 'echo(\"OK\");');");
 
 		$url = \PHPPE\Core::$core->url;
 		$title = \PHPPE\Core::$core->title;
