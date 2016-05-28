@@ -2,7 +2,7 @@
 <div style='padding:5px;'>
 <button onclick='document.location.href="cms/pages?order=0";' class='btn'><!=L("By layout")></button>
 <button onclick='document.location.href="cms/pages?order=1";' class='btn'><!=L("Recent")></button>
-<nobr><input id='search' class='input form-control' type='text' style='display:inline;width:50%;' onkeyup='return cms_tablesearch(this,"results");' placeholder='<!=L('Search')>'></nobr>
+<nobr><input id='search' class='input form-control' type='text' style='display:inline;width:50%;' onkeyup='return cms_tablesearch(this,"results");' placeholder='<!=L('Search')>'><span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span></nobr>
 </div>
 <table id="results" class="cmstable">
 	<tr>

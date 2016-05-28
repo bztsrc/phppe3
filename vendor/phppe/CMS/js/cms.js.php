@@ -79,12 +79,12 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     } else {
         x+='px'; y+='px'; w+='px';
     }
-    //! load form into editbox during animation
-    cmsbox.src='data:text/plain;charset=utf-8,';
-    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
+    cmsbox.src='about:blank';
     //! make box and background visible
     cmsbg.style.visibility = 'visible';
     cmsbox.style.visibility = 'visible';
+    //! load form into editbox during animation
+    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
     //! set editor box position and size
     if(<?=empty(\PHPPE\Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
         cmsbox.style.left=x;

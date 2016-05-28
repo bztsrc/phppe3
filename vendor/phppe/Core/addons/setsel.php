@@ -7,7 +7,7 @@ class setsel extends \PHPPE\AddOn {
 
 	function init()
 	{
-		Core::addon( "setsel", "Set list selection", "", "*(height,filters,itemtemplate,header,titlefield) obj.field options [cssclass [itemcssclass]]" );
+		Core::addon( "setsel", "Set list selection", "", "*(height,filters,itemtemplate,header,titlefield) obj.field options [cssclass [itemcssclass [filterhtml]]]" );
 	}
 	function show()
 	{
@@ -78,7 +78,7 @@ class setsel extends \PHPPE\AddOn {
 			foreach($_SESSION['pe_ls'] as $l=>$v)
 				$flt['lang'][$l]=$l." ".L($l);
 		}
-		$flthtml="";
+		$flthtml=!empty($a[3])?$a[3]:"";
 		foreach($filters as $f=>$v) if($f) {
 			$flthtml.="<select name='".$f."' onchange='setsel_search(\"".$this->fld."\");' style='margin-right:5px;'><option value=''>*</option>";
 			if(is_array($flt[$f])) foreach($flt[$f] as $F=>$V)

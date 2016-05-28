@@ -20,6 +20,12 @@ BODY {
     height:<!=(app.boxHeight?app.boxHeight:app.height)>px !important;
 }
 <!/if>
+.accept {
+	cursor:pointer;
+	position:fixed;
+	bottom:5px;
+	right:5px;
+}
 </style>
 <!form page>
 <!field hidden height>
@@ -27,7 +33,7 @@ BODY {
 <!if core.isError()><div style='padding:3px;'><!include errorbox></div><!/if><!=field>
 <div style='padding:4px;'>
 <!if editable>
-<button type='submit' class='btn btn-link'><img src='images/cms/accept.png' alt='OK' class='accept'></button>
+<button class='accept btn btn-link'><img src='images/cms/accept.png' alt='OK' class='accept'></button>
 <!else>
 <span class='accept' style='color:red;cursor:not-allowed;'><!=L("Page is locked!")></span>
 <!/if>

@@ -27,6 +27,7 @@ class imglist extends \PHPPE\AddOn\setsel
         $this->args[4]="id";
 		$this->attrs[0]=\PHPPE\Gallery::getImages();
         $this->attrs[2]="setsel_img";
+        $this->attrs[3]="<input type='button' onclick='alert(\"upload image\");' value='Upload'>";
 		return parent::edit();
 	}
 

@@ -1,9 +1,3 @@
-.accept {
-	cursor:pointer;
-	position:fixed;
-	bottom:5px;
-	right:5px;
-}
 .setsel_filters { text-align:right; }
 .setsel_box { border:inset 1px; width:50%; float:left; }
 .setsel SPAN {
