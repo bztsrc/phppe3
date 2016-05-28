@@ -600,7 +600,7 @@ namespace PHPPE {
             $a = ($m != '/' ? ($m.$p != 'indexaction' ? $m.'/' : '').(!empty($p) && $p != 'action' ? $p.'/' : '') : '');
 
             return 'http'.(Core::$core->sec ? 's' : '').'://'.$c.($c[strlen($c) - 1] != '/' ? '/' : '').
-            ($f != 'index.php' ? $f.($a ? '/' : '') : '').$a;
+            ($f != 'index.php' ? $f.($a?'/':'') : '').$a;
         }
 
 /**
@@ -1055,8 +1055,6 @@ namespace PHPPE {
             if (!is_array($a)) {
                 $a = [$a];
             }
-//			if(empty($a[0]))
-//				$a=[];
             if (empty(self::$db[self::$s])) {
                 throw new \Exception(L('Invalid ds').' #'.self::$s);
             }
@@ -1564,11 +1562,11 @@ namespace PHPPE {
                 //! cache miss, look it up in database - only primary datasource
                 if (empty($data['id'])) {
                     DS::ds(0);
-                    $data = DS::fetch('a.*,b.ctrl', 'pages a LEFT JOIN views b ON a.template=b.id',
+                    $data = DS::fetch("a.*,b.ctrl", "pages a LEFT JOIN views b ON a.template=b.id",
                         "(a.id=? OR ? LIKE a.id||'/%') AND ".
                         "(a.lang='' OR a.lang=?) AND ".
-                        'a.pubd<=CURRENT_TIMESTAMP AND (a.expd=0 OR a.expd>CURRENT_TIMESTAMP)',
-                        '', 'a.id DESC,a.created DESC',
+                        "a.pubd<=CURRENT_TIMESTAMP AND (a.expd='' OR a.expd=0 OR a.expd>CURRENT_TIMESTAMP)",
+                        "", "a.id DESC,a.created DESC",
                         [Core::$core->url, Core::$core->url, Core::$client->lang]
                     );
                     if (!empty($data['id'])) {
@@ -1640,9 +1638,9 @@ namespace PHPPE {
                 $E = json_decode($F['data'], true);
                 View::assign('frame', $E);
                 //! load global dds
-                $E = json_decode($F['dds'], true);
-                if (is_array($E)) {
-                    Core::$dds += $E;
+                $D = json_decode($F['dds'], true);
+                if (is_array($D)) {
+                    Core::$dds += $D;
                 }
             // @codeCoverageIgnoreStart
             } catch (\Exception $e) {
@@ -1910,7 +1908,7 @@ namespace PHPPE {
                 }
                     // @codeCoverageIgnoreEnd
             }
-			//! wrap generated output in a frame
+            //! wrap generated output in a frame
             if (empty(Core::$core->noframe)) {
                 $d = self::template('frame');
                 //! failsafe frame
@@ -3334,7 +3332,7 @@ class ClassMap extends Extension
             set_exception_handler(function ($e) {
                 self::log('C', get_class($e).' '.$e->getFile().'('.$e->getLine().'): '.$e->getMessage().(\PHPPE\View::$e ? "\n".\PHPPE\View::$e : '').(empty(Core::$core->trace) ? '' : "\n\t".strtr($e->getTraceAsString(), ["\n" => "\n\t"])), $e->getTrace()[0]['function'] == 'getval' ? 'view' : '');
             });
-            ini_set('error_log', dirname(__DIR__).'/phppe/log/php.log');
+            ini_set('error_log', dirname(__DIR__).'/data/log/php.log');
             ini_set('log_errors', 1);
             //! php version check
             if (version_compare(PHP_VERSION, '7.0') < 0) {
@@ -3463,6 +3461,8 @@ class ClassMap extends Extension
             if (empty($d)) {
                 $d = $this->app.'/'.$this->action.(!empty($this->item) ? '/'.$this->item : '');
             }
+            if (substr($d,-1)=='/')
+                $d=substr($d,0,strlen($d)-1);
             $this->url = $d;
             //! check arguments
             if (!self::$w && !$islib) {
@@ -3616,12 +3616,12 @@ class ClassMap extends Extension
             //! directory skeleton
             $D = ['.tmp' => $W,
                     'data' => $W,
+                    'data/log' => $W,
                     'app' => 0,
                     'vendor' => 0,
                     'vendor/bin' => 0,
                     'vendor/phppe' => 0,
                     'vendor/phppe/Core' => 0,
-                    'vendor/phppe/Core/log' => $W,
                     'vendor/phppe/Core/views' => 0,
                     'public/images' => 0,
                     'public/css' => 0,
@@ -3643,8 +3643,8 @@ class ClassMap extends Extension
                 if (!$p) {
                     $p = $C;
                 }
-                //! exceptions, three dirs that needs to be writeable
-                $x = in_array(substr($d, 0, 4), ['.tmp', 'data']) || substr($d, 0, 21) == 'vendor/phppe/Core/log';
+                //! exceptions, dirs that needs to be writeable
+                $x = in_array(substr($d, 0, 4), ['.tmp', 'data']);
                 if (is_file($d)) {
                     $P = fileperms($d) & 0777;
                     $p = $x ? ($d==ClassMap::$file ? 0664 : 0660) : 0640;
@@ -3696,6 +3696,7 @@ class ClassMap extends Extension
             i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>");
+            i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><b><!=L('Form validation error!')></b><br/><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
             i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
             if ($E) {
@@ -4019,11 +4020,11 @@ class ClassMap extends Extension
                  .strtr($m, ["\n" => '\\n', "\r" => '\\r']).strtr($t, ["\n" => '']));
             } else {
                 //! save message to file
-                $l = 'vendor/phppe/Core/log/'.$n.'.log';
+                $l = 'data/log/'.$n.'.log';
                 if (!@file_put_contents($l, $p.
                     strtr($m, ["\n" => '\\n', "\r" => '\\r'])."\n".$t, FILE_APPEND | LOCK_EX)) {
                     // @codeCoverageIgnoreStart
-                    $w = 'C';
+                    $w = $_SERVER['argv'][1] != '--diag' ? 'C' : 'E';
                     $g .= (!self::$w ? "\nLOG-C" : "<br/>\n".date('Y-m-d').'T'.date('H:i:s').'Z-C-LOG').': '.L('unable to write')." $l";
                     // @codeCoverageIgnoreEnd
                 }

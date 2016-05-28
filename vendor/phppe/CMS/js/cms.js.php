@@ -22,13 +22,13 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         //! create background div
         cmsbg = document.createElement('DIV');
         cmsbg.setAttribute('id', 'cmsbg');
-        cmsbg.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:998;background:#000;opacity:0.4;visibility:hidden;');
+        cmsbg.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:1000;background:#000;opacity:0.4;visibility:hidden;');
         cmsbg.setAttribute('onclick', 'cms_close();');
         document.body.appendChild(cmsbg);
         //! create editor box iframe
         cmsbox = document.createElement('IFRAME');
         cmsbox.setAttribute('id', 'cmsbox');
-        cmsbox.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:1px;height:1px;z-index:999;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;');
+        cmsbox.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:1px;height:1px;z-index:1001;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;');
         cmsbox.setAttribute('scrolling', 'no');
         document.body.appendChild(cmsbox);
     }
@@ -139,7 +139,8 @@ function cms_init(scrx,scry)
 
 }
 
-function cms_pagedel()
+function cms_pagedel(url)
 {
-    confirm('<?=L("Are you sure you want to delete this page?")?>');
+    if(confirm('<?=L("Are you sure you want to delete this page?")?>'))
+        document.location.href='<?=url('cms','pages')?>?pagedel='+urlencode(url);
 }

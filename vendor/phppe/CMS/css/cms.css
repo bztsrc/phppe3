@@ -27,3 +27,6 @@
     background:#808080;
     color:#fff;
 }
+TABLE.cmstable TD, TABLE.cmstable TH { padding: 2px; }
+TABLE.cmstable TH { background:#B0B0B0; }
+TABLE.cmstable TR:nth-child(odd){background:#F0F0F0;}

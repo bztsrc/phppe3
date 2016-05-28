@@ -36,28 +36,6 @@ class Page extends \PHPPE\Model
     }
 
 /**
- * Sets a page parameter
- *
- * @param name
- * @param value
- */
-    function setParameter($name, $value)
-    {
-        //! check input
-        if(empty($this->id))
-            throw new \Exception(L('No page id'));
-        //! write audit log
-        \PHPPE\Core::log('A',
-            sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
-            (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
-            addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
-        //! set parameter
-        $this->data[$name] = $value;
-        //! save to database
-        return $this->save();
-    }
-
-/**
  * Locks a page. Called when a page parameter edited.
  * Save will release it automatically.
  *
@@ -127,6 +105,8 @@ class Page extends \PHPPE\Model
     function save($force=false)
     {
         //! check input
+        if (!empty($this->id) && $this->id[0]=="/")
+            $this->id=substr($this->id, 1);
         if (empty($this->id))
             throw new \Exception(L('No page id'));
         if (empty(\PHPPE\Core::$user->id))
@@ -139,12 +119,12 @@ class Page extends \PHPPE\Model
         $this->lockd = "";
         $this->modifyd = date("Y-m-d H:i:s", \PHPPE\Core::$core->now);
         $this->modifyid = \PHPPE\Core::$user->id;
-        if (static::$_history)
+        if (static::$_history || $force)
             $this->created = $this->modifyd;
         //! build the arguments array
         $a = [];
         foreach ($this as $k => $v) {
-            if ($k[0] != '_') {
+            if ($k[0] != '_' && $k!="created") {
                 $a[$k] = is_scalar($v) ? $v : json_encode($v);
             }
         }
@@ -161,6 +141,85 @@ class Page extends \PHPPE\Model
         [$this->id, $this->lang, $this->id, $this->lang]);
 
         return true;
+    }
+
+/**
+ * Sets a page parameter
+ *
+ * @param name
+ * @param value
+ */
+    function setParameter($name, $value)
+    {
+        //! check input
+        if(empty($this->id))
+            throw new \Exception(L('No page id'));
+        //! write audit log
+        \PHPPE\Core::log('A',
+            sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
+            (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
+            addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
+        //! set parameter
+        $this->data[$name] = $value;
+    }
+
+/**
+ * Save page meta information
+ *
+ * @param parameters
+ * @param boolean new page
+ */
+    static function savePageInfo($params, $new=false)
+    {
+        //! url checks
+        if ($new) {
+            if (!empty(\PHPPE\DS::fetch("id", static::$_table, "id=?", "", "", [ $params['id'] ]))) {
+                \PHPPE\Core::error(L("A page already exists with this url!"), "page.id");
+                return false;
+            }
+        } else {
+            //! if url changed
+            if (!$new && !empty($params['pageid']) && $params['pageid'] != $params['id'])
+                \PHPPE\DS::exec("UPDATE ".static::$_table." SET id=? WHERE id=?", [ $params['id'], $params['pageid'] ] );
+        }
+        //! create page object
+        $page = new self($params['id']);
+        foreach ($params as $k=>$v)
+            if (property_exists($page, $k))
+                $page->$k = $v;
+        //! save it
+        if (!$page->save($new))
+            \PHPPE\Core::error(L("Unable to save page!"));
+        elseif($new)
+            //! on successful new add, redirect user to the new page
+            die("<html><script>window.parent.document.location.href='".url($params['id'])."';</script></html>");
+    }
+
+/**
+ * Sale Dynamic data sets for a page
+ *
+ * @param page id
+ * @param dds array
+ *
+ * @return boolean success
+ */
+    static function saveDDS($pageid, $dds)
+    {
+        //! load new dds if given
+        if (!empty($dds['_']['name']) && !empty($dds['_'][0])) {
+            $k = $dds['_']['name'];
+            unset($dds['_']['name']);
+            $dds[$k] = $dds['_'];
+        }
+        unset($dds['_']);
+        //! get page
+        $page = new self($pageid);
+        //! update dds
+        $page->dds = [];
+        foreach($dds as $k=>$d)
+            if (!empty($d[0]))
+                $page->dds[$k] = $d;
+        return $page->save();
     }
 
 /**
@@ -184,6 +243,28 @@ class Page extends \PHPPE\Model
     }
 
 /**
+ * Delete a page along with all history
+ *
+ * @param page id
+ */
+    static function delete($pageid)
+    {
+        //! check input
+        if(empty($pageid))
+            throw new \Exception(L('No page id'));
+        $r = \PHPPE\DS::exec(
+            "DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?)",
+            [ $pageid, \PHPPE\Core::$client->lang ]
+        ) > 0;
+        if (!$r && substr($pageid,-1)=="/")
+        $r = \PHPPE\DS::exec(
+            "DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?)",
+            [ substr($pageid,0,strlen($pageid)-1), \PHPPE\Core::$client->lang ]
+        ) > 0;
+        return $r;
+    }
+
+/**
  * Get complex list of pages with user data
  *
  * @param boolean, return recently modified pages
@@ -195,7 +276,7 @@ class Page extends \PHPPE\Model
     {
         return \PHPPE\DS::query("a.id,a.name,a.template as tid,a.lang,a.dds,a.ownerid,a.modifyid,max(a.modifyd) as created,max(a.lockd) as lockd,count(1) as versions,b.name as lockuser,c.name as moduser,v.name as template, CURRENT_TIMESTAMP as ct",
                 "pages a left join users b on a.ownerid=b.id left join users c on a.modifyid=c.id left join views v on a.template=v.id",
-                "a.id!='frame'".(!empty($templates)?" AND a.template IN ('".implode("','",$templates)."')":""),
+                "v.sitebuild=''".(!empty($templates)?" AND a.template IN ('".implode("','",$templates)."')":""),
                 "a.template,a.id",$recent?"created DESC":"a.template,a.name");
     }
 }

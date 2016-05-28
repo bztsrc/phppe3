@@ -39,7 +39,7 @@ DIV.dump PRE { overflow:auto;max-height:300px; }
 </div>
 <!/if>
 
-<!cms pageinfo frame>
+<!cms pagemeta>
 <div class="panel panel-primary">
   <div class="panel-heading"><b><!=L("Environment")></b></div>
   <div class="panel-body">

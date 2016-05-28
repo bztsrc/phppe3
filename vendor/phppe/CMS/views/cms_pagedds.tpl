@@ -1,15 +1,11 @@
 <style scoped>
 BODY { background:transparent !important;}
-.infobox TD { color: #fff; }
-.infobox B { color:#d0d0d0 !important; text-shadow: #000 2px 2px 3px; margin-top:8px; }
-.header { color:#d0d0d0 !important; text-shadow: #000 2px 2px 3px; font-weight:bold; line-height:22px; font-size:20px; padding:2px;}
+INPUT.input, TEXTAREA.input, SELECT.input { background: rgba(32,32,32,0.95); color:#fff !important; }
+INPUT.reqinput, TEXTAREA.reqinput, SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff !important; }
 </style>
-<span class='header'><!L Dynamic_Style_Sheets></span>
-<div class='infobox' style='overflow:auto;padding:3px;'>
+<div class='infobox'>
 <b><!=L('Global')></b>
 <!field cmsdds page.gdds><br/>
 <b><!=L('Local')></b>
 <!field cmsdds page.dds><br/>
 </div>
-
-

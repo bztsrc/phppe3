@@ -172,6 +172,8 @@ class CMS
             if (get_class(\PHPPE\View::getval("app"))=="PHPPE\Content") {
                 //! page info
                 $ret .= self::statIcon("pageinfo");
+                //! page meta
+                $ret .= self::statIcon("pagemeta");
                 //! page dds icon
                 if (Core::$user->has("siteadm")) {
                     $ret .= self::statIcon("pagedds");
@@ -181,7 +183,7 @@ class CMS
                     $ret .= self::statIcon("pagehist");
                 //! page delete
                 $ret .= "<img style='cursor:pointer;' ".
-                "onclick='cms_pagedel();' ".
+                "onclick='cms_pagedel(\"".addslashes(Core::$core->url)."\");' ".
                 "src='images/cms/pagedel.png' ".
                 "alt='[PAGEDEL]' ".
                 "title='".htmlspecialchars(L('pagedel'))."'>";

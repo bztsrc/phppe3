@@ -17,7 +17,6 @@ class CMSParam
     public $fieldTitle = "";
     public $editable = false;
     public $height=0;
-    public $page;
 
 /**
  * default action
@@ -57,8 +56,9 @@ class CMSParam
         //! if parameter name starts with "frame", load frame page instead
         $page = new \PHPPE\Page(substr($F->name,0,5)=="frame" ? "frame" : $_SESSION['cms_url']);
         //! if it's a new page, save it
-        if (empty($page->name)) {
+        if (empty($page->name) && empty($page->template)) {
             $page->name = ucfirst($page->id);
+            $page->template = "simple";
             $page->save(true);
             $page->load();
         }
@@ -70,6 +70,34 @@ class CMSParam
             $F->load($this);
         }
 
+        //! save page parameter
+        if (Core::isTry() && $this->editable) {
+            $param = Core::req2arr("page");
+            //! if there was no validation error
+            if (!Core::isError())
+            {
+                if (method_exists($F, "save")) {
+                    //! if it's a special field with it's own save mechanism
+                    $param['pageid'] = $page->id;
+                    $F->save($param);
+                } else {
+                    //! otherwise standard page parameter
+                    $page->setParameter($F->name, $param['value']);
+                    $page->save();
+                }
+                //! close the modal if save was successful
+                if (!Core::isError()) {
+                    //! release the page lock
+                    $page->release();
+                    die("<html><script>window.parent.cms_close(true);</script></html>");
+                }
+            }
+            //! copy the form data. normally you don't need to do that
+            //! but here form name and object name differs, so it's not automatic
+            foreach($param as $k=>$v)
+                $page->$k = $v;
+        }
+
         //! get the input(s)
         if (method_exists($F, 'edit')) {
             $this->field = $F->edit();
@@ -78,21 +106,5 @@ class CMSParam
             $this->field = "<input type='text' name='page_value' value=\"".htmlspecialchars($F->value)."\">";
         }
 
-        //! save page parameter
-        if (Core::isTry() && $this->editable) {
-            $param = Core::req2arr("page");
-            if (method_exists($F, "save")) {
-                //! if it's a special field with it's own save mechanism
-                $param['pageid'] = $page->id;
-                $F->save($param);
-            } else {
-                //! otherwise standard page parameter
-                $page->setParameter($F->name, $param['value']);
-            }
-            //! release the page lock
-            $page->release();
-            //! close the modal
-            die("<html><script>window.parent.cms_close(true);</script></html>");
-        }
     }
 }

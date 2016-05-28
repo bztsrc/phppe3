@@ -13,10 +13,20 @@ use PHPPE\Http as Http;
 
 class CMSPages
 {
+    public $pages;
+
 /**
  * default action
  */
-	function action($item)
-	{
-	}
+    function action($item)
+    {
+        if(!empty($_REQUEST['pagedel'])) {
+            \PHPPE\Page::delete($_REQUEST['pagedel']);
+            Http::redirect();
+        }
+
+        $pages = \PHPPE\Page::getPages(intval(@$_REQUEST['order']));
+        foreach ($pages as $p)
+            $this->pages[empty($_REQUEST['order'])?$p['template']:0][] = $p;
+    }
 }

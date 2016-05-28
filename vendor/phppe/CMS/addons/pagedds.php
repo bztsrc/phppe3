@@ -8,12 +8,14 @@ use \PHPPE\Core as Core;
 class pagedds extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";
-    public $headerHeight = 30;
     public $forceFull = 80;
 
-    function init()
+    function load(&$app)
     {
-        $this->name="";
+        //! load global dds as well from frame
+        $frame = new \PHPPE\Page("frame");
+        $page = \PHPPE\View::getval("page");
+        $page->gdds = $frame->dds;
     }
 
     function edit()
@@ -23,10 +25,8 @@ class pagedds extends \PHPPE\AddOn
 
     function save($params)
     {
-echo("<pre>pagedds\n");
-print_r($params);
-die();
-        return \PHPPE\Page::savePageInfo($this->name, Core::x(",", $params['value']));
+        \PHPPE\Page::saveDDS("frame", $params['gdds']);
+        return \PHPPE\Page::saveDDS($params['pageid'], $params['dds']);
     }
 }
 
