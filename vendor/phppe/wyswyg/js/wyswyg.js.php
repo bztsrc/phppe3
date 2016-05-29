@@ -183,7 +183,7 @@ function wyswyg_open(source)
         //! html toggle button
         var toggle = document.createElement('BUTTON');
         toggle.setAttribute('title',L('Toggle HTML/Source'));
-        toggle.setAttribute('onclick','event.preventDefault();wyswyg_togglesrc(this);');
+        toggle.setAttribute('onclick','event.preventDefault();wyswyg_togglesrc(this, true);');
         tb.appendChild(toggle);
 
         //! add iconbar
@@ -226,7 +226,7 @@ function wyswyg_drop(evt,id)
     },50);
 }
 
-function wyswyg_togglesrc(toggle)
+function wyswyg_togglesrc(toggle,focus)
 {
     var edit = toggle.parentNode.nextSibling;
     var source = edit.nextSibling;
@@ -249,7 +249,8 @@ function wyswyg_togglesrc(toggle)
         //! copy textarea value to edit div
         var output=source.value.toString().replace(/<(!?)\/([^>]+)>\n/g,"<$1/$2>").replace(/<\/form>/gi,"<!/form>").replace(/([{};])\n/g,"$1");
         edit.innerHTML=output;
-        edit.focus();
+        if(focus!=null)
+            edit.focus();
      }
 }
 

@@ -27,10 +27,10 @@ BODY {
 	right:5px;
 }
 </style>
-<!form page>
+<!if core.isError()><div style='padding:3px;'><!include errorbox></div><!/if><!form page>
 <!field hidden height>
 <!field hidden pe.try1>
-<!if core.isError()><div style='padding:3px;'><!include errorbox></div><!/if><!=field>
+<!=field>
 <div style='padding:4px;'>
 <!if editable>
 <button class='accept btn btn-link'><img src='images/cms/accept.png' alt='OK' class='accept'></button>

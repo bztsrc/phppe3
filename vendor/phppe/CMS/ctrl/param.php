@@ -105,5 +105,7 @@ class CMSParam
             $this->field = "<input type='text' class='input".(Core::isError("page.value")?" errinput":"")."' name='page_value' value=\"".htmlspecialchars($F->value)."\">";
         }
 
+        //! focus first input
+        \PHPPE\View::js("init()", "for(var i in document.forms[0].elements)if(document.forms[0].elements[i].tagName!='BUTTON'&& document.forms[0].elements[i].type!='hidden'){document.forms[0].elements[i].focus();break;}", true);
     }
 }
