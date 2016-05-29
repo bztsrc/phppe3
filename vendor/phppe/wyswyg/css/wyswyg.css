@@ -1,0 +1,96 @@
+TEXTAREA.wyswyg {
+    width:100%;
+    margin-top:-1px;
+    border:0px;
+}
+.wyswyg_icon {
+	background: url(../images/wyswyg.png) no-repeat;
+    display:inline-block;
+}
+.wyswyg_toolbar BUTTON {
+	width:20px !important;
+    height:21px !important;
+    line-height:20px !important;
+	cursor:pointer;
+    font-size:16px;
+    padding:2px;
+    border:0px;
+}
+.wyswyg_toolbar BUTTON.glyphicon {
+    background: transparent !important;
+}
+.wyswyg_toggle-close {	background-position:-0px 0px; }
+.wyswyg_toggle-open {	background-position:-24px 0px; }
+.wyswyg_icon-import {	background-position:-96px 0px; }
+.wyswyg_icon-font {		background-position:-120px 0px; }
+.wyswyg_icon-bold {		background-position:-144px 0px; }
+.wyswyg_icon-italic {	background-position:-168px 0px; }
+.wyswyg_icon-underline {background-position:-192px 0px; }
+.wyswyg_icon-strikethrough {background-position:-216px 0px; }
+.wyswyg_icon-superscript {background-position:-240px 0px; }
+.wyswyg_icon-subscript {background-position:-264px 0px; }
+.wyswyg_icon-outdent {	background-position:-288px 0px; }
+.wyswyg_icon-indent {	background-position:-312px 0px; }
+.wyswyg_icon-left {		background-position:-336px 0px; }
+.wyswyg_icon-center {	background-position:-360px 0px; }
+.wyswyg_icon-justify {	background-position:-384px 0px; }
+.wyswyg_icon-right {	background-position:-408px 0px; }
+.wyswyg_icon-unordered {background-position:-432px 0px; }
+.wyswyg_icon-ordered {	background-position:-456px 0px; }
+.wyswyg_icon-link {		background-position:-480px 0px; }
+.wyswyg_icon-unlink {	background-position:-504px 0px; }
+.wyswyg_icon-image {	background-position:-528px 0px; }
+.wyswyg_icon-video {	background-position:-552px 0px; }
+.wyswyg_icon-attachment {background-position:-576px 0px; }
+.wyswyg_icon-table {	background-position:-600px 0px; }
+.wyswyg_icon-undo {	background-position:-624px 0px; }
+.wyswyg_icon-redo {	background-position:-648px 0px; }
+
+.glyphicon-text-underline:before{content:"\e104"}
+.glyphicon-text-strike:before{content:"\e105"}
+
+/*
+
+.wyswyg_toolbar {
+	display:inline-block;
+	height:24px;
+	padding:0px;
+	margin:0px;
+}
+IMG.wyswyg_menuicon {
+	background: url(../images/wyswyg.png) no-repeat;
+	display:inline-block;
+	width:24px;
+	height:24px;
+	vertical-align:middle;
+	cursor:pointer;
+}
+I.wyswyg_sep {
+	background: url(../images/wyswyg.png) no-repeat;
+	background-position:-72px 0px;
+	display:inline-block;
+	width:10px;
+	height:24px;
+	vertical-align:middle;
+}
+.wyswyg_style {
+	box-shadow:3px 3px 8px #000;
+}
+.wyswyg_style * {
+	cursor:pointer;
+	display:block;
+	background:rgba(255,255,255,0.8);
+	margin:0px !important;
+	padding:5px !important;
+}
+.wyswyg_style *:hover {
+	background:rgba(240,240,240,0.9);
+}
+.wyswyg_choosediv {
+	background:#fff;height:100%;color:#000;margin:0px !important;padding:10px !important;cursor:grab !important;
+}
+.wyswyg_edit IMG[data-zoom] {
+	border:1px dotted blue !important;
+	margin:-1px;
+}
+*/

@@ -133,7 +133,8 @@ class CMS
         //! return icon
         return "<img style='position:absolute;z-index:997;cursor:pointer;opacity:0.7;' ".
             "onclick='cms_edit(this,\"".$idx."\",".
-                intval(@$addon->adjust).",".intval(@$addon->minWidth).",".intval(@$addon->minHeight).",".
+                (is_array(@$addon->adjust)?json_encode($addon->adjust):intval(@$addon->adjust)).",".
+                intval(@$addon->minWidth).",".intval(@$addon->minHeight).",".
                 intval(!empty($sizes[1])?$sizes[1]:@$addon->forceWidth).",".
                 intval(!empty($sizes[2])?$sizes[2]:@$addon->forceHeight).",".
                 intval(!empty($sizes[3])?$sizes[3]:@$addon->forceFull).");' ".

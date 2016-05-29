@@ -364,6 +364,18 @@ Occupy percentage of screen.
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
+&lt;!cms *wyswyg cms3>
+		</div>
+		<div class="col-sm-4" dir="ltr" style='background:#F0F0F0;'>
+<!cms *wyswyg cms3>
+		</div>
+		<div class="col-sm-6 text-muted small">
+AddOn to edit page parameter
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-2">
 &lt;!field text obj.field>
 		</div>
 		<div class="col-sm-4" dir="ltr">
@@ -632,6 +644,18 @@ Select multiple values from a set. Drag'n'drop elements and reaarange them as yo
 		<div class="col-sm-4 text-muted small">
 Select images for crousel, rearrange them as you like.
 <!cms imglist(128) crousel>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-2">
+&lt;!field wyswyg obj.wyswyg>
+		</div>
+		<div class="col-sm-6" dir="ltr">
+<!field wyswyg obj.wyswyg>
+		</div>
+		<div class="col-sm-4 text-muted small">
+What You See is What You Get html editor
 		</div>
 	</div>
 

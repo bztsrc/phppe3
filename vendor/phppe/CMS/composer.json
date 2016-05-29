@@ -39,7 +39,9 @@
 	"license": "LGPL-3.0+",
 
 	"require": {
-		"phppe/Core": "3.*"
+		"phppe/Core": "3.*",
+		"phppe/Gallery": "*",
+		"phppe/wyswyg": "*"
 	},
 
 	"maintainer": { "name": "bzt" }

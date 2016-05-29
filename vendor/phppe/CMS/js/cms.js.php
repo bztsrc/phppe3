@@ -6,7 +6,7 @@
  */
 
 var cms_return=null, cms_url=null, cms_reload=false;
-var cms_border=null;
+var cms_border=null, cms_item=null;
 var cms_scrx=null, cms_srcy=null;
 
 //! open cms editor box
@@ -33,11 +33,11 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         document.body.appendChild(cmsbox);
     }
     //! get coordinates for editor box
-    var rt,x,y,w,h;
+    var rt,x,y,w,h,adj=0;
     var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);
     var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
     if(icon.parentNode!=null) {
-        var ps=window.getComputedStyle(icon.parentNode);
+        var ps=window.getComputedStyle(icon.parentNode, null);
         var t=parseInt(ps.getPropertyValue("padding-top"),10); if(t==null||t==NaN) t=0;
         var l=parseInt(ps.getPropertyValue("padding-left"),10); if(l==null||l==NaN) l=0;
         var r=parseInt(ps.getPropertyValue("padding-right"),10); if(r==null||r==NaN) r=0;
@@ -46,6 +46,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         x=Math.floor(rt.left)+l;
         y=Math.floor(rt.top)+t;
         w=icon.parentNode.offsetWidth-l-r; h=icon.parentNode.offsetHeight-t-b;
+        cms_item=icon.parentNode;
     } else {
         rt=icon.getBoundingClientRect();
         x=Math.floor(rt.left);
@@ -59,10 +60,19 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     if(w<48) w=48; if(h<24) h=24;
     if(minw>0 && w<minw) w=minw;
     if(minh>0 && h<minh) h=minh;
-    if(adjust>0) {
-        y-=adjust;
-        h+=adjust;
+    //! if adjust is a number, move modal upwards
+    if(typeof adjust == 'number') adj = adjust;
+    if(typeof adjust == 'object') {
+        //! if it's an array, then key is the minimum width
+        for(var n in adjust)
+            if(parseInt(n)==0 || parseInt(n)>w)
+                adj=parseInt(adjust[n]);
     }
+    if(adj>0) {
+        y-=adj;
+        h+=adj;
+    } else
+        adj = 0;
     //! add space for Save button
     h+=28;
     //! make sure the box is on screen
@@ -84,7 +94,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     cmsbg.style.visibility = 'visible';
     cmsbox.style.visibility = 'visible';
     //! load form into editbox during animation
-    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28)+'&scrx='+cms_scrx+'&scry='+cms_scry;
+    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28-adj)+'&scrx='+cms_scrx+'&scry='+cms_scry;
     //! set editor box position and size
     if(<?=empty(\PHPPE\Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
         cmsbox.style.left=x;
@@ -122,9 +132,11 @@ function cms_hideedit()
     //! close editor box and hide background
     document.getElementById('cmsbg').style.visibility='hidden';
     document.getElementById('cmsbox').style.visibility='hidden';
+    document.getElementById('cmsbox').src='about:blank';
     //! release lock. We do it synchronously on purpose
     var r = new XMLHttpRequest();
     r.open('GET', '<?=url("cms", "unlock")?>', false); r.send(null);
+    cms_item=null;
     //! reload page if requested
     if(cms_reload)
         document.location.href=document.location.href;
@@ -162,4 +174,10 @@ function cms_pagedel(url)
 {
     if(confirm('<?=L("Are you sure you want to delete this page?")?>'))
         document.location.href='<?=url('cms','pages')?>?pagedel='+urlencode(url);
+}
+
+//! called by wyswyg
+function cms_getitem()
+{
+    return cms_item;
 }
