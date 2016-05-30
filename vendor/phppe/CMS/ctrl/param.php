@@ -17,6 +17,7 @@ class CMSParam
     public $fieldTitle = "";
     public $editable = false;
     public $height=0;
+    public $adjust=0;
 
 /**
  * default action
@@ -30,13 +31,16 @@ class CMSParam
 
         //! if not called as it should, return
         if(empty($item) || empty($_SESSION['cms_url']) || empty($_SESSION['cms_param'][$item])) {
+print_r($item);
+print_r(array_keys($_SESSION['cms_param']));
             Core::$core->template = "403";
             return;
         }
 
         //! get height
         $this->height=intval(@$_REQUEST['height']);
-        
+        $this->adjust=intval(@$_REQUEST['adjust']);
+
         //! save current scroll position to session so that on next
         //! page load cms_init will use it
         if(isset($_REQUEST['scrx']))

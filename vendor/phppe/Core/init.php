@@ -20,7 +20,7 @@
  * @file vendor/phppe/Core/init.php
  * @author bzt
  * @date 1 Jan 2016
- * @brief PHPPE Users
+ * @brief PHPPE Core
  */
 
 //! add JavaScript library to output with highest priority

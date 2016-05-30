@@ -153,9 +153,12 @@ function wyswyg_open(source, icons)
     var adj=28, tb=document.createElement('div');
     if(typeof conf[0] == 'number') adj=conf[0];
     if(typeof conf[0] == 'object') {
-        for(var n in conf[0])
+console.log(conf[0]);
+        for(var n in conf[0]) {
             if(parseInt(n)==0 || parseInt(n)>source.offsetWidth)
                 adj=parseInt(conf[0][n]);
+console.log(parseInt(n)+' '+source.offsetWidth+' '+adj);
+        }
     }
     tb.setAttribute('id', id+':toolbar');
     tb.setAttribute('class', 'wyswyg_toolbar');

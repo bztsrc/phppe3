@@ -10,6 +10,6 @@ CREATE TABLE `users` (
   `created` int(11) NOT NULL,
   `logind` int(11) NOT NULL,
   `logoutd` int(11) NOT NULL,
-  `prefs` mediumtext NOT NULL default ''
+  `data` mediumtext NOT NULL default ''
 );
-INSERT INTO users VALUES (1,'bzt','$2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO','{"siteadm":1}','',0,1,CURRENT_TIMESTAMP,0,0,'{"remote":{"host":"localhost","user":"bzt"}}');
+INSERT INTO users VALUES (1,'bzt','$2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO','{"panel":1,"webadm":1}','',0,1,CURRENT_TIMESTAMP,0,0,'{"remote":{"host":"localhost","user":"bzt"}}');

@@ -93,8 +93,6 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     //! make box and background visible
     cmsbg.style.visibility = 'visible';
     cmsbox.style.visibility = 'visible';
-    //! load form into editbox during animation
-    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28-adj)+'&scrx='+cms_scrx+'&scry='+cms_scry;
     //! set editor box position and size
     if(<?=empty(\PHPPE\Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
         cmsbox.style.left=x;
@@ -109,8 +107,11 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         cmsbox.style.width=icon.offsetWidth+'px';
         cmsbox.style.height=icon.offsetHeight+'px';
         cms_return={left:cmsbox.style.left,top:cmsbox.style.top,width:icon.offsetWidth+'px',height:icon.offsetHeight+'px'};
-        $('#cmsbox').animate({left:x,top:y,width:w,height:h+'px'},500);
+        $('#cmsbox').animate({left:x,top:y,width:w,height:h+'px'},300);
     }
+    //! load form into editbox during animation
+    var d=new Date();
+    cmsbox.src='<?=url("cms", "param")?>'+paramidx+'?height='+(h-28-adj)+'&adjust='+adj+'&scrx='+cms_scrx+'&scry='+cms_scry+'&serial='+d.getTime();
 }
 
 function cms_close(reload)
@@ -123,7 +124,7 @@ function cms_close(reload)
     if(cms_return==null || typeof jQuery=='undefined'){
         cms_hideedit();
     } else {
-        $('#cmsbox').animate(cms_return, 500, cms_hideedit);
+        $('#cmsbox').animate(cms_return, 300, cms_hideedit);
     }
 }
 

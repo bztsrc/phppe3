@@ -25,11 +25,15 @@ BODY {
 	position:fixed;
 	bottom:5px;
 	right:5px;
-	z-index:1001;
+	z-index:2001;
+}
+.wyswyg_toolbar {
+    height: <!=app.adjust>px !important;
 }
 </style>
 <!if core.isError()><div style='padding:3px;'><!include errorbox></div><!/if><!form page>
 <!field hidden height>
+<!field hidden adjust>
 <!field hidden pe.try1>
 <!=field>
 <div style='padding:4px;'>

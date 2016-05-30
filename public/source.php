@@ -368,7 +368,7 @@ namespace PHPPE {
             $r = DS::fetch('*', static::$_table, $w ? $w : 'id=?', '', $o, is_array($i) ? $i : [$i ? $i : $this->id]);
             //update property values. FETCH_INTO not exactly what we want
             if ($r) {
-                foreach ($this as $k => $v) {
+                foreach (get_object_vars($this) as $k => $v) {
                     if ($k[0] != '_') {
                         $this->$k = is_string($r[$k]) && !empty($r[$k]) &&
                         ($r[$k][0] == '{' || $r[$k][0] == '[') ? json_decode($r[$k], true) : $r[$k];
@@ -399,7 +399,7 @@ namespace PHPPE {
             }
             //build the arguments array
             $a = [];
-            foreach ($this as $k => $v) {
+            foreach (get_object_vars($this) as $k => $v) {
                 if ($k[0] != '_' && ($f || $k != 'id') && $k != 'created') {
                     $a[$k] = is_scalar($v) ? $v : json_encode($v);
                 }
@@ -428,7 +428,7 @@ namespace PHPPE {
         public $name = 'Anonymous';       //!< user real name
         public $data = [];                //!< user preferences
         // protected static $_table = "users"; //! set table name. This should be in Users class!
-        private $acl = [];                //!< Access Control List
+        protected $acl = [];                //!< Access Control List
         // private remote = [];           //!< remote server configuration, added run-time
 
 /**
@@ -536,18 +536,18 @@ namespace PHPPE {
                 }
             }
             //! handle hardwired admin login and logout before Users class get's a chance
-            if ($app == 'login') {
+            if (Core::$core->app == 'login') {
                 $A = 'admin';
-                if (Core::isTry() && !empty($_REQUEST['id']) && $_REQUEST['id'] == $A) {
+                if (Core::isTry() && !empty($_REQUEST['id'])) {
                     //don't accept password in GET parameter
-                    if (!empty(Core::$core->masterpasswd) && empty(Core::$user->id) &&
+                    if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) && empty(Core::$user->id) &&
                         password_verify($_POST['pass'], Core::$core->masterpasswd)) {
                         Core::log('A', 'Login '.L($A), 'users');
                         $_SESSION['pe_u']->id = -1;
                         $_SESSION['pe_u']->name = L($A);
                         //! don't let Users class to log in admin, that's our job
                         Http::redirect();
-                    } else {
+                    } elseif(!method_exists(Core::$user, 'login') || !Core::$user->login($_REQUEST['id'],$_POST['pass'])) {
                         Core::error(L('Bad username or password'));
                     }
                 }
@@ -556,7 +556,7 @@ namespace PHPPE {
                     Http::redirect('/');
                 }
                 //! if not superadmin, let Users extension's controller handle
-            } elseif ($app == 'logout') {
+            } elseif (Core::$core->app == 'logout') {
                 $i = Core::$user->id;
                 if ($i) {
                     Core::log('A', 'Logout '.Core::$user->name, 'users');
