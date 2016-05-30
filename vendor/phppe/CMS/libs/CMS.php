@@ -95,10 +95,10 @@ class CMS
             View::jslib("cms.js", "cms_init(".
                 intval(@$_SESSION['cms_scroll'][0]).",".
                 intval(@$_SESSION['cms_scroll'][1]).
-                ");");
+                ");",9);
             $_SESSION['cms_scroll']=[];
         } else
-            View::jslib("cms.js");
+            View::jslib("cms.js",9);
     }
 
 

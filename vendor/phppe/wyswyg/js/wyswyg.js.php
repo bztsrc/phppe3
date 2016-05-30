@@ -55,18 +55,20 @@ if(!empty(Core::$core->item)){
 if(isset($_REQUEST['impform'])){
     $err=$choose="";
     if(is_array($_FILES['upload'])) {
-        if($_FILES['upload']['type']!="text/html")
-            $err=L("Upload HTML only!");
-        else {
+        if($_FILES['upload']['type']=="text/plain"){
+            $choose=@file_get_contents($_FILES['upload']['tmp_name']);
+        }elseif($_FILES['upload']['type']=="text/html") {
             $d=@file_get_contents($_FILES['upload']['tmp_name']);
             preg_match_all("|<body[^>]*>(.*?)<\/body|ims",$d,$b,PREG_SET_ORDER);
             $choose=!empty($b[0][1])?$b[0][1]:$d;
+        } else {
+            $err=L("Upload HTML only!");
         }
     }
     die("<html><head><meta charset='utf-8'/></head><body>".($choose?"<div>".$choose."</div><script type='text/javascript'>parent.window['wyswyg_importdone'](\"".$_REQUEST['impform']."\");</script>":
         \PHPPE\View::_t("<!form>").
         "<input type='hidden' name='impform' value='".$_REQUEST['impform']."'>".
-        "<input type='file' name='upload' onchange='parent.window[\"wyswyg_importstart\"](\"".$_REQUEST['impform']."\");this.form.submit();' id='".$_REQUEST['impform'].":import'>".
+        "<input type='file' name='upload' onchange='this.form.submit();' id='".$_REQUEST['impform'].":import'>".
         ($err?"alert('".$err."');":"").
         "</form>")."</body></html>");
 }
@@ -104,13 +106,13 @@ var wyswyg_classes = {
     "redo": "glyphicon glyphicon-step-forward",
 };
 <?php } ?>
+var wyswyg_sel=null;
 
 function wyswyg_init()
 {
-    var i, allinstance=document.getElementsByTagName("TEXTAREA");
+    var i, allinstance=document.querySelectorAll("TEXTAREA.wyswyg");
     for(i=0;i<allinstance.length;i++) {
-        if(allinstance[i].className.indexOf("wyswyg")>-1)
-            wyswyg_open(allinstance[i]);
+        wyswyg_open(allinstance[i]);
     }
 }
 
@@ -143,10 +145,10 @@ function wyswyg_open(source)
     //! populate toolbar in designmode
     if(document.designMode){
         var icons = {
-            "file": [ "import" ],
             "style": [ "font", "bold", "italic", "underline", "strikethrough", "superscript", "subscript" ],
             "align": [ "outdent", "indent", "left", "center", "justify", "right" ],
             "insert": [ "unordered", "ordered", "link", "unlink", "table", "image", "video", "attachment" ],
+            "hooks": wyswyg_event(null,id,"toolbar"),
             "undo": [ "undo", "redo" ]
         };
         //! html edit area
@@ -173,6 +175,11 @@ function wyswyg_open(source)
                 edit.style.display='none';
             }
         }
+        //! selection hooks
+        edit.setAttribute('data-wyswyg-select-a', 'wyswyg_link');
+        edit.setAttribute('data-wyswyg-select-img', 'wyswyg_image');
+        //! set up event handlers and design mode
+        edit.setAttribute('onmouseup','wyswyg_event(event,"'+id+'","select-@TAG");');
         edit.setAttribute('onkeyup','wyswyg_setvalue("'+id+'");');
         edit.setAttribute('onmouseout','wyswyg_setvalue("'+id+'");');
         edit.setAttribute("ondrop",'wyswyg_drop(event,"'+id+'");');
@@ -186,6 +193,13 @@ function wyswyg_open(source)
         toggle.setAttribute('onclick','event.preventDefault();wyswyg_togglesrc(this, true);');
         tb.appendChild(toggle);
 
+        //! import button
+        var imp = document.createElement('BUTTON');
+        imp.setAttribute('title',L('wyswyg import'));
+        imp.setAttribute('class', <?=($bs?"wyswyg_classes['import']":"'wyswyg_icon wyswyg_icon-import'")?>);
+        imp.setAttribute('onclick','event.preventDefault();wyswyg_import(event, "'+id+'");');
+        tb.appendChild(imp);
+
         //! add iconbar
         var ib = document.createElement('SPAN');
         ib.setAttribute('id', id+':icons');
@@ -196,14 +210,17 @@ function wyswyg_open(source)
         style.setAttribute('id',id+'_style');
         style.setAttribute('class','wyswyg_style');
         style.setAttribute('onmousemove','pe_w();');
-        if(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false) style.setAttribute('dir','rtl');
-        for(i in LANG)
-            if(i.substr(0,12)=='wyswyg_style') {
-                var tag=i.substr(12);
-                if(tag=='') tag='<span>';
-                txt+=tag.replace('>'," onclick='event.preventDefault();pe_p();' onmouseover='event.preventDefault();wyswyg_setfont(event,\""+i.substr(12)+"\",\""+id+"\");'>")+LANG[i]+tag.replace('<','</');
-            }
+        if(typeof LANG!='undefined'){
+            if(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false) style.setAttribute('dir','rtl');
+            for(i in LANG)
+                if(i.substr(0,12)=='wyswyg_style') {
+                    var tag=i.substr(12);
+                    if(tag=='') tag='<span>';
+                    txt+=tag.replace('>'," onclick='event.preventDefault();pe_p();' onmouseover='event.preventDefault();wyswyg_setfont(event,\""+i.substr(12)+"\",\""+id+"\");'>")+LANG[i]+tag.replace('<','</');
+                }
+        }
         style.innerHTML=txt;
+        ib.appendChild(style);
 
         //! add icons
         for (var menu in icons)
@@ -211,8 +228,9 @@ function wyswyg_open(source)
                 var ms = document.createElement('SPAN');
                 ms.setAttribute('id', id+':'+menu);
                 ms.setAttribute('class', 'wyswyg_menu');
-                if(menu=="style")
-                    ib.appendChild(style);
+                if(menu=="hooks") {
+
+                } else
                 for(var i=0;i<icons[menu].length;i++)
                     if(typeof window['wyswyg_'+icons[menu][i]] == 'function') {
                         var mi = document.createElement('BUTTON');
@@ -223,6 +241,25 @@ function wyswyg_open(source)
                     }
                 ib.appendChild(ms);
             }
+
+        //! add url input for links
+        var link=document.createElement('input');
+        link.setAttribute('id',id+':link');
+        link.setAttribute('dir','ltr');
+        link.setAttribute('type','text');
+        link.setAttribute('class','sub');
+        link.setAttribute('style','width:300px;position:fixed;z-index:1001;display:none;');
+        link.setAttribute('value','');
+        link.setAttribute('onkeyup','wyswyg_setlink(event,this,\"'+id+'\");');
+        link.setAttribute('onblur',"this.style.display='none';");
+        tb.appendChild(link);
+
+        //! add import form
+        var impframe=document.createElement('iframe');
+        impframe.setAttribute('id',id+':impframe');
+        impframe.setAttribute('src','js/wyswyg.js?impform='+id);
+        impframe.setAttribute('style','display:none;');
+        tb.appendChild(impframe);
 
         //! switch to html mode
         wyswyg_togglesrc(toggle);
@@ -250,7 +287,7 @@ function wyswyg_togglesrc(toggle,focus)
     if(edit.style.display=='block') {
         //! it is, switch to source mode
         toggle.setAttribute('class', '<?=$bs?"glyphicon glyphicon-eye":"wyswyg_icon wyswyg_toggle"?>-open');
-        toggle.nextSibling.style.visibility='hidden';
+        toggle.nextSibling.nextSibling.style.visibility='hidden';
         edit.style.display='none';
         source.style.width='100%';
         source.style.display='block';
@@ -258,7 +295,7 @@ function wyswyg_togglesrc(toggle,focus)
     } else {
         //! no, switch to html mode
         toggle.setAttribute('class', '<?=$bs?"glyphicon glyphicon-eye":"wyswyg_icon wyswyg_toggle"?>-close');
-        toggle.nextSibling.style.visibility='visible';
+        toggle.nextSibling.nextSibling.style.visibility='visible';
         edit.style.display='block';
         edit.style.height=(source.offsetHeight)+'px';
         source.style.display='none';
@@ -276,7 +313,7 @@ function wyswyg_setvalue(id)
     var edit = source.previousSibling;
     source.value = edit.innerHTML;
     //rte.value=rte.value.replace(">&quot;\"",">\"").replace(/&lt;!([^-])/gi,"<!$1").replace(/\=\"\"/g,"").replace(/\"\=\"\"/g,"\"").replace(/\=\"\"/g,"").replace(/alt=\"[\ ]+/gmi,"alt=\"").replace(/&lt;img/g,"<img");
-    var i,txt=source.value.match(/<img class=[\"\'][\ ]?wysiwyg_icon[^>]+>([\'\"][^>]*?>)?/gmi,"$1");
+    var i,txt=source.value.match(/<img class=[\"\'][\ ]?wyswyg_icon[^>]+>([\'\"][^>]*?>)?/gmi,"$1");
     if(txt!=null&&txt.length>0) for(i=0;i<txt.length;i++) {
         var tmp=txt[i].match(/alt=\"[^\"]*[\">]?/gmi,"$1");
         if(tmp&&tmp[0]) {var t=tmp[0].substring(5,tmp[0].length-1).trim();t=t.replace("<!/form>","</form>");
@@ -300,7 +337,8 @@ function wyswyg_selected(evt, type)
                 }
         } else {
                 sel=window.getSelection();
-                obj=sel.anchorNode.childNodes[ sel.anchorOffset ];
+                if (sel.anchorNode.childNodes)
+                    obj=sel.anchorNode.childNodes[ sel.anchorOffset ];
                 if (sel.rangeCount) {
                     txt=sel.getRangeAt(sel.rangeCount - 1).cloneRange();
                     var container = document.createElement("div");
@@ -324,6 +362,14 @@ function wyswyg_exec(id,cmd,val)
     try { return document.execCommand(cmd,false,val); }
     catch(e) { alert(e); return null; }
 }
+function wyswyg_import(evt,id) {document.getElementById(id+':impframe').contentWindow.document.getElementsByTagName('INPUT')[4].click();}
+function wyswyg_importdone(id){
+var choose=choose=document.getElementById(id+':impframe').contentWindow.document.getElementsByTagName('DIV')[0].innerHTML;
+document.getElementById(id+':impframe').src='js/wyswyg.js?impform='+id;
+document.getElementById(id+':edit').innerHTML=choose;
+wyswyg_setvalue(id);
+}
+
 function wyswyg_bold(evt,id) {wyswyg_exec(id,"bold","");}
 function wyswyg_italic(evt,id) {wyswyg_exec(id,"italic","");}
 function wyswyg_underline(evt,id) {wyswyg_exec(id,"underline","");}
@@ -346,8 +392,59 @@ function wyswyg_setfont(evt,tag,id) {
     if(tag!='' && tag!=null) {
         wyswyg_exec(id,"formatblock",tag);
     } else {
-        //! FIXME: remove formating
+        //! remove formating
 //        wyswyg_exec(id,"removeFormat");
         wyswyg_exec(id,"formatblock","<p>");
     }
+}
+function wyswyg_link(evt,id) {
+    var link=document.getElementById(id+':link');
+    var sel=wyswyg_selected(evt,"sel");
+    var obj=wyswyg_selected(evt,"obj");
+    //! if neither text selected nor an A tag
+    if((sel.rangeCount<1 || sel.isCollapsed==true) && obj.tagName!='A')
+        return;
+    //! if text selected not an A tag
+    if(obj.tagName!='A') {
+        var a=document.createElement('A');
+        a.setAttribute('href', 'http<?=(Core::$core->sec?"s":"")?>://');
+        a.innerHTML=wyswyg_selected(evt,"txt");
+        sel.getRangeAt(sel.rangeCount-1).surroundContents(a);
+        obj=a;
+    }
+    //! load url
+    link.value=obj.getAttribute('href');
+    //! get position
+    var rt=obj.getBoundingClientRect();
+    link.style.left=rt.left+'px';
+    link.style.top=(rt.top+obj.offsetHeight)+'px';
+    link.style.display='block';
+    //! save object for setlink()
+    wyswyg_sel=obj;
+    link.selectionStart = link.selectionEnd = link.value.length;
+    link.focus();
+}
+function wyswyg_setlink(evt,hrf,id){
+    if(!hrf||!hrf.value||hrf.value=='')wyswyg_exec(id,"unlink","");
+    if(wyswyg_sel&&wyswyg_sel.tagName=='A')wyswyg_sel.href=hrf.value;
+    else alert(hrf.value);
+}
+
+function wyswyg_event(evt,id,name){
+    //! get plugins for subscribed for an event
+    var ret=[],hookname='data-wyswyg-'+name;
+    if(evt!=null && evt.target!=null){
+        hookname=hookname.replace('@TAG',evt.target.tagName.toLowerCase())
+        if(evt.target.id==id+':edit')
+            hookname='data-wyswyg-focus';
+    }
+    var i,plugins=document.querySelectorAll('['+hookname+']');
+console.log('Event '+hookname+': '+plugins.length+' listeners');
+    for(i=0;i<plugins.length;i++) {
+        var hooks=plugins[i].getAttribute(hookname).split(",");
+        for(var h in hooks)
+            if(typeof window[hooks[h]] == 'function')
+                ret.concat(window[hooks[h]](evt,id));
+    }
+    return ret;
 }

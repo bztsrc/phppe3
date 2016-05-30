@@ -51,8 +51,8 @@ TEXTAREA.wyswyg {
 
 .wyswyg_style {
     box-shadow:3px 3px 8px #000;
-    position:absolute;
-    display:none;
+    position:fixed;
+    visibility:hidden;
     width:200px;
     height:200px;
     overflow: auto;

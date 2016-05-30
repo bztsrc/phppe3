@@ -1333,7 +1333,7 @@ namespace PHPPE {
                         $p = 'position:fixed;top:';
                         $s = 'text-shadow:2px 2px 2px #FFF;';
                         $c = 'rgba(136,146,191';
-                        die('#pe_p{'.$p."0;z-index:999;left:0;width:100%;padding:0 2px 0 32px;background-color:$c,0.9);background:linear-gradient($c,0.4),$c,0.6),$c,0.8),$c,0.9),$c,1) 90%,rgba(0,0,0,1));height:31px !important;font-family:helvetica;font-size:14px !important;line-height:20px !important;}#pe_p SPAN{margin:0 5px 0 0;cursor:pointer;}#pe_p UL{list-style-type:none;margin:3px;padding:0;}#pe_p IMG{border:0;vertical-align:middle;padding-right:4px;}#pe_p A{text-decoration:none;color:#000;".$s.'}#pe_p .menu {position:fixed;top:8px;left:90px;}#pe_p .stat SPAN{display:inline-block;'.$s.'}#pe_p LI{cursor:pointer;}#pe_p LI:hover{background:#F0F0F0;}#pe_p .stat{'.$p.'6px;right:48px;}#pe_p .sub{'.$p.'28px;display:inline;background:#FFF;border:solid 1px #808080;box-shadow:2px 2px 6px #000;z-index:1000;}#pe_p .menu_i{padding:5px 6px 5px 6px;'.$s.'}#pe_p .menu_a{padding:4px 5px 5px 5px;border-top:solid #000 1px;border-left:solid #000 1px;border-right:solid #000 1px;background:#FFF;}@media print{#pe_p{display:none;}}');
+                        die('#pe_p{'.$p."0;z-index:999;left:0;width:100%;padding:0 2px 0 32px;background-color:$c,0.9);background:linear-gradient($c,0.4),$c,0.6),$c,0.8),$c,0.9),$c,1) 90%,rgba(0,0,0,1));height:31px !important;font-family:helvetica;font-size:14px !important;line-height:20px !important;}#pe_p SPAN{margin:0 5px 0 0;cursor:pointer;}#pe_p UL{list-style-type:none;margin:3px;padding:0;}#pe_p IMG{border:0;vertical-align:middle;padding-right:4px;}#pe_p A{text-decoration:none;color:#000;".$s.'}#pe_p .menu {position:fixed;top:8px;left:90px;}#pe_p .stat SPAN{display:inline-block;'.$s.'}#pe_p LI{cursor:pointer;}#pe_p LI:hover{background:#F0F0F0;}#pe_p .stat{'.$p.'6px;right:48px;}#pe_p .sub{'.$p.'28px;display:inline;background:#FFF;border:solid 1px #808080;box-shadow:2px 2px 6px #000;z-index:1000;}#pe_p .menu_i{padding:5px 6px 0px 6px;'.$s.'}#pe_p .menu_a{padding:4px 5px 0px 5px;border-top:solid #000 1px;border-left:solid #000 1px;border-right:solid #000 1px;background:#FFF;}@media print{#pe_p{display:none;}}');
                     //! serve real cache requests
                     default :
                         $c = self::get("c_$d");
@@ -2647,7 +2647,7 @@ namespace PHPPE {
                     $c = self::$hdr['js'];
                     $a = '';
                     //! built-in stuff if core.js is not installed
-                    if ($P && !$i) {
+                    if (!$i) {
                         // @codeCoverageIgnoreStart
                         $x = 'document.getElementById(';
                         $y = '.style.visibility';
