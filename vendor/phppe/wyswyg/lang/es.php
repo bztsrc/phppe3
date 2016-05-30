@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"Lista ordenada",
 "wyswyg_link"=>"Enlazar",
 "wyswyg_unlink"=>"Retire enlace",
+"wyswyg_content"=>"Enlazar",
 "wyswyg_image"=>"Insertar imagen",
 "wyswyg_video"=>"Insertar vídeo",
 "wyswyg_table"=>"Insertar mesa",

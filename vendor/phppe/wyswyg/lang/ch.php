@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"有序列表",
 "wyswyg_link"=>"链接",
 "wyswyg_unlink"=>"移除链接",
+"wyswyg_content"=>"链接",
 "wyswyg_image"=>"插入图片",
 "wyswyg_video"=>"插入视频",
 "wyswyg_table"=>"插入表格",

@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"قائمة مرتبة",
 "wyswyg_link"=>"حلقة الوصل",
 "wyswyg_unlink"=>"نلغي",
+"wyswyg_content"=>"حلقة الوصل",
 "wyswyg_image"=>"إدراج صورة",
 "wyswyg_video"=>"إدراج الفيديو",
 "wyswyg_table"=>"إدراج الجدول",

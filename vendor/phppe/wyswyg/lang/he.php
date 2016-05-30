@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"רשימה מסודרת",
 "wyswyg_link"=>"לְקַשֵׁר",
 "wyswyg_unlink"=>"תסיר את הקישור",
+"wyswyg_content"=>"לְקַשֵׁר",
 "wyswyg_image"=>"תמונה הכנס",
 "wyswyg_video"=>"וידאו הכנס",
 "wyswyg_table"=>"שולחן הכנס",

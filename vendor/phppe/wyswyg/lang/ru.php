@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"Нумерованный список",
 "wyswyg_link"=>"Ссылка",
 "wyswyg_unlink"=>"Удалить ссылку",
+"wyswyg_content"=>"Ссылка",
 "wyswyg_image"=>"Вставить изображение",
 "wyswyg_video"=>"Вставить видео",
 "wyswyg_table"=>"Вставить таблицу",

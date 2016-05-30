@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"Geordnete Liste",
 "wyswyg_link"=>"Link",
 "wyswyg_unlink"=>"Link entfernen",
+"wyswyg_content"=>"Link",
 "wyswyg_image"=>"Bild einfügen",
 "wyswyg_video"=>"Video winfügen",
 "wyswyg_table"=>"Tabelle einfügen",

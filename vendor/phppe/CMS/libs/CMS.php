@@ -30,6 +30,7 @@ class CMS
     public $revert=false;   //!< do we have to keep history for reverting
     public $purge=3;        //!< we have to purge history if bigger than this
     public $metas=[];       //!< meta tags we want to make editable
+    public $wyswyg_toolbar = [ "content"=>"cms/content" ];
 
 /**
  * Initialization hook

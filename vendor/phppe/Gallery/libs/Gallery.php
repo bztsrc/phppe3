@@ -31,6 +31,8 @@ namespace PHPPE;
 class Gallery
 {
     private static $self;
+    public $wyswyg_toolbar = [ "image"=>"gallery/image" ];
+
 /**
  * Initialize
  *
@@ -40,6 +42,7 @@ class Gallery
         if(!empty($_FILES['imglist_upload'])) {
             \PHPPE\Gallery::uploadImage($_FILES['imglist_upload']);
         }
+        \PHPPE\View::jslib("gallery.js");
 	}
 
 /**
@@ -96,15 +99,28 @@ class Gallery
     }
     
 /**
+ * image chooser, loaded via AJAX
+ */
+    function image($item)
+    {
+        $list = self::getImages();
+        echo("<div class='wyswyg_gallery'>\n");
+        foreach($list as $img) {
+            echo("<img src='gallery/".$img['id']."'>\n");
+        }
+        die("</div>");
+    }
+
+/**
  * default action
  */
-	function action($item)
-	{
+    function action($item)
+    {
         $url = str_replace("..", "", \PHPPE\Core::$core->url);
         if (file_exists("data/".$url)) {
             Http::mime("image/jpeg");
             die(file_get_contents("data/".$url));
         }
         Core::$core->template="404";
-	}
+    }
 }

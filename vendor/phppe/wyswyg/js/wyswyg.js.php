@@ -74,6 +74,13 @@ if(isset($_REQUEST['impform'])){
 }
 
 $bs = Core::isInst("bootstrap");
+
+//! get toolbars
+$toolbar = [];
+$libs = \PHPPE\Core::lib();
+foreach($libs as $l)
+    if(!empty($l->wyswyg_toolbar))
+        $toolbar = array_merge($toolbar, $l->wyswyg_toolbar);
 header("Pragma:no-cache");
 ?>
 
@@ -99,6 +106,7 @@ var wyswyg_classes = {
     "link": "glyphicon glyphicon-globe",
     "unlink": "glyphicon glyphicon-erase",
     "table": "glyphicon glyphicon-th",
+    "content": "glyphicon glyphicon-file",
     "image": "glyphicon glyphicon-picture",
     "video": "glyphicon glyphicon-film",
     "attachment": "glyphicon glyphicon-paperclip",
@@ -111,12 +119,24 @@ var wyswyg_sel=null;
 function wyswyg_init()
 {
     var i, allinstance=document.querySelectorAll("TEXTAREA.wyswyg");
+    var icons = {
+        "style": [ "font", "bold", "italic", "underline", "strikethrough", "superscript", "subscript" ],
+        "align": [ "outdent", "indent", "left", "center", "justify", "right" ],
+        "insert": [ "unordered", "ordered", "link", "unlink", "table" ],
+        "hooks": <?=json_encode($toolbar)?>,
+        "undo": [ "undo", "redo" ]
+    };
+    //! load toolbar hooks
+    var plugins=document.querySelectorAll('[data-wyswyg-toolbar]');
+    for(var i=0;i<plugins.length;i++) {
+        icons['hooks'].concat(plugins[i].getAttribute('data-wyswyg-toolbar').split(","));
+    }
     for(i=0;i<allinstance.length;i++) {
-        wyswyg_open(allinstance[i]);
+        wyswyg_open(allinstance[i], icons);
     }
 }
 
-function wyswyg_open(source)
+function wyswyg_open(source, icons)
 {
     var id = source.id;
     //! get configuration
@@ -144,13 +164,6 @@ function wyswyg_open(source)
 
     //! populate toolbar in designmode
     if(document.designMode){
-        var icons = {
-            "style": [ "font", "bold", "italic", "underline", "strikethrough", "superscript", "subscript" ],
-            "align": [ "outdent", "indent", "left", "center", "justify", "right" ],
-            "insert": [ "unordered", "ordered", "link", "unlink", "table", "image", "video", "attachment" ],
-            "hooks": wyswyg_event(null,id,"toolbar"),
-            "undo": [ "undo", "redo" ]
-        };
         //! html edit area
         var edit=document.createElement('div');
         edit.setAttribute('id', id+':edit');
@@ -228,17 +241,22 @@ function wyswyg_open(source)
                 var ms = document.createElement('SPAN');
                 ms.setAttribute('id', id+':'+menu);
                 ms.setAttribute('class', 'wyswyg_menu');
-                if(menu=="hooks") {
-
-                } else
-                for(var i=0;i<icons[menu].length;i++)
-                    if(typeof window['wyswyg_'+icons[menu][i]] == 'function') {
+                for(var i in icons[menu]) {
+                    var func=icons[menu][i],name=icons[menu][i],ext="";
+                    if(menu=="hooks") {
+                        func="popup";
+                        name=i;
+                        ext=",'"+icons[menu][i]+"'";
+                    }
+                    if(typeof window['wyswyg_'+func] == 'function') {
                         var mi = document.createElement('BUTTON');
-                        mi.setAttribute('class', <?=($bs?"wyswyg_classes[icons[menu][i]]":"'wyswyg_icon wyswyg_icon-'+icons[menu][i]")?>);
-                        mi.setAttribute('title',L('wyswyg_'+icons[menu][i]));
-                        mi.setAttribute('onclick','event.preventDefault();wyswyg_'+icons[menu][i]+'(event,\"'+id+'\");wyswyg_setvalue(\"'+id+'\");');
+                        mi.setAttribute('class',
+                        <?=$bs?"wyswyg_classes[name]!=null?wyswyg_classes[name]:":""?>'wyswyg_icon wyswyg_icon-'+name);
+                        mi.setAttribute('title',L('wyswyg_'+name));
+                        mi.setAttribute('onclick','event.preventDefault();wyswyg_'+func+'(event,\"'+id+'\"'+ext+');wyswyg_setvalue(\"'+id+'\");');
                         ms.appendChild(mi);
                     }
+                }
                 ib.appendChild(ms);
             }
 
@@ -260,6 +278,14 @@ function wyswyg_open(source)
         impframe.setAttribute('src','js/wyswyg.js?impform='+id);
         impframe.setAttribute('style','display:none;');
         tb.appendChild(impframe);
+
+        //! popup for plugins
+        var popup=document.createElement('div');
+        popup.setAttribute('id',id+'_popup');
+        popup.setAttribute('class','wyswyg_popup');
+        popup.setAttribute('onmousemove','pe_w();');
+        popup.setAttribute('style','position:fixed;display:none;visibility:visible;');
+        tb.appendChild(popup);
 
         //! switch to html mode
         wyswyg_togglesrc(toggle);
@@ -439,7 +465,6 @@ function wyswyg_event(evt,id,name){
             hookname='data-wyswyg-focus';
     }
     var i,plugins=document.querySelectorAll('['+hookname+']');
-console.log('Event '+hookname+': '+plugins.length+' listeners');
     for(i=0;i<plugins.length;i++) {
         var hooks=plugins[i].getAttribute(hookname).split(",");
         for(var h in hooks)
@@ -447,4 +472,17 @@ console.log('Event '+hookname+': '+plugins.length+' listeners');
                 ret.concat(window[hooks[h]](evt,id));
     }
     return ret;
+}
+
+function wyswyg_popup(evt, id, url)
+{
+    var popup=document.getElementById(id+'_popup');
+    popup.innerHTML='';
+    pe_p(id+'_popup');
+    var r = new XMLHttpRequest();
+    r.open('GET', url, false); r.send(null);
+    if(r.status==200)
+        popup.innerHTML=r.responseText;
+    else
+        popup.innerHTML=L("Unable to load AJAX hook");
 }

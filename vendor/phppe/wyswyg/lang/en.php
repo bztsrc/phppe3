@@ -20,6 +20,7 @@ return [
 "wyswyg_ordered"=>"Ordered list",
 "wyswyg_link"=>"Link",
 "wyswyg_unlink"=>"Remove link",
+"wyswyg_content"=>"Link to content",
 "wyswyg_image"=>"Insert image",
 "wyswyg_video"=>"Insert video",
 "wyswyg_table"=>"Insert table",

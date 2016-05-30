@@ -39,6 +39,7 @@ TEXTAREA.wyswyg {
 .wyswyg_icon-ordered {	background-position:-456px 0px; }
 .wyswyg_icon-link {		background-position:-480px 0px; }
 .wyswyg_icon-unlink {	background-position:-504px 0px; }
+.wyswyg_icon-content {		background-position:-480px 0px; }
 .wyswyg_icon-image {	background-position:-528px 0px; }
 .wyswyg_icon-video {	background-position:-552px 0px; }
 .wyswyg_icon-attachment {background-position:-576px 0px; }
@@ -67,6 +68,26 @@ TEXTAREA.wyswyg {
 }
 .wyswyg_style *:hover {
     background:rgba(240,240,240,0.9);
+}
+.wyswyg_popup {
+    box-shadow:3px 3px 8px #000;
+    background:rgba(255,255,255,0.8);
+    position:fixed;
+    visibility:hidden;
+    width:200px;
+    height:200px;
+    overflow: auto;
+    z-index:1000;
+}
+
+.wyswyg_gallery IMG {
+    height: 64px !important;
+    padding: 2px;
+}
+
+.wyswyg_content A {
+    display: block;
+    padding: 2px;
 }
 
 /*
