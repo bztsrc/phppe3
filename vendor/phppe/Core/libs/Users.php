@@ -41,7 +41,7 @@ class Users extends \PHPPE\User
 
     public function login($name, $pass)
     {
-        $rec = \PHPPE\DS::fetch("id,pass", static::$_table, "name=?", "", "", [$name]);
+        $rec = \PHPPE\DS::fetch("id,pass", static::$_table, "name=? AND active!='0'", "", "", [$name]);
         if(empty($rec['pass']) || !password_verify($pass, $rec['pass']))
             return false;
         $_SESSION['pe_u']=new self($rec['id']);
