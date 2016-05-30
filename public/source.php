@@ -542,7 +542,7 @@ namespace PHPPE {
                     //don't accept password in GET parameter
                     if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) && empty(Core::$user->id) &&
                         password_verify($_POST['pass'], Core::$core->masterpasswd)) {
-                        Core::log('A', 'Login '.L($A), 'users');
+                        Core::log('A', 'Login '.$A, 'users');
                         $_SESSION['pe_u']->id = -1;
                         $_SESSION['pe_u']->name = L($A);
                         //! don't let Users class to log in admin, that's our job
