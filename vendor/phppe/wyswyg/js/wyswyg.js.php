@@ -266,7 +266,7 @@ function wyswyg_open(source, icons)
         link.setAttribute('dir','ltr');
         link.setAttribute('type','text');
         link.setAttribute('class','sub');
-        link.setAttribute('style','width:300px;position:fixed;z-index:1001;display:none;');
+        link.setAttribute('style','width:300px;position:fixed;z-index:2000;display:none;');
         link.setAttribute('value','');
         link.setAttribute('onkeyup','wyswyg_setlink(event,this,\"'+id+'\");');
         link.setAttribute('onblur',"this.style.display='none';");

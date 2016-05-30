@@ -55,7 +55,7 @@ class CMS
         if ($this->purge>128)
             $this->purge=128;
         if (!empty($cfg['metas']))
-            $this->metas=x(",",$cfg['metas']);
+            $this->metas=Core::x(",",$cfg['metas']);
         else
             $this->metas=["description", "keywords"];
 

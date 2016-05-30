@@ -35,7 +35,7 @@ class CMSParam
         }
 
         //! get height
-        $this->height=intval($_REQUEST['height']);
+        $this->height=intval(@$_REQUEST['height']);
         
         //! save current scroll position to session so that on next
         //! page load cms_init will use it

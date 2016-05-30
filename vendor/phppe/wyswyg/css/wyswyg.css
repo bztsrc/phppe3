@@ -57,7 +57,7 @@ TEXTAREA.wyswyg {
     width:200px;
     height:200px;
     overflow: auto;
-    z-index:1000;
+    z-index:2000;
 }
 .wyswyg_style * {
     cursor:pointer;
@@ -65,6 +65,7 @@ TEXTAREA.wyswyg {
     background:rgba(255,255,255,0.8);
     margin:0px !important;
     padding:5px !important;
+    z-index:2000;
 }
 .wyswyg_style *:hover {
     background:rgba(240,240,240,0.9);
@@ -77,7 +78,7 @@ TEXTAREA.wyswyg {
     width:200px;
     height:200px;
     overflow: auto;
-    z-index:1000;
+    z-index:2000;
 }
 
 .wyswyg_gallery IMG {

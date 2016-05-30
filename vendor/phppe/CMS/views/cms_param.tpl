@@ -25,6 +25,7 @@ BODY {
 	position:fixed;
 	bottom:5px;
 	right:5px;
+	z-index:1001;
 }
 </style>
 <!if core.isError()><div style='padding:3px;'><!include errorbox></div><!/if><!form page>

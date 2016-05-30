@@ -9,6 +9,7 @@ use \PHPPE\View as View;
 class wyswyg extends \PHPPE\AddOn
 {
     public $heightClass="wyswyg";
+    public $minHeight=200;
     public $adjust=[24, 500=>48];
 
     function init()

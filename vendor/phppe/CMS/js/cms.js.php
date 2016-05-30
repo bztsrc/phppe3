@@ -22,13 +22,13 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         //! create background div
         cmsbg = document.createElement('DIV');
         cmsbg.setAttribute('id', 'cmsbg');
-        cmsbg.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:1000;background:#000;opacity:0.4;visibility:hidden;');
+        cmsbg.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;visibility:hidden;');
         cmsbg.setAttribute('onclick', 'cms_close();');
         document.body.appendChild(cmsbg);
         //! create editor box iframe
         cmsbox = document.createElement('IFRAME');
         cmsbox.setAttribute('id', 'cmsbox');
-        cmsbox.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:1px;height:1px;z-index:1001;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;');
+        cmsbox.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:1px;height:1px;z-index:2002;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;');
         cmsbox.setAttribute('scrolling', 'no');
         document.body.appendChild(cmsbox);
     }
@@ -57,7 +57,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     if(forcew>0) w=forcew;
     if(forceh>0) h=forceh;
     //! adjust position and check minimum width, height
-    if(w<48) w=48; if(h<24) h=24;
+    if(w<100) w=100; if(h<24) h=24;
     if(minw>0 && w<minw) w=minw;
     if(minh>0 && h<minh) h=minh;
     //! if adjust is a number, move modal upwards
