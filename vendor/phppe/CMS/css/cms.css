@@ -44,6 +44,7 @@
 TABLE.cmstable TD, TABLE.cmstable TH { padding: 2px; }
 TABLE.cmstable TH { background:#B0B0B0; }
 TABLE.cmstable TR:nth-child(odd){background:#F0F0F0;}
+TABLE.cmstable TR:hover{background:#E0E0FF;}
 .infobox { height:<!=(app.boxHeight?app.boxHeight:app.height)>px !important; overflow:auto; padding:4px;}
 .infobox DIV { display:inline-block; float:left; width:50%; padding:2px; }
 .infobox SPAN { color:#d0d0d0 !important; }

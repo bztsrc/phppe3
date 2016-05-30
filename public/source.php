@@ -1712,6 +1712,7 @@ namespace PHPPE {
                 self::$hdr['link'] = Core::$core->link;
             }
             //! add core.js with language code in name. This allows separate client side caches
+            //! also give it a high priortity; jQuery has 00, so core.js should have 01
             $js = 'vendor/phppe/Core/js/core.js.php';
             if (file_exists($js)) {
                 self::$hdr['jslib']['core.'.Core::$client->lang.'.js'] = "01$js";
@@ -1787,9 +1788,9 @@ namespace PHPPE {
  *
  * @param name of the js library
  * @param if it needs to be initialized, the code to do that
- * @param priority
+ * @param priority (0=jQuery, 1-9=frameworks, 10-=libraries)
  */
-        public static function jslib($l = '', $i = '', $p = 9)
+        public static function jslib($l = '', $i = '', $p = 10)
         {
             if (empty($l)) {
                 return self::$hdr['jslib'];

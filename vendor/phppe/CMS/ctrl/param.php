@@ -106,6 +106,6 @@ class CMSParam
         }
 
         //! focus first input
-        \PHPPE\View::js("init()", "for(var i in document.forms[0].elements)if(document.forms[0].elements[i].tagName!='BUTTON'&& document.forms[0].elements[i].type!='hidden'){document.forms[0].elements[i].focus();break;}", true);
+        \PHPPE\View::js("init()", "var inp=document.querySelector('.input');if(inp!=null){inp.focus();inp.selectionStart=inp.selectionEnd=(inp.value!=null?inp.value:inp.innerHTML).length;}", true);
     }
 }

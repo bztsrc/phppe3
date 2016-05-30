@@ -1,3 +1,2 @@
-TABLE.tests TR:nth-child(odd) {
-    background:#F0F0F0;
-}
+TABLE.tests TR:nth-child(odd) {background:#F0F0F0;}
+TABLE.tests TR:hover{background:#E0E0FF;}
