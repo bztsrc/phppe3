@@ -643,20 +643,20 @@ Select multiple values from a set. Drag'n'drop elements and reaarange them as yo
 		</div>
 		<div class="col-sm-4 text-muted small">
 Select images for crousel, rearrange them as you like.
-<!cms imglist(128) crousel>
+<!cms imglist(128) crousel>Single image selection also available.<!cms img(128) picture>
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-sm-2">
-&lt;!field imglist obj.doclist legal>
+&lt;!field doclist obj.doclist legal>
 		</div>
 		<div class="col-sm-6" dir="ltr">
 <!field doclist obj.doclist legal>
 		</div>
 		<div class="col-sm-4 text-muted small">
-<!cms doc attach>Select documents for attachments, rearrange them as you like.
-<!cms doclist legal>
+Select documents for attachments, rearrange them as you like.
+<!cms doclist legal>Single document selection also available.<!cms doc attach>
 		</div>
 	</div>
 

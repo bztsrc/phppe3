@@ -36,7 +36,9 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
     var rt,x,y,w,h,adj=0;
     var ww=(window.innerWidth?window.innerWidth:document.body.offsetWidth);
     var wh=(window.innerHeight?window.innerHeight:document.body.offsetHeight);
-    if(icon.parentNode!=null) {
+    //! if size forced, place box at icon's coordinates 
+    if(icon.parentNode!=null && forcew<1 && forceh<1) {
+        //! editor area should occupy the parent node's space
         var ps=window.getComputedStyle(icon.parentNode, null);
         var t=parseInt(ps.getPropertyValue("padding-top"),10); if(t==null||t==NaN) t=0;
         var l=parseInt(ps.getPropertyValue("padding-left"),10); if(l==null||l==NaN) l=0;
@@ -48,6 +50,7 @@ function cms_edit(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
         w=icon.parentNode.offsetWidth-l-r; h=icon.parentNode.offsetHeight-t-b;
         cms_item=icon.parentNode;
     } else {
+        //! get coordinates for the icon
         rt=icon.getBoundingClientRect();
         x=Math.floor(rt.left);
         y=Math.floor(rt.top);
