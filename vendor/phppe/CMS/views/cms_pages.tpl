@@ -18,6 +18,7 @@
 		<th><!=L("Locked")></th>
 	</tr>
 <!foreach pages>
+<!if strtolower(KEY)!='frame'>
 <!if KEY>
 <tr><td colspan='10' style='font-weight:bold;' data-skipsearch='1'><!=L(KEY)></td></tr>
 <!/if>
@@ -29,7 +30,7 @@
 		<td style='color:#808080;font-size:10px;'><!if empty(template)><!=L(ucfirst(tid))><!else><!=L(template)><!/if></td>
 <!/if>
 		<td<!if ownerid> style='color:#800000;'<!/if> width='25'><img src='images/lang_<!=lang>.png' alt='<!=lang>' title='<!=lang>'></td>
-		<td<!if ownerid> style='color:#800000;'<!/if> dir='ltr'><!=id></td>
+		<td<!if ownerid> style='color:#800000;'<!/if> dir='ltr'><!if id=='index'><span class='glyphicon glyphicon-home'></span> /<!else><!=id><!/if></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!=name></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!=filter></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!if !empty(dds) && dds!='[]'>&radic;<!else>&Oslash;<!/if></td>
@@ -39,5 +40,6 @@
 		<td align='right' dir='ltr' data-skipsearch='1'><!if ownerid><a href='<!=url('cms','unlock')><!=id>' style='text-decoration:none;color:<!if ownerid>#800000<!else>#000<!/if>;' title='<!=L("Unlock")>'><!if ownerid==-1>admin<!else><!=lockuser><!/if> <small>(<!difftime strtotime(lockd)-strtotime(ct)>)</small>&nbsp;<img src='images/cms/unlock.png' alt='' align='abscenter'></a><!/if></td>
 	</tr>
 <!/foreach>
+<!/if>
 <!/foreach>
 </table>

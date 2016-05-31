@@ -17,7 +17,7 @@
  *   <http://www.gnu.org/licenses/>
  *
  * @file vendor/phppe/Core/js/setsel.js
- * @author bzt@phppe.org
+ * @author bzt
  * @date 1 Jan 2016
  * @brief Set list selection
  */

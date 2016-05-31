@@ -93,7 +93,7 @@
 </div>
 </div>
 <div style='text-align:right;padding:5px;margin-bottom:-24px;'><!field update Save></div>
-<div id='layout_edit'><!field wysiwyg('cms_layout') layout.data><!if quickhelp><small>(<!L help_toolbar>)</small><!/if></div>
+<div id='layout_edit'><!field wyswyg('cms_layout') layout.data><!if quickhelp><small>(<!L help_toolbar>)</small><!/if></div>
 <div style='text-align:right;padding:5px;margin-top:-16px;'><!field update Save></div>
 </form>
 <!/if>
