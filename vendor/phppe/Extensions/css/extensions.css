@@ -71,10 +71,7 @@
 	float:right;
 }
 .extension {
-	overflow:hidden;
-}
-.extension DIV {
-	overflow:auto;padding-left:130px;height:200px;
+	overflow:auto;height:200px;
 }
 
- .popup {box-shadow: 3px 3px 8px #000;position:absolute;background:#A0A0A0;padding:5px;z-index:10;}
+.popup {box-shadow: 3px 3px 8px #000;position:absolute;background:#A0A0A0;padding:5px;z-index:10;}

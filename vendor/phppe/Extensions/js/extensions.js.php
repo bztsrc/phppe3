@@ -58,8 +58,8 @@ function extensions_search(str,installed)
         "<div class='col-lg-4'>"+
             "<div class='extension well well-sm' dir='ltr'>"+
             "<img class='preview' title='"+extensions_pkgs[i].url+"' src='data:image/png;base64,"+(extensions_pkgs[i].preview?extensions_pkgs[i].preview:'iVBORw0KGgoAAAANSUhEUgAAAIAAAAB5CAMAAADGfdkoAAAAUVBMVEUAAADDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8OOFo/iAAAAGnRSTlMA+Mgje5u258wWvleUTwtvrUQspPCGYTne1lzKNFwAAAPaSURBVGje7ZrJlqsgEEALBAdUBFHU+v8PfadHTToRRAlvkbvJok8nF6kJEoiC1MzkVKim6yEBVuDKYCZ4LR3BO5ZXKkwFPkBJeBEdPmZ4USyM+JSXbEOHzyEZRGfCPShEp8RdGESmxn2G2Kkg0EEH8ZASMnSRQxx6JophWCi6KKLsQU/RmxiZ2OAB+FTBxeR4kLK71EFhALyKXnpflY8VwUCEjNv73AyXJMSC4ZAeTtPjGYoqbvNxI4IXbhnrWhmUA+fbczUWPwvILJ4kO/7xOa6QAU9iDn8+QwdxHkE9svani8hM112TL+vq40eBLklBzWh1v0kcmU0ta/KyiJ8I/WbXZ2HGrt2KQDXVncBQ+rByR2aqmq1IcGxYj8DbK6ezUOO0zqNRgkC73+REX27AifXayBbD4Oda7rqMOp6A8komFm8LSq+KyuMFYeH1LgbDqE9k4cr0WY/atUJfORZN6EZvK7TuGkWL60qxRQ+KJW+6m1ZRacu4cHqwgCzcL4zbAv27MTPBJ1TgICy8Z8GZ1dnGo9dNYBUAgcEUHx1LZ3KdYEOurWY8y7Dk3eOCwiCgF4YPfyZoGpnwGqa/Nb2Qh88eM+eUBA8ey97hUEqPLGRfiWV5edyiBTncrv/m8+0wiLF9FJNs+P2PaZvenZoPzt/93vFcfT9ixfS9hextk8+fNaPqb+NTM7X4ZsLtyEIsbLn948I7Lf8eB1vQAxb5WN8aZvWoiqMTwyhd5Wag3P7pU/QnFPOxre70hHvwUd+Lp1Z63vXM+SYs7vN4UUxvLdrCdSfEqDKcaXmw3syq09WTkkAW3v1aVMtuEpwr+SW3k3wynBHa1F8Gw6kDkHXGsRifSs6t4wBBJLiQeIp6f3wtwU1+/qBfdWYJv4ho8RTqp3k93KcRPCB4Crn3KC14YE5Gwd5KJvBAX3Xpx4/NnivDyT14Hk0zuFnNT991ZI7jR/w9KBzTd6w96Ne2eQe78uunxfDHGP0bBPyO/rrbd1JDTGaP6Toqo8+NjmVumg/GzQtv2kv2oAVool4LL26B0vvLGIrfveHrrUvwgLkLvkA3FP4KGAoeZOcF1tIr8PvM8aVDr/gNRu05uFBjlCGojFJm+HgxuWc57EIF3DTgQ+UUmJcsCMzBC+ESKCgE4StgnQJlXAGZWgBEaoE6tYBMLQAqtUCbWkCSxAJgUgvo1AIwpBJwj4ZtVIEVmloAeGoBqGq+JBNYJRpKEgmsEu0oSEKBVSKZwHo1LwZEm0BgRepxSiSw8hZ4C7wF3gJvgbfAW+At8Bb4HwRoYoEZSRCXCdSqpAGURsMT/gG5cUM2oGYBXgAAAABJRU5ErkJggg==')+
-            "' style='"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"padding-left:16px;":"")+"position:absolute;width:128px !important;' alt='"+extensions_pkgs[i].id+"'>"+
-            "<div"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?" dir='rtl'":"")+">"+
+            "' style='"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"padding-left:16px;":"")+"float:left;width:96px !important;' alt='"+extensions_pkgs[i].id+"'>"+
+            "<div style='padding-left:100px;'"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?" dir='rtl'":"")+">"+
             extensions_pkgs[i].name+" "+extensions_pkgs[i].version+
             (extensions_pkgs[i].installed?" <span class='installed' style='color:green;'>(<?=L("installed")?> "+extensions_pkgs[i].installed+")</span>":"")+"<br>";
 		if( extensions_pkgs[i].url != undefined ) {
@@ -78,7 +78,9 @@ function extensions_search(str,installed)
 			if(extensions_pkgs[i].installed) {
 				t+="&nbsp;&nbsp;&nbsp;<button onclick='if(confirm(\"<?=L("sure")?>\"))extensions_cmd(this,\"uninstall\","+i+");'  title='<?=L("Remove")?>' class='btn btn-danger glyphicon glyphicon-trash'></button>";
 			}
-				try {
+		}
+		t+="</div><br style='clear:both;'>";
+        try {
 					var j,k,l;
 					for(j=0;j<extensions_installed.length;j++) {
 						if(extensions_installed[j].id==null) continue;
@@ -86,10 +88,9 @@ function extensions_search(str,installed)
 						if(idx>-1) extensions_pkgs[i].depends.splice(idx,1);
 					}
 					if(extensions_pkgs[i].depends.length>0)
-						t+="<br><small"+(extensions_pkgs[i].installed?" style='color:red;'":"")+">"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small>";
-				} catch(e) {}
-		}
-		t+="<br><small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div></div>";
+						t+="<small"+(extensions_pkgs[i].installed?" style='color:red;'":"")+">"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small><br>";
+        } catch(e) {}
+		t+="<small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div></div>";
 	}
 	if(t=="") t="<br style='clear:both;'><i><?=L("No match found.")?></i>";
 	document.getElementById('pkgs').innerHTML=t;

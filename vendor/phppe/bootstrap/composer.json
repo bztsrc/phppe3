@@ -2,7 +2,7 @@
 	"name": "phppe/bootstrap",
 	"name_en": "Bootstrap",
 
-	"description": "Bootstrap environment",
+	"description": "Bootstrap environment, self hosting version.",
 
 	"version": "3.3.6",
 	"version_normalized": "3.3.6.0",
