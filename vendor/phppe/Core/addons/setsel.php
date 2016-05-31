@@ -74,9 +74,18 @@ class setsel extends \PHPPE\AddOn {
             $blk.=" data-id='".htmlspecialchars($id)."' draggable='false' onmousedown='return setsel_".(empty($this->args[0])?"drag":"select")."(event,\"".$this->fld."\");':display>".$rep."</div>";
             if(isset($i[$id]))
                 $b[$i[$id]]=str_replace(":display","",$blk);
-            $out[1].=str_replace(":display",(empty($this->args[0])&&isset($i[$id])?" data-inlist='1' style='display:none;'":""),$blk);
+            $blk=str_replace(":display",(empty($this->args[0])&&isset($i[$id])?" data-inlist='1' style='display:none;'":""),$blk);
+            if(empty($this->args[0])||!isset($i[$id]))
+                $out[1].=$blk;
+            else
+                $out[1]=$blk.$out[1];
         }
-        ksort($b);
+        if(empty($this->args[0]))
+            ksort($b);
+        else
+            $out[1].="<div class='setsel_item".
+                (!empty($this->args[0])&&empty($b)?" setsel_itemactive":"").
+                (!empty($a[2])&&$a[2]!="-"?" ".$a[2]:"")."' data-id='' onmousedown='return setsel_select(event,\"".$this->fld."\");' style='text-align:center;font-style:italic;'>&nbsp;*&nbsp;".L("Empty value")."&nbsp;*</div>";
         if(isset($flt['lang'])) {
             unset($flt['lang']);
             foreach($_SESSION['pe_ls'] as $l=>$v)

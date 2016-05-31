@@ -33,10 +33,11 @@ class img extends \PHPPE\AddOn\setsel
 		return parent::edit();
 	}
 
-    //! to load use DDS: id, img_list, list_id='@ID', , ordering
     function save($params)
     {
-        return \PHPPE\Gallery::saveImageList($this->name, Core::x(",", $params['value']));
+        $page=\PHPPE\View::getval("page");
+        $page->setParameter($this->name, Core::x(",", $params['value'])[0]);
+        return $page->save();
     }
 }
 
