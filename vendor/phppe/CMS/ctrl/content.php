@@ -17,7 +17,8 @@ class CMSContent
     function action($item)
     {
         $list = \PHPPE\Page::getPages(true);
-        echo("<div class='wyswyg_content'>\n");
+        echo("<input type='text' style='width:100%;' placeholder='".L("Search")."' onkeyup='wyswyg_search(this,this.nextSibling);'>");
+        echo("<div class='wyswyg_content wyswyg_scroll'>\n");
         foreach($list as $content) {
             echo("<a href='/".($content['id']=="index"?"":$content['id'])."'>".$content['name']."</a>\n");
         }

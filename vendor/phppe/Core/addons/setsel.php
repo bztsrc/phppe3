@@ -67,7 +67,7 @@ class setsel extends \PHPPE\AddOn {
 			}
             if($title)
                 $blk.=" title='".htmlspecialchars($title)."'";
-			$blk.=" data-id='".htmlspecialchars($id)."' onmousedown='return setsel_drag(event,\"".$this->fld."\");':display>".$rep."</div>";
+			$blk.=" data-id='".htmlspecialchars($id)."' draggable='false' onmousedown='return setsel_drag(event,\"".$this->fld."\");':display>".$rep."</div>";
 			if(isset($i[$id]))
 				$b[$i[$id]]=str_replace(":display","",$blk);
 			$out[1].=str_replace(":display",(isset($i[$id])?" data-inlist='1' style='display:none;'":""),$blk);

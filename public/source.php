@@ -1651,7 +1651,7 @@ namespace PHPPE {
                 //! don't allow to set these, as they cannot be arrays
                 if (!in_array($k, ['dds', 'id', 'title', 'mimetype'])) {
                     try {
-                        $o[$k] = @DS::query($c[0], @$c[1], strtr(@$c[2], ['@ID' => $k]), @$c[3], @$c[4], @$c[5], View::getval(@$c[6]));
+                        $o[$k] = @DS::query($c[0], @$c[1], strtr(@$c[2], ['@ID' => $k,'@HASH' => md5($k),'@SHA' => sha1($k)]), @$c[3], @$c[4], @$c[5], View::getval(@$c[6]));
                         foreach ($o[$k] as $i => $v) {
                             $d = @json_decode($v['data'], true);
                             if (is_array($d)) {

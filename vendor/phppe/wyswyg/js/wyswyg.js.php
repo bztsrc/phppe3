@@ -150,19 +150,9 @@ function wyswyg_open(source, icons)
             console.log(e.message);
         }
     //! add toolbar above textarea
-    var adj=28, tb=document.createElement('div');
-    if(typeof conf[0] == 'number') adj=conf[0];
-    if(typeof conf[0] == 'object') {
-console.log(conf[0]);
-        for(var n in conf[0]) {
-            if(parseInt(n)==0 || parseInt(n)>source.offsetWidth)
-                adj=parseInt(conf[0][n]);
-console.log(parseInt(n)+' '+source.offsetWidth+' '+adj);
-        }
-    }
+    var tb=document.createElement('div');
     tb.setAttribute('id', id+':toolbar');
     tb.setAttribute('class', 'wyswyg_toolbar');
-    tb.setAttribute('style', 'height:'+adj+'px;');
     source.parentNode.insertBefore(tb,source);
 
     //! populate toolbar in designmode
@@ -287,6 +277,7 @@ console.log(parseInt(n)+' '+source.offsetWidth+' '+adj);
         popup.setAttribute('id',id+'_popup');
         popup.setAttribute('class','wyswyg_popup');
         popup.setAttribute('onmousemove','pe_w();');
+        popup.setAttribute('ondragleave','pe_p();');
         popup.setAttribute('style','position:fixed;display:none;visibility:visible;');
         tb.appendChild(popup);
 
@@ -481,11 +472,29 @@ function wyswyg_popup(evt, id, url)
 {
     var popup=document.getElementById(id+'_popup');
     popup.innerHTML='';
-    pe_p(id+'_popup');
+    pe_p(id+'_popup',null,5);
     var r = new XMLHttpRequest();
     r.open('GET', url, false); r.send(null);
-    if(r.status==200)
+    if(r.status==200) {
         popup.innerHTML=r.responseText;
-    else
+    } else
         popup.innerHTML=L("Unable to load AJAX hook");
+}
+
+function wyswyg_search(inp,div)
+{
+    pe_w();
+    var r=new RegExp(inp.value,'i');
+    for(i in div.children) {
+        if(inp.value=='' ||
+            (div.children[i].src!=null && div.children[i].src.match(r)) ||
+            (div.children[i].href!=null && div.children[i].href.match(r)) ||
+            (div.children[i].innerHTML!=null && div.children[i].innerHTML.match(r))
+        ) {
+            try{ div.children[i].getAttribute('style'); } catch(e) {}
+            try{ div.children[i].removeAttribute('style'); } catch(e) {}
+        } else {
+            try{ div.children[i].setAttribute('style', 'display:none;'); } catch(e) {}
+        }
+    }
 }

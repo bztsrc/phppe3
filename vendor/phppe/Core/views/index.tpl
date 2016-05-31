@@ -649,6 +649,19 @@ Select images for crousel, rearrange them as you like.
 
 	<div class="row">
 		<div class="col-sm-2">
+&lt;!field imglist obj.doclist legal>
+		</div>
+		<div class="col-sm-6" dir="ltr">
+<!field doclist obj.doclist legal>
+		</div>
+		<div class="col-sm-4 text-muted small">
+<!cms doc attach>Select documents for attachments, rearrange them as you like.
+<!cms doclist legal>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-2">
 &lt;!field wyswyg obj.wyswyg>
 		</div>
 		<div class="col-sm-6" dir="ltr">

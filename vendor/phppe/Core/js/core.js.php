@@ -165,9 +165,9 @@ function cookie_set(name,value,nDays,path) {var today=new Date();var expire=new 
 /*
  *   PE Panel
  */
-var pe_t=null,pe_c=null;
-function pe_p(i,trg) {
-    var evt = window.event || arguments.callee.caller.arguments[0];
+var pe_t=null,pe_c=null,pe_to=2;
+function pe_p(i,trg,to) {
+    var evt = window.event || (arguments.callee.caller!=null && arguments.callee.caller.arguments[0]);
     var o=i!=null&&i!=''?document.getElementById(i):null;
     if(trg==null && evt && evt.target) trg=evt.target;
     if(trg && o) {
@@ -196,10 +196,14 @@ function pe_p(i,trg) {
             pe_c=i;
         }
     }
-    if(i)pe_t=setTimeout(function(){pe_p();},2000);
+    if(i){
+        if(to>1) pe_to=to;
+        pe_t=setTimeout(function(){pe_p();},pe_to*1000);
+    } else
+        pe_to=2;
     return false;
 }
-function pe_w() {if(pe_t!=null)clearTimeout(pe_t);pe_t=setTimeout(function(){pe_p('');},2000);return false;}
+function pe_w() {if(pe_t!=null)clearTimeout(pe_t);pe_t=setTimeout(function(){pe_p('');},pe_to*1000);return false;}
 
 /*
  *   Popup menu support

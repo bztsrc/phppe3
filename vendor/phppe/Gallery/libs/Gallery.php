@@ -42,7 +42,6 @@ class Gallery
         if(!empty($_FILES['imglist_upload'])) {
             \PHPPE\Gallery::uploadImage($_FILES['imglist_upload']);
         }
-        \PHPPE\View::jslib("gallery.js");
 	}
 
 /**
@@ -55,6 +54,9 @@ class Gallery
         if (!is_dir("data/gallery"))
             mkdir("data/gallery", 0750);
         $files = array_diff(scandir("data/gallery"), [".", ".."]);
+        usort($files,function($a,$b){
+            return filemtime("data/gallery/".$b)-filemtime("data/gallery/".$a);
+        });
         $imgs = [];
         foreach($files as $f)
             $imgs[] = [ "id"=>$f, "name"=>$f ];
@@ -95,7 +97,7 @@ class Gallery
             Core::error(L('Only images allowed.'));
         else
             //! FIXME: use Core::picture() to generate thumbnails
-            move_uploaded_file($file['tmp_name'], "data/gallery/".basename($file['name']));
+            move_uploaded_file($file['tmp_name'], "data/gallery/".preg_replace("/[^a-zA-Z0-9_\.]/","",basename($file['name'])));
     }
     
 /**
@@ -104,7 +106,10 @@ class Gallery
     function image($item)
     {
         $list = self::getImages();
-        echo("<div class='wyswyg_gallery'>\n");
+        echo(\PHPPE\View::_t("<!form imglist>")."<input type='file' name='imglist_upload' onchange='this.form.submit();' style='display:none;'>".
+        "<input type='button' value='Upload' class='setsel_button' onclick=\"this.previousSibling.click();\"></form>".
+        "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='wyswyg_search(this,this.nextSibling);'>");
+        echo("<div class='wyswyg_gallery wyswyg_scroll'>\n");
         foreach($list as $img) {
             echo("<img src='gallery/".$img['id']."'>\n");
         }
