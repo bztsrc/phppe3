@@ -1692,6 +1692,7 @@ namespace PHPPE {
         private static $tc;           //!< try button counter
         private static $p;            //!< templater default path for views
         public static $e = '';        //!< last expression to evaluate
+        public static $C;             //!< php expression cache
 
 /**
  * Initialize event handler. Register basic object in templater
@@ -1972,142 +1973,111 @@ namespace PHPPE {
             if (!is_string($x)) {
                 return $x;
             }
-            //! evaluate an expression for templater and return it's value
-            //! security check: look for variables and let operator
-            if (strpos($x, '$') !== false || preg_match('/[^!=]=[^=]/', $x)) {
-                return self::e('W', 'BADINP', $x);
-            }
-            $l = $r = '';
-            $d = $x;
-            //convert expression to php commands
-            for ($i = 0; $i < strlen($d); ++$i) {
-                $c = $d[$i];
-                //! string literals
-                if ($c == '"' || $c == "'") {
-                    $r .= $c;
-                    ++$i;
-                    $b = '';
-                    while ($i < strlen($d) && $b != $c) {
-                        if ($b == '\\') {
-                            $b .= $d[$i++];
-                        }
-                        $r .= $b;
-                        $b = $d[$i++];
-                    }
-                    $r .= $c;
-                    $l = '';
+            if (isset(self::$o[$x]))
+                return self::$o[$x];
+            if(empty(self::$C[$x])){
+                //! evaluate an expression for templater and return it's value
+                //! security check: look for variables and let operator
+                if (strpos($x, '$') !== false || preg_match('/[^!=]=[^=]/', $x)) {
+                    return self::e('W', 'BADINP', $x);
                 }
-                //! variable and function names
-                if ((ctype_alpha($c) || $c == '_') && !ctype_alnum($l) && $l != '.' && $l != '_') {
-                    $j = $i;
-                    $b = $d[$j];
-                    while (($b||$b=='0') && (ctype_alnum($b) || $b == '_')) {
-                        $j++;
-                        $b = isset($d[$j]) ? $d[$j] : '';
+                $l = $r = '';
+                $d = $x;
+                //convert expression to php commands
+                $L = strlen($d);
+                for ($i = 0; $i < $L; ++$i) {
+                    $c = $d[$i];
+                    //! string literals
+                    if ($c == '"' || $c == "'") {
+                        $r .= $c;
+                        ++$i;
+                        $b = '';
+                        while ($i < $L && $b != $c) {
+                            if ($b == '\\') {
+                                $b .= $d[$i++];
+                            }
+                            $r .= $b;
+                            $b = $d[$i++];
+                        }
+                        $r .= $c;
+                        $l = '';
                     }
-                    if ($b != '(' && $b != ':') {
-                        //! special variables in foreach structures
-                        $v = substr($d, $i, $j - $i);
-                        switch ($v) {
-                            case 'KEY' :    //! the current key of the array/field name of object
-                            case 'IDX' :    //! index in interation
-                            case 'VALUE' :    //! the current value of the array element/object field
-                                if (isset(self::$c[self::$n]->$v)) {
-                                    $v = self::$c[self::$n]->$v;
-                                }
-                                if (is_array($v)) {
-                                    return $v;
-                                }
-                                //! don't throw notice if non-scalar referenced as VALUE
-                                @$r .= "'".addslashes($v)."'";
-                                $i = $j;
-                                break;
-                            case 'ODD' :    //! for striped output
-                                $r .= self::$c[self::$n]->IDX % 2;
-                                $i = $j;
-                                break;
-                            case 'parent' :    //! referencing outter foreach in nested structures
-                                $Y = self::$n - 1;
-                                while (substr($d, $j, 7) == '.parent') {
-                                    $j += 7;
-                                    $Y--;
-                                }
-                                $n = substr($d, $j + 1, 3);
-                                $j += 4 + ($n == 'VAL' ? 2 : 0);
-                                if ($n == 'ODD') {
-                                    $v = self::$c[$Y]->IDX % 2;
-                                } elseif (isset(self::$c[$Y]->$n)) {
-                                    $v = self::$c[$Y]->$n;
-                                } elseif (isset(self::$c[$Y]->VALUE[$n])) {
-                                    $v = self::$c[$Y]->VALUE[$n];
-                                }
-                                // just in case, failsafe. Normally never reached
-                                // @codeCoverageIgnoreStart
-                                elseif (isset(self::$c[$Y]->VALUE->$n)) {
-                                    $v = self::$c[$Y]->VALUE->$n;
-                                } else {
-                                    $v = '';
-                                }
-                                // @codeCoverageIgnoreEnd
-                                $r .= "'".addslashes($v)."'";
-                                $i = $j;
-                                break;
-                            case 'true' :    //! for convience
-                            case 'false' :
-                            case 'null' :
-                                break;
-                            default :        //! get the value
-                                if (isset(self::$c[self::$n]) && is_array(self::$c[self::$n]->VALUE)) {
-                                    @$r .= "'".addslashes(self::$c[self::$n]->VALUE[$v])."'";
+                    //! variable and function names
+                    if ((ctype_alpha($c) || $c == '_') && !ctype_alnum($l) && $l != '.' && $l != '_') {
+                        $Y = 0;
+                        while (substr($d, $i, 7) == 'parent.') {
+                            $i += 7;
+                            $Y++;
+                        }
+                        $j = $i;
+                        $b = $d[$j];
+                        while (($b||$b=='0') && (ctype_alnum($b) || $b == '_')) {
+                            $j++;
+                            $b = isset($d[$j]) ? $d[$j] : '';
+                        }
+                        if ($b != '(' && $b != ':') {
+                            //! special variables in foreach structures
+                            $v = substr($d, $i, $j - $i);
+                            switch ($v) {
+                                case 'KEY' :    //! the current key of the array/field name of object
+                                case 'IDX' :    //! index in interation
+                                    $r .= '\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->'.$v;
                                     $i = $j;
-                                } elseif (isset(self::$c[self::$n]->VALUE->$v)) {
-                                    @$r .= "'".addslashes(self::$c[self::$n]->VALUE->$v)."'";
+                                    break;
+                                case 'ODD' :    //! for striped output
+                                    $r .= '(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->IDX%2)';
                                     $i = $j;
-                                } else {
-                                    $r .= '$';
-                                    $f[$v] = 1;
-                                }
+                                    break;
+                                case 'true' :    //! for convenience
+                                case 'false' :
+                                case 'null' :
+                                    $r .= $v;
+                                    $i = $j;
+                                    break;
+                                case 'VALUE' :    //! the current value of the array element/object field
+                                    $r .= '(isset(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.'])&&isset(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE)?(!is_object(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE)?\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE:get_class(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE)):"")';
+                                    $i = $j; @$c=$d[$i];
+                                    break;
+                                default :        //! get the value
+                                    if(@$d[$j]=="."&&isset(self::$o[$v]))
+                                        $r.='\PHPPE\View::$o["'.$v.'"]';
+                                    else
+                                        $r .= '(isset(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.'])&&isset(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE)?(is_array(\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE)?\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE["'.$v.'"]:\PHPPE\View::$c[\PHPPE\View::$n-'.$Y.']->VALUE->'.$v.'):(isset(\PHPPE\View::$o["app"]->'.$v.')?\PHPPE\View::$o["app"]->'.$v.':$'.$v.'))';
+                                        $i = $j; @$c=$d[$i];
+                            }
+                        }
+                        //! check function names against allowed config. Always allow translations and core methods
+                        elseif ($b == '(' && ($j - $i != 1 || $d[$i] != 'L') && substr($d, $i, 5) != 'core.' &&
+                            substr($d, $i, $j - $i) != 'array' && !empty(Core::$core->allowed) && !in_array(substr($d, $i, $j - $i),
+                            Core::$core->allowed)) {
+                            return self::e('E', 'BADFNC', $x);
                         }
                     }
-                    //! check function names against allowed config. Always allow translations and core methods
-                    elseif ($b == '(' && ($j - $i != 1 || $d[$i] != 'L') && substr($d, $i, 5) != 'core.' &&
-                        substr($d, $i, $j - $i) != 'array' && !empty(Core::$core->allowed) && !in_array(substr($d, $i, $j - $i),
-                        Core::$core->allowed)) {
-                        return self::e('E', 'BADFNC', $x);
-                    }
+                    $r .= ($c == '.' ? '->' : (isset($d[$i]) ? $d[$i] : ''));
+                    $l = $c;
                 }
-                $r .= ($c == '.' ? '->' : (isset($d[$i]) ? $d[$i] : ''));
-                $l = $c;
-            }
-            //! for string operators
-            $r = strtr($r, ["+'" => ".'", '+"' => '."', "'+" => "'.", '"+' => '".']);
-            //! get application properties
-            if (!empty($f)) {
-                foreach ($f as $k => $v) {
-                    //! assigned objects
-                    if (!isset($$k) && isset(self::$o[$k])) {
-                        $$k = self::$o[$k];
-                    }
-                    //! fallback to application's
-                    elseif (!isset($$k) && isset(self::$o['app']->$k)) {
-                        $$k = self::$o['app']->$k;
-                    }
-                }
-            }
+                //! for string operators
+                $r = strtr($r, ["+'" => ".'", '+"' => '."', "'+" => "'.", '"+' => '".']);
+                self::$C[$x] = $r;
+            } else
+                $r = self::$C[$x];
             //! evaluate php
-            $e = error_reporting();
-            error_reporting($e & ~E_NOTICE);
             ob_start();
-			//! save expression for Exception handler
+            //! save expression for Exception handler
             self::$e = $x.' => '.$r;
+            $e=error_reporting();
+            error_reporting($e&~E_NOTICE);
             $R = eval('return '.$r.';');
-            $o = ob_get_clean();
             error_reporting($e);
+            $o = ob_get_clean();
             self::$e = '';
-            //! log failed expressions or in debug mode all
-            if (Core::$core->runlevel > 2 || !empty($o)) {
+            //! log expressions in debug mode
+            if (Core::$core->runlevel > 2) {
                 // @codeCoverageIgnoreStart
-                Core::log(!empty($o) ? 'E' : 'D', $x.' => '.$r.' = '.serialize($R), 'view');
+                Core::log('D', $x.' => '.$r.' = '.serialize($R).$o, 'view');
+                //! on error stop
+                if(!empty($o))
+                    die($o);
             }
                 // @codeCoverageIgnoreEnd
             return $R;
@@ -2201,200 +2171,201 @@ namespace PHPPE {
                     $M = $m[0][2];
                     //interpret tags
                     switch ($t) {
-                        //application output marker in frame. It's not our job to parse it
-                        case 'app' :
-                        $w = '<!app>';
-                        break;
-                        //include another template
-                        case 'include' :
-                        $c = self::get($a);
-                        if (!$c) {
-                            $c = self::get(self::getval($a));
-                        }
-                        $w = self::_t($c, $re + 1);
-                        break;
-                        //expression
-                        case '=' :
-                        $w = self::getval($a);
-                        break;
-                        //re-entrant parsing
-                        case 'template' :
-                        $w = self::_t(strtr(self::_t(substr($x, $m[0][1] + $m[0][2] + $C,
-                            $T[$m[3]][0][1] - $m[0][1] - $m[0][2]), $re), '<%', '<!'), $re + 1);
-                        $k = $m[3];
-                        $M = $T[$m[3]][0][1] - $m[0][1] + $T[$m[3]][0][2];
-                        break;
-                        //iteration
-                        case 'foreach' :
-                        $d = self::getval($a);
-                        ++self::$n;
-                        self::$c[self::$n] = (object) ['IDX' => 1];
-                        $t = substr($x, $m[0][1] + $m[0][2] + $C, $T[$m[3]][0][1] - $m[0][1] - $m[0][2]);
-                        if ((is_array($d) && count($d) > 0) || is_object($d)) {
-                            foreach ($d as $k => $v) {
-                                self::$c[self::$n]->KEY = $k;
-                                self::$c[self::$n]->VALUE = $v;
-                                $w .= @self::_t($t, $re + 1);
-                                ++self::$c[self::$n]->IDX;
-                            }
-                        }
-                        $k = $m[3];
-                        $M = $T[$m[3]][0][1] - $m[0][1] + $T[$m[3]][0][2];
-                        unset(self::$c[self::$n]);
-                        --self::$n;
-                        break;
-                        //conditional
-                        case 'if' :
-                        $M = $T[$m[3]][0][1] + $T[$m[3]][0][2] - $m[0][1];
-                        $w = self::_t(($a != 'cms' && !empty(self::getval($a))) || ($a == 'cms' && $J) ? substr($x, $N + $C + $m[0][2], !empty($m[4]) ? $T[$m[4]][0][1] - $m[0][1] - $m[0][2] : $M - $m[0][2] - $T[$m[3]][0][2]) : (!empty($m[4]) ? substr($x, $T[$m[4]][0][1] + $C + $T[$m[4]][0][2], $T[$m[3]][0][1] - $T[$m[4]][0][1] - $T[$m[4]][0][2]) : ''), $re + 1);
-                        $k = $m[3];
-                        break;
-                        //object reference
-                        case 'form' :
-                        self::$tc = 0;
-                        $c = sha1(url());
-                        $n = !empty($A[0]) && $A[0] != '-' ? urlencode($A[0]) : 'form';
-                        $w = '<form'.(!empty($A[4]) ? " role='form'" : '')." name='".$n."' action='".url(!empty($A[2]) && $A[2] != '-' ? $A[2] : '').
-                            "' class='".(!empty($A[1]) && $A[1] != '-' ? $A[1] : 'form-vertical').
-                            "' method='post' enctype='multipart/form-data'".
-                            (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').
-                            "><input type='hidden' name='MAX_FILE_SIZE' value='".Core::$fm.
-                            "'><input type='hidden' name='pe_s' value='".@$_SESSION['pe_s'][$c].
-                            "'><input type='hidden' name='pe_f' value='".$n."'>".(!empty(Core::$core->item) ?
-                                "<input type='hidden' name='item' value='".htmlspecialchars(Core::$core->item)."'>" : '');
-                        break;
-                        //date and time formating
-                        case 'time' :
-                        case 'date' :
-                        $v = self::getval($A[0]);
-                        $w = !empty($v) ? date((!empty(Core::$l['dateformat']) ?
-                            Core::$l['dateformat'] : 'Y-m-d').($t == 'time' ? ' H:i:s' : ''), self::ts($v)) : (!empty($A[1]) ? '' : L('Epoch'));
-                        break;
-                        case 'difftime' :
-                        $w = '';
-                        $v = self::getval($A[0]);
-                        if (!empty($A[1])) {
-                            if (!$v) {
-                                $w = '-';
-                                break;
-                            }
-                            $v -= self::ts(self::getval($A[1]));
-                        }
-                        if ($v < 0) {
-                            $w = '- ';
-                            $v = -$v;
-                        }
-                        $c = floor($v / 86400);
-                        $b = floor(($v - $c * 86400) / 3600);
-                        $a = floor(($v - $c * 86400 - $b * 3600) / 60);
-                        $w .= $c ? "$c ".L('day'.($c > 1 ? 's' : '')) : ($b ? "$b ".L('hour'.($b > 1 ? 's' : '')) : '').($a || !$b ? ($b ? ', ' : '')."$a ".L('min'.($a > 1 ? 's' : '')) : '');
-                        break;
                         //multilanguage support
                         case 'l' :
                         case 'L' :
-                        $w = L($a);
-                        break;
+                            $w = L($a);
+                            break;
+                        //application output marker in frame. It's not our job to parse it
+                        case 'app' :
+                            $w = '<!app>';
+                            break;
+                        //include another template
+                        case 'include' :
+                            $c = self::get($a);
+                            if (!$c) {
+                                $c = self::get(self::getval($a));
+                            }
+                            $w = self::_t($c, $re + 1);
+                            break;
+                        //expression
+                        case '=' :
+                            $w = self::getval($a);
+                            break;
+                        //re-entrant parsing
+                        case 'template' :
+                            $w = self::_t(strtr(self::_t(substr($x, $m[0][1] + $m[0][2] + $C,
+                                $T[$m[3]][0][1] - $m[0][1] - $m[0][2]), $re), '<%', '<!'), $re + 1);
+                            $k = $m[3];
+                            $M = $T[$m[3]][0][1] - $m[0][1] + $T[$m[3]][0][2];
+                            break;
+                        //iteration
+                        case 'foreach' :
+                            $d = self::getval($a);
+                            self::$n++;
+                            self::$c[self::$n] = (object) ['IDX' => 1];
+                            $t = substr($x, $m[0][1] + $m[0][2] + $C, $T[$m[3]][0][1] - $m[0][1] - $m[0][2]);
+                            if ((is_array($d) && count($d) > 0) || is_object($d)) {
+                                foreach ($d as $k => $v) {
+                                    self::$c[self::$n]->KEY = $k;
+                                    self::$c[self::$n]->VALUE = $v;
+                                    $w .= @self::_t($t, $re + 1);
+                                    ++self::$c[self::$n]->IDX;
+                                }
+                            }
+                            $k = $m[3];
+                            $M = $T[$m[3]][0][1] - $m[0][1] + $T[$m[3]][0][2];
+                            unset(self::$c[self::$n]);
+                            self::$n--;
+                            break;
+                        //conditional
+                        case 'if' :
+                            $M = $T[$m[3]][0][1] + $T[$m[3]][0][2] - $m[0][1];
+                            $w = self::_t(($a != 'cms' && !empty(self::getval($a))) || ($a == 'cms' && $J) ? substr($x, $N + $C + $m[0][2], !empty($m[4]) ? $T[$m[4]][0][1] - $m[0][1] - $m[0][2] : $M - $m[0][2] - $T[$m[3]][0][2]) : (!empty($m[4]) ? substr($x, $T[$m[4]][0][1] + $C + $T[$m[4]][0][2], $T[$m[3]][0][1] - $T[$m[4]][0][1] - $T[$m[4]][0][2]) : ''), $re + 1);
+                            $k = $m[3];
+                            break;
+                        //user form
+                        case 'form' :
+                            self::$tc = 0;
+                            $c = sha1(url());
+                            $n = !empty($A[0]) && $A[0] != '-' ? urlencode($A[0]) : 'form';
+                            $w = '<form'.(!empty($A[4]) ? " role='form'" : '')." name='".$n."' action='".url(!empty($A[2]) && $A[2] != '-' ? $A[2] : '').
+                                "' class='".(!empty($A[1]) && $A[1] != '-' ? $A[1] : 'form-vertical').
+                                "' method='post' enctype='multipart/form-data'".
+                                (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').
+                                "><input type='hidden' name='MAX_FILE_SIZE' value='".Core::$fm.
+                                "'><input type='hidden' name='pe_s' value='".@$_SESSION['pe_s'][$c].
+                                "'><input type='hidden' name='pe_f' value='".$n."'>".(!empty(Core::$core->item) ?
+                                    "<input type='hidden' name='item' value='".htmlspecialchars(Core::$core->item)."'>" : '');
+                            break;
+                        //date and time formating
+                        case 'time' :
+                        case 'date' :
+                            $v = self::getval($A[0]);
+                            $w = !empty($v) ? date((!empty(Core::$l['dateformat']) ?
+                                Core::$l['dateformat'] : 'Y-m-d').($t == 'time' ? ' H:i:s' : ''), self::ts($v)) : (!empty($A[1]) ? '' : L('Epoch'));
+                            break;
+                        case 'difftime' :
+                            $w = '';
+                            $v = self::getval($A[0]);
+                            if (!empty($A[1])) {
+                                if (!$v) {
+                                    $w = '-';
+                                    break;
+                                }
+                                $v -= self::ts(self::getval($A[1]));
+                            }
+                            if ($v < 0) {
+                                $w = '- ';
+                                $v = -$v;
+                            }
+                            $c = floor($v / 86400);
+                            $b = floor(($v - $c * 86400) / 3600);
+                            $a = floor(($v - $c * 86400 - $b * 3600) / 60);
+                            $w .= $c ? "$c ".L('day'.($c > 1 ? 's' : '')) : ($b ? "$b ".L('hour'.($b > 1 ? 's' : '')) : '').($a || !$b ? ($b ? ', ' : '')."$a ".L('min'.($a > 1 ? 's' : '')) : '');
+                            break;
                         //dump object - this only works if runlevel is at least testing (1)
                         case 'dump' :
-                        $l = Core::$core->runlevel;
-                        if ($l < 1) {
-                            $w = '';
-                        } else {
-                            ob_start();
-                            $s = null;
-                            if ($A[0] == '_SESSION') {
-                                $s = $_SESSION;
-                                unset($s['pe_u']);
-                                unset($s['pe_s']);
+                            $l = Core::$core->runlevel;
+                            if ($l < 1) {
+                                $w = '';
                             } else {
-                                $s = self::getval($A[0]);
-                            }
-                            //use print_r in verbose, var_dump on developer and debug runlevels
-                            if ($l > 1) {
-                                var_dump($s);
-                                $n = ob_get_clean();
-                                if ($n[0] != '<') {
-                                    $n = '<pre>'.$n.'</pre>';
+                                ob_start();
+                                $s = null;
+                                if ($A[0] == '_SESSION') {
+                                    $s = $_SESSION;
+                                    unset($s['pe_u']);
+                                    unset($s['pe_s']);
+                                } else {
+                                    $s = self::getval($A[0]);
                                 }
-                            } else {
-                                print_r($s);
-                                $n = '<pre>'.htmlspecialchars(ob_get_clean()).'</pre>';
+                                //use print_r in verbose, var_dump on developer and debug runlevels
+                                if ($l > 1) {
+                                    var_dump($s);
+                                    $n = ob_get_clean();
+                                    if ($n[0] != '<') {
+                                        $n = '<pre>'.$n.'</pre>';
+                                    }
+                                } else {
+                                    print_r($s);
+                                    $n = '<pre>'.htmlspecialchars(ob_get_clean()).'</pre>';
+                                }
+                                $w = "<div class='dump'><b style='font:monospace;'>".$A[0].':</b>'.
+                                preg_replace("/<small>.*?<\/small>\n?/", '', preg_replace("/PRIVATE KEY.*?PRIVATE KEY\n?/ims", '', $n)).'</div>';
                             }
-                            $w = "<div class='dump'><b style='font:monospace;'>".$A[0].':</b>'.
-                            preg_replace("/<small>.*?<\/small>\n?/", '', preg_replace("/PRIVATE KEY.*?PRIVATE KEY\n?/ims", '', $n)).'</div>';
-                        }
-                        break;
+                            break;
                         //hook for cms editor icons
                         case 'cms' :
                         //add-on support
                         case 'widget' :
                         case 'var' :
                         case 'field' :
-                        $Z = $R = $m = false;
-                        $w="";
-                        $G = $t == 'cms';
-                        $V = $t == 'var';
-                        //if first attribute starts with an at sign, it's an ace definition
-                        if ($A[0][0] == '@') {
-                            $Z = substr($A[0], 1);
-                            array_shift($A);
-                        }
-                        $Z = empty($Z) || Core::$user->has($Z);
-                        //if type starts with an asterix, it's a mandatory field
-                        //equal sign does not show error on missing addon, but display plain value
-                        if ($A[0][0] == '*') {
-                            $R = true;
-                            $A[0] = substr($A[0], 1);
-                        }
-                        $f = $A[0];
-                        //get add-on type and arguments
-                        if (preg_match("/^([^\(]+)[\(]?([^\)]*)/", $A[0], $B) && !empty($B[1])) {
-                            //submit is just an alias of update
-                            $f = $B[1] == 'submit' ? 'update' : $B[1];
-                            //get arguments array
-                            $a = self::getval('['.$B[2].']');
-                            array_shift($A);
-                            //name
-                            $n = !empty($A[0]) ? $A[0] : '';
-                            array_shift($A);
-                            //value (if applicable)
-                            $v = self::getval($n);
-                            //find appropriate class for AddOn
-                            $d = '\\PHPPE\\Addon\\'.$f;
-                            if (ClassMap::has($d)) {
-                                //ok, got it
-                                $F = new $d($a, $n, $v, $A, !$G&&$R);
-                                //if it has an init() method, and not called yet, call it
-                                if (!Core::addon($f)) {
-                                    if (method_exists($F, 'init')) {
-                                        $F->init();
-                                    } else {
-                                        Core::addon($f, "addon $f");
-                                    }
-                                }
-                                //! cms icon
-                                if ($G) {
-                                    if ($J && $Z)
-                                        $w = CMS::icon($g, $f, $F);
-                                    //! we use the (otherwise here useless) required marker
-                                    //! for showing value in non-edit mode
-                                    $m = $R ? "show" : "";                                        
-                                } else {
-                                    //add validators and check for required fields
-                                    if ($R || method_exists($d, 'validate')) {
-                                        $_SESSION['pe_v'][$n][$f] = [$R, $a, $A];
-                                    }
-                                    //find out method to use to draw AddOn
-                                    $m = $t == 'field' || !empty($_SESSION[$V ? 'pe_e' : 'pe_c']) && method_exists($F, 'edit') ? 'edit' : 'show';
-                                }
-                                //get output
-                                $w .= $m && method_exists($F, $m) && $Z ? $F->$m() : "";
-                                unset($F);
-                                break;
+                            $Z = $R = $m = false;
+                            $w="";
+                            $G = $t == 'cms';
+                            $V = $t == 'var';
+                            //if first attribute starts with an at sign, it's an ace definition
+                            if ($A[0][0] == '@') {
+                                $Z = substr($A[0], 1);
+                                array_shift($A);
                             }
-                        }
-                        $w .= ($V && empty($_SESSION['pe_e'])) ? (is_scalar($v) ? $v.'' : $v && json_encode($v)) : self::e('W', 'UNKADDON', $f);
-                        break;
+                            $Z = empty($Z) || Core::$user->has($Z);
+                            //if type starts with an asterix, it's a mandatory field
+                            //equal sign does not show error on missing addon, but display plain value
+                            if ($A[0][0] == '*') {
+                                $R = true;
+                                $A[0] = substr($A[0], 1);
+                            }
+                            $f = $A[0];
+                            //get add-on type and arguments
+                            if (preg_match("/^([^\(]+)[\(]?([^\)]*)/", $A[0], $B) && !empty($B[1])) {
+                                //submit is just an alias of update
+                                $f = $B[1] == 'submit' ? 'update' : $B[1];
+                                //get arguments array
+                                $a = self::getval('['.$B[2].']');
+                                array_shift($A);
+                                //name
+                                $n = !empty($A[0]) ? $A[0] : '';
+                                array_shift($A);
+                                //value (if applicable)
+                                $v = self::getval($n);
+                                //find appropriate class for AddOn
+                                $d = '\\PHPPE\\Addon\\'.$f;
+                                if (ClassMap::has($d)) {
+                                    //ok, got it
+                                    $F = new $d($a, $n, $v, $A, !$G&&$R);
+                                    //if it has an init() method, and not called yet, call it
+                                    if (!Core::addon($f)) {
+                                        if (method_exists($F, 'init')) {
+                                            $F->init();
+                                        } else {
+                                            Core::addon($f, "addon $f");
+                                        }
+                                    }
+                                    //! cms icon
+                                    if ($G) {
+                                        if ($J && $Z)
+                                            $w = CMS::icon($g, $f, $F);
+                                        //! we use the (otherwise here useless) required marker
+                                        //! for showing value in non-edit mode
+                                        $m = $R ? "show" : "";                                        
+                                    } else {
+                                        //add validators and check for required fields
+                                        if ($R || method_exists($d, 'validate')) {
+                                            $_SESSION['pe_v'][$n][$f] = [$R, $a, $A];
+                                        }
+                                        //find out method to use to draw AddOn
+                                        $m = $t == 'field' || !empty($_SESSION[$V ? 'pe_e' : 'pe_c']) && method_exists($F, 'edit') ? 'edit' : 'show';
+                                    }
+                                    //get output
+                                    $w .= $m && method_exists($F, $m) && $Z ? $F->$m() : "";
+                                    unset($F);
+                                    break;
+                                }
+                                else
+                                    $w .= self::e('W', 'UNKADDON', $f);
+                            }
+                            break;
                         default : $w = self::e('W', 'UNKTAG', $t);
                     }
                     //replace templater tag with output, not using any search-and-replace algorithms
@@ -4420,7 +4391,8 @@ class ClassMap extends Extension
         {
             $r = [];
             $q = '';
-            for ($l = $i = 0;$i <= strlen($b);++$i) {
+            $L = strlen($b);
+            for ($l = $i = 0;$i <= $L;++$i) {
                 $c = @$b[$i];
                 if ($q) {
                     if ($c == $q) {

@@ -54,7 +54,7 @@ if(!empty(Core::$core->item)){
 //! file import helper
 if(isset($_REQUEST['impform'])){
     $err=$choose="";
-    if(is_array($_FILES['upload'])) {
+    if(!empty($_FILES['upload'])) {
         if($_FILES['upload']['type']=="text/plain"){
             $choose=@file_get_contents($_FILES['upload']['tmp_name']);
         }elseif($_FILES['upload']['type']=="text/html") {

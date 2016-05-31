@@ -77,11 +77,13 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertNotFalse(strpos(\PHPPE\View::_t("<!=core.now=1>"),"INP"),"Expression #2");
 		$this->assertEquals("aa\"bb",\PHPPE\View::_t('<!="aa\"bb">'),"Expression #3");
 		$this->assertFalse(strpos(\PHPPE\View::_t("<!=sprintf('aaabbb')>"),"BADFNC"),"Expression #4");
+        \PHPPE\View::$C=[];
 		\PHPPE\Core::$core->allowed=["number_format"];
 		$this->assertNotFalse(strpos(\PHPPE\View::_t("<!=sprintf('aaabbb')>"),"BADFNC"),"Expression #5");
 		\PHPPE\Core::$core->allowed=[];
 		$this->assertEquals("aa bb",\PHPPE\View::_t('<!L aa_bb>'),"Language");
 		$this->assertNotFalse(strpos(\PHPPE\View::_t("<!notag>"),"UNKTAG"),"Unknown tag");
+		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!var noSuchAddon>'),"UNKADDON"),"Unknown AddOn");
 
 		\PHPPE\Core::$l['min']="m";
 		\PHPPE\Core::$l['mins']="ms";
@@ -110,11 +112,12 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertNotFalse(strpos(\PHPPE\View::_t("!foreach obj.arr2><!=A><!/foreach>"),"UNCLS"),"Foreach #3");
 		$this->assertEquals(
 			"0a0b0c1a1b1c2a2b2c",
-			\PHPPE\View::_t("<!foreach arr><!foreach arr2><!=parent.KEY><!=A><!/foreach><!/foreach>"),
+			\PHPPE\View::_t("<!foreach arr><!foreach obj.arr2><!=parent.KEY><!=A><!/foreach><!/foreach>"),
 			"Foreach #4");
+
 		$this->assertEquals(
 			"01101a00102b01103c11001a10002b11003c21101a20102b21103c01111a00112b01113c11011a10012b11013c21111a20112b21113c01121a00122b01123c11021a10022b11023c21121a20122b21123c",
-			\PHPPE\View::_t("<!foreach arr><!foreach arr><!foreach arr2><!=parent.KEY><!=ODD><!=parent.ODD><!=parent.parent.KEY><!=IDX><!=A><!/foreach><!/foreach><!/foreach>"),
+			\PHPPE\View::_t("<!foreach arr><!foreach obj.arr><!foreach obj.arr2><!=parent.KEY><!=ODD><!=parent.ODD><!=parent.parent.KEY><!=IDX><!=A><!/foreach><!/foreach><!/foreach>"),
 			"Foreach #5");
 		$this->assertEquals("a0framea0framea1simplea1simple",\PHPPE\View::_t("<!foreach obj.arrs><!foreach VALUE>a<!=parent.KEY><!=parent.id><!/foreach><!/foreach>"),"Foreach #6");
 		$this->assertEquals("frameFramesimpleSimple",\PHPPE\View::_t("<!foreach obj.objs><!=id><!=name><!=none><!/foreach>"),"Foreach #7");
