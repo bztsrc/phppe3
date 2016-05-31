@@ -537,25 +537,30 @@ namespace PHPPE {
             }
             //! handle hardwired admin login and logout before Users class get's a chance
             if (Core::$core->app == 'login') {
-                $A = 'admin';
-                if (Core::isTry() && !empty($_REQUEST['id'])) {
-                    //don't accept password in GET parameter
-                    if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) && empty(Core::$user->id) &&
-                        password_verify($_POST['pass'], Core::$core->masterpasswd)) {
-                        Core::log('A', 'Login '.$A, 'users');
-                        $_SESSION['pe_u']->id = -1;
-                        $_SESSION['pe_u']->name = L($A);
-                        //! don't let Users class to log in admin, that's our job
-                        Http::redirect();
-                    } elseif(!method_exists(Core::$user, 'login') || !Core::$user->login($_REQUEST['id'],$_POST['pass'])) {
-                        Core::error(L('Bad username or password'));
-                    }
-                }
                 //! if already logged in redirect to home
                 if (Core::$user->id) {
                     Http::redirect('/');
                 }
-                //! if not superadmin, let Users extension's controller handle
+                //! superuser's name
+                $A = 'admin';
+                if (Core::isTry() && !empty($_REQUEST['id'])) {
+                    $o = 0;
+                    //don't accept password in GET parameter
+                    if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) &&
+                        password_verify($_POST['pass'], Core::$core->masterpasswd)) {
+                        $_SESSION['pe_u']->id = -1;
+                        $_SESSION['pe_u']->name = $A;
+                        $o = 1;
+                    } elseif(method_exists(Core::$user, 'login')) {
+                        $o = Core::$user->login($_REQUEST['id'],$_POST['pass']);
+                    }
+                    if($o) {
+                        Core::log('A', 'Login '.$_SESSION['pe_u']->name, 'users');
+                        Http::redirect();
+                    } else {
+                        Core::error(L('Bad username or password'));
+                    }
+                }
             } elseif (Core::$core->app == 'logout') {
                 $i = Core::$user->id;
                 if ($i) {

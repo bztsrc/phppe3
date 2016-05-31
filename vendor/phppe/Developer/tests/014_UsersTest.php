@@ -10,7 +10,9 @@ class UsersTest extends PHPUnit_Framework_TestCase
 
 		$user = new \PHPPE\Users;
 
-		$user->login("admin","changeme");
+		$this->assertFalse($user->login("admin","changeme"), "Bad username or password");
+		$this->assertTrue($user->login("bzt","changeme"), "Login");
+
 		$user->logout();
 	}
 }

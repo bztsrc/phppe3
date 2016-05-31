@@ -45,9 +45,8 @@ class Users extends \PHPPE\User
         if(empty($rec['pass']) || !password_verify($pass, $rec['pass']))
             return false;
         $_SESSION['pe_u']=new self($rec['id']);
-        Core::log('A', 'Login '.$name, 'users');
         \PHPPE\DS::exec("UPDATE ".static::$_table." SET logind=CURRENT_TIMESTAMP WHERE id=?", [$rec['id']]);
-        Http::redirect();
+        return true;
     }
 
     public function logout()
