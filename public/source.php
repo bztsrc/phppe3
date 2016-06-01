@@ -1029,13 +1029,14 @@ namespace PHPPE {
 
             return self::$s;
         }
-        /**
-         * Convert a string from user into a sql like phrase.
-         *
-         * @param string
-         *
-         * @return like string
-         */
+
+/**
+ * Convert a string from user into a sql like phrase.
+ *
+ * @param string
+ *
+ * @return like string
+ */
         public static function like($s)
         {
             return
@@ -1257,7 +1258,7 @@ namespace PHPPE {
     }
 
 /**
- * Cache wrapper. This allow multiple options
+ * Cache wrapper. Allow multiple options
  * and fallbacks to php memcache.
  */
     class Cache extends Extension
@@ -1276,12 +1277,9 @@ namespace PHPPE {
         {
             if (!empty($cfg)) {
                 $m = explode(':', $cfg);
-                foreach ([$m[0], ucfirst($m[0]), strtoupper($m[0])] as $M) {
-                    $d = '\\PHPPE\\Cache\\'.$M;
-                    if (ClassMap::has($d)) {
-                        self::$mc = new $d($cfg);
-                        break;
-                    }
+                $d = '\\PHPPE\\Cache\\'.$M;
+                if (ClassMap::has($d)) {
+                    self::$mc = new $d($cfg);
                 }
                 //! if none, fallback to memcache
                 if (empty(self::$mc)) {
@@ -1656,7 +1654,7 @@ namespace PHPPE {
                 //! don't allow to set these, as they cannot be arrays
                 if (!in_array($k, ['dds', 'id', 'title', 'mimetype'])) {
                     try {
-                        $o[$k] = @DS::query($c[0], @$c[1], strtr(@$c[2], ['@ID' => $k,'@HASH' => md5($k),'@SHA' => sha1($k)]), @$c[3], @$c[4], @$c[5], View::getval(@$c[6]));
+                        $o[$k] = @DS::query($c[0], @$c[1], strtr(@$c[2], ['@ID' => $k,'@SHA' => sha1($k)]), @$c[3], @$c[4], @$c[5], View::getval(@$c[6]));
                         foreach ($o[$k] as $i => $v) {
                             $d = @json_decode($v['data'], true);
                             if (is_array($d)) {
@@ -1726,7 +1724,7 @@ namespace PHPPE {
             //! try button counter
             self::$tc = 0;
             //! register built-in fields and widgets all at once
-            //! this is required for \PHPPE\Core::isinst() to always return true for built-ins
+            //! this is required for \PHPPE\Core::isInst() to always return true for built-ins
             Core::addon( "hidden", "Hidden value", "", "*obj.field" );
             Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
             Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
@@ -1925,7 +1923,7 @@ namespace PHPPE {
                     $T = substr($d, 0, $m[0][1]).$T.substr($d, $m[0][1] + 6);
                 }
             }
-            //! sort jslibs with priority before stored in cache
+            //! sort jslibs in priority order before stored in cache
             asort(self::$hdr['jslib'], SORT_FLAG_CASE | SORT_STRING);
             //! save to cache
             if (!empty($T) && !empty($N)) {
@@ -2215,7 +2213,7 @@ namespace PHPPE {
                                     self::$c[self::$n]->KEY = $k;
                                     self::$c[self::$n]->VALUE = $v;
                                     $w .= @self::_t($t, $re + 1);
-                                    ++self::$c[self::$n]->IDX;
+                                    self::$c[self::$n]->IDX++;
                                 }
                             }
                             $k = $m[3];
@@ -2316,7 +2314,7 @@ namespace PHPPE {
                             }
                             $Z = empty($Z) || Core::$user->has($Z);
                             //if type starts with an asterix, it's a mandatory field
-                            //equal sign does not show error on missing addon, but display plain value
+                            //or with cms tag it displays value
                             if ($A[0][0] == '*') {
                                 $R = true;
                                 $A[0] = substr($A[0], 1);
@@ -2641,11 +2639,10 @@ namespace PHPPE {
                         }
                         $O .= $e;
                     }
-                    $D = Core::isError();
                     $s = Core::started();
                     $d = 'REQUEST_TIME_FLOAT';
                     $T = !empty($_SERVER[$d]) ? $_SERVER[$d] : $s;
-                    echo "\n$O<!-- MONITORING: ".($D > 0 ? 'ERROR' : (Core::$core->runlevel > 0 ? 'WARNING' : 'OK')).
+                    echo "\n$O<!-- MONITORING: ".(Core::isError() ? 'ERROR' : (Core::$core->runlevel > 0 ? 'WARNING' : 'OK')).
                     ', page '.sprintf("%.4f sec, db %.4f sec, server %.4f sec, mem %.4f mb%s -->\n</body>\n</html>\n",
                     microtime(1) - $T,
                     DS::bill(), $s - $T, memory_get_peak_usage() / 1024 / 1024, !empty(Cache::$mc) && empty(Core::$core->nocache) ? ', mc' : '');
@@ -2655,7 +2652,7 @@ namespace PHPPE {
         }
 
 /**
- * picture manipulation.
+ * Picture manipulation.
  *
  * @param original image file
  * @param new image file
@@ -2756,7 +2753,7 @@ namespace PHPPE {
         }
 
 /**
- * Helper function to generate html for built-in fields.
+ * Private helper function to generate html for built-in fields.
  */
         public static function v($a, $b, $e = '', $f = [], $p = '', $i = '', $n = '')
         {
@@ -2876,7 +2873,7 @@ namespace PHPPE {
     }
 
 /**
- * Some useful tool for file manipulations.
+ * Some useful tools for file manipulations.
  */
     // @codeCoverageIgnoreStart
     class Tools extends Extension
@@ -2996,16 +2993,16 @@ namespace PHPPE {
 
                     return '';
                 }
-            //! if argument was a filename, return it's contents
-            if (!empty($fn) && is_string($fn) && $name == $fn) {
-                $close($f);
-
-                return substr($body, 0, $size);
-            }
-            //! if argument was an array with class and method name, call it on every file in the archive
-            if ($size > 0 && is_array($fn) && method_exists($fn[0], $fn[1])) {
-                call_user_func($fn, $name, substr($body, 0, $size));
-            }
+                //! if argument was a filename, return it's contents
+                if (!empty($fn) && is_string($fn) && $name == $fn) {
+                    $close($f);
+    
+                    return substr($body, 0, $size);
+                }
+                //! if argument was an array with class and method name, call it on every file in the archive
+                if ($size > 0 && is_array($fn) && method_exists($fn[0], $fn[1])) {
+                    call_user_func($fn, $name, substr($body, 0, $size));
+                }
             }
             $close($f);
         }
@@ -3226,7 +3223,7 @@ class ClassMap extends Extension
         }
         //! sort list of classes alphabetically
         ksort($R);
-        //! save new autoload.php
+        //! save new classmap cache
         @mkdir(dirname(self::$file), 0750, true);
         $ret = "";
         foreach ($R as $k => $v) {
@@ -3287,7 +3284,7 @@ class ClassMap extends Extension
 
 /**
  * Constructor. If you pass true as argument, it will build up PHPPE environment,
- * but won't run your application. For that you'll need to call \PHPPE\Core::$core->run()
+ * but won't run your application. For that you'll need to call \PHPPE\Core::$core->run() manually
  *  step 1: check and patch php
  *  step 2: self check
  *  step 3: load framework configuration
@@ -3303,9 +3300,8 @@ class ClassMap extends Extension
             //! server time is calculated with (this - http request arrive time)
             self::$started = microtime(1);
             //! set self reference for singleton
-            self::$core = $core = &$this;
+            self::$core = &$this;
             //! patch php, set defaults
-
             set_exception_handler(function ($e) {
                 self::log('C', get_class($e).' '.$e->getFile().'('.$e->getLine().'): '.$e->getMessage().(\PHPPE\View::$e ? "\n".\PHPPE\View::$e : '').(empty(Core::$core->trace) ? '' : "\n\t".strtr($e->getTraceAsString(), ["\n" => "\n\t"])), $e->getTrace()[0]['function'] == 'getval' ? 'view' : '');
             });
@@ -3401,7 +3397,7 @@ class ClassMap extends Extension
                 foreach ($_REQUEST as $k => $v) {
                     if (is_string($v)) {
                         $_REQUEST[$k] = stripslashes($v);
-                    } elseif (a($v)) {
+                    } elseif (is_array($v)) {
                         foreach ($v as $K => $V) {
                             if (is_string($V)) {
                                 $_REQUEST[$k][$K] = stripslashes($V);
@@ -3535,7 +3531,7 @@ class ClassMap extends Extension
         }
 
 /**
- * run diagnostics and try to fix errors.
+ * Run diagnostics and try to fix errors.
  */
         // @codeCoverageIgnoreStart
         private function bootdiag()
