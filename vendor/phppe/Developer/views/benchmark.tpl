@@ -4,9 +4,9 @@
     <!L No samples found!>
 </div>
 <!else>
-<!=sprintf(L("Using %s samples."),data['footer']['cnt'])>
+<!=sprintf(L("Using %s samples."),data['footer']['cnt'])>&nbsp;
+<button onclick='document.location="/benchmark?clearbenchmark";'><!L Clear></button>
 <!/if>
-
 <style scoped>
     TR:nth-child(odd) { background:#F0F0F0; }
     TABLE { border-collapse: separate; border-spacing: 3px; }

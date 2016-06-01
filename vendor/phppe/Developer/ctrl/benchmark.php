@@ -10,6 +10,10 @@ class Benchmark {
 
 	function action()
 	{
+        if(isset($_REQUEST['clearbenchmark'])) {
+            \PHPPE\Benchmark::clear();
+            \PHPPE\Http::redirect();
+        }
 		$this->data = \PHPPE\Benchmark::stats();
         foreach($this->data as $d)
             if($d['max']-$d['min']>$this->delta)

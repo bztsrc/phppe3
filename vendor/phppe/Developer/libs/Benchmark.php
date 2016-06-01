@@ -26,7 +26,15 @@ namespace PHPPE;
 
 class Benchmark
 {
-    static $sourceFiles=".tmp/benchmark.*";
+    static $file=".tmp/benchmarks";
+
+/**
+ * Clear benchmark data
+ */
+    static function clear()
+    {
+        @unlink(self::$file);
+    }
 
 /**
  * Collect benchmark statistics
@@ -35,14 +43,14 @@ class Benchmark
     static function stats()
     {
         //! get data
-        $files = glob(static::$sourceFiles);
-        if(empty($files))
+        $samples = @file(static::$file);
+        if(empty($samples))
             return [];
 
         //! accumulate and aggregate
         $data=[];
-        foreach($files as $f) {
-            $sample = json_decode(file_get_contents($f), true);
+        foreach($samples as $line) {
+            $sample = json_decode($line, true);
             foreach($sample as $k=>$s) {
                 //! skip baseline
                 if(empty($s[0]))

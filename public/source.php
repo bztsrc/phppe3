@@ -3527,11 +3527,14 @@ class ClassMap extends Extension
                     if (method_exists($v, 'init') && $v->init(is_array($c) ? $c : []) === false) {
                         unset($this->libs[$k]);
                     }
+/*! BENCHMARK START */
+                    if(!empty($_REQUEST['benchmark'])) self::bm("init.".$k);
+/*! BENCHMARK END */
                 }
                 //! load application dictionary overrides
                 self::lang('app');
-
-                self::bm("libs");
+                //! overall init
+                self::bm("init");
                 //! if not included as a library, run application
                 if (!$islib) {
                     // @codeCoverageIgnoreStart
@@ -3790,7 +3793,7 @@ class ClassMap extends Extension
                 $N = 'p_'.sha1($this->base.$this->url.'/'.self::$user->id.'/'.self::$client->lang);
                 if (empty($this->nocache) && !self::isTry()) {
                     $T = View::fromCache($N);
-                    self::bm("fromCache");
+                    self::bm("cache");
                 }
                 if (empty($T)) {
                     self::bm("controller");
@@ -3835,7 +3838,7 @@ class ClassMap extends Extension
             session_write_close();
 /*! BENCHMARK START */
             if(isset($_REQUEST['benchmark']))
-                @file_put_contents(".tmp/benchmark.".time(),json_encode(Core::$bm),LOCK_EX);
+                @file_put_contents(".tmp/benchmarks",json_encode(Core::$bm)."\n",FILE_APPEND | LOCK_EX);
 /*! BENCHMARK END */
         }
         // @codeCoverageIgnoreEnd
