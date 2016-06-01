@@ -41,6 +41,7 @@ use PHPPE\Core as Core;
 \PHPPE\Http::route("mkrepo", "MkRepoController");
 \PHPPE\Http::route("deploy", "DeployController");
 \PHPPE\Http::route("create", "CreateController");
+\PHPPE\Http::route("passwd", "PasswdController");
 
 //for event testing
 return new Testing;
