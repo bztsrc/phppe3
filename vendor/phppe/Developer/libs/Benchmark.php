@@ -51,32 +51,40 @@ class Benchmark
         $data=[];
         foreach($samples as $line) {
             $sample = json_decode($line, true);
-            foreach($sample as $k=>$s) {
+            $i=array_keys($sample)[0];
+            foreach($sample[$i] as $k=>$s) {
                 //! skip baseline
                 if(empty($s[0]))
                     continue;
                 //! new elements
-                if(!isset($data[$k])){
-                    $data[$k]=[
+                if(!isset($data[$i][$k])){
+                    $data[$i][$k]=[
                         'avg'=>$s[0],
                         'min'=>$s[0],
                         'max'=>$s[0],
                         'cnt'=>1
                     ];
                 } else {
-                    if($s[0]<$data[$k]['min'])
-                        $data[$k]['min']=$s[0];
-                    if($s[0]>$data[$k]['max'])
-                        $data[$k]['max']=$s[0];
-                    $data[$k]['avg']=sprintf("%.8f",($data[$k]['avg']*$data[$k]['cnt']+$s[0])/++$data[$k]['cnt']);
+                    if($s[0]<$data[$i][$k]['min'])
+                        $data[$i][$k]['min']=$s[0];
+                    if($s[0]>$data[$i][$k]['max'])
+                        $data[$i][$k]['max']=$s[0];
+                    $data[$i][$k]['avg']=sprintf("%.8f",($data[$i][$k]['avg']*$data[$i][$k]['cnt']+$s[0])/++$data[$i][$k]['cnt']);
                 }
             }
         }
-        $s = 0;
-        foreach($data as $k=>$v) {
-            $data[$k]['str']=sprintf("%.8f", $s);
-            $s+=$v['avg'];
+        foreach($data as $url=>$d) {
+            $s = 0; $data[$url]['delta'] = $data[$url]['total'] = 0;
+            foreach($d as $k=>$v) {
+                if($k=="total"||$k=="delta"||$k=="count") continue;
+                if($v['max']-$v['min']>$data[$url]['delta'])
+                    $data[$url]['delta']=sprintf('%.8f',$v['max']-$v['min']);
+                $data[$url]['total']+=$v['avg'];
+                $data[$url][$k]['str']=sprintf("%.8f", $s);
+                $s+=$v['avg'];
+            }
         }
+
         return $data;
     }
 

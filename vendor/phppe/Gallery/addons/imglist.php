@@ -36,7 +36,7 @@ class imglist extends \PHPPE\AddOn\setsel
     //! to load use DDS: id, img_list, list_id='@ID', , ordering
     function save($params)
     {
-        return \PHPPE\Gallery::saveImageList($this->name, Core::x(",", $params['value']));
+        return \PHPPE\Gallery::saveImageList($this->name, str_getcsv($params['value'], ","));
     }
 }
 

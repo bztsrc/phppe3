@@ -38,7 +38,7 @@ class pagelist extends \PHPPE\AddOn\setsel
 
     function save($params)
     {
-        return \PHPPE\Page::savePageList($this->name, Core::x(",", $params['value']));
+        return \PHPPE\Page::savePageList($this->name, str_getcsv($params['value'], ','));
     }
 }
 

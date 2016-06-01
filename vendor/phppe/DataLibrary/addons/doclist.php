@@ -33,7 +33,7 @@ class doclist extends \PHPPE\AddOn\setsel
     //! to load use DDS: id, doc_list, list_id='@ID', , ordering
     function save($params)
     {
-        return \PHPPE\DataLibrary::saveDocumentList($this->name, Core::x(",", $params['value']));
+        return \PHPPE\DataLibrary::saveDocumentList($this->name, str_getcsv($params['value'], ','));
     }
 }
 

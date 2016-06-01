@@ -199,7 +199,7 @@ class DB extends Extension
         if (is_array($fields)) {
             $this->fields += $fields;
         } else {
-            $this->fields += Core::x(',', $fields);
+            $this->fields += str_getcsv($fields, ',');
         }
 
         return $this;

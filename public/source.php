@@ -694,7 +694,7 @@ namespace PHPPE {
             //! standard arguments
             if (is_string($u) && !empty($n)) {
                 if (!is_array($f)) {
-                    $f = Core::x(',', $f);
+                    $f = str_getcsv($f, ',');
                 }
                 self::$r[Core::h($u, $n, $a)] = [$u, $n, $a, $f];
             }
@@ -839,7 +839,7 @@ namespace PHPPE {
                         }
                         //! follow cookie changes
                         if (substr($H, 0, 10) == 'set-cookie') {
-                            $c = Core::x('=', Core::x(';', trim(substr($h, 11)))[0]);
+                            $c = str_getcsv(str_getcsv(trim(substr($h, 11)),';')[0], '=');
                             //c[1] is undefined on nginx when clearing the cookie
                             @$C[$c[0]] = $c[1];
                         }
@@ -947,7 +947,7 @@ namespace PHPPE {
             }
             foreach ($D as $f => $v) {
                 //! get sql commands from file
-                $s = Core::x(';', file_get_contents($f));
+                $s = str_getcsv(file_get_contents($f), ';');
                 @unlink($f);
                 //! execute one by one
                 foreach ($s as $q) {
@@ -995,7 +995,7 @@ namespace PHPPE {
                 if (!empty($d->s['_init'])) {
                     // @codeCoverageIgnoreStart
                     //! driver specific commands for connection
-                    $c = Core::x(';', $d->s['_init']);
+                    $c = str_getcsv($d->s['_init'], ';');
                     foreach ($c as $n => $C) {
                         if (!empty(trim($C))) {
                             $d->exec(trim($C));
@@ -1130,7 +1130,7 @@ namespace PHPPE {
                         }
                     }
                     //! execute schema creation commands
-                    $c = Core::x(';', $c);
+                    $c = str_getcsv($c, ';');
                     foreach ($c as $n => $C) {
                         try {
                             if (!empty(trim($C))) {
@@ -1293,8 +1293,8 @@ namespace PHPPE {
                         $h = $m[0];
                     }
                     // @codeCoverageIgnoreEnd
-                    $M = '\\Memcache';
-                    self::$mc = new $M();
+                    $d = '\\Memcache';
+                    self::$mc = new $d();
                     //Core::$mc->addServer( $h, $p );
                     //$s = @Core::$mc->getExtendedStats(  );
                     if (/*empty( $s[$h . ( $p > 0 ? ":" . $p : "" )] ) || */ !@self::$mc->pconnect($h, $p, 1)) {
@@ -1308,7 +1308,7 @@ namespace PHPPE {
                 }
                 //! let rest of the world know about us
                 if (is_object(self::$mc)) {
-                    $this->name = $M;
+                    $this->name = $d;
                 } else {
                     self::$mc = null;
                 }
@@ -2169,7 +2169,7 @@ namespace PHPPE {
                     } else {
                         $a = trim(substr($H, strlen($g)));
                     }
-                    $A = Core::x(' ', $a);
+                    $A = str_getcsv($a, ' ');
                     $N = $m[0][1];
                     $M = $m[0][2];
                     //interpret tags
@@ -3838,7 +3838,7 @@ class ClassMap extends Extension
             session_write_close();
 /*! BENCHMARK START */
             if(isset($_REQUEST['benchmark']))
-                @file_put_contents(".tmp/benchmarks",json_encode(Core::$bm)."\n",FILE_APPEND | LOCK_EX);
+                @file_put_contents(".tmp/benchmarks",json_encode([url()=>Core::$bm])."\n",FILE_APPEND | LOCK_EX);
 /*! BENCHMARK END */
         }
         // @codeCoverageIgnoreEnd
@@ -3871,7 +3871,7 @@ class ClassMap extends Extension
                 $f = '';
                 if ($d) {
                     if (!is_array($d)) {
-                        $d = self::x(',', $d);
+                        $d = str_getcsv($d, ',');
                     }
                     foreach ($d as $v) {
                         if (!self::isInst($v)) {
@@ -3915,7 +3915,7 @@ class ClassMap extends Extension
             //! check dependencies
             if ($D) {
                 if (!is_array($D)) {
-                    $D = self::x(',', $D);
+                    $D = str_getcsv($D, ',');
                 }
                 foreach ($D as $v) {
                     if (!self::isInst($v)) {
@@ -4269,7 +4269,7 @@ class ClassMap extends Extension
         {
             //! get skip list
             if (!is_array($s)) {
-                $s = self::x(',', $s);
+                $s = str_getcsv($s, ',');
             }
             //! iterate on fields
             $r = '';
@@ -4309,7 +4309,7 @@ class ClassMap extends Extension
                     return $v;
                 }
                 //! if not, explode string
-                return self::x($c, $v);
+                return str_getcsv($v, $c);
             }
 
             return [];
@@ -4408,43 +4408,6 @@ class ClassMap extends Extension
             }
 
             return true;
-        }
-
-/**
- * Quote safe string explode
- *
- * @param separator
- * @param string
- *
- * @return array
- */
-        public static function x($a, $b)
-        {
-            $r = [];
-            $q = '';
-            $L = strlen($b);
-            for ($l = $i = 0;$i <= $L;++$i) {
-                $c = @$b[$i];
-                if ($q) {
-                    if ($c == $q) {
-                        $q = '';
-                    }
-                    if ($c == '\\') {
-                        $i++;
-                    }
-                } elseif ($c == '"' || $c == "'") {
-                    $q = $c;
-                } elseif ($c == $a || $c == '') {
-                    while (@$b[$l] == $a) {
-                        $l++;
-                    }
-                    $r[] = substr($b, $l, $i - $l);
-                    $l = $i + 1;
-                }
-            }
-
-            return $r;
-    //		return explode($a, $b);
         }
 
 /**
@@ -4838,11 +4801,11 @@ namespace PHPPE\AddOn {
             $b = $t->args;
             $opts = !empty($a[0]) && $a[0] != '-' ? View::getval($a[0]) : [];
             if (is_string($opts)) {
-                $opts = Core::x(',', $opts);
+                $opts = str_getcsv($opts, ',');
             }
             $skip = !empty($a[1]) && $a[1] != '-' ? View::getval($a[1]) : [];
             if (is_string($skip)) {
-                $skip = Core::x(',', $skip);
+                $skip = str_getcsv($skip, ',');
             }
             if (!is_array($skip)) {
                 $skip = [];

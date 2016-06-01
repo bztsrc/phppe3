@@ -54,7 +54,7 @@ class EplosCMS extends Extension
 			$sqlFiles = @glob($cfg["sqldir"]."/sqlchanges-*.sql");
 			foreach($sqlFiles as $sf) {
 				//get sql commands from file
-				$sqls = Core::x(";",@file_get_contents($sf));
+				$sqls = str_getcsv(@file_get_contents($sf),";");
 				@unlink($sf);
 				//execute one by one
 				foreach($sqls as $query)

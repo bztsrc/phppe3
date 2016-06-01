@@ -33,7 +33,7 @@ class doc extends \PHPPE\AddOn\setsel
     function save($params)
     {
         $page=\PHPPE\View::getval("page");
-        $page->setParameter($this->name, Core::x(",", $params['value'])[0]);
+        $page->setParameter($this->name, str_getcsv($params['value'], ',')[0]);
         return $page->save();
     }
 }

@@ -6,19 +6,20 @@ namespace PHPPE\Ctrl;
 
 class Benchmark {
     public $data = [];
-    public $delta = 0;
-
+    public $urls = [];
+    
 	function action()
 	{
         if(isset($_REQUEST['clearbenchmark'])) {
             \PHPPE\Benchmark::clear();
             \PHPPE\Http::redirect();
         }
-		$this->data = \PHPPE\Benchmark::stats();
-        foreach($this->data as $d)
-            if($d['max']-$d['min']>$this->delta)
-                $this->delta=sprintf('%.8f',$d['max']-$d['min']);
-	}
+        $this->data = \PHPPE\Benchmark::stats();
+        foreach($this->data as $u=>$v)
+            $this->urls[] = $u." (".sprintf(L("%d samples"), reset($v)['cnt']).")";
+
+        \PHPPE\View::js("choosediv(value)", "var divs=document.querySelectorAll('DIV.benchmark');for(var i in divs) divs[i].style.display=divs[i].id=='url'+value?'block':'none';");
+    }
 
 }
 ?>

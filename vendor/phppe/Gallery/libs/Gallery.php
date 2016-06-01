@@ -74,7 +74,7 @@ class Gallery
         if (empty($name))
             throw new \Exception(L('No imglist name'));
         if (is_string($imgs))
-            $imgs = \PHPPE\Core::x(",", $imgs);
+            $imgs = str_getcsv($imgs, ",");
         \PHPPE\DS::exec("DELETE FROM img_list WHERE list_id=?",[$name]);
         foreach($imgs as $k=>$v)
             if(!empty($v)&&trim($v)!="null")

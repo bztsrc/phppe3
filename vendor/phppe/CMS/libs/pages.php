@@ -237,7 +237,7 @@ class Page extends \PHPPE\Model
         if (empty($name))
             throw new \Exception(L('No pagelist name'));
         if (is_string($pages))
-            $pages = \PHPPE\Core::x(",", $pages);
+            $pages = str_getcsv($pages, ',');
         \PHPPE\DS::exec("DELETE FROM pages_list WHERE list_id=?",[$name]);
         foreach($pages as $k=>$v)
             if(!empty($v)&&trim($v)!="null")

@@ -26,7 +26,7 @@ class pagehist extends \PHPPE\AddOn
 echo("<pre>");
 print_r($params);
 die();
-        return \PHPPE\Page::savePageInfo($this->name, Core::x(",", $params['value']));
+        return \PHPPE\Page::savePageInfo($this->name, str_getcsv($params['value'], ','));
     }
 }
 

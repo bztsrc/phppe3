@@ -29,7 +29,10 @@ namespace PHPPE;
 use PHPPE\Core as Core;
 
 //! register menu
-\PHPPE\View::menu( L("Tests"), "tests" );
+\PHPPE\View::menu( L("Developer"), [
+    L("Tests")=>"tests",
+    L("Benchmarks")=>"benchmark"
+]);
 
 //! this is needed for filter test cases
 \PHPPE\Http::route("tests/httptest", "Developer", "action_httpget", "get");

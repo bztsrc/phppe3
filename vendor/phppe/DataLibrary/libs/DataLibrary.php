@@ -96,7 +96,7 @@ class DataLibrary
         if (empty($name))
             throw new \Exception(L('No doclist name'));
         if (is_string($docs))
-            $docs = \PHPPE\Core::x(",", $docs);
+            $docs = str_getcsv($docs, ',');
         \PHPPE\DS::exec("DELETE FROM doc_list WHERE list_id=?",[$name]);
         foreach($docs as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
