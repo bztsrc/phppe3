@@ -1,1 +1,1 @@
-<!if core.isError()><div class='alert alert-danger'><b><!=L('Form validation error!')></b><br/><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>
+<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>

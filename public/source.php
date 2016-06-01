@@ -1277,7 +1277,7 @@ namespace PHPPE {
         {
             if (!empty($cfg)) {
                 $m = explode(':', $cfg);
-                $d = '\\PHPPE\\Cache\\'.$M;
+                $d = '\\PHPPE\\Cache\\'.$m[0];
                 if (ClassMap::has($d)) {
                     self::$mc = new $d($cfg);
                 }
@@ -1700,13 +1700,11 @@ namespace PHPPE {
 /**
  * Initialize event handler. Register basic object in templater
  * also copy meta and link tags from configuration
- * 
- * @param core instance
  */
-        public static function init($core)
+        public static function init()
         {
             //! register core, user and client to templater
-            self::$o['core'] = $core;
+            self::$o['core'] = Core::$core;
             //! register default meta keywords
             if (!empty(Core::$core->meta) && is_array(Core::$core->meta)) {
                 self::$hdr['meta'] = Core::$core->meta;
@@ -1723,6 +1721,7 @@ namespace PHPPE {
             }
             //! try button counter
             self::$tc = 0;
+/*
             //! register built-in fields and widgets all at once
             //! this is required for \PHPPE\Core::isInst() to always return true for built-ins
             Core::addon( "hidden", "Hidden value", "", "*obj.field" );
@@ -1739,6 +1738,7 @@ namespace PHPPE {
             Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
             Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
             Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
+*/
         }
 
 /**
@@ -2563,8 +2563,10 @@ namespace PHPPE {
                     }
                 }
             }
+            Core::bm("header");
             //! output main content (generated earlier by View::generate())
             echo $txt;
+            Core::bm("content");
             //! output footer
             if ($o) {
                 //! look for extension
@@ -2648,6 +2650,7 @@ namespace PHPPE {
                     DS::bill(), $s - $T, memory_get_peak_usage() / 1024 / 1024, !empty(Cache::$mc) && empty(Core::$core->nocache) ? ', mc' : '');
                 }
             }
+            Core::bm("footer");
             flush();
         }
 
@@ -3026,7 +3029,7 @@ namespace PHPPE {
             //! we cannot install localy, that would use webserver's user, forbidden to write.
             //! So we must use remote user identity even when host is localhost.
             $idfile = tempnam('.tmp', '.id_');
-            file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n");
+            file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n", LOCK_EX);
             chmod($idfile, 0400);
             $ssh = ($precmd?$precmd."|":"").
                 "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(Core::$user->data['remote']['user']).
@@ -3281,7 +3284,7 @@ class ClassMap extends Extension
         public static $paths;            //!< direcories of extensions
         public static $w;                //!< boolean, true if called via web (REQUEST_METHOD not empty)
         public static $g;                //!< posix group
-
+        public static $bm;               //!< benchmarking data
 /**
  * Constructor. If you pass true as argument, it will build up PHPPE environment,
  * but won't run your application. For that you'll need to call \PHPPE\Core::$core->run() manually
@@ -3299,6 +3302,10 @@ class ClassMap extends Extension
         {
             //! server time is calculated with (this - http request arrive time)
             self::$started = microtime(1);
+/*! BENCHMARK START */
+            self::$bm["baseline"]=[0,0];
+/*! BENCHMARK END */
+
             //! set self reference for singleton
             self::$core = &$this;
             //! patch php, set defaults
@@ -3324,6 +3331,8 @@ class ClassMap extends Extension
             //!
             //! set default working directory to ProjectRoot
             chdir(dirname(__DIR__));
+            //! add becnhmark point
+            self::bm("phppatch");
             //! initialize PHPPE environment
             //! load framework configuration
             $c = 'vendor/phppe/Core/config.php';
@@ -3437,6 +3446,7 @@ class ClassMap extends Extension
             if (substr($d,-1)=='/')
                 $d=substr($d,0,strlen($d)-1);
             $this->url = $d;
+            self::bm("getconfig");
             //! check arguments
             if (!self::$w && !$islib) {
                 // @codeCoverageIgnoreStart
@@ -3493,7 +3503,7 @@ class ClassMap extends Extension
                     }
                 }
             }
-
+            self::bm("autoload");
             //! detect bootstrap type
             if (!self::$w && !$islib && @$_SERVER['argv'][1] == '--diag') {
                 // @codeCoverageIgnoreStart
@@ -3521,6 +3531,7 @@ class ClassMap extends Extension
                 //! load application dictionary overrides
                 self::lang('app');
 
+                self::bm("libs");
                 //! if not included as a library, run application
                 if (!$islib) {
                     // @codeCoverageIgnoreStart
@@ -3568,7 +3579,7 @@ class ClassMap extends Extension
                 //! if not exists yet or creation is forced
                 if (!file_exists($c) || $f) {
                     echo "DIAG-A: $c\n";
-                    file_put_contents($c, $r);
+                    file_put_contents($c, $r, LOCK_EX);
                 }
                 //! change owner and group
                 if (file_exists($c) && (!@chgrp($c, \PHPPE\Core::$g) || !@chown($c, fileowner(__FILE__)))) {
@@ -3669,7 +3680,7 @@ class ClassMap extends Extension
             i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>");
-            i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><b><!=L('Form validation error!')></b><br/><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
+            i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
             i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
             if ($E) {
@@ -3709,9 +3720,11 @@ class ClassMap extends Extension
             }
             $_SESSION['pe_v'] = [];
 
+            self::bm("tokens");
             //! initialize view layer
-            View::init($this);
+            View::init();
 
+            self::bm("viewinit");
             if (empty($this->maintenance)) {
                 //! get application and action
                 list($app, $ac, $args) = HTTP::urlMatch($app, $ac, $this->url);
@@ -3738,6 +3751,11 @@ class ClassMap extends Extension
                         $app,] as $a) {
                     if (ClassMap::has($a)) {
                         $appCls = $a;
+                        //! add it's path
+                        $p = dirname(ClassMap::$map[strtolower($a)]);
+                        if(basename($p)=="ctrl"||basename($p)=="libs")
+                            $p=dirname($p);
+                        self::$paths[strtolower($app)]=$p;
                         break;
                     }
                 }
@@ -3756,6 +3774,7 @@ class ClassMap extends Extension
                     $ac = 'action';
                 }
 
+                self::bm("routing");
                 //! instantiate application
                 $appObj = new $appCls();
 
@@ -3771,8 +3790,10 @@ class ClassMap extends Extension
                 $N = 'p_'.sha1($this->base.$this->url.'/'.self::$user->id.'/'.self::$client->lang);
                 if (empty($this->nocache) && !self::isTry()) {
                     $T = View::fromCache($N);
+                    self::bm("fromCache");
                 }
                 if (empty($T)) {
+                    self::bm("controller");
                     //! get frame meta data
                     Content::getDDS($appObj);
                     //! *** CTRL Event (Controller action) ***
@@ -3784,6 +3805,7 @@ class ClassMap extends Extension
                     if (method_exists($appObj, $ac)) {
                         !empty($args) ? call_user_func_array([$appObj, $ac], $args) : $appObj->$ac($this->item);
                     }
+                    self::bm("action");
                     $T = View::generate($this->template, $N);
                 }
             } else {
@@ -3792,7 +3814,7 @@ class ClassMap extends Extension
                 $T = View::template('maintenance');
                 //! if no template found
                 if (empty($T)) {
-                    $T = L('Maintenance mode is on');
+                    $T = L('Site is down for maintenance');
                 }
             }
 
@@ -3804,12 +3826,17 @@ class ClassMap extends Extension
             //! close all database connections before output
             DS::close();
 
+            self::bm("view");
             //! *** VIEW Event ***
             $T = self::event('view', $T);
             View::output($T);
 
             //! make sure to flush session
             session_write_close();
+/*! BENCHMARK START */
+            if(isset($_REQUEST['benchmark']))
+                @file_put_contents(".tmp/benchmark.".time(),json_encode(Core::$bm),LOCK_EX);
+/*! BENCHMARK END */
         }
         // @codeCoverageIgnoreEnd
 
@@ -4424,6 +4451,20 @@ class ClassMap extends Extension
         {
             return sha1($a.'|'.$b.'|'.$c);
         }
+
+/**
+ * Create a benchmark point
+ *
+ * @param name
+ */
+        public static function bm($name)
+        {
+/*! BENCHMARK START */
+            $d=microtime(1)-self::$started;
+            self::$bm[$name]=[sprintf("%.8f",$d-end(self::$bm)[1]),sprintf("%.8f",$d)];
+/*! BENCHMARK END */
+        }
+
     }//class
 
 /******* Bootstrap PHPPE *******/
@@ -4530,11 +4571,11 @@ namespace PHPPE\Cache {
             @mkdir('data/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2), 0775);
             @chmod('data/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2), 0775);
             if ($ttl > 0) {
-                @file_put_contents($this->fn($key).'.ttl', $ttl);
+                @file_put_contents($this->fn($key).'.ttl', $ttl, LOCK_EX);
             }
             $v = json_encode($value);
 
-            return file_put_contents($this->fn($key), $compress && function_exists('gzdeflate') ? gzdeflate($v) : $v) > 0 ? true : false;
+            return file_put_contents($this->fn($key), $compress && function_exists('gzdeflate') ? gzdeflate($v) : $v, LOCK_EX) > 0 ? true : false;
         }
         public function cronMinute($args)
         {

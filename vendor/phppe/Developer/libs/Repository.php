@@ -47,6 +47,9 @@ class Repository
 			die("unable to read ".self::$sourceFile."\n");
 		//! uncomment self check
 		$data=str_replace('//$c=__FILE__;if(filesize','$c=__FILE__;if(filesize',$data);
+        //! remove benchmarking code
+        $data=preg_replace('|/\*! BENCHMARK START \*/.*?/\*! BENCHMARK END \*/|ims',"",$data);
+        $data=preg_replace('/(self|Core)::bm\([^;]+;/ims',"",$data);
 		//! keep license comment
 		$i=strpos($data,"*/")+2;
 		//! make sure minifier is not turned off
