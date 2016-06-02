@@ -8,6 +8,11 @@ class Benchmark {
     public $data = [];
     public $urls = [];
     
+    function __construct()
+    {
+        \PHPPE\Core::$core->nocache = true;
+    }
+
 	function action()
 	{
         if(isset($_REQUEST['clearbenchmark'])) {

@@ -69,7 +69,7 @@ class Benchmark
                         $data[$i][$k]['min']=$s[0];
                     if($s[0]>$data[$i][$k]['max'])
                         $data[$i][$k]['max']=$s[0];
-                    $data[$i][$k]['avg']=sprintf("%.8f",($data[$i][$k]['avg']*$data[$i][$k]['cnt']+$s[0])/++$data[$i][$k]['cnt']);
+                    $data[$i][$k]['avg']=sprintf("%.6f",($data[$i][$k]['avg']*$data[$i][$k]['cnt']+$s[0])/++$data[$i][$k]['cnt']);
                 }
             }
         }
@@ -78,9 +78,9 @@ class Benchmark
             foreach($d as $k=>$v) {
                 if($k=="total"||$k=="delta"||$k=="count") continue;
                 if($v['max']-$v['min']>$data[$url]['delta'])
-                    $data[$url]['delta']=sprintf('%.8f',$v['max']-$v['min']);
+                    $data[$url]['delta']=sprintf('%.6f',$v['max']-$v['min']);
                 $data[$url]['total']+=$v['avg'];
-                $data[$url][$k]['str']=sprintf("%.8f", $s);
+                $data[$url][$k]['str']=sprintf("%.6f", $s);
                 $s+=$v['avg'];
             }
         }

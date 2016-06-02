@@ -1895,6 +1895,7 @@ namespace PHPPE {
  */
         public static function generate($template, $N = '')
         {
+
             //! we should check cache here, but it's already handled
             //! by Core::run() because this code never reached when cached
 
@@ -1948,7 +1949,7 @@ namespace PHPPE {
  */
         public static function template($n)
         {
-            //! set http response header as well for special templates
+           //! set http response header as well for special templates
             if ($n == '403' || $n == '404') {
                 @header("HTTP/1.1 $n ".($n == '403' ? 'Access Denied' : 'Not Found'));
             }
@@ -2618,7 +2619,6 @@ namespace PHPPE {
                     if ($P && !isset(self::$hdr['jslib'][$c]) && $i) {
                         $O .= "$d$a$c'>$e";
                     }
-
                     //! add javascript functions
                     $c = self::$hdr['js'];
                     $a = '';
@@ -4427,7 +4427,7 @@ class ClassMap extends Extension
         {
 /*! BENCHMARK START */
             $d=microtime(1)-self::$started;
-            self::$bm[$name]=[sprintf("%.8f",$d-end(self::$bm)[1]),sprintf("%.8f",$d)];
+            self::$bm[$name]=[sprintf("%.6f",$d-end(self::$bm)[1]),sprintf("%.6f",$d)];
 /*! BENCHMARK END */
         }
 
@@ -4502,12 +4502,12 @@ namespace PHPPE\Cache {
   */
         public function __construct($c = '')
         {
-            @mkdir('data/cache', 0770);
-            @chmod('data/cache', 0775);
+            @mkdir('.tmp/cache', 0770);
+            @chmod('.tmp/cache', 0775);
         }
         private function fn($key)
         {
-            return 'data/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2).'/'.substr($key, 4);
+            return '.tmp/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2).'/'.substr($key, 4);
         }
         public function get($key)
         {
@@ -4532,10 +4532,10 @@ namespace PHPPE\Cache {
             }
             //! unfortunately there's a bug in PHP 7, mkdir(fn(),0755,true)
             //! won't set the right mode for all directories along the path
-            @mkdir('data/cache/'.substr($key, 0, 2), 0775);
-            @chmod('data/cache/'.substr($key, 0, 2), 0775);
-            @mkdir('data/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2), 0775);
-            @chmod('data/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2), 0775);
+            @mkdir('.tmp/cache/'.substr($key, 0, 2), 0775);
+            @chmod('.tmp/cache/'.substr($key, 0, 2), 0775);
+            @mkdir('.tmp/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2), 0775);
+            @chmod('.tmp/cache/'.substr($key, 0, 2).'/'.substr($key, 2, 2), 0775);
             if ($ttl > 0) {
                 @file_put_contents($this->fn($key).'.ttl', $ttl, LOCK_EX);
             }
@@ -4545,7 +4545,7 @@ namespace PHPPE\Cache {
         }
         public function cronMinute($args)
         {
-            $files = glob('data/cache/*/*/*.ttl');
+            $files = glob('.tmp/cache/*/*/*.ttl');
             foreach ($files as $f) {
                 $ttl = intval(@file_get_contents($f));
                 $cf = substr($f, 0, strlen($f) - 4);
