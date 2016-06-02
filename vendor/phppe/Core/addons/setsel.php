@@ -85,7 +85,7 @@ class setsel extends \PHPPE\AddOn {
         else
             $out[1].="<div class='setsel_item".
                 (!empty($this->args[0])&&empty($b)?" setsel_itemactive":"").
-                (!empty($a[2])&&$a[2]!="-"?" ".$a[2]:"")."' data-id='' onmousedown='return setsel_select(event,\"".$this->fld."\");' style='text-align:center;font-style:italic;'>&nbsp;*&nbsp;".L("Empty value")."&nbsp;*</div>";
+                (!empty($a[2])&&$a[2]!="-"?" ".$a[2]:"")."' data-id='' onmousedown='return setsel_select(event,\"".$this->fld."\");' style='text-align:center;font-style:italic;'>&nbsp;*&nbsp;".L("none")."&nbsp;*</div>";
         if(isset($flt['lang'])) {
             unset($flt['lang']);
             foreach($_SESSION['pe_ls'] as $l=>$v)

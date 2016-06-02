@@ -3683,12 +3683,12 @@ class ClassMap extends Extension
             $D = 'vendor/phppe/Core/views/';
             $e = '.tpl';
             $c = "<!dump core.req2arr('obj')>";
-            i($D."403$e", "<h1>403</h1><!=L('Access denied')>");
-            i($D."404$e", "<h1>404</h1><!=L('Not found')>: <b><!=core.url></b>");
+            i($D."403$e", "<h1>403</h1><!L Access denied>\n<!-- <!L hacker> -->");
+            i($D."404$e", "<h1>404</h1><!L Not found>: <b><!=core.url></b>");
             i($D."frame$e", "<div id='content'><!app></div>");
-            i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
+            i($D."index$e", "<h1><PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
-            i($D."maintenance$e", "<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>");
+            i($D."maintenance$e", "<h1><!L Site is temporarily down for maintenance></h1>");
             i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
             i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
@@ -3823,7 +3823,7 @@ class ClassMap extends Extension
                 $T = View::template('maintenance');
                 //! if no template found
                 if (empty($T)) {
-                    $T = L('Site is down for maintenance');
+                    $T = L('Site is temporarily down for maintenance.');
                 }
             }
 

@@ -6,7 +6,7 @@
 namespace PHPPE\Ctrl;
 
 class LangController {
-    static $cli="lang <extension> [lang]";
+    static $cli="lang <extension> [language [--write]]";
 
 	function __construct()
 	{
@@ -18,7 +18,7 @@ class LangController {
 			die(\PHPPE\Lang::getUsage());
 
 		//! parse files for translateable strings
-		\PHPPE\Lang::parse($_SERVER['argv'][2], @$_SERVER['argv'][3]);
+		\PHPPE\Lang::parse($_SERVER['argv'][2], @$_SERVER['argv'][3], @$_SERVER['argv'][4]);
 		die;
 	}
 

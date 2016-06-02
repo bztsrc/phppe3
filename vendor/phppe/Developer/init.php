@@ -45,6 +45,7 @@ use PHPPE\Core as Core;
 \PHPPE\Http::route("deploy", "DeployController");
 \PHPPE\Http::route("create", "CreateController");
 \PHPPE\Http::route("passwd", "PasswdController");
+\PHPPE\Http::route("lang", "LangController");
 
 //for event testing
 return new Testing;
