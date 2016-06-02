@@ -5,6 +5,7 @@
 namespace PHPPE\Ctrl;
 
 class PasswdController {
+    static $cli="passwd [password]";
 
 	function __construct()
 	{

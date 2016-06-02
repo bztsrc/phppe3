@@ -126,7 +126,7 @@ class DataLibrary
     {
         $list = self::getDocuments();
         echo(\PHPPE\View::_t("<!form doclist>")."<input type='file' name='doclist_upload' onchange='this.form.submit();' style='display:none;'>".
-        "<input type='button' value='Upload' class='setsel_button' onclick=\"this.previousSibling.click();\"></form>".
+        "<input type='button' value='".L("Upload")."' onclick=\"this.previousSibling.click();\"></form>".
         "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='wyswyg_search(this,this.nextSibling);'>");
         echo("<div class='wyswyg_docs wyswyg_scroll'>\n");
         foreach($list as $doc) {

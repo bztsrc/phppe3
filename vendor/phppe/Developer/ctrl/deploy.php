@@ -5,6 +5,7 @@
 namespace PHPPE\Ctrl;
 
 class DeployController {
+    static $cli="deploy";
 
 	function __construct()
 	{

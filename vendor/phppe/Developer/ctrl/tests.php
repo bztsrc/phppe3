@@ -5,6 +5,8 @@
 namespace PHPPE\Ctrl;
 
 class Developer {
+    static $cli=["tests", "tests run"];
+
 	public $testCases;
 	public $test_val2arr="a:b:c";
 	public $test_arr=["a","b","c"];

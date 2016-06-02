@@ -62,6 +62,7 @@ class Gallery
             $imgs[] = [ "id"=>$f, "name"=>$f ];
         return $imgs;
     }
+
 /**
  * Function to save image lists
  *
@@ -107,7 +108,7 @@ class Gallery
     {
         $list = self::getImages();
         echo(\PHPPE\View::_t("<!form imglist>")."<input type='file' name='imglist_upload' onchange='this.form.submit();' style='display:none;'>".
-        "<input type='button' value='Upload' class='setsel_button' onclick=\"this.previousSibling.click();\"></form>".
+        "<input type='button' value='".L("Upload")."' onclick=\"this.previousSibling.click();\"></form>".
         "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='wyswyg_search(this,this.nextSibling);'>");
         echo("<div class='wyswyg_gallery wyswyg_scroll'>\n");
         foreach($list as $img) {

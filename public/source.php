@@ -3447,18 +3447,6 @@ class ClassMap extends Extension
                 $d=substr($d,0,strlen($d)-1);
             $this->url = $d;
             self::bm("getconfig");
-            //! check arguments
-            if (!self::$w && !$islib) {
-                // @codeCoverageIgnoreStart
-                if (in_array('--version', $_SERVER['argv'])) {
-                    die(VERSION."\n");
-                }
-                if (empty($_SERVER['argv'][1]) || in_array('--help', $_SERVER['argv'])) {
-                    $c = 'php '.$_SERVER['argv'][0];
-                    die('PHP Portal Engine '.VERSION.", LGPL 2016 bzt\n\n $c --help\n $c --version\n $c --diag [--gid=x]\n $c [application [action [item]]] [--dump]\n\n");
-                }
-                // @codeCoverageIgnoreEnd
-            }
 
             //! session restore may require models, so we have to
             //! load all classes *before* session_start()
@@ -3504,6 +3492,24 @@ class ClassMap extends Extension
                 }
             }
             self::bm("autoload");
+            //! check arguments
+            if (!self::$w && !$islib) {
+                // @codeCoverageIgnoreStart
+                if (in_array('--version', $_SERVER['argv'])) {
+                    die(VERSION."\n");
+                }
+                if (empty($_SERVER['argv'][1]) || in_array('--help', $_SERVER['argv'])) {
+                    $c = 'php '.$_SERVER['argv'][0];
+                    echo('PHP Portal Engine '.VERSION.", LGPL 2016 bzt\n\n $c --help\n $c --version\n $c --diag [--gid=x]\n $c [application [action [item]]] [--dump]\n");
+                    foreach(ClassMap::$map as $C=>$v)
+                        if(!empty($C::$cli))
+                            foreach(is_array($C::$cli)?$C::$cli:[$C::$cli] as $d)
+                                echo(" $c $d\n");
+                    die("\n");
+                }
+                // @codeCoverageIgnoreEnd
+            }
+
             //! detect bootstrap type
             if (!self::$w && !$islib && @$_SERVER['argv'][1] == '--diag') {
                 // @codeCoverageIgnoreStart
@@ -4495,6 +4501,7 @@ namespace PHPPE\Cache {
     //! Plain file cache support
     class Files
     {
+        static $cli="cron minute";
  /**
   * Constructor.
   *

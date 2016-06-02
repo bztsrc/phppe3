@@ -26,7 +26,7 @@ class doc extends \PHPPE\AddOn\setsel
         $this->args[5]="id";
 		$this->attrs[0]=\PHPPE\DataLibrary::getDocuments();
         $this->attrs[3]="<input type='file' name='doclist_upload' onchange='this.form.submit();' style='display:none;'>".
-        "<input type='button' value='Upload' class='setsel_button' onclick=\"this.form['pe_f'].value='doclist';this.form['doclist_upload'].click();\">";
+        "<input type='button' value='".L("Upload")."' class='setsel_button' onclick=\"this.form['pe_f'].value='doclist';this.form['doclist_upload'].click();\">";
 		return parent::edit();
 	}
 

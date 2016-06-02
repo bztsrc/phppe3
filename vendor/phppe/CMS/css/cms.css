@@ -1,4 +1,25 @@
-.wyswyg_toolbar BUTTON { color:#d0d0d0 !important; }
+.wyswyg_toolbar BUTTON {
+    color:#D0D0D0;
+    height:24px;
+    background:#808080;
+    border:outset 1px;
+}
+.wyswyg_toolbar INPUT[type=button] {
+    color:#D0D0D0;
+    height:24px;
+    background:#808080;
+    border:outset 1px;
+}
+.wyswyg_toolbar INPUT[type=text] {
+    color:#D0D0D0;
+    height:24px;
+    background:rgb(64, 64, 64);
+    border:inset 1px;
+}
+.wyswyg_toolbar DIV.wyswyg_popup { background:rgb(95,95,95) !important; }
+.wyswyg_toolbar A {
+    color:#D0D0D0;
+}
 .setsel_filters { text-align:right; height:30px; }
 .setsel_box { border:inset 1px; width:50%; float:left; }
 .setsel SPAN {

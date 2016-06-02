@@ -102,7 +102,7 @@ class setsel extends \PHPPE\AddOn {
         $out[0]=implode("",$b);
         return "<div class='setsel'><input type='hidden' id='".$this->fld."' name='".$this->fld."' value='".htmlspecialchars(implode(",", $val))."'>".
         "<div id='".$this->fld.":filters' class='setsel_filters'>".(!empty($this->args[4])?"<span class='setsel_title' style='float:left;line-height:22px !important;'>".$this->args[4]."</span>":"").$flthtml.
-        "<input name='search' class='setsel_input' type='text' placeholder='".L("search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
+        "<input name='search' class='setsel_input' type='text' placeholder='".L("Search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
         "<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".
         (empty($this->args[0])?
         "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='setsel_droparea(event);' onmouseup=\"dnd_drop(event,'setsel_add');\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;padding-bottom:64px;box-sizing:border-box;overflow:auto;'>".$out[0]."</div>"

@@ -5,8 +5,8 @@
  */
 namespace PHPPE\Ctrl;
 
-class CreateController {
-    static $cli="create <template> [arg1 [arg2...]]";
+class LangController {
+    static $cli="lang <extension> [lang]";
 
 	function __construct()
 	{
@@ -15,10 +15,10 @@ class CreateController {
 			die(L("Run from command line")."\n");
 
 		if(empty($_SERVER['argv'][2]))
-			die(\PHPPE\Templates::getUsage());
+			die(\PHPPE\Lang::getUsage());
 
-		//! create file from template
-		\PHPPE\Templates::create($_SERVER['argv'][2]);
+		//! parse files for translateable strings
+		\PHPPE\Lang::parse($_SERVER['argv'][2], @$_SERVER['argv'][3]);
 		die;
 	}
 

@@ -5,6 +5,7 @@
 namespace PHPPE\Ctrl;
 
 class MkRepoController {
+    static $cli="mkrepo";
 
 	function __construct()
 	{

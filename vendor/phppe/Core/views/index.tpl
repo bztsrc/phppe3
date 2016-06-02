@@ -141,7 +141,7 @@ There's a comment similar to the left just before the &lt;/body> tag.<br>OK - pa
         <div class="col-sm-2" dir="ltr">
 &lt;!foreach _SESSION>&lt;!=KEY>:&lt;!=VALUE>&lt;br>&lt;!/foreach>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!foreach _SESSION><!=KEY>:<!=VALUE><br><!/foreach>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -152,7 +152,7 @@ Example iteration on an array
         <div class="col-sm-2" dir="ltr">
 &lt;!foreach core.lib()><br>&nbsp;&nbsp;&lt;!=IDX>(&lt;!=ODD>)&lt;!=KEY>:&lt;!=name>&lt;br><br>&lt;!/foreach><br><br>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!foreach core.lib()><!=IDX>(<!=ODD>) <!=KEY>:<!=name><br><!/foreach>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -163,7 +163,7 @@ Example iteration on an array of objects
         <div class="col-sm-2" dir="ltr">
 &lt;!if core.noframe> fullscreen mode &lt;!else> normal mode &lt;!/if>
         </div>
-        <div class="col-sm-4 text-info" dir="ltr">
+        <div class="col-sm-4 text-info">
 <!if core.noframe>fullscreen mode<!else>normal mode<!/if>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -174,7 +174,7 @@ Expression dependent branches of output
         <div class="col-sm-2" dir="ltr">
 &lt;!include 404>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <div style='border:1px dotted #000000;'><!include 404></div>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -185,7 +185,7 @@ Include another template
         <div class="col-sm-2" dir="ltr">
 &lt;!template><br>&lt;%=(&lt;!=core.now>+1)> &lt;/template>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!template><%=(<!=core.now>+1)><!/template>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -203,7 +203,7 @@ Generate template tags with templates, use &lt;% instead of &lt;! for second ite
         <div class="col-sm-2" dir="ltr">
 &lt;!=core.now>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!=core.now>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -214,7 +214,7 @@ Output the value of a property of an object. Should see current UNIX timestamp (
         <div class="col-sm-2" dir="ltr">
 &lt;!=(core.now/100+ (1-core.noframe))>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!=(core.now/100+(1-core.noframe))>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -225,7 +225,7 @@ Output the result of an expression (uses eval)
         <div class="col-sm-2" dir="ltr">
 &lt;!=sprintf('%012d', core.now/123)>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!=sprintf('%012d',core.now/123)>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -236,7 +236,7 @@ Output result with formatting using a function
         <div class="col-sm-2" dir="ltr">
 &lt;!date core.now>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!date core.now>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -247,7 +247,7 @@ Output timestamp in localized human readable format
         <div class="col-sm-2" dir="ltr">
 &lt;!time core.now>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!time core.now>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -258,7 +258,7 @@ Date and time. Your browser's timezone is: <!=_SESSION['pe_tz']>
         <div class="col-sm-2" dir="ltr">
 &lt;!L Cancel>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!L Cancel>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -269,7 +269,7 @@ Expected to be translated to your browser's language (<!=client.lang>)
         <div class="col-sm-2" dir="ltr">
 &lt;!L click_me>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!L click_me>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -280,7 +280,7 @@ Translate label. Should read "click me" (no translation specified)
         <div class="col-sm-2" dir="ltr">
 &lt;!=L("click me")>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!=L("click me")>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -291,7 +291,7 @@ Translate expression. Should read "click me" (no translation specified)
         <div class="col-sm-2" dir="ltr">
 &lt;!dump core.req2arr('obj')>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!dump core.req2arr('obj')>
 <!if !core.isTry()><span class="text-warning">Press the "Save" button below the form to see it in action.</span><!/if>
         </div>
@@ -310,7 +310,7 @@ Built-in object dumper for debugging.
         <div class="col-sm-2" dir="ltr">
 &lt;!var text obj.var>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!var text obj.var>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -321,7 +321,7 @@ Acts as a field in edit mode, outputs the formatted value otherwise
         <div class="col-sm-2" dir="ltr">
 &lt;!widget text obj.widget>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!widget text obj.widget>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -332,7 +332,7 @@ Shows widget configuration (edit method) in conf mode, outputs widget face (show
         <div class="col-sm-2" dir="ltr">
 &lt;!cms *text cms0>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!cms *text cms0>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -344,7 +344,7 @@ Otherwise just displays the formatted value of the given property. Icon onclick 
         <div class="col-sm-2" dir="ltr">
 &lt;!cms(400,100) text cms1>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!cms(400,100) text(200,10) cms1>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -355,7 +355,7 @@ Specify dimensions of the modal, in case autodetection is not working for some r
         <div class="col-sm-2" dir="ltr">
 &lt;!cms(0,0,60) *text(200,2) cms2>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!cms(0,0,60) *text(200,2) cms2>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -366,7 +366,7 @@ Occupy percentage of screen.
         <div class="col-sm-2" dir="ltr">
 &lt;!cms *wyswyg cms3>
         </div>
-        <div class="col-sm-4" dir="ltr" style='background:#F0F0F0;'>
+        <div class="col-sm-4" style='background:#F0F0F0;'>
 <!cms *wyswyg cms3>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -378,7 +378,7 @@ AddOn to edit page parameter
         <div class="col-sm-2" dir="ltr">
 &lt;!field text obj.field>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field text obj.field>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -390,7 +390,7 @@ Shows edit hook.
         <div class="col-sm-2" dir="ltr">
 &lt;!field label obj.text0 Some_string>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field label obj.text0 Some_string>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -402,7 +402,7 @@ Shows a translated label for a field.
         <div class="col-sm-2" dir="ltr">
 &lt;!field *text obj.text0>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field *text obj.text0>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -414,8 +414,8 @@ A manadatory field.
         <div class="col-sm-2" dir="ltr">
 &lt;!field text(<span title='maxlength'>32</span>) obj.text1 - - - search>
         </div>
-        <div class="col-sm-4" dir="ltr">
-<!field text(32) obj.text1 - - - search>
+        <div class="col-sm-4">
+<!field text(32) obj.text1 - - - Search>
         </div>
         <div class="col-sm-6 text-muted small">
 Text field with placeholder that accepts input up to 32 characters.
@@ -426,7 +426,7 @@ Text field with placeholder that accepts input up to 32 characters.
         <div class="col-sm-2" dir="ltr">
 &lt;!field text(<span title='maxlength'>80</span>,<span title='rows'>2</span>) obj.text2>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field text(80,2) obj.text2>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -438,7 +438,7 @@ You don&acute;t have to know about textarea, just add the number of rows you wan
         <div class="col-sm-2" dir="ltr">
 &lt;!field pass obj.pass - Password>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field pass obj.pass - Password>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -450,7 +450,7 @@ Password input field
         <div class="col-sm-2" dir="ltr">
 &lt;!field select obj.select0 <span title='list values'>core.addon()</span>>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field select obj.select0 core.addon()>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -462,7 +462,7 @@ An option list feeded by a function
         <div class="col-sm-2" dir="ltr">
 &lt;!field select(<span title='size'>3</span>,<span title='is multiple'>true</span>) obj.select1 <span title='list values'>_SERVER</span>>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field select(3,true) obj.select1 _SERVER>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -474,7 +474,7 @@ Option list with more rows and multiple select options returning an array
         <div class="col-sm-2" dir="ltr">
 &lt;!field phone obj.phone>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field phone obj.phone>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -486,7 +486,7 @@ Phone number with input validation
         <div class="col-sm-2" dir="ltr">
 &lt;!field email obj.email>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field email obj.email>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -500,7 +500,7 @@ Email address with on blur validation
 &lt;!field *check obj.field10 <span title='multilang label'>I_accept_the_terms</span>><br>
 &lt;/div>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <div class="checkbox"><!field *check obj.check I_accept_the_terms></div>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -512,7 +512,7 @@ Mandatory check button with translated label
         <div class="col-sm-2" dir="ltr">
 &lt;!field radio(<span title='numeric value'>1</span>) obj.radio0 <span title='multilang label'>one</span>><br>&lt;!field radio(<span title='numeric value'>2</span>) obj.radio0 <span title='multilang label'>two</span>>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field radio(1) obj.radio0 one> <!field radio(2) obj.radio0 two>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -524,7 +524,7 @@ Note the automatic clickable labels
         <div class="col-sm-2" dir="ltr">
 &lt;!field radio(<span title='string value'>'one'</span>) obj.radio1 <span title='multilang label'>one</span>><br>&lt;!field radio(<span title='string value'>'two'</span>) obj.radio1 <span title='multilang label'>two</span>>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field radio('one') obj.field12 one> <!field radio('two') obj.field12 two>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -536,7 +536,7 @@ Similar, but return strings
         <div class="col-sm-2" dir="ltr">
 &lt;!field num obj.num0>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field num obj.num0>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -548,7 +548,7 @@ Decimal number input
         <div class="col-sm-2" dir="ltr">
 &lt;!field num obj.num1(100,9000)>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field num(100,9000) obj.num1>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -560,7 +560,7 @@ Number input with bound check and correction
         <div class="col-sm-2" dir="ltr">
 &lt;!field file obj.file>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field file obj.file>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -572,7 +572,7 @@ File upload
         <div class="col-sm-2" dir="ltr">
 &lt;!field color obj.color>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field color obj.color>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -584,7 +584,7 @@ Color picker
         <div class="col-sm-2" dir="ltr">
 &lt;!field something obj.fieldX>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field something obj.fieldX>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -596,7 +596,7 @@ A warning shown if no AddOn found for the specified field.
         <div class="col-sm-2" dir="ltr">
 &lt;!field update> &lt;!field update Save>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field update> <!field update Save>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -608,7 +608,7 @@ Form post with more buttons
         <div class="col-sm-2" dir="ltr">
 &lt;!field button>
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
 <!field button>
         </div>
         <div class="col-sm-6 text-muted small">
@@ -627,7 +627,7 @@ HTML5 button with javascript handler
         <div class="col-sm-2" dir="ltr">
 &lt;!field setsel obj.setsel core.addon()>
         </div>
-        <div class="col-sm-6" dir="ltr">
+        <div class="col-sm-6">
 <!field setsel obj.setsel core.addon()>
         </div>
         <div class="col-sm-4 text-muted small">
@@ -639,7 +639,7 @@ Select multiple values from a set. Drag'n'drop elements and reaarange them as yo
         <div class="col-sm-2" dir="ltr">
 &lt;!field imglist obj.imglist crousel>
         </div>
-        <div class="col-sm-6" dir="ltr">
+        <div class="col-sm-6">
 <!field imglist obj.imglist crousel>
         </div>
         <div class="col-sm-4 text-muted small">
@@ -652,7 +652,7 @@ Select images for crousel, rearrange them as you like.
         <div class="col-sm-2" dir="ltr">
 &lt;!field doclist obj.doclist legal>
         </div>
-        <div class="col-sm-6" dir="ltr">
+        <div class="col-sm-6">
 <!field doclist obj.doclist legal>
         </div>
         <div class="col-sm-4 text-muted small">
@@ -665,7 +665,7 @@ Select documents for attachments, rearrange them as you like.
         <div class="col-sm-2" dir="ltr">
 &lt;!field wyswyg obj.wyswyg>
         </div>
-        <div class="col-sm-6" dir="ltr">
+        <div class="col-sm-6">
 <!field wyswyg obj.wyswyg>
         </div>
         <div class="col-sm-4 text-muted small">
@@ -676,7 +676,7 @@ What You See is What You Get html editor
     <div class="row">
         <div class="col-sm-2" dir="ltr">
         </div>
-        <div class="col-sm-4" dir="ltr">
+        <div class="col-sm-4">
         </div>
         <div class="col-sm-6 text-muted small">
         </div>
