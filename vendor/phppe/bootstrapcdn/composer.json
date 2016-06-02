@@ -2,7 +2,7 @@
 	"name": "phppe/bootstrapcdn",
 	"name_en": "Bootstrap CDN",
 
-	"description": "Bootstrap environment from CDN",
+	"description": "Bootstrap environment loaded from CDN",
 
 	"version": "3.3.6",
 	"version_normalized": "3.3.6.0",

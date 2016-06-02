@@ -3150,13 +3150,12 @@ class ClassMap extends Extension
         }
         //iterate on list
         foreach ($D as $fn => $v) {
-            //! skip generated autoload.php, and directories marked
-            if (strpos(strtolower($fn), 'autoload') !== false ||
-                file_exists(dirname($fn).'/.skipautoload')) {
+            //! skip directories marked
+            if (file_exists(dirname($fn).'/.skipautoload')) {
                 continue;
             }
             //! load php code
-            $d = file_get_contents($fn);
+            $d = @file_get_contents($fn);
             //! skip if file marked
             if (strpos($d, '/*!SKIPAUTOLOAD!*/') !== false) {
                 continue;
@@ -3232,7 +3231,8 @@ class ClassMap extends Extension
         foreach ($R as $k => $v) {
             $ret .= ($ret?",\n":""). '  "'.addslashes($k).'": "'.addslashes($v)."\"";
         }
-        file_put_contents(self::$file, "{\n".$ret."\n}", LOCK_EX);
+        //! when running in an unitiliazed environment, there'll be no .tmp directory
+        @file_put_contents(self::$file, "{\n".$ret."\n}", LOCK_EX);
         @chmod(self::$file,0664);
         return $R;
     }
@@ -4720,7 +4720,7 @@ namespace PHPPE\AddOn {
             @View::v($t, $t->attrs[0], '', $t->args).
             " type='password' value=\"".htmlspecialchars(trim($t->value)).
             "\" onfocus='this.className=this.className.replace(\" errinput\",\"\")'".
-            (!empty($t->attrs[1]) ? ' placeholder="'.htmlspecialchars(trim($t->attrs[1])).'"' : '').
+            (!empty($t->attrs[1]) ? ' placeholder="'.htmlspecialchars(L(trim($t->attrs[1]))).'"' : '').
             '>';
         }
         public static function validate($n, &$v, $a, $t)

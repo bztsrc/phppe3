@@ -454,7 +454,7 @@ function wyswyg_event(evt,id,name){
     //! get plugins for subscribed for an event
     var ret=[],hookname='data-wyswyg-'+name;
     if(evt!=null && evt.target!=null){
-        hookname=hookname.replace('@TAG',evt.target.tagName.toLowerCase())
+        hookname=hookname.replace('@TAG',evt.target.tagName.toLowerCase());
         if(evt.target.id==id+':edit')
             hookname='data-wyswyg-focus';
     }

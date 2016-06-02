@@ -139,9 +139,18 @@ function setsel_setvalue(id) {
 function setsel_select(evt,id)
 {
     var v=evt.target.getAttribute("data-id");
-    var i,t=evt.target.parentNode.getElementsByTagName("*");
+    var i,t=evt.target.parentNode;
+    if(v==null) {
+        v=evt.target.parentNode.getAttribute("data-id");
+        t=t.parentNode;
+    }
+    if(v==null) {
+        v=evt.target.parentNode.parentNode.getAttribute("data-id");
+        t=t.parentNode;
+    }
+    t=t.getElementsByTagName("*");
     for(i=0;i<t.length;i++){
-        var cls = t[i].className.replace(/\ setsel_itemactive/,"");
+        var cls = t[i].className.replace(/setsel_itemactive/,"");
         if(t[i].getAttribute("data-id")==v) cls+=" setsel_itemactive";
         t[i].setAttribute('class',cls);
     }
