@@ -708,5 +708,27 @@ What You See is What You Get html editor
   </div>
 </div>
 
+<!--
+Useful translations, not used by the Core itself, but most likely many Extensions will.
+These are so that lang utility can detect them when parsing Core.
+
+Languages
+<!L en><!L hu><!L ch><!L fr><!L ru><!L de><!L es><!L he><!L ar>
+Date stuff
+<!L dateformat><!L yesterday><!L today><!L tomorrow>
+<!L month01><!L month02><!L month03><!L month04><!L month05><!L month06><!L month07><!L month08><!L month09><!L month10><!L month11><!L month12>
+<!L dayfirst><!L day0><!L day1><!L day2><!L day3><!L day4><!L day5><!L day6>
+<!L sec><!L secs><!L min><!L mins><!L hour><!L hours><!L day><!L days>
+Default values for built-ins and phrases
+<!L Users><!L Login><!L Cache><!L Image><!L Help><!L Press me><!L Okay><!L Cancel><!L Name><!L Date><!L Time><!L Address><!L Group>
+Actions
+<!L Save><!L Delete><!L Update><!L Upload><!L Help><!L Yes><!L No>
+Selections
+<!L Any><!L empty><!L all><!L none><!L other><!L true><!L false>
+Numbers
+<!L zero><!L one><!L two><!L three><!L four><!L five><!L six><!L seven><!L eight><!L nine><!L ten><!L eleven><!L twelve>
+Validations
+<!L failed to upload file.><!L not a valid password! [a-zA-Z0-9]*6><!L not enough!><!L too much!><!L invalid phone number><!L invalid email address><!L bad date>
+-->
 <br><br>
 </div>

@@ -1,1 +1,1 @@
-<h1><!=L('Site is temporarily down for maintenance reasons.')></h1>
+<h1><!L Site is temporarily down for maintenance></h1>

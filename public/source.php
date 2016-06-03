@@ -1284,6 +1284,10 @@ namespace PHPPE {
                 //! if none, fallback to memcache
                 if (empty(self::$mc)) {
                     // @codeCoverageIgnoreStart
+                    $d = '\\Memcache';
+                    if (!class_exists($d)) {
+                        \PHPPE\Core::log('C', L('no php-memcache'), 'cache');
+                    }
                     //! unix file: "unix:/tmp/fifo", "host" or "host:port" otherwise
                     if ($m[0] == 'unix') {
                         $p = 0;
@@ -1293,7 +1297,6 @@ namespace PHPPE {
                         $h = $m[0];
                     }
                     // @codeCoverageIgnoreEnd
-                    $d = '\\Memcache';
                     self::$mc = new $d();
                     //Core::$mc->addServer( $h, $p );
                     //$s = @Core::$mc->getExtendedStats(  );
@@ -1721,7 +1724,7 @@ namespace PHPPE {
             }
             //! try button counter
             self::$tc = 0;
-/*
+
             //! register built-in fields and widgets all at once
             //! this is required for \PHPPE\Core::isInst() to always return true for built-ins
             Core::addon( "hidden", "Hidden value", "", "*obj.field" );
@@ -1738,7 +1741,6 @@ namespace PHPPE {
             Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
             Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
             Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
-*/
         }
 
 /**
@@ -2555,8 +2557,8 @@ namespace PHPPE {
                         $c = !empty($_SESSION['pe_c']);
                         $O .= "<span onclick='return pe_p(\"pe_l\");'>".
                             (file_exists('vendor/phppe/Core/'.$f) ? "<img src='$f' height='10' alt='$k' title='$k'>" : $k).'</span>'.
-                            "<div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof users_profile==\"function\")users_profile(this);else alert(\"".L('Install PHPPE Users')."\");'>".L('Profile').'</li>'.
-                            (Core::$user->has('conf') ? "<li><a href='".url().'?conf='.(1 - $c)."'>".L(($c ? 'Lock' : 'Unlock')).'</a></li>' : '').
+                            "<div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof users_profile==\"function\")users_profile(this);else alert(\"".L('Install PHPPE Pack')."\");'>".L('Profile').'</li>'.
+                            (Core::$user->has('conf') ? "<li><a href='".url().'?conf='.(1 - $c)."'>".($c ? L('Lock') : L('Unlock')).'</a></li>' : '').
                             "<li><a href='".url('logout')."'>".L('Logout').'</a></li></ul></div>'.
                             "<span onclick='return pe_p(\"pe_u\");'>".(!empty(Core::$user->name) ? Core::$user->name : '#'.Core::$user->id).'</span></div></div>'.
                             "<div style='height:32px !important;'></div>\n";
@@ -2674,7 +2676,7 @@ namespace PHPPE {
             //! try to load image, fallback to plain copy if failed
             $d = @file_get_contents($o);
             if (!function_exists('gd_info') || empty($d) || !($i = @imagecreatefromstring($d))) {
-                Core::log('W', "no php-libgd or bad image: $o", 'picture');
+                Core::log('W', L("no php-libgd or bad image").": $o", 'picture');
                 if (file_exists($o)) {
                     @copy($o, $n);
                 }
@@ -3823,7 +3825,7 @@ class ClassMap extends Extension
                 $T = View::template('maintenance');
                 //! if no template found
                 if (empty($T)) {
-                    $T = L('Site is temporarily down for maintenance.');
+                    $T = L('Site is temporarily down for maintenance');
                 }
             }
 
@@ -3886,7 +3888,7 @@ class ClassMap extends Extension
                     }
                     if ($f) {
                         // @codeCoverageIgnoreStart
-                        self::log('C', "$n depends on: $f");
+                        self::log('C', "$n ".L("depends on").": $f");
                     }
                         // @codeCoverageIgnoreEnd
                 }
@@ -4205,22 +4207,6 @@ class ClassMap extends Extension
                     $r = $p.'_'.substr($K, strlen($p) + 1);
                     if(empty($R[$r]))
                         $R[$r]='';
-/*
-                    foreach ($v as $T => $C) {
-                        //! browsers do not send false for checkboxes
-                        if (($T == 'check' || !empty($C[0])) && empty($R[$r])) {
-                            $R[$r] = $T == 'check' ? false : '';
-                        }
-                        //! php stores info for files in a separate array, copy it to request
-                        elseif ($T == 'file') {
-                            $f = empty($_FILES[$r]) ? [] : $_FILES[$r];
-                            if (!empty($f[$E]) && $f[$E] != 4) {
-                                self::error(L(ucfirst($d)).' '.L('failed to upload file.'), $K);
-                            }
-                            $R[$r] = isset($f[$E]) && $f[$E] == 0 ? $f : [];
-                        }
-                    }
-*/
                 }
             }
 //            ksort($R);
