@@ -2,7 +2,7 @@ PHP Portal Engine - single file framework
 =========================================
 
 PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only a few kilobytes in size, so small, that it fits on your clipboard!
-Unlike other existing OpenSource PHP frameworks, PHPPE was written with security, MVC, [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
+Unlike other existing OpenSource PHP frameworks, PHPPE was written with security, [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
 As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and make your life easier.
 It's not bloated, and with simplicity cames stability and high performance.
 
@@ -14,7 +14,7 @@ This 80k bytes of PHP code will give you:
 - [PHPUnit](https://phpunit.de) compatibility with [100% code coverage](http://bztsrc.github.io/phppe3/coverage)
 - [Bootstrap](https://getbootstrap.com/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
-- Very low footprint, less than 1MiB, can run on a [Raspberry Pi](https://www.raspberrypi.org/)
+- Very low footprint, less than 1MiB, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
 - Highly modular, easy to expand structure with Class autoloader
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
@@ -32,9 +32,9 @@ This 80k bytes of PHP code will give you:
 - Built-in Content Server for CMS support
 - Uses View layer to detect Models (flexibility you've never seen)
 
-Of course one single file is limited, so here's the PHPPE Pack (~100KiB) to save the day and give you an easy start.
+Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (~80KiB) to save the day and give you an easy start.
 
-For full CMS capability you'll also need the Content Editor with PHPPE CMS (24KiB), because PHPPE Core on it's own only serves contents.
+For full CMS capability you'll also need the Content Editor with [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (24KiB), because PHPPE Core on it's own only serves contents.
 
 Requirements
 ------------
