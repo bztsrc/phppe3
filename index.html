@@ -13,19 +13,18 @@
 #header DIV.dock {position:fixed;top:4px;right:40px;}
 #header BUTTON {height:20px;font-size:12px;line-height:12px;top:2px;border:solid 1px #fff;color:#fff;background-color:#709504;background:linear-gradient(#d8f4a9,#709504,#baf159);}
 #search {height:20px;font-size:12px;line-height:12px;top:2px;}
-DIV.toc {position:fixed;top:34px;left:2px;width:220px;border-right:1px solid #E0E0E0;padding:4px 4px 4px 4px;display:block;z-index:5;color:#E0E0E0;}
+DIV.toc {position:absolute;top:34px;left:2px;width:220px;border-right:1px solid #E0E0E0;padding:4px 4px 4px 4px;display:block;z-index:5;color:#E0E0E0;}
 DIV.toc A {text-decoration:none; color:#808080;}
-DIV.toc OL {padding-left:5px !important; counter-reset: item }
-DIV.toc LI { display:block; }
-DIV.toc LI:before { content: counters(item, ".") ". "; counter-increment: item }
-DIV.toc A.header { color:rgb(136,146,191); font-size:18px;margin-bottom:5px;}
+DIV.toc OL {padding-left:5px !important; }
+DIV.toc LI { display:block; padding-left:5px;}
+DIV.toc A.header { color:rgb(136,146,191); font-size:18px;}
 DIV.toc I { color:rgb(136,146,191); font-size:18px;}
-DIV.tab { padding-top:30px; padding-bottom:64px; margin-left:240px;}
-OL.toc > LI { padding-top:20px; }
-OL.toc > LI > OL { padding-top:10px !important; }
+DIV.tab { padding-top:30px; padding-bottom:64px; margin-left:240px; margin-right:20px; display:none; }
+OL.toc > LI { padding-top:10px; }
+OL.toc > LI > OL { padding-top:5px !important; }
 A { cursor:pointer; }
 A:hover { text-decoration:underline; }
-#infobox {position:fixed;bottom:0px;left:0px;font-family:fixed;color:#A0A0A0;font-size:12px;opacity:0.8;cursor:pointer;}
+#infobox {position:fixed;bottom:0px;left:0px;font-family:fixed;color:#A0A0A0;background:#fff;font-size:12px;opacity:0.8;cursor:pointer;width:220px;}
 .back A { text-decoration:none;color:#000000;cursor:pointer;z-index:10;text-shadow:2px 2px 2px #FFFFFF;margin-left:40px;}
 PRE[class] { margin: 0px 0px 0px 0px; font-size: 14px; line-height: 16px; padding: 0px 0px 0px 5px; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAgCAIAAABch4VNAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wLEREfNbBQdOUAAAAidEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOHqHdDAAAAGElEQVQI12N4+/YtEwMDA9n4xYsXlOgHABagBb6SY4hyAAAAAElFTkSuQmCC"); }
 PRE.php { border-top-left-radius:0px !important;border-bottom-left-radius:0px !important;}
@@ -43,6 +42,14 @@ PRE SPAN.operator	{ color:green; }
 PRE SPAN.index		{ color:green; }
 PRE SPAN.variable	{ color:#6495ED; }
 PRE SPAN.function	{ color:darkgreen; }
+.installpreview {border:solid 2px black;padding:5px 5px 5px 5px;font-family:times new roman;}
+.installpreview H1 {font-size:2em;font-weight:bold;}
+.installpreview PRE {border:0px none;background:#fff !important;}
+.installpreview INPUT {display:inline-block;margin:0px;padding:1px;}
+.installpreview INPUT[type=text], .installpreview INPUT[type=password],  .installpreview INPUT[type=number], .installpreview INPUT[type=tel]
+ {border:solid 1px #000;width:100px !important;border-radius:0px;display:inline-block;height:20px;}
+.installpreview INPUT[type=file] {border:none 0px;display:inline-block;width:200px;}
+.installpreview BUTTON {border:outset 1px #a7a7a7;border-radius:0px;display:inline-block;padding:1px 5px 1px 5px;background:linear-gradient(#f6f6f6,#dedede);}
 @media (max-width:512px){#search{max-width:100px;}}
 </style>
 <script type='text/javascript'>
@@ -51,21 +58,22 @@ var tab_tmr=null, tab_close=null, tab_scroll=0, tab_skip=0, tab_mod=0;
 
 function tab_switch(name,skiphist)
 {
-    var i,obj=document.getElementsByTagName("div"),d=name.split(":");
+    var i,obj=document.querySelectorAll("div.tab"),d=name.split(":");
     for(i=0;i<obj.length;i++){
-	var j,txt="",cls=obj[i].getAttribute("class");
-	if(obj[i]==null || obj[i]==undefined || cls==null || cls.indexOf("tab")==-1) continue;
-	obj[i].setAttribute('style','display:none;');
-	if(obj[i].id!=null && obj[i].id==d[0]) {
-	    obj[i].style.display="block";
-	    var h=obj[i].getElementsByTagName("h1"),t=h[0].innerHTML;
-	    //document.getElementById('title').innerHTML='Documentation - '+h[0].innerHTML;
-	    document.title=t.replace("&gt;",">");
-	}
+        var j,txt="";
+        obj[i].setAttribute('style','display:none;');
+        if(obj[i].id!=null && obj[i].id==d[0]) {
+            obj[i].style.display="block";
+            var h=obj[i].getElementsByTagName("h1")[0];
+            if(h!=null) {
+                t=h.innerHTML;
+                document.title=t.replace("&gt;",">");
+            }
+        }
     }
     if(skiphist==null && tab_history[tab_history.length-1]!=tab_current){
-	tab_history.push(tab_current+':'+tab_scroll);
-	}
+        tab_history.push(tab_current+':'+tab_scroll);
+    }
     tab_current=d[0];
     tab_scroll=d[1]>0?d[1]:0;
     window.scrollTo(0,tab_scroll);
@@ -220,7 +228,53 @@ function init()
     <li><a onclick='tab_switch("configuration");'>Configuration</a></li>
     <li><a onclick='tab_switch("security");'>Security</a></li>
     <li><a onclick='tab_switch("monitoring");'>Monitoring</a></li>
+    <li><a onclick='tab_switch("cron");'>Background jobs</a></li>
 </ol></li>
+    <li><a class='header' onclick='toc_switch(this);'>Basics</a>
+    <ol style='display:none;'>
+    <li><a onclick='tab_switch("overview");'>Overview</a></li>
+    <li><a onclick='tab_switch("routing");'>Routing</a></li>
+    <li><a onclick='tab_switch("filters");'>Filters</a></li>
+    <li><a onclick='tab_switch("cache");'>Cache</a></li>
+    <li><a onclick='tab_switch("services");'>Services</a></li>
+    <li><a onclick='tab_switch("model");'>Models</a></li>
+    <li><a onclick='tab_switch("controller");'>Controllers</a></li>
+    <li><a onclick='tab_switch("templater");'>Templater</a></li>
+    <li><a onclick='tab_switch("sitebuilds");'>Sitebuilds</a></li>
+    <li><a onclick='tab_switch("assets");'>Assets</a></li>
+    <li><a onclick='tab_switch("contents");'>Contents</a></li>
+    <li><a onclick='tab_switch("events");'>Events</a></li>
+    <li><a onclick='tab_switch("extensions");'>Extensions</a></li>
+</ol></li>
+    <li><a class='header' onclick='toc_switch(this);'>Programming</a>
+    <ol style='display:none;'>
+    <li><a onclick='tab_switch("coding");'>Coding standards</a></li>
+    <li><a onclick='tab_switch("phppe_core");'>PHPPE\Core</a></li>
+    <li><a onclick='tab_switch("phppe_classmap");'>PHPPE\ClassMap</a></li>
+    <li><a onclick='tab_switch("phppe_client");'>PHPPE\Client</a></li>
+    <li><a onclick='tab_switch("phppe_users");'>PHPPE\Users</a></li>
+    <li><a onclick='tab_switch("phppe_ds");'>PHPPE\DS</a></li>
+    <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a></li>
+    <li><a onclick='tab_switch("phppe_http");'>PHPPE\Http</a></li>
+    <li><a onclick='tab_switch("phppe_View");'>PHPPE\View</a></li>
+    <li><a onclick='tab_switch("phppe_addons");'>PHPPE\AddOns</a></li>
+    <li><a onclick='tab_switch("phppe_tools");'>PHPPE\Tools</a></li>
+</ol></li>
+    <li><a class='header' onclick='toc_switch(this);'>Tutorials</a>
+    <ol style='display:none;'>
+    <li><a onclick='tab_switch("coding");'>Coding standards</a></li>
+    <li><a onclick='tab_switch("phppe_core");'>PHPPE\Core</a></li>
+    <li><a onclick='tab_switch("phppe_classmap");'>PHPPE\ClassMap</a></li>
+    <li><a onclick='tab_switch("phppe_client");'>PHPPE\Client</a></li>
+    <li><a onclick='tab_switch("phppe_users");'>PHPPE\Users</a></li>
+    <li><a onclick='tab_switch("phppe_ds");'>PHPPE\DS</a></li>
+    <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a></li>
+    <li><a onclick='tab_switch("phppe_http");'>PHPPE\Http</a></li>
+    <li><a onclick='tab_switch("phppe_View");'>PHPPE\View</a></li>
+    <li><a onclick='tab_switch("phppe_addons");'>PHPPE\AddOns</a></li>
+    <li><a onclick='tab_switch("phppe_tools");'>PHPPE\Tools</a></li>
+</ol></li>
+    <li><a class='header' onclick='tab_switch("downloads");'>Downloads</a>
 </ol>
 </div>
 
@@ -264,7 +318,19 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <p>For full CMS capability you'll also need the Content Editor with <a href='http://bztsrc.github.io/phppe3/phppe3_cms.tgz'>PHPPE CMS</a> (24KiB), because PHPPE Core on it's own only serves contents.</p>
 
 <h2>Requirements</h2>
-<p>At least PHP 7.0. If you install the full environment (with Pack, CMS, Extensions and Developer), no more than 768k disk space needed.</p>
+<ul>
+<li>At least PHP 7.0</li>
+<li>SSH terminal access (use ssh or PuTTY)</li>
+<li>Apache or nginx with php-fpm on server side</li>
+<li>Any HTML5 compatible browser on client side</li>
+<li>No more than 768KiB free space if you install the full environment (with Pack, CMS, Extensions and Developer)</li>
+</ul>
+<h4>Optional</h4>
+<ul>
+<li>PHP POSIX extension and sudo (for automatic permission and file owner fixes in diagnostic mode)</li>
+<li>PHP Composer for <a href='javascript:tab_switch("extensions");'>extension management</a></li>
+<li>A cron implementation (crond, vixie-cron etc.) for <a href='javascript:tab_switch("cron");'>background jobs</a></li>
+</ul>
 
 <h2>License</h2>
 <p>PHPPE Core, PHPPE Pack, PHPPE CMS, PHPPE Extensions as well as PHPPE Developer are free and OpenSource softwares, licensed under <a href='http://www.gnu.org/licenses/' target='_new'>LGPL-3.0+</a>. See <a href='https://raw.githubusercontent.com/bztsrc/phppe3/master/LICENSE' target='_new'>LICENSE</a> for details.</b>
@@ -388,7 +454,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <tr><td></td><td><b>out/<i>format</i>_header.php<br>out/<i>format</i>_footer.php</b></td><td>for formats other than HTML (like RSS), their header and footer generating code goes there</td></tr>
 </table>
 
-<h3>Important files</h3>
+<h3>Important files and directories</h3>
 <table class='table table-striped'>
 <tr><td><b>phppe/config.php</b></td><td>the framework's global <a href='javascript:tab_switch("configuration");'>configuration</a></td></tr>
 <tr><td><b>data/log/<i>extension</i>.log</b></td><td>logs are generated here. The files php.log, db.log, diag.log and validate.log are handled by the Core iself</td></tr>
@@ -403,7 +469,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <tr><td><b>vendor/bin/</b></td><td>if you need shell or other non-php scripts (like a special nagios plugin) for your project, it should be placed here.</td></tr>
 <tr><td><b>vendor/phppe/*/libs/ds_<i>engine</i>.php</b></td><td>SQL translations and connection initialization commands for datasources.</td></tr>
 </table>
-<h2>Symbolic links</h2>
+<h3>Symbolic links</h3>
 <p>It's very important that your working directory is <i>ProjectRoot</i>. Therefore all symlink paths should be relative in PHPPE.</p>
 <table class='table table-striped'>
 <tr><th>File</th><th>Link to</th><th>Purpose</th></tr>
@@ -424,7 +490,7 @@ can append it's id to the ACE: PHPPE\Core::$user->grant("editgroup:13").
 <h3>Access Control List (ACL)</h3>
 A list of ACEs. In Menu, <A href='javascript:tab_switch("filters");'>URL filters</a> as well in Templates you can refer to an ACE with "@" prefix, like "@loggedin". For a list, use pipe to concatenate ACEs (like "@siteeditor|siteadmin") or in php you can use an array.
 <h3>Add-On</h3>
-Kind of Extension that expands Templater's functionality on <tt>&lt;!var</tt>, <tt>&lt;!field</tt> and <tt>&lt;!widget</tt> tags. They have to be inherited from <a href='javascript:tab_switch("phppe_addon");'>PHPPE\AddOn</a>.
+Kind of Extension that expands Templater's functionality on <samp>&lt;!var</samp>, <samp>&lt;!field</samp> and <samp>&lt;!widget</samp> tags. They have to be inherited from <a href='javascript:tab_switch("phppe_addon");'>PHPPE\AddOn</a>.
 <h3>Application</h3>
 This is the main part that generates the page. Usually has one or more controllers. Your main application resides in app folder, and it's controllers in app/ctrl, models in app/libs and views in app/views. Otherwise every Extension can provide controllers, models, views and therefore act as an application. Also, your application is symlinked as an Extension in vendor/phppe/app. The PHPPE environment is a set of applications, each responsible for different urls. All applications (and indirectly all controllers) have to be inherited from <a href='javascript:tab_switch("phppe_app");'>PHPPE\App</a>.
 <h3>Client</h3>
@@ -432,17 +498,17 @@ End user's application that interacts with PHPPE. It's a webbrowser or a shell r
 <h3>Concept</h3>
 The PHPPE concept of how a homepage is organized and should be generated is as follows:
 <ul>
-	<li>Views are generated from templates, so called layouts (eg.: "blogpost"). These have special tags marking variable places (like <tt>&lt;!=title&gt;</tt>, <tt>&lt;!=createdate&gt;</tt> etc.).</li>
+	<li>Views are generated from templates, so called layouts (eg.: "blogpost"). These have special tags marking variable places (like <samp>&lt;!=title&gt;</samp>, <samp>&lt;!=createdate&gt;</samp> etc.).</li>
 	<li>The common homepage layout is described by a specific template, called "frame". This layout frames all the others. This is the place for the header, the menu, and the footer etc.</li>
-	<li>Each page corresponds to an url, and it's an instance of a layout. Page parameters fill in variable places in templates (eg.: by replacing <tt>&lt;!=createdate&gt;</tt> with the blog post's actual creation date).</li>
+	<li>Each page corresponds to an url, and it's an instance of a layout. Page parameters fill in variable places in templates (eg.: by replacing <samp>&lt;!=createdate&gt;</samp> with the blog post's actual creation date).</li>
 	<li>Pages can be grouped in page lists. Each page can be member of several lists. There's one special page list, called "mainmenu" which always exists. Unlike other CMS alternatives, in PHPPE you don't have to put a page in the menu if you want to expose it's url to the user. In PHPPE you can access it by entering it's url directly regardless of menus. So if you want to disable a specific url, simply unpublish the corresponding page.</li>
-	<li>Page lists can be used in <tt>&lt;!foreach</tt> when generating view (eg.: "blogfrontpage", which lists pages of layout "blogpost", ordered by descending creation date).</li>
+	<li>Page lists can be used in <samp>&lt;!foreach</samp> when generating view (eg.: "blogfrontpage", which lists pages of layout "blogpost", ordered by descending creation date).</li>
 	<li>There's always a user object reflecting the actor on client side, if not authenticated then a restricted anonymous.</li>
 	<li>Controllers are executed before view generated, so that action handlers can redirect the user or influence the output.</li>
 	<li>A page with a unique, dynamically generated view (hence not using any content template or page parameter) is considered to be an application.</li>
 </ul>
 <h3>Core</h3>
-This is the heart of the single file framework, <tt>public/index.php</tt>. Also the very basic extension, PHPPE Pack ships files under <tt>vendor/phppe/Core</tt>. If the latter not installed, the Core
+This is the heart of the single file framework, <samp>public/index.php</samp>. Also the very basic extension, PHPPE Pack ships files under <samp>vendor/phppe/Core</samp>. If the latter not installed, the Core
 will create the <a href='javascript:tab_switch("directory");'>directory structure</a> for it when executed in diagnostics mode.
 <h3>Diagnostics mode</h3>
 This can be invoked only from CLI by passing the argument "--diag". In this mode Core will examine the ProjectRoot's directory structure, will fix missing files and if run with root
@@ -450,13 +516,13 @@ privileges it will fix file permissions as well.
 <h3>Dock</h3>
 Right corner of Panel, populated by Modules with their dock() hook methods.
 <h3>DocumentRoot</h3>
-The base folder where the webserver will look up files. It's the folder named <tt>public</tt> under your ProjectRoot.
+The base folder where the webserver will look up files. It's the folder named <samp>public</samp> under your ProjectRoot.
 <h3>Extension</h3>
 Any Add-On or Module that can be added to or removed from your PHPPE environment. One Extension can add several Add-Ons and Modules at once to the system.
 <h3>Frame</h3>
 This is the main template that frames every application views. Within frame template, use &lt;!app> tag to mark the place of your application, in other words this tag separates frame header and footer. Header usually contains a page menu and a navigation bar, while footer has a sitemap and an impressum line.
 <h3>Maintenance mode</h3>
-This can be turned on in <tt>phppe/config.php</tt> with <tt>$core->maintenance=true</tt>. In this mode controllers are skipped and only a view displayed with a template called "maintenance". This is
+This can be turned on in <samp>phppe/config.php</samp> with <samp>$core->maintenance=true</samp>. In this mode controllers are skipped and only a view displayed with a template called "maintenance". This is
 used to temporarily put your site down until you finish with delicate upgrades.
 <h3>Menu</h3>
 Left side of Panel, populated by Modules with <a href='javascript:tab_switch("menu");'>PHPPE\View::menu()</a> calls during their initialization.
@@ -469,15 +535,157 @@ Model that's inherited from <a href='javascript:tab_switch("phppe_model");'>PHPP
 <h3>Panel</h3>
 If the user is logged in and has "panel" ACE, a nice panel will be shown on top of the page at fixed position. This panel holds the Menu and the Dock icons for Modules as well as the language selector dropdown and the user menu with profile and logout links.
 <h3>ProjectRoot</h3>
-The main directory of your project. It has the main <tt>composer.json</tt> and the folders <tt>app</tt>, <tt>public</tt>, <tt>vendor</tt> etc.
+The main directory of your project. It has the main <samp>composer.json</samp> and the folders <samp>app</samp>, <samp>public</samp>, <samp>vendor</samp> etc.
 <h3>Runlevel</h3>
-This can be set in <tt>phppe/config.php</tt> with <tt>$core->runlevel=X</tt>. This modifies how PHPPE behaves and the verbose level of <a href='javascript:tab_switch("log");'>logs</a> it generates.<br>
+This can be set in <samp>phppe/config.php</samp> with <samp>$core->runlevel=X</samp>. This modifies how PHPPE behaves and the verbose level of <a href='javascript:tab_switch("log");'>logs</a> it generates.<br>
 0 - production<br>
 1 - verbose / testing<br>
 2 - development<br>
 3 - debug
 <h3>Template or Layout</h3>
 It's an (usually, but not necessairly) xml with placeholders for application properties and tags for <a href='javascript:tab_switch("flow");'>control structures</a> and <a href='javascript:tab_switch("addonstemp");'>Add-Ons</a>. Views are generated using templates.
+</div>
+
+<div id='install' class='tab' rel='diagnostics,sudo'>
+<h1>Installation</h1>
+<p>All-in-one commands for lazy developers to bootstrap PHPPE Core in an empty directory:</p>
+<b>From this documentation, no dependencies at all</b><br>
+<pre>
+mkdir public
+cat >public/index.php
+         <i><a href='javascript:phppe_download();'>copy this</a>, paste here and press ^D</i>
+sudo php public/index.php --diag
+$EDITOR phppe/config.php
+</pre>
+<br><b>With Packagist</b><br>
+<pre>
+composer create-project bztsrc/phppe3
+mv phppe3 <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
+$EDITOR phppe/config.php
+</pre>
+<br>
+<b>Without Packagist (Composer alone)</b><br>
+<pre>
+mkdir public
+curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
+sudo php public/index.php --diag
+composer update
+$EDITOR phppe/config.php
+</pre>
+<br><b>With git</b><br>
+<pre>
+git clone --branch 3.0 https://github.com/bztsrc/phppe3.git
+mv phppe3 <i style='color:red;'>(yourproject)</i> && cd <i style='color:red;'>(yourproject)</i>
+sudo php public/index.php --diag
+$EDITOR phppe/config.php
+</pre>
+<br><b>Using web interface</b><br>
+<p>Alternatively if you already have a running PHPPE environment somewhere, you can use <a href='javascript:tab_switch("extensions");'>PHPPE Extension Manager</a> to
+bootstrap the environment to a fresh new, empty directory on a remote server. All you need is a working key based SSH authentication.</p>
+<p>See steps breaked down (and more alternatives) below.</p>
+<h3>1. Get the single file framework</h3>
+<p>To get it on your clipboard, <a href='javascript:phppe_download();'>click here</a>. Select all and copy.</p>
+<p>Open up a terminal, and ssh to your server (or use a windowed ssh client).
+Change working directory to your ProjectRoot, then type</p>
+<pre>
+$ mkdir public
+$ cat >public/index.php
+</pre>
+<p>Paste the code from clipboard then press <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
+<p>If your terminal is laggy and you cannot paste the code without mistakes, copy'n'paste this much shorter command that downloads the file from the server.</p>
+<b>From server</b><br>
+<pre>
+$ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
+</pre>
+<p>If you take a look at your site in a browser, you'll see a greeting message:</p>
+<div class='installpreview'><h1>PHPPE works!</h1>Next step: <samp>php public/index.php --diag</samp></div><br>
+<div class='alert alert-info'><b>NOTE</b>: you can skip the following when using Composer as it automatically triggers diagnostics (go to step 3).</div>
+<h3>2. Run diagnostics</h3>
+<p>Now framework is in place, it's time to run diagnostics to create directory structure and missing files.
+Without the "sudo", file ownerships and permissions may be left incorrect.</p>
+<pre>$ sudo php public/index.php --diag</pre>
+<p>If you failed to copy'n'paste the code correctly, you'll see this:</p>
+<pre>
+PHPPE-C: Corrupted index.php
+LOG-C: unable to write data/log/phppe.log
+</pre>
+<p>Root privilege is only needed for setting up file permissions, if you run it as a normal user, chown and chgrp may fail. In this case you'll see a warning:</p>
+<pre>
+DIAG-W: not root or no php-posix, chown/chgrp may fail!
+</pre>
+<p>If your webserver's group cannot be autodetected, or you run your vhosts under different users with setuid and setgid, you can specify the desired group id like:</p>
+<pre>$ sudo php public/index.php --diag --gid=33</pre>
+<p>If everything went well, you should see this message:</p>
+<pre>
+DIAG-I: OK
+</pre>
+<h3>3. Check it in a browser</h3>
+<p>Check your site in a browser. You should see something similar to this:</p>
+<div class='installpreview'>
+
+<h1>PHPPE works!</h1>Next step: install <a href='http://bztsrc.github.io/phppe3/phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><form name='obj' action='http://phppetest/' class='form-vertical' method='post' enctype='multipart/form-data'><input type='hidden' name='MAX_FILE_SIZE' value='2097152'><input type='hidden' name='pe_s' value='c667543e7d4dff2e255e5f6e230f5c23b88d78a4'><input type='hidden' name='pe_f' value='obj'>Text<input class='input form-control' id='obj_f0' name='obj_f0' type='text' onfocus='this.className=this.className.replace(" errinput","")' placeholder="Example" pattern="[a-z0-9]+" value=""> Pass<input class='input form-control' id='obj_f1' name='obj_f1' type='password' value="" onfocus='this.className=this.className.replace(" errinput","")'> Num(100..999)<input required class='reqinput form-control' id='obj_f2' name='obj_f2' style='text-align:right;' type='number' onkeypress='return pe_on(event);' onkeyup='this.value=this.value.replace(",",".");' onfocus='if(this.value<100)this.value=100;if(this.value>999)this.value=999;if(this.value=="")this.value=0;this.className=this.className.replace(" errinput","");this.select();' onblur='if(this.value<100)this.value=100;if(this.value>999)this.value=999;' min='100' max='999' value=""> Phone<input pattern='[0-9\+][0-9\ \(\)\-]+' class='input form-control' id='obj_f3' name='obj_f3' type='tel' onfocus='this.className=this.className.replace(" errinput","")' onkeypress='return pe_op(event);' value=""><label><input class='input checkbox' id='obj_f4' name='obj_f4' type='checkbox' value="1">Check</label>  File<input class='input form-control' id='obj_f5' name='obj_f5' type='file' style='display:inline;' title='2Mb'>  <button class='btn btn-default' name='pe_try1' type='submit'>Okay</button></form><table width='100%'><tr><td valign='top' width='50%'><div class='dump'><b style='font:monospace;'>_REQUEST:</b><pre class='xdebug-var-dump' dir='ltr'>
+<b>array</b> <i>(size=0)</i>
+  <i><font color='#888a85'>empty</font></i>
+</pre></div><div class='dump'><b style='font:monospace;'>_FILES:</b><pre class='xdebug-var-dump' dir='ltr'>
+<b>array</b> <i>(size=0)</i>
+  <i><font color='#888a85'>empty</font></i>
+</pre></div></td><td>&nbsp;</td><td valign='top'><div class='dump'><b style='font:monospace;'>core.req2arr('obj'):</b><pre class='xdebug-var-dump' dir='ltr'>
+<b>array</b> <i>(size=6)</i>
+  'f0' <font color='#888a85'>=&gt;</font>  <font color='#cc0000'>''</font> <i>(length=0)</i>
+  'f1' <font color='#888a85'>=&gt;</font>  <font color='#cc0000'>''</font> <i>(length=0)</i>
+  'f2' <font color='#888a85'>=&gt;</font> <font color='#3465a4'>null</font>
+  'f3' <font color='#888a85'>=&gt;</font>  <font color='#cc0000'>''</font> <i>(length=0)</i>
+  'f4' <font color='#888a85'>=&gt;</font>  <font color='#75507b'>false</font>
+  'f5' <font color='#888a85'>=&gt;</font> 
+    <b>array</b> <i>(size=0)</i>
+      <i><font color='#888a85'>empty</font></i>
+</pre></div></td></tr></table>
+
+</div>
+<br>
+<div class='alert alert-success'>
+<b>At this point the framework is fully functional</b>, although it worth expanding it's capabilities by configuring and installing one or more extensions.
+</div>
+<h3>4. Configure your site</h3>
+Open phppe/config.php with your favourite editor over a terminal, and <a href='javascript:tab_switch("configuration");'>set up framework</a> parameters.<br>
+<pre>
+$ nano phppe/config.php
+$ vim phppe/config.php
+</pre>
+It's very likely that you have an $EDITOR environment variable holding default editor's name.
+<h3>5. Install PHPPE Pack (optional)</h3>
+<div class='alert alert-info'><b>NOTE</b>: if you've used <samp>composer create-project</samp>, nothing left to do as basic extensions are already installed.</div>
+<p>The diagnostics mode created missing files, among others composer.json. With that you can make PHP Composer to install vendor/phppe/Core from PHPPE Pack:</p>
+<b>With Composer (not using Packagist)</b><br>
+<pre>
+$ composer update
+</pre>
+<b>Without Composer</b><br>
+<pre>
+$ curl https://bztsrc.github.io/phppe3/phppe3_core.tgz | tar -xz -C vendor/phppe/Core && sudo php public/index.php --diag
+</pre>
+<h3>6. Install PHPPE Extensions Manager (optional)</h3>
+<b>With Composer</b><br>
+<pre>
+$ composer require phppe/Extensions
+</pre>
+<b>Without Composer</b><br>
+<pre>
+$ mkdir vendor/phppe/Extensions && curl https://bztsrc.github.io/phppe3/phppe3_extensions.tgz | tar -xz -C vendor/phppe/Extensions
+</pre>
+You'll find it's configuration in <a href='javascript:tab_switch("extensions");'><samp>vendor/phppe/Extensions/config.php</samp></a>. Once you've set up this, you can configure all the other Extensions
+over a nice web interface. This is the recommended way.
+<h3>7. Install PHPPE CMS (optional)</h3>
+For a full Content Management System you'll also need the Content Editor:<br><br>
+<b>With Composer</b><br>
+<pre>
+$ composer require phppe/CMS
+</pre>
+<b>Without Composer</b><br>
+<pre>
+$ mkdir vendor/phppe/CMS && curl https://bztsrc.github.io/phppe3/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
+</pre>
+<div class='alert alert-success'><b>That's it!</b> Enjoy using your shiny new PHPPE environment!</div>
 </div>
 
 <div id='usage' class='tab' rel='cgi,cli'>
@@ -490,7 +698,7 @@ If no <a href='javascript:tab_switch("routing");'>URL Routing</a> rules applies 
 <pre>
 https://my.domain/some/path/users/modify/joesmith
 </pre>
-which will include "vendor/phppe/*/ctrl/users.php", and will call <tt>modify("joesmith")</tt> method of a class that extends PHPPE\Ctrl and defined in that php file.
+which will include "vendor/phppe/*/ctrl/users.php", and will call <samp>modify("joesmith")</samp> method of a class that extends PHPPE\Ctrl and defined in that php file.
 See routing section of this documentation if you want more sophisticated control on which method with which arguments to be called.
 <h3>As a CLI script</h3>
 Some projects requires <a href='javascript:tab_switch("cron");'>cron jobs</a> or administration tools. For these PHPPE has CLI support, so that you can access and use your models and classes from a command line script as well. You can specify the application, action and item triumvirate as command line arguments.<br>
@@ -515,6 +723,432 @@ This will bootstrap the basic <a href='javascript:tab_switch("phppe");'>PHPPE en
 <span class='variable'>$phppe</span>-><span class='function'>run</span>();
 </pre></p>
 Note that the latter is quite uncommon and discouraged. It's clearer to create an extension.
+</div>
+
+<div id='configuration' class='tab' rel='config.php,environment'>
+<h1>Configuration</h1>
+<p>PHPPE Core is configured in <samp>phppe/config.php</samp>, with an array.
+Available properties can be found on <a href='javascript:tab_switch("phppe_core");'>PHPPE\Core Class</a> documentation,
+these are only the most commonly used ones.</p>
+<table class='table table-striped'>
+<tr><td style='vertical-align:top'><b>db</b></td><td>specifies primary <a href='javascript:tab_switch("dbInit");'>database connection</a></td></tr>
+<tr><td><b>title</b></td><td>name of the site (page title)</td></tr>
+<tr><td><b>runlevel</b></td><td>select production (0), verbose/testing (1), developer (2) or debug (3) mode</td></tr>
+<tr><td><b>maintenance</b></td><td>if set to true, will bypass all routing and controller, and only displays mainteance view for all urls</td></tr>
+<tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's Email sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
+<tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
+<tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
+<tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a href='javascript:tab_switch("extensions");'>Extensions</a></td></tr>
+<tr><td><b>...</b></td><td>See <a href='javascript:tab_switch("phppe_core");'>PHPPE\Core</a> for all properties</td></tr>
+</table>
+<div class='alert alert-info'><b>NOTE</b>: this file is only for configuring the framework itself, module and application configuration located in separate files!</div>
+<h2>Application configuration</h2>
+<p>Your application's configuration resides in <samp>app/config.php</samp>. Your <a href='javascript:tab_switch("services");'>application's init() method</a> will receive it as it's only argument.</p>
+<h2>Extension configuration</h2>
+<p>Every extension has it's own configuration file, named <samp>vendor/phppe/*/config.php</samp>. When initializing, their init() method will get the configuration array.<br><br>
+Configuration files for Extensions (and for Application as well) required to return associative arrays:</p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5</pre>
+<pre class='php'>
+&lt;?php
+<span class='keyword'>return</span> [
+	<span class='stringconst'>"key"</span> =&gt; <span class='stringconst'>"value"</span>,
+	<span class='comment'>//...more properties</span>
+];
+</pre></p>
+</div>
+
+<div id='security' class='tab' rel='permissions'>
+<h1>Security</h1>
+<p>Unlike any other OpenSource PHP framework, being secure is one of the main concerns of PHPPE.
+It uses different methods at several levels, which all together provide a decent security for your application.</p>
+<div class='alert alert-danger'>If you found any leakage in PHPPE Core or PHPPE Pack, please send it to me right away (zoltan.baldaszti<script type='text/javascript'>document.write("&#64;");</script>gmail.com). Thank you!</div>
+As with any other frameworks, it can be only secure if you pay attention on your configuration and if you take the recommendations below into consideration. A badly configured webserver will be vurnelable no matter what.
+<h3>File access</h3>
+PHPPE has a concept of UNIX style file permissions, and requires that<ul>
+<li>owner is a user who is allowed to modify the code (webmaster or deployment system's dedicated user)</li>
+<li>group belongs to the webserver that only executes the code, never allowed to modify it</li>
+<li>others are not allowed to even read directories and files by default</li>
+</ul>
+<p>With it's built-in diagnostic feature, PHPPE will check these (and if run with root privilege, also fix issues on it's own).<br>
+The file owner can belong to webserver's group, but it strictly forbidden to set webserver as owner.</p>
+<div class='alert alert-danger'><b>NOTE</b>: owner and group MUST BE different!</div>
+<h3>Websever access</h3>
+Webserver can access the files with group permissions. It's only allowed to read and execute code, except
+a few directory (namely ".tmp" and "data") that must be writeable, but CGI execution must be disabled in these directories in <a href='javascript:tab_switch("webserver");'>webserver's</a> configuration.<br><br>
+It's strongly advised to follow webserver's and PHP tickets on CVE, upgrade security patches, and keep all the unused features turned off.
+Also, webserver configuration should limit vhost's file access to it's ProjectRoot (that is PHP's open_basedir restricted to DocumentRoot/..).
+
+<h3>User access</h3>
+The framework has a built-in access control. Access control entries can be granted to <a onclick='tab_switch("phppe_user");'>PHPPE\User</a> instances. Calling actions and displaying view blocks may require specific access entries depending on view templates.<br>
+You can group access control entries into role groups and grant them to users at once.
+See <a href='javascript:tab_switch("has");'>(PHPPE\User)-&gt;has()</a>.
+
+<h3>Templater expressions</h3>
+Function calls inside view templates can be limited to those listed in <a href='javascript:tab_switch("configuration");'>PHPPE\Core::$core->allowed</a> array.
+
+<h3>Form tokens and validation</h3>
+PHPPE will generate a unique security token for each and every form. This avoids retransmissions and hand-made POST requests.<br>
+It also keeps track of the field types on a form, and upon submit it will call the appropirate validator on each form field's value. If it's not enough (for example you'll need a more complex business logic) you can do further checks in your <a href='javascript:tab_switch("controller");'>application's controller</a>.
+
+<h3>Form fields access</h3>
+In templates, you can require access control entries for every field and widgets. If the user does not have the appropriate ACE, it will fall back to displaying the value.
+
+<h3>Use AppArmour</h3>
+PHPPE applications supposed to be run through AppArmour or other similar security module. This is pain in the ass for the first time, but pays out on the long run.
+<br><br><br>
+</div>
+
+<div id='monitoring' class='tab' rel='nagios,munin,syslog'>
+<h1>Monitoring</h1>
+<h3>Parsing output</h3>
+The HTML output format will include statistics in a comment tag, right before the <code>&lt;/body&gt;</code> element.
+Here's a regexp to grab the info from it.
+<pre>
+&lt;!-- MONITORING: ([A-Z]+), page ([0-9\.]+) sec, db ([0-9\.]+) sec, server ([0-9\.]+) sec, mem ([0-9\.]+) mb[, mc] --&gt; &lt;/body&gt;
+</pre>
+<table class='table table-striped'>
+<tr><td valign='top'><b>MONITORING</b></td><td>magic to match pattern<br>&nbsp;OK - everything was ok<br>&nbsp;WARNING - running was ok, but generates more log than necessary<br>&nbsp;ERROR - something (like a validator or security check) failed</td></tr>
+<tr><td><b>page</b></td><td>total page generation time including database time</td></tr>
+<tr><td><b>db</b></td><td>time consumed by data source queries</td></tr>
+<tr><td><b>server</b></td><td>webserver time (framework start time minus http received time)</td></tr>
+<tr><td><b>mem</b></td><td>maximum memory peak</td></tr>
+<tr><td><b>mc</b></td><td>flag exists if the page was served from <a href='javascript:tab_switch("cache");'>cache</a>.</td></tr>
+</table>
+<div class='alert alert-info'><b>NOTE</b>: these statistics are updated even if the output is otherwise cached.</div>
+<h3>Configuring syslog</h3>
+Messages send through <a href='javascript:tab_switch("log");'>PHPPE\Core::log()</a> can be sent to syslog in the form:
+<pre>
+(vhost name):PHPPE-(A|W|E|C|I|D)-(extension):(original message without line breaks)
+</pre>
+It's easy to grep.<br><br>
+<samp>phppe/config.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br>4</pre>
+<pre class='php'>
+<span class='comment'>//send all messages to syslog, don't write log files.</span>
+<span class='stringconst'>'syslog'</span> => <span class='keyword'>true</span>,
+<span class='comment'>//also log debug trace along with messages</span>
+<span class='stringconst'>'trace'</span> = <span class='keyword'>true</span>,
+</pre></p>
+</div>
+
+<div id='cron' class='tab' rel='script,background'>
+<h1>Background Jobs</h1>
+<div class='alert alert-danger'><b>NOTE</b>: most garbage colletors (such as PHPPE\Cache\Files' clean up method) are connected to "cron minute" background job.</div>
+Use crontab command from SSH Terminal. This will invoke an interactive editor:
+<pre>
+$ <span class='keyword'>crontab -e</span>
+*    * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron minute
+*/15 * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron quaterly
+0    * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron hourly
+</pre>
+<p>Or, if you're a system administrator, use system wide configuration file</p>
+<samp>/etc/cron.d/phppe_<i>(vhost name)</i>:</samp>
+<pre>
+*    * * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron minute
+*/15 * * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron quaterly
+0    * * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron hourly
+</pre>
+<p>The appropriate controller that handles these actions goes like this, using default action routing mechanism.</p>
+<samp>app/ctrl/scripts.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19</pre>
+<pre class='php'>
+<span class='keyword'>namespace</span> PHPPE;
+<span class='keyword'>class</span> myExtension <span class='keyword'>extends</span> \PHPPE\Ctrl {
+
+    <span class='keyword'>function</span> <span class='function'>cronQuaterly</span>( <span class='variable'>$item</span> ) {
+	<span class='comment'>//here you can use the usual PHPPE environment. Don't forget to output text, not html.</span>
+	<span class='keyword'>echo</span> ( <span class='variable'>$item</span> . <span class='stringconst'>"\n"</span> );
+	<span class='comment'>//most scripts will exit without calling the templater</span>
+    }
+
+    <span class='keyword'>function</span> <span class='function'>cronHourly</span>( <span class='variable'>$item</span> ) {
+	<span class='comment'>//if you want templater to continue, set a template</span>
+	<span class='variable'>PHPPE\Core::$core</span>->template = <span class='stringconst'>"cron_ncursestmpl"</span>;
+    }
+
+    <span class='keyword'>function</span> <span class='function'>action</span>( <span class='variable'>$item</span> ) {
+	<span class='keyword'>die</span>( <span class='function'>L</span>(<span class='stringconst'>"Bad action."</span>) );
+    }
+}
+</pre></p>
+</div>
+
+<div id='overview' class='tab'>
+<h1>Overview</h1>
+<h3>PHPPE\Core Constructor</h3>
+<p>The framework has two different running scheme. PHPPE\Core constructor controls which one of these should be called.
+The $islib boolean variable is set if the framework was included from another php file as a library.</p>
+<ul>
+    <li>bootdiag() - runs diagnostics mode</li>
+    <li>run() - runs application (constroller), if $islib is false</li>
+</ul>
+<p>The following files will be processed in order:</p>
+<table class='table table-striped'>
+<tr><td><b>public/index.php</b></td><td>called by webserver directly or via rewrite mechanism</td></tr>
+<tr><td><b>vendor/phppe/Core/config.php</b></td><td>configuration loaded in constructor</td></tr>
+<tr><td><b>vendor/autoload.php</b></td><td>if found, PHP Composer autoloader will be included</td></tr>
+<tr><td><b>vendor/phppe/*/init.php</b></td><td>init scripts for extensions</td></tr>
+<tr><td><b>vendor/phppe/*/config.php</b></td><td>configurations for extensions</td></tr>
+<tr><td><b>vendor/phppe/*/lang/?</b></td><td>language dictionaries for extensions</td></tr>
+<tr><td><b>vendor/phppe/*/libs/?</b></td><td>other libraries referenced by extension's init.php</td></tr>
+</table>
+<h3>Run Application</h3>
+<p>The <a href='javascript:tab_switch("routing");'>URL routing</a> mechanism chooses one application to run. To do that,
+<a href='javascript:tab_switch("run");'>PHPPE\Core::run()</a> consult the ClassMap to find the class.</p>
+<p>Controller's namespace must be PHPPE\Ctrl. All controllers can be extended from the main Application class, that way their constructor will hold common code for all actions.</p>
+<h3>Generating output</h3>
+<p>Finally <a href='javascript:tab_switch("template");'>templater</a> will be called to generate output for the specified view.
+On CLI it's common to call die() at the end of action handler, and skip templater.</p>
+<table class='table table-striped'>
+<tr><td><b>views</b> table id='<i>template</i>'</td><td rowspan=4>First, the template given in PHPPE\Core::$core->template will be looked up.</td></tr>
+<tr><td><b>app/views/<i>template</i>.tpl</b></td></tr>
+<tr><td><b>vendor/phppe/<i>application</i>/views/<i>template</i>.tpl</b><td></tr>
+<tr><td><b>vendor/phppe/Core/views/<i>template</i>.tpl</b><td></tr>
+<tr><td><b>views</b> table id='<i>application</i>_<i>action</i>'</td><td rowspan=4>If that fails, action name will be used as template name.</td></tr>
+<tr><td><b>app/views/<i>application</i>_<i>action</i>.tpl</b></td></tr>
+<tr><td><b>vendor/phppe/<i>application</i>/views/<i>application</i>_</i>action</i>.tpl</b><td></tr>
+<tr><td><b>vendor/phppe/Core/views/<i>application</i>_<i>action</i>.tpl</b><td></tr>
+<tr><td><b>views</b> table id='<i>application</i>'</td><td rowspan=4>If even that fails, as a last resolt application's template will be looked for.</td></tr>
+<tr><td><b>app/views/<i>application</i>.tpl</b></td></tr>
+<tr><td><b>vendor/phppe/<i>application</i>/views/<i>application</i>.tpl</b><td></tr>
+<tr><td><b>vendor/phppe/Core/views/<i>application</i>.tpl</b><td></tr>
+<tr><td><b>views</b> table id='404'</td><td rowspan=3>If neither found, templater will fall back to 404 template.</td></tr>
+<tr><td><b>app/views/404.tpl</b></td></tr>
+<tr><td><b>vendor/phppe/Core/views/404.tpl</b><td></tr>
+<tr><td><b>views</b> table id='frame'</td><td rowspan=3>After application's output is generated and PHPPE\Core::$core->noframe is not set, output will be wrapped in this frame template</td></tr>
+<tr><td><b>app/views/frame.tpl</b></td></tr>
+<tr><td><b>vendor/phppe/Core/views/frame.tpl</b></td></tr>
+<tr><td><b>vendor/phppe/*/out/<i>format</i>_header.php</b></td><td>note that 'html' format has a built-in fallback. This code is responsible for generating the <code>html</code>, <code>head</code> blocks and <code>body</code> tags.</td></tr>
+<tr><td><b>vendor/phppe/*/out/<i>format</i>_footer.php</b></td><td>finally footer is generated. Built-in version for 'html' includes JavaScript libraries here, and calculates values for <a onclick='tab_switch("monitoring");'>monitoring</a> comment before the <code>/body</code> tag.</td></tr>
+</table>
+</div>
+
+<div id='routing' class='tab' rel='url,dynamic,default,special'>
+<h1>URL Routing</h1>
+<p>First of all, if <a href='javascript:tab_switch("configuration");'>PHPPE\Core::$core->maintenance</a> is true, all routing will be bypassed and only maintenance view will be displayed (using maintenance.tpl template).
+Otherwise the routing decision is made in <a href='javascript:tab_switch("run");'>(PHPPE\Core)->run()</a>.</p>
+
+<p>PHPPE has a concept of <i>application</i> that has several <i>actions</i>, each operating on a specific <i>item</i>. With other words, application is a controller class, action is a method in it, and item is it's argument.
+To explain URL routing, first we'll need an example application with actions. PHPPE gives you the freedom on how to organize your code. You can put all of your application's actions in a single file,
+or you can create separate files for each action. That's your choice.</p>
+<samp>app/ctrl/myapp.php<br>
+vendor/phppe/MyApp/ctrl/myapp.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9</pre>
+<pre class='php'>
+<span class='keyword'>namespace</span> PHPPE\Ctrl;
+<span class='keyword'>class</span> MyController <span class='keyword'>extends</span> MyApp {
+    <span class='comment'>//this action will be called via url routing with specific arguments</span>
+    <span class='keyword'>function</span> <span class='function'>myspecaction</span>( <span class='variable'>$arg1</span>, <span class='variable'>$arg2</span> = <span class='stringconst'>""</span> ) {}
+    <span class='comment'>//without route() call, one argument will be passed</span>
+    <span class='keyword'>function</span> <span class='function'>myaction</span>( <span class='variable'>$item</span> ) {}
+    <span class='comment'>//default action</span>
+    <span class='keyword'>function</span> <span class='function'>action</span>( <span class='variable'>$item</span> ) {}
+}
+</pre></p>
+<tt>app/ctrl/myapp_myaction.php<br>
+vendor/phppe/MyApp/ctrl/myaction.php:</tt>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br></pre>
+<pre class='php'>
+<span class='keyword'>namespace</span> PHPPE\Ctrl;
+<span class='keyword'>class</span> MyAppMyAction <span class='keyword'>extends</span> MyApp {
+    <span class='comment'>//if you use separate files, only one action handler defined in each.</span>
+    <span class='keyword'>function</span> <span class='function'>action</span>( <span class='variable'>$item</span> ) {}
+}
+</pre></p>
+<h3>URL matcher routes</h3>
+<p>Routes are loaded with <a href='javascript:tab_switch("route");'>PHPPE\Http::route()</a> in one of the extensions (or your applicaiton) initialization file, and they will be matched against the url.
+If url mask does not contain pharenthesis (no arguments), PHPPE\Core::$core->item will be passed to the method as an only argument.
+If method is omited, default action route will choose the appropriate method.</p>
+<p>Routes has to be placed in <a href='javascript:tab_switch("routetut");'>app/init.php</a> or <a href='javascript:tab_switch("routetut");'>vendor/phppe/<span>*</span>/init.php</a> as extension initialization code gets called before
+the routing decision is made. It's too late to call PHPPE\Core::route() in a controller's constructor.</p>
+<samp>app/init.php<br>
+vendor/phppe/MyApp/init.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23</pre>
+<pre class='php'>
+<span class='comment'>//plain arguments</span>
+<span class='function'>PHPPE\Http::route</span>( <span class='stringconst'>"myspecurl/([^/]+)/?(.*)"</span>, <span class='stringconst'>"MyApp"</span>, <span class='stringconst'>"myspecaction"</span>, <span class='stringconst'>"post,@admin"</span> );
+
+<span class='comment'>//json friendly format</span>
+<span class='function'>PHPPE\Http::route</span>( [
+	<span class='stringconst'>"url"</span> => <span class='stringconst'>"myspecurl/([^/]+)/?(.*)"</span>,
+	<span class='stringconst'>"name"</span> => <span class='stringconst'>"MyApp"</span>,
+	<span class='stringconst'>"action"</span> => <span class='stringconst'>"myspecaction"</span>,
+	<span class='stringconst'>"filters"</span> => [
+		<span class='stringconst'>"post"</span>,
+		<span class='stringconst'>"@admin"</span>
+	)
+] );
+
+<span class='comment'>//compact format for adding multiple routes at once</span>
+<span class='function'>PHPPE\Http::route</span>( [
+	[ <span class='stringconst'>"myspecurl/([^/]+)/?(.*)"</span>, <span class='stringconst'>"MyApp"</span>, <span class='stringconst'>"myspecaction"</span>, [<span class='stringconst'>"post"</span>, <span class='stringconst'>"@admin"</span>] ],
+	[ <span class='stringconst'>"myspecurl2/([^/]+)/?(.*)"</span>, <span class='stringconst'>"MyApp"</span>, <span class='stringconst'>"myaction"</span>, [<span class='stringconst'>"loggedin"</span>] ],
+] );
+
+<span class='comment'>//if you specify only the class, default action routing will apply
+//the class can be loaded via composer's autoload as well</span>
+<span class='function'>PHPPE\Http::route</span>( <span class='stringconst'>"tests"</span>, <span class='stringconst'>"\PHPPE\Tests"</span> );
+</pre></p>
+As you may noticed in the examples above you can add <a href='javascript:tab_switch("filters");'>filters</a> to routes.
+<h3>Default route</h3>
+If no routes given, or neither matches, PHPPE Core will try to find the appropriate class by parsing the url as:<br>
+(base) / <i>application</i> [ / <i>action</i> [ / <i>item</i> ] ]
+<h4>Default application</h4>
+It will look the for following classes and methods:
+<ol>
+<li>PHPPE\Ctrl\<i>applicationAction</i></li>
+<li>PHPPE\Ctrl\<i>application</i></li>
+<li>PHPPE\<i>application</i></li>
+<li>PHPPE\Content</li>
+</ol>
+<p>First PHPPE will check whether the url is handled by any of the installed extensions. As a last resort if fallbacks to PHPPE Content built-in action.</p>
+<div class='alert alert-info'><b>NOTE</b>: if you inherit all controllers from your application's class, then they will share the constructor. This way you can create common code for all actions in an application.</div>
+<h4>Default action</h4>
+<p>After executing controller class constructor, the <a href='javascript:tab_switch("mc");'>caching instance</a> will be consulted.
+If the page can be found in cache, action method <b>won't</b> be called. See <a href='javascript:tab_switch("cache");'>caching</a>
+for details. On the other hand, if it's not in cache, or page generation is forced by setting PHPPE\Core::$core->nocache in constructor, action method will be executed.</p>
+<p>If you omit action parameter from URL rule, the <i>action</i>() and default action() methods will be looked up in the specified class.</p>
+<h4>Fallback action</h4>
+<p>If no application class found, run() will fallback to act as a <a href='javascript:tab_switch("contents");'>Content Server</a>,
+serving pages from database generated by PHPPE CMS.
+If a page for the url found, it will populate the application's properties and sets the template to be used in view.
+In this case action method will provide a way to execute code from database, unless it's turned off by PHPPE\Core::$core->noctrl flag.</p>
+<h4>Default view</h4>
+<p>After an action method returns (either called by matching, default or fallback) the <a href='javascript:tab_switch("template");'>templater</a> takes control over, and generates view for the first template found in order:</p>
+<ol>
+<li>PHPPE\Core::$core->template (unless application overwrites it, it defaults to <i>application_action</i>)</li>
+<li><i>application_action</i></li>
+<li><i>application</i></li>
+<li>404</li>
+</ol>
+<div class='alert alert-info'>By doing so, PHPPE allows controllerless, view-only pages.</div>
+<h3>Special URLs</h3>
+Some urls are handled by the Core itself, mostly for workarounds and security reasons. These are as follows:
+<table class='table table-striped'>
+<tr><td>/login</td><td>Log in user (requires POST arguments). It handles admin user internally and will also call (PHPPE\Users)->login() method if found.</td></tr>
+<tr><td>/logout</td><td>Log out user and destroy session. It handles admin user internally and will also call (PHPPE\Users)->logout() method if found.</td></tr>
+<tr><td>/css, /js, /images, /fonts</td><td><a href='javascript:tab_switch("assets");'>Assets</a> proxying.</td></tr>
+<tr><td>?clear</td><td>Clear ClassMap cache and destroy session, but preserve logged in user</td></tr>
+<tr><td>?cache=(hash)</td><td>Get content from cache</td></tr>
+<tr><td>?nojs</td><td>Disable JavaScript client detection</td></tr>
+<tr><td>?lang=(langcode)</td><td>Override client's language</td></tr>
+<tr><td><nobr>?app=, action=, item=</nobr></td><td>Override webserver's url rewrite</td></tr>
+<tr><td>?--dump</td><td>Dump environment, only works in developer and debug mode (runlevel 2 and above)</td></tr>
+</table>
+</div>
+
+<div id='filters' class='tab'>
+<h1>URL Filters</h1>
+<p>You can add one or more filters to pages and fields on a form, not to mention the menu items. Most common case to apply as fourth argument to <a href='javascript:tab_switch("route");'>PHPPE\Http::route()</a><br><br>
+If a filter name starts with a '@', the <a href='javascript:tab_switch("has");'>user will be checked</a> against the given ACE, otherwise <tt>\PHPPE\Filter\<i>name</i>::filter()</tt> will be called
+that returns a boolean value.<br>
+For an ACL list, use pipe to concatenate ACEs (like "@siteeditor|siteadmin"). If you would like to describe user has A and at least one of B or C, that would be "@A,@B|C".<br>
+If a filter fails, the URL will be automatically skipped. If all routes failed, and there was at least one that because of a filter, the url will be routed to 403 (access denied) page. When no routes matched at all, (PHPPE\Core)->run() will fall back to <a href='javascript:tab_switch("route:1280");'>default route</a>.</p>
+<p>PHPPE Core has four built-in filters:</p><ul>
+<li>get - checks if the url was called with HTTP GET method</li>
+<li>post - checks if the url was called with HTTP POST method</li>
+<li><a href='javascript:tab_switch("isTry");'>csrf</a> - checks validity of a request when user tries to send a transaction, in other words save a form (Cross Site Request Forgery)</li>
+<li>loggedin - this filter redirects user to login page if not logged in</li>
+</ul>
+<div class='alert alert-warning'><b>NOTE</b> the difference of filters "@loggedin" and "loggedin". The former simply returns true/false, the second redirects user to login page and arranges that he/she will be redirected back after successful authentication.</div>
+<h3>Source</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\get <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>function</span> <span class='function'>filter</span>()
+  {
+    return @<span class='variable'>$_SERVER</span>[ <span class='stringconst'>'REQUEST_METHOD'</span> ] == <span class='stringconst'>"GET"</span> ? <span class='keyword'>true</span> : <span class='keyword'>false</span>;
+  }
+}</pre>
+</p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\post <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>function</span> <span class='function'>filter</span>()
+  {
+    return @<span class='variable'>$_SERVER</span>[ <span class='stringconst'>'REQUEST_METHOD'</span> ] == <span class='stringconst'>"POST"</span> ? <span class='keyword'>true</span> : <span class='keyword'>false</span>;
+  }
+}</pre></p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\csrf <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>function</span> <span class='function'>filter</span>()
+  {
+    return <span class='function'>\PHPPE\Core::isTry</span>();
+  }
+}</pre></p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\loggedin <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>function</span> <span class='function'>filter</span>()
+  {
+    if (<span class='variable'>\PHPPE\Core::$user-&gt;id</span>)
+      return <span class='keyword'>true</span>;
+    <span class='comment'>/* save request uri for returning after successful login */</span>
+    <span class='function'>PHPPE\Http::redirect</span>(<span class='stringconst'>"login"</span>, <span class='keyword'>true</span>);
+  }
+}</pre></p>
+</div>
+
+<div id='cache' class='tab' rel='caching,memcache,apc'>
+<h1>Cache Management</h1>
+<p>Caching is configured in <a href='javascript:tab_switch("configuration");'><samp>phppe/config.php</samp></a>:</p>
+<table class='table table-striped'>
+<tr><td><b>cache</b></td><td>memcache location, "(hostname)[:(port)]" or "unix:(path)" or "apc" or "files". Extensions can provide other caching mechanisms.</td></tr>
+<tr><td><b>nocache</b></td><td>Set it to true to disable caching of view output and <a href='javascript:tab_switch("assets");'>assets</a> (templates will be still cached).</td></tr>
+<tr><td><b>cachettl</b></td><td>View output and asset cache time to live in sec (defaults to 10 minutes)</td></tr>
+<tr><td><b>noaggr</b></td><td>set it to true to turn static css and js content aggregation off in html header</td></tr>
+<tr><td><b>nominify</b></td><td>set it to true to turn css and js minifier off</td></tr>
+</table>
+<p>If memcached (or any other cache alternative) can be accessed, raw templates will be always cached, and there's no flag to turn that off.<br>Without nocache set, templater's output and assets will be also cached for 10 minutes.</p>
+<p>Assets added by either <a href='javascript:tab_switch("css");'>PHPPE\View::css()</a> or <a href='javascript:tab_switch("jslib");'>PHPPE\View::jslib()</a> will be aggregated into two files in memory to save HTTP requests as well.</p>
+<p>If a page is cached, only the application's constructor will be called, but NOT the action handler.
+If you want to support changing content along with caching, your application must be aware. You should look for new data in your app's constructor, and set PHPPE::$core->nocache to avoid view's caching and force regenerating the output.</p>
+<h3>Example</h3>
+<samp>phppe/config.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br></pre>
+<pre class='php'>
+<span class='stringconst'>'cache'</span> => <span class='stringconst'>"127.0.0.1:11211"</span>,		<span class='comment'>//set up memcache connection</span>
+<span class='stringconst'>'nocache'</span> => <span class='keyword'>false</span>,			<span class='comment'>//allow caching of generated output by default</span>
+<span class='stringconst'>'noaggr'</span> => <span class='keyword'>true</span>,			<span class='comment'>//turn static content aggregation off</span>
+</pre></p>
+<samp>app/ctrl/myaction.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br></pre>
+<pre class='php'>
+<span class='keyword'>namespace</span> PHPPE\Ctrl;
+<span class='comment'>//your application's controller class</span>
+<span class='keyword'>class</span> MyAppController <span class='keyword'>extends</span> MyApp {
+	public <span class='variable'>$data</span>;
+
+	<span class='comment'>//in constructor look for new data</span>
+	function <span class='function'>__construct</span>( ) {
+		<span class='comment'>//if new data available, disable caching of output</span>
+		if( <span class='function'>MyModel::getNumberOfNewItems</span>() > <span class='number'>0</span> )
+			<span class='variable'>PHPPE\Core::$core</span>->nocache = <span class='keyword'>true</span>;
+	}
+
+	<span class='comment'>//WARNING: actions not called when output is cached!</span>
+	function <span class='function'>action</span>( <span class='variable'>$item</span> ) {
+		<span class='variable'>$this</span>->data = <span class='function'>MyModel::getItems</span>();
+		<span class='comment'>//when returning from this method, templater will
+		//regenerate output using $data and raw templates
+		//and will save the result into the cache</span>
+	}
+}
+</pre>
+<h3>Alternatives</h3>
+<p>You can use any other caching mechanism, if the extension is in PHPPE\Cache namespace, and has at least two methods:</p>
+<p><pre class='lineno'>1<br>2<br></pre>
+<pre class='php'>
+function <span class='function'>get</span>( <span class='variable'>$key</span> ) { }
+function <span class='function'>set</span>( <span class='variable'>$key</span>, <span class='variable'>$value</span>, <span class='variable'>$compressed</span> = <span class='keyword'>true</span>, <span class='variable'>$ttlinsec</span> = <span class='number'>0</span> ) { }
+</pre></p>
+<p>Zero ttl means keep key in cache forever.<br>
+If the caching mechanism requires connection, it must be initialized in the constructor, using PHPPE\Core::$core->cache as argument.</p>
+PHPPE Core ships APC(u) and Files cache extensions. If you decide to use local files, you'll also need the garbage colletor, which hooked to the "minute" <a href='javascript:tab_switch("cron");'>background job</a>:
+<pre>
+* * * * * php public/index.php cron minute
+</pre>
 </div>
 
 <script type='text/javascript'>
