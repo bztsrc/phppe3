@@ -1912,7 +1912,7 @@ namespace PHPPE {
                 //! fallback index page if even 404 template missing
                 if (empty($T) && Core::$core->app == 'index') {
                     // @codeCoverageIgnoreStart
-                    $T = '<h1>PHPPE works!</h1>Next step:<pre>php public/'.basename(__FILE__).' --diag</pre>';
+                    $T = '<h1>PHPPE works!</h1>Next step: <samp>php public/'.basename(__FILE__).' --diag</samp>';
                 }
                     // @codeCoverageIgnoreEnd
             }
@@ -3688,7 +3688,7 @@ class ClassMap extends Extension
             i($D."403$e", "<h1>403</h1><!L Access denied>\n<!-- <!L hacker> -->");
             i($D."404$e", "<h1>404</h1><!L Not found>: <b><!=core.url></b>");
             i($D."frame$e", "<div id='content'><!app></div>");
-            i($D."index$e", "<h1><PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
+            i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!L Site is temporarily down for maintenance></h1>");
             i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
@@ -4577,7 +4577,7 @@ namespace PHPPE\Filter {
             }
             /* save request uri for returning after successful login */
             // @codeCoverageIgnoreStart
-            \PHPPE\Core::redirect('login', 1);
+            \PHPPE\Http::redirect('login', 1);
         }
             // @codeCoverageIgnoreEnd
     }
