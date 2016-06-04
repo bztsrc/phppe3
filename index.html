@@ -359,31 +359,33 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 
 <h3>Subdirectories of every PHPPE Extension</h3>
 <p>These directories are optional. If an extension does not provide let's say controllers, ctrl/ can be ommited.</p>
+<b>vendor/phppe/<i>extension</i>/</b><br>
 <i>Mandatory files</i><br>
 <table class='table table-striped'>
-<tr><td><b>vendor/phppe/<i>extension</i>/composer.json</b></td><td>Extension packaging information for PHP Composer and PHPPE Extensions.</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/config.php</b></td><td>configuration file.</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/init.php</b></td><td>Extension initialization file. These will be included automatically for every page</td></tr>
+<tr><td></td><td><b>composer.json</b></td><td>Extension packaging information for PHP Composer and PHPPE Extensions.</td></tr>
+<tr><td></td><td><b>config.php</b></td><td>configuration file.</td></tr>
+<tr><td></td><td><b>init.php</b></td><td>Extension initialization file. These will be included automatically for every page</td></tr>
 </table>
 <i>Model</i><br>
 <table class='table table-striped'>
-<tr><td><nobr><b>vendor/phppe/<i>extension</i>/libs/<i>classname</i>.php</b></nobr></td><td>model libraries, included by applications or other libraries. Also business logic goes here.</td></tr>
-<tr><td><nobr><b>vendor/phppe/<i>extension</i>/sql/<i>table(.engine)</i>.sql</b></nobr></td><td>database schemes for tables used by models. It's highly recommended to prefix table names with lowercase extension name, like users, users_history, forum_topics, forum_posts etc. You can also use engine specific extensions, like ".sqlite3.sql".</td></tr>
+<tr><td></td><td><b>libs/<i>classname</i>.php</b></td><td>model libraries, included by applications or other libraries. Also business logic goes here.</td></tr>
+<tr><td></td><td><b>sql/<i>table(.engine)</i>.sql</b></td><td>database schemes for tables used by models. It's highly recommended to prefix table names with lowercase extension name, like users, users_history, forum_topics, forum_posts etc. You can also use engine specific extensions, like ".sqlite3.sql".</td></tr>
 </table>
 <br><i>Controller</i><br>
 <table class='table table-striped'>
-<tr><td><b>vendor/phppe/<i>extension</i>/ctrl/<i>action</i>.php<br>vendor/phppe/<i>extension</i>/ctrl/<i>application</i>_<i>action</i>.php</b></td><td>page handler logic goes here. First holds code for common code, second is for action specific code.</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/libs/<i>extension</i>.php</td><td>If you don't want to separate controller files, you can but action methods in your service class here.</td></tr>
+<tr><td></td><td><b>ctrl/<i>action</i>.php<br>ctrl/<i>application</i>_<i>action</i>.php</b></td><td>page handler logic goes here. First holds code for common code, second is for action specific code.</td></tr>
+<tr><td></td><td><b>libs/<i>extension</i>.php</td><td>If you don't want to separate controller files, you can but action methods in your service class here.</td></tr>
 </table>
 <br><i>View</i><br>
 <table class='table table-striped'>
-<tr><td><b>vendor/phppe/<i>extension</i>/views/<i>application</i>_<i>action</i>.tpl<br>vendor/phppe/<i>extension</i>/views/<i>application</i>.tpl</b></td><td>view templates. If action specific template found, it will be used.</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/addons/<i>addon</i>.php</b></td><td>if the extension provides Add-Ons for the view layer.</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/css/</b></td><td>module specific stylesheets</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/images/</b></td><td>images used by the module</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/js/</b></td><td>javascript libraries provided by the module</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/lang/<i>lang</i>.php</b></td><td>language specific text definitons for each module</td></tr>
-<tr><td><b>vendor/phppe/<i>extension</i>/out/<i>format</i>_header.php<br>vendor/phppe/<i>extension</i>/out/<i>format</i>_footer.php</b></td><td>for formats other than HTML (like RSS), their header and footer generating code goes there</td></tr>
+<tr><td></td><td><b>views/<i>application</i>_<i>action</i>.tpl<br>views/<i>application</i>.tpl</b></td><td>view templates. If action specific template found, it will be used.</td></tr>
+<tr><td></td><td><b>addons/<i>addon</i>.php</b></td><td>if the extension provides Add-Ons for the view layer.</td></tr>
+<tr><td></td><td><b>css/</b></td><td>module specific stylesheets</td></tr>
+<tr><td></td><td><b>images/</b></td><td>images used by the module</td></tr>
+<tr><td></td><td><b>js/</b></td><td>javascript libraries provided by the module</td></tr>
+<tr><td></td><td><b>fonts/</b></td><td>webfonts provided by the module</td></tr>
+<tr><td></td><td><b>lang/<i>lang</i>.php</b></td><td>language specific text definitons for each module</td></tr>
+<tr><td></td><td><b>out/<i>format</i>_header.php<br>out/<i>format</i>_footer.php</b></td><td>for formats other than HTML (like RSS), their header and footer generating code goes there</td></tr>
 </table>
 
 <h3>Important files</h3>
