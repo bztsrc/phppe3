@@ -96,7 +96,7 @@ class Repository
                 "/*view*/\"data:text/plain;base64,".base64_encode($tpl),
                     preg_replace(
                         "|<small data-ver>v[^<]+</small>|",
-                        "<small data-ver>v".$ver[1]."</small>"))));
+                        "<small data-ver>v".$ver[1]."</small>")));
             //! write out
             if(!file_put_contents(self::$docFile, $doc))
                 die("unable to write ".self::$docFile);
