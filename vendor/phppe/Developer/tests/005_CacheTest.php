@@ -42,13 +42,6 @@ class CacheTest extends PHPUnit_Framework_TestCase
 	{
 		\PHPPE\Core::$core->nocache=false;
 
-		//dirty hack required when run through phpunit
-		//as it does not call run(), and SCRIPT_FILENAME
-		//won't be public/index.php,
-		//but /usr/local/bin/phpunit.phar
-		\PHPPE\Core::$core->base=str_replace(
-			"/usr/local/bin","",
-			\PHPPE\Core::$core->base);
 		$dir="vendor/phppe/Developer";
 		\PHPPE\View::setPath($dir);
 		\PHPPE\Core::$user->id="";

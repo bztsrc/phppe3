@@ -178,26 +178,27 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 		$url = \PHPPE\Core::$core->url;
 		$title = \PHPPE\Core::$core->title;
-		//! no content
-		\PHPPE\Core::$core->url = "no/such/content/";
-		\PHPPE\Core::$core->title = "NONE";
 		$contentApp = new \PHPPE\Content;
+		//! no content
+		\PHPPE\Core::$core->title = "NONE";
+		$contentApp = new \PHPPE\Content("no/such/content");
 		$this->assertEquals("NONE",\PHPPE\Core::$core->title,"No content");
 
 		//! filter
-		\PHPPE\Core::$core->url = "test/";
-		$contentApp = new \PHPPE\Content;
+		$contentApp = new \PHPPE\Content("test/");
 		$this->assertEquals("403",\PHPPE\Core::$core->template,"Filtered");
 		\PHPPE\DS::exec("update pages set filter='' where id='test';");
 
 		//! is content
-		$contentApp = new \PHPPE\Content;
+		$contentApp = new \PHPPE\Content("test/");
 		$this->assertEquals("Test",\PHPPE\Core::$core->title,"Content");
 
 		$contentApp->getDDS($contentApp);
 		$this->assertEquals("testbody",$contentApp->body,"Body");
 		$this->assertNotEmpty($contentApp->testdds,"DDS");
 
+		$old = \PHPPE\Core::$core->noctrl;
+		\PHPPE\Core::$core->noctrl = false;
 		$contentApp->ctrl="echo('OK');";
 		$this->assertEquals("OK",$contentApp->action(),"Content controller #1");
 
@@ -207,11 +208,10 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$core->noctrl = $old;
 
 		\PHPPE\DS::exec("update pages set dds='{\"testdds2\":[\"nosuchcolumn\",\"\",\"\"]}' where id='test';");
-		$contentApp = new \PHPPE\Content;
+		$contentApp = new \PHPPE\Content("test/");
 		$contentApp->getDDS($contentApp);
 		$this->assertEmpty(@$contentApp->testdds2,"DDS failed");
 
-		\PHPPE\Core::$core->url = $url;
 		\PHPPE\Core::$core->title = $title;
 	}
 

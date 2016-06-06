@@ -222,10 +222,8 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\View::menu("aaa","aaa/bbb");
 		\PHPPE\View::menu("ccc",["ccc"=>"ccc/ddd"]);
 
-		\PHPPE\Core::$core->url = "aaa";
-
 		//save it to cache
-        $sha = \PHPPE\Core::$core->base . "aaa/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
+        $sha = \PHPPE\Core::$core->base . \PHPPE\Core::$core->url."/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
 		\PHPPE\Cache::set("c_".sha1($sha."_css"),"");
 		\PHPPE\Cache::set("c_".sha1($sha."_js"),"");
 		ob_start();
@@ -236,15 +234,12 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		@\PHPPE\View::output($txt);
 		$this->assertEquals(1,preg_match("/div class='menu'/",ob_get_clean()),"Output #3");
 
-		\PHPPE\Core::$core->url = "aaa/ccc";
-		\PHPPE\Core::$core->app = "aaa";
 		ob_start();
-		@\PHPPE\View::output($txt);
+		@\PHPPE\View::output($txt, "aaa");
 		$this->assertEquals(1,preg_match("/<\/span><span class='menu_a'>/",ob_get_clean()),"Active menu #1");
 
-		\PHPPE\Core::$core->app = "ccc";
 		ob_start();
-		@\PHPPE\View::output($txt);
+		@\PHPPE\View::output($txt, "ccc");
 		$this->assertEquals(1,preg_match("/class='menu_a' onclick/",ob_get_clean()),"Active menu #2");
 
 	}

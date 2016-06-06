@@ -52,7 +52,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(serialize($new[sha1("test7|Tests|action_member")][3]),serialize($new[sha1("test9|Tests|")][3]),"Filter as string and as array");
 
 		//! for PHPUnit, as it runs from /usr/local/bin
-		\PHPPE\Core::$core->base="localhost/";
+//		\PHPPE\Core::$core->base="localhost/";
 		
 		$data1=file_get_contents(url("tests","httptest")."?nojs");
 		$data2=file_get_contents(url("tests","httptest")."?nojs",false,stream_context_create(['http'=>[

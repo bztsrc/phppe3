@@ -141,6 +141,7 @@ namespace PHPPE {
         {
             return get_class($this)."(".$this->name.")";
         }
+
     }
 
 /**
@@ -156,14 +157,15 @@ namespace PHPPE {
  */
     class Client extends Extension
     {
-        public $ip;                //!< remote ip address. Also valid if behind proxy or load balancer
-        public $agent;             //!< client program
-        public $user;              //!< user account (unix user on CLI, http auth user on web)
-        public $tz;                //!< client's timezone
-        public $lang;              //!< client's prefered language
-        public $screen = [];       //!< screen dimensions
-        public $geo = [];          //!< geo location data (filled in by a third party extension)
+        private $ip;                //!< remote ip address. Also valid if behind proxy or load balancer
+        private $agent;             //!< client program
+        private $user;              //!< user account (unix user on CLI, http auth user on web)
+        private $tz;                //!< client's timezone
+        public $lang;               //!< client's prefered language
+        public $screen = [];        //!< screen dimensions
+        public  $geo = [];          //!< geo location data (filled in by a third party extension)
 
+        function __get($n) { return $this->$n; }
 /**
  * Constructor. Starts user session
  */
@@ -582,7 +584,7 @@ namespace PHPPE {
  */
     class Http extends Extension
     {
-        public static $r;            //!< url routes
+        private static $r;            //!< url routes
 
 /**
  * Generate a permanent link (see also url()).
@@ -874,10 +876,12 @@ namespace PHPPE {
  */
     class DS extends Extension
     {
-        public $name = '';
+        private $name = '';
         private static $db = [];        //!< database layer
         private static $s = 0;        //!< data source selector
         private static $b = 0;        //!< time consumed by data source queries (bill for db)
+
+        function __get($n) { return $this->$n; }
 
 /**
  * Constructor. Initialize primary datasource if any. Called by core.
@@ -1263,9 +1267,10 @@ namespace PHPPE {
  */
     class Cache extends Extension
     {
-        public $name;                //!< implementation
-        public static $mc;           //!< memcache instance
+        private $name;                //!< implementation
+        public static $mc;            //!< memcache instance
 
+        function __get($n) { return $this->$n; }
 /**
  * Constructor. Called by core.
  *
@@ -1556,10 +1561,11 @@ namespace PHPPE {
  */
     class Content extends Extension
     {
+        private static $dds = [];         //!< dynamic data sets
 /**
  * Constructor. Common code for all Content actions.
  */
-        public function __construct()
+        public function __construct($u="")
         {
             //! check cache
             $C = 'd_'.sha1(url().'/'.Core::$user->id.'/'.Core::$client->lang);
@@ -1568,12 +1574,13 @@ namespace PHPPE {
                 //! cache miss, look it up in database - only primary datasource
                 if (empty($data['id'])) {
                     DS::ds(0);
+                    if(empty($u)) $u=Core::$core->url;
                     $data = DS::fetch("a.*,b.ctrl", "pages a LEFT JOIN views b ON a.template=b.id",
                         "(a.id=? OR ? LIKE a.id||'/%') AND ".
                         "(a.lang='' OR a.lang=?) AND ".
                         "a.pubd<=CURRENT_TIMESTAMP AND (a.expd='' OR a.expd=0 OR a.expd>CURRENT_TIMESTAMP)",
                         "", "a.id DESC,a.created DESC",
-                        [Core::$core->url, Core::$core->url, Core::$client->lang]
+                        [$u, $u, Core::$client->lang]
                     );
                     if (!empty($data['id'])) {
                         Cache::set($C, $data);
@@ -1605,7 +1612,7 @@ namespace PHPPE {
                 //! get page specific DDS
                 $E = json_decode($data['dds'], true);
                 if (is_array($E)) {
-                    Core::$dds += $E;
+                    self::$dds += $E;
                 }
             // @codeCoverageIgnoreStart
             } catch (\Exception $e) {
@@ -1646,14 +1653,14 @@ namespace PHPPE {
                 //! load global dds
                 $D = json_decode($F['dds'], true);
                 if (is_array($D)) {
-                    Core::$dds += $D;
+                    self::$dds += $D;
                 }
             // @codeCoverageIgnoreStart
             } catch (\Exception $e) {
             }
             // @codeCoverageIgnoreEnd
             $o = [];
-            foreach (Core::$dds as $k => $c) {
+            foreach (self::$dds as $k => $c) {
                 //! don't allow to set these, as they cannot be arrays
                 if (!in_array($k, ['dds', 'id', 'title', 'mimetype'])) {
                     try {
@@ -2239,7 +2246,7 @@ namespace PHPPE {
                                 "' class='".(!empty($A[1]) && $A[1] != '-' ? $A[1] : 'form-vertical').
                                 "' method='post' enctype='multipart/form-data'".
                                 (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').
-                                "><input type='hidden' name='MAX_FILE_SIZE' value='".Core::$fm.
+                                "><input type='hidden' name='MAX_FILE_SIZE' value='".Core::$core->fm.
                                 "'><input type='hidden' name='pe_s' value='".@$_SESSION['pe_s'][$c].
                                 "'><input type='hidden' name='pe_f' value='".$n."'>".(!empty(Core::$core->item) ?
                                     "<input type='hidden' name='item' value='".htmlspecialchars(Core::$core->item)."'>" : '');
@@ -2392,7 +2399,7 @@ namespace PHPPE {
  *
  * @param pre-generated main part
  */
-        public static function output(&$txt)
+        public static function output(&$txt, $ap="")
         {
             //! get output format
             $o = Core::$core->output;
@@ -2490,11 +2497,11 @@ namespace PHPPE {
                                     $l = $L;
                                 }
                                 $U = Core::$core->url;
-                                if (substr($l, 0, strlen($U)) == $U) {
-                                    $a = 1;
-                                } else {
+                                //! if url starts with menu link
+                                if (substr($l, 0, strlen($U)) == $U) $a = 1;
+                                else {
                                     $d = explode('/', $l);
-                                    if (Core::$core->app == (!empty($d[0]) ? $d[0] : 'index')) {
+                                    if ((!empty($ap)?$ap:Core::$core->app) == (!empty($d[0]) ? $d[0] : 'index')) {
                                         $a = 1;
                                     }
                                     unset($d);
@@ -3248,10 +3255,10 @@ class ClassMap extends Extension
     {
         //generated properties
         private $id;                     //!< magic, 'PHPPE'+VERSION
-        public $base;                    //!< base url
-        public $url;                     //!< whole url after script name
-        public $app;                     //!< main page generator controller
-        public $action;                  //!< main subpage generator action (extends page)
+        private $base;                   //!< base url
+        private $url;                    //!< whole url after script name
+        private $app;                    //!< main page generator controller
+        private $action;                 //!< main subpage generator action (extends page)
         public $item;                    //!< item to work with, usually an id
         public $template;                //!< templater app's template to use
         public $now;                     //!< current server timestamp, from primary datasource if available
@@ -3266,16 +3273,17 @@ class ClassMap extends Extension
         public $cache;                   //!< memcache url
         public $cachettl = 600;          //!< whole output cache ttl in sec
         public $db = '';                 //!< primary datasource
-        public $noctrl = false;          //!< do not execute Content Controller code
+        public $noctrl = true;           //!< do not execute Content Controller code
         public $output;                  //!< templater output header and footer selector
+        public $meta;                    //!< meta tags
+        public $link;                    //!< link tags
         //end of configurable properties
-        public $form;                    //!< name of the submitted form
         public static $core;             //!< self reference, phppe system
         public static $user;             //!< user layer
         public static $client;           //!< client data
         public static $l = [];           //!< language translations
-        public static $fm;               //!< file max size
-        public static $dds = [];         //!< dynamic data sets
+        private $fm;                     //!< file max size
+        private $form;                   //!< name of the submitted form
         private $try;                    //!< none-zero for update transaction starts, 1 up to 9
         private $error;                  //!< error messages array
         private $libs = [];              //!< list of initialized modules and libraries
@@ -3283,10 +3291,13 @@ class ClassMap extends Extension
         private $disabled = [];          //!< list of disabled extensions
         private static $started;         //!< script start time in msec, float
         private static $v;               //!< validator data
-        public static $paths;            //!< direcories of extensions
+        private static $paths;           //!< direcories of extensions
         public static $w;                //!< boolean, true if called via web (REQUEST_METHOD not empty)
         public static $g;                //!< posix group
+/*! BENCHMARK START */
         public static $bm;               //!< benchmarking data
+/*! BENCHMARK END */
+        function __get($n) { return $this->$n; }
 /**
  * Constructor. If you pass true as argument, it will build up PHPPE environment,
  * but won't run your application. For that you'll need to call \PHPPE\Core::$core->run() manually
@@ -3386,7 +3397,7 @@ class ClassMap extends Extension
             if ($c > $d && $d) {
                 $c = $d;
             }
-            self::$fm = ($c > $v && $v ? $v : $c);
+            $this->fm = ($c > $v && $v ? $v : $c);
             //! construct base href
             $c = $_SERVER['SCRIPT_NAME'];
             $C = dirname($c);
@@ -3399,9 +3410,13 @@ class ClassMap extends Extension
             }
             // @codeCoverageIgnoreEnd
             $d = 'SERVER_NAME';
-            $this->base = (!empty($this->base) ? $this->base :
+            //dirty hack required when run through phpunit
+            //as it does not call run(), and SCRIPT_FILENAME
+            //won't be public/index.php,
+            //but /usr/local/bin/phpunit.phar
+            $this->base = strtr((!empty($this->base) ? $this->base :
                 (!empty($_SERVER[$d]) ? $_SERVER[$d] : 'localhost').
-                (@$C[0] != '/' ? '/' : '').$C);
+                (@$C[0] != '/' ? '/' : '').$C),["/usr/local/bin"=>""]);
             //! fix slashes in request
             if (get_magic_quotes_gpc()) {
                 // @codeCoverageIgnoreStart
@@ -4965,7 +4980,7 @@ namespace PHPPE\AddOn {
             $e = Core::isError($t->name);
 
             return
-                '<input'.@View::v($t, $t->attrs[0], $t->attrs[1], $t->args)." type='file' style='display:inline;' title='".round(Core::$fm / 1048576)."Mb'>";
+                '<input'.@View::v($t, $t->attrs[0], $t->attrs[1], $t->args)." type='file' style='display:inline;' title='".round(Core::$core->fm / 1048576)."Mb'>";
         }
 
         public static function validate($n, &$v, $a, $t)
