@@ -86,7 +86,7 @@ class Repository
             $doc = file_get_contents(self::$docFile);
             $dep = file_get_contents(self::$deployFile);
             $tpl = file_get_contents(self::$selfTestFile);
-            preg_match("|\"VERSION\",\"([^\"]+)|",$dep,$ver);
+            preg_match("|\'VERSION\',\'([^\']+)|",$dep,$ver);
             //! replace
             $doc = preg_replace(
                 "|/\*core\*/\"data:text\/plain[^\"\']+|",
@@ -96,7 +96,7 @@ class Repository
                 "/*view*/\"data:text/plain;base64,".base64_encode($tpl),
                     preg_replace(
                         "|<small data-ver>v[^<]+</small>|",
-                        "<small data-ver>v".$ver[1]."</small>")));
+                        "<small data-ver>v".$ver[1]."</small>", $doc)));
             //! write out
             if(!file_put_contents(self::$docFile, $doc))
                 die("unable to write ".self::$docFile);
