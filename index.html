@@ -249,7 +249,8 @@ function init()
 <i>Table of Contents</i>
 <ol class='toc'>
     <li style='padding-top:10px !important;'><a class='header' onclick='toc_switch(this);'>Introduction</a>
-    <ol>
+    <ol style='display:none;'>
+    <li><a onclick='tab_switch("introduction");'>Welcome</a></li>
     <li><a onclick='tab_switch("introduction");'>Features</a></li>
     <li><a onclick='tab_switch("introduction:850");'>Requirements</a></li>
     <li><a onclick='tab_switch("introduction:930");'>License</a></li>
@@ -416,6 +417,7 @@ Web-based monitoring tool for Raspberry Pi.<br>
 
 <div id='introduction' class='tab' rel='welcome,features,license,lgpl'>
 <h1>Welcome to PHPPE3!</h1>
+<div class='alert alert-info'><b>HINT</b>: just start typing what you're looking for.</div>
 <h2>PHP Portal Engine - single file framework</h2>
 <p>PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only a few kilobytes in size, so small, that it fits on your clipboard!
 Unlike other existing OpenSource PHP frameworks, PHPPE was written with <a onclick='tab_switch("security");'>security</a>, <a href='https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller' target='_new'>MVC</a>, <a href='http://en.wikipedia.org/wiki/KISS_principle' target='_new'>KISS principle</a> and no dependency at all in mind.
@@ -432,7 +434,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li><A href='https://phpunit.de' target='_new'>PHPUnit</a> compatibility with <a href='http://bztsrc.github.io/phppe3/coverage' target='_new'>100% code coverage</a></li>
 <li><A href='https://getbootstrap.com/' target='_new'>Bootstrap</a> compatibilty</li>
 <li>Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box</li>
-<li>Very low footprint, less than 1MiB, ideal on small computers such as <a href='https://www.raspberrypi.org/' target='_new'>Raspberry Pi</a></li>
+<li>Very low footprint, less than 768KiB, ideal on small computers such as <a href='https://www.raspberrypi.org/' target='_new'>Raspberry Pi</a></li>
 <li>Highly modular, easy to expand structure with Class autoloader</li>
 <li>Self consistency check and diagnostics (even fix!)</li>
 <li>Environment auto-detection (like base url, browser's language, timezone and screen size)</li>
@@ -440,7 +442,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li>PDO driven Database abstraction layer with transparent on demand scheme installation</li>
 <li>Convient and easy to use controller and ORM model interface</li>
 <li>Fast and safe templater system for views</li>
-<li>Powerful caching with integrated [memcached](http://memcached.org/), APC/APCu and file cache support</li>
+<li>Powerful caching with integrated <a href='http://memcached.org/' target='_new'>memcached</a>, APC/APCu and file cache support</li>
 <li>Automatic form data validation and security checks</li>
 <li>Access control lists</li>
 <li>Multilanguage support</li>
@@ -451,7 +453,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li>Uses View layer to detect Models (flexibility you've never seen)</li>
 </ul>
 <p>Of course one single file is limited, so here's the <a href='http://bztsrc.github.io/phppe3/phppe3_core.tgz'>PHPPE Pack</a> (~80KiB) to save the day and give you an easy start.</p>
-<p>For full CMS capability you'll also need the Content Editor with <a href='http://bztsrc.github.io/phppe3/phppe3_cms.tgz'>PHPPE CMS</a> (24KiB), because PHPPE Core on it's own only serves contents.</p>
+<p>For full CMS capability you'll also need the Content Editor with <a href='http://bztsrc.github.io/phppe3/phppe3_cms.tgz'>PHPPE CMS</a> (28KiB), because PHPPE Core on it's own only serves contents.</p>
 
 <h2>Requirements</h2>
 <ul>
@@ -459,7 +461,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li>SSH terminal access (use ssh or PuTTY)</li>
 <li>Apache or nginx with php-fpm on server side</li>
 <li>Any HTML5 compatible browser on client side</li>
-<li>No more than 768KiB free space if you install the full environment (with Pack, CMS, Extensions and Developer)</li>
+<li>No more than 768KiB free space if you install the full basic environment (with Pack, CMS, Extensions and Developer)</li>
 </ul>
 <h4>Optional</h4>
 <ul>
@@ -832,7 +834,7 @@ $ vim phppe/config.php
 </pre>
 It's very likely that you have an $EDITOR environment variable holding default editor's name.
 <h3>5. Install PHPPE Pack (optional)</h3>
-<div class='alert alert-info'><b>NOTE</b>: if you've used <samp>composer create-project</samp>, nothing left to do as basic extensions are already installed.</div>
+<div class='alert alert-info'><b>NOTE</b>: if you've used <samp>composer create-project</samp>, nothing left to do as Pack are already installed. Go to step 6.</div>
 <p>The diagnostics mode created missing files, among others composer.json. With that you can make PHP Composer to install vendor/phppe/Core from PHPPE Pack:</p>
 <b>With Composer (not using Packagist)</b><br>
 <pre>
@@ -920,7 +922,7 @@ these are only the most commonly used ones.</p>
 <tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's Email sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
 <tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
 <tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
-<tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("extensions");'>Extensions</a></td></tr>
+<tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Extensions repository</a> section.</td></tr>
 <tr><td><b>...</b></td><td>See <a onclick='tab_switch("phppe_core");'>PHPPE\Core</a> for all properties</td></tr>
 </table>
 <div class='alert alert-info'><b>NOTE</b>: this file is only for configuring the framework itself, module and application configuration located in separate files!</div>
@@ -1478,7 +1480,7 @@ When <a onclick='tab_switch("configuration");'>PHPPE\Core::$core->allowed</a> ar
 Templater will generate <span style="background:#F00000;color:#FEC0C0;padding:3px;font-weight:bold;">E-BADFNC</span> error if it's set and referenced function is not in it and it's not a globally allowed function either.<br><br>
 You can access the basic object's properties and methods with
 <table class='table table-striped'>
-<tr><td><a onclick='tab_switch("phppe_Core");'>PHPPE\Core::$core</a></td><td><code>core.</code></td><td><i>PHPPE Core</i></td></tr>
+<tr><td><a onclick='tab_switch("phppe_core");'>PHPPE\Core::$core</a></td><td><code>core.</code></td><td><i>PHPPE Core</i></td></tr>
 <tr><td><a onclick='tab_switch("phppe_user");'>PHPPE\Core::$user</a></td><td><code>user.</code></td><td><i>Logged in user</i></td></tr>
 <tr><td><a onclick='tab_switch("phppe_client");'>PHPPE\Core::$client</a></td><td><code>client.</code></td><td><i>Client's (browser's) properties</i></td></tr>
 <tr><td><a onclick='tab_switch("controllers");'>Controller instance</a></td><td><code>app.</code></td><td><i>Your application's controller class. Properties can be accessed without prefix as well</i></td></tr>
@@ -1641,8 +1643,14 @@ your code will be called every time the asset queried.</p>
 <p>PHPPE Core can serve contents (generated by PHPPE CMS) on it's on, but it uses a database table for that. The scheme is supplied by <a onclick='tab_switch("downloads");'>PHPPE Pack</a> (vendor/phppe/Core/sql/pages.sql).</p>
 <p>PHPPE\Content will look for pages if <a onclick='tab_switch("routing");'>routing</a> was unable to choose a <a onclick='tab_switch("controllers");'>controller</a>.</p>
 <h3>Content Editor<sup><small>PHPPE CMS</small></sup></h3>
-<p>To be able to create and modify contents on a Content Server site, you'll need to install <a onclick='tab_switch("downloads");'>PHPPE CMS</a> extension.
-It can be installed on a different server, and one CMS can manage several Content Servers. This way you can build up a scalable architecture that can serve huge loads without problem.</p>
+<p>To be able to create and modify contents on a Content Server site, you'll need to install <a onclick='tab_switch("downloads");'>PHPPE CMS</a> extension by copy'n'pasting one of these commands into your Terminal:</p>
+<pre>
+composer require "phppe/CMS"
+</pre>
+<pre>
+mkdir vendor/phppe/CMS && curl https://bztsrc.github.io/phppe3/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
+</pre>
+<p>It can be installed on a different server, and one CMS can manage several Content Servers. This way you can build up a scalable architecture that can serve huge loads with ease.</p>
 <div class='row'>
     <div class='col-md-6'>
 <h4>Typical, non-scalable, not so secure set up</h4>
@@ -1676,7 +1684,13 @@ The Content Editor stores the changes to the database that resides on <samp>dbsr
 <p>All the <samp>websrv</samp> instances have the same document root and run PHPPE Core to act as a Content Server that in turn loads the content from <samp>dbsrv</samp> via <span style='color:brown;'>sql</span> connection. To speed up things ever more, Content Servers can <a onclick='tab_switch("cache");'>cache the contents</a> as well.</p>
 <div class='alert alert-warning'><b>NOTE:</b> Don't forget that in this scenario you'll have to configure php to store session info in database instead of files, otherwise strange things will happen!</div>
 <h2>EplosCMS</h2>
-<p>There's also an extension to support pages generated by third party software. EplosCMS generates pre-constructed pages in the "<samp>pages/</samp>" directory, this extension read files from there and creates routing entries as they are referenced.</p>
+<p>There's also an extension to support pages generated by third party software. EplosCMS generates pre-constructed pages in the "<samp>pages/</samp>" directory, this extension read files from there and creates routing entries as they are referenced. You can install this extension with:</p>
+<pre>
+composer require "phppe/EplosCMS"
+</pre>
+<pre>
+mkdir vendor/phppe/EplosCMS && curl https://bztsrc.github.io/phppe3/phppe3_eploscms.tgz | tar -xz -C vendor/phppe/EplosCMS
+</pre>
 </div>
 
 <div id='events' class='tab' rel='hooks'>
@@ -1943,7 +1957,10 @@ find vendor/phppe -name composer.json -print -exec sh -c "cat {} \| grep -e vers
 <p>The <a onclick='tab_switch("downloads");'>PHPPE Extensions</a> Manager is a tool to install extensions over a web interface.
 It does not provide the same functionality as PHP Composer, so it's not recommended in development environments.
 Instead it's a comfortable and secure way to deploy tarballs remotely via web UI.</p>
-<p>To install, copy'n'paste into your SSH Terminal:</p>
+<p>To install, copy'n'paste one of these into your SSH Terminal:</p>
+<pre>
+composer require "phppe/Extensions"
+</pre>
 <pre>
 mkdir vendor/phppe/Extensions && curl https://bztsrc.github.io/phppe3/phppe3_extensions.tgz | tar -xz -C vendor/phppe/Extensions
 </pre>
@@ -2197,9 +2214,9 @@ Short answer: application. If you later on plan to use your code on several site
 <div id='benchmark' class='tab'>
 <h1>Benchmarks</h1>
 <p>PHPPE performance is a very important thing. Therefore you'll find a built-in benchmarker.</p>
-<div class='alert alert-danger'><b>NOTE</b>: only source.php supports benchmarking!</div>
+<div class='alert alert-danger'><b>NOTE</b>: only <samp>public/source.php</samp> supports benchmarking! Deployment format is for production, where generating unwanted large files could lead to a DoS attack.</div>
 <h3>Accumulate data</h3>
-<p>Append "<code>?benchmark</code>" to the page's url you want to measure. Reload it several times, more samples are the merier.</p>
+<p>Append "<code>?benchmark</code>" to the page's url you want to measure. Reload it several times, more samples are the merrier.</p>
 <h3>Displaying the results</h3>
 <p><a onclick='tab_switch("developer");'>PHPPE Developer</a> extension ships a nice web interface to aggregate and display the collected data.
 If everything went well, you should see something similar to this:</p>
@@ -2411,6 +2428,143 @@ If everything went well, you should see something similar to this:</p>
 </div>
 </div>
     
+<div id='developer' class='tab' rel='tests,lang,create,deploy,mkrepo'>
+<h1>PHPPE Developer</h1>
+<p>Even if you don't want to contribute to the framework, just using it or writing your own Extensions, it's worth installing the Developer package!</p>
+<p>To install, copy'n'paste one of these into your SSH Terminal:</p>
+<pre>
+composer require "phppe/Developer"
+</pre>
+<pre>
+mkdir vendor/phppe/Developer && curl https://bztsrc.github.io/phppe3/phppe3_developer.tgz | tar -xz -C vendor/phppe/Developer
+</pre>
+<h2>Web based utilities</h2>
+<h3>Tests</h3>
+<div class='alert alert-info'><b>NOTE</b>: PHPPE Developer has all the test cases for the PHPPE Core as well as for PHPPE Pack.</div>
+<p>Provides a PHPUnit compatible test environment. This allows you to run tests from a browser, but nothing more:
+it's not as featureful as PHPUnit, for example it cannot generate code coverage reports.</p>
+<p>The <code>PHPUnit_Framework_TestCase</code> compatibility class can be found in <samp>vendor/phppe/Developer/libs/phpunit.php</samp>, and thanks to autoloading, it will be used transparently if the real PHPUnit class not found.</p>
+<p>The advantage over PHPUnit is that it scans all extensions for test cases, so you will see all of them in one place and can run all at once.</p>
+<div class='alert alert-info'><b>NOTE</b>: Extensions should use another extension with the name of the original extension suffixed by "Test". The tests/ subdirectory and the phpunit.xml goes in this new extension. For Composer it should be referenced with <code>require-dev</code> in the original extension's <samp>composer.json</samp> file.</div>
+<h3>Benchmark</h3>
+<p>Developer ships a nice and pleasant reporting tool for visualizing <a onclick='tab_switch("benchmark");'>benchmark</a> data.
+It aggregates the accumulated samples and shows the result on human readable charts.</p>
+<h2>Command line utilities</h2>
+<h3>Tests</h3>
+<p>The testing framework also available from CLI.</p>
+<pre>$ php public/index.php tests
+Test boundle        Avg.time #Tests   Last run             Result
+------------------- -------- -------- -------------------- ----------
+MultilingualTest    0.0002s    2 /  2 2016-06-01 00:46:38  OK
+SystemTest          0.2199s   55 / 55 2016-06-01 00:46:38  OK
+AddonTest           0.0028s   40 / 40 2016-06-01 00:46:38  OK
+RoutingTest         0.0208s   22 / 22 2016-06-01 00:46:38  OK
+CacheTest           1.3239s   18 / 18 2016-06-01 00:47:15  OK
+HttpTest            1.0810s   16 / 16 2016-06-01 00:46:40  OK
+ConvertTest         0.0035s   23 / 23 2016-06-01 00:46:40  OK
+DataSourceTest      0.0152s   50 / 50 2016-06-01 00:46:40  OK
+TemplaterTest       0.1184s   82 / 82 2016-06-01 00:46:40  OK
+PictureTest         0.4101s   30 / 30 2016-06-01 00:46:41  OK
+DBTest              0.0047s   28 / 28 2016-06-01 00:46:41  OK
+EmailTest           2.0121s   13 / 13 2016-06-01 00:46:43  OK
+RegistryTest        0.0055s    6 /  6 2016-06-01 00:46:43  OK
+UsersTest           0.0001s    2 /  2 2016-06-01 00:46:43  OK
+</pre>
+<p>shows the latest results, and you can run one or all test with:</p>
+<pre>$ php public/index.php tests run <i>testfile</i>
+$ php public/index.php tests run</pre>
+<h3>Passwd utility</h3>
+<p>Is a simple utility to generate password hashes from command line.</p>
+<pre>$ php public/index.php passwd
+Password? <kbd>You won't see what you type here</kbd>
+$2y$12$VUzOd391c2oYiESz3FSi2eZz1Gk5B9A2Kz66rvuNkkR04xQ/6yp0G
+</pre>
+<h3>Lang utility</h3>
+<p>It is a useful helper that scans your extension directory looking for translation references.</p>
+<pre>$ php publix/index.php lang <i>extension</i></pre>
+<p>It can also merge the result with an existing language dictionary, prefixing unnecessary items by <code>//-</code>.</p>
+<pre>$ php publix/index.php lang <i>extension</i> <i>languagecode</i></pre>
+<p>If you want to save the results, it can be done as easy as</p>
+<pre>$ php publix/index.php lang <i>extension</i> <i>languagecode</i> --write</pre>
+<h3>Create utility</h3>
+<p>This is the one that probably you'll use the most. It's a small templater to generate different files for the PHPPE environment.
+The templates can be found in <samp>vendor/phppe/Developer/templates/</samp> directory, and you can add new ones any time you want.
+The format is plain simple, just take a look into one. Templates can be listed if you don't provide template name:</p>
+<pre>
+$ php public/index.php create
+Usage:
+  php public/index.php create &lt;template&gt; [arg1 [arg2 [...]]]
+
+Template can be one of:
+  action              action template
+  addon               creates a view addon (widget)
+  composer            create composer.json package information
+  config              configuration file
+  controller          controller template
+  extension           create an extension
+  filter              url filter template
+  init                extension initialization
+  lang                configuration file
+  lib                 library template
+  model               model template
+  phpunit.xml         creates xml configuration for PHPUnit
+  route               adds a new route
+  scheme              SQL table scheme
+  test                test case for a class
+  update              SQL update
+  view                create a view
+</pre>
+<p>As you can see, there's a template for almost everything you'll need. For example if you want to create a new extension, just name it, and the rest will be taken care of for you.</p>
+<pre>
+$ php public/index.php create extension MyService
+Writing vendor/phppe/MyService/composer.json
+Writing vendor/phppe/MyService/config.php
+Writing vendor/phppe/MyService/init.php
+Writing vendor/phppe/MyService/sql/myservice.sql
+Writing vendor/phppe/MyService/lang/en.php
+Writing vendor/phppe/MyService/libs/MyService.php
+Writing vendor/phppe/MyService/ctrl/myservice.php
+Writing vendor/phppe/MyService/view/myservice.tpl
+Writing vendor/phppe/MyServiceTest/tests/MyServiceTest.php
+</pre>
+<h3>Mkrepo utility</h3>
+<p>This small tool is very useful if you create your own repository let's say for your company's applications.
+This will scan all extensions under <samp>vendor/phppe/</samp> directory of your developer environment collecting information from <samp>composer.json</samp>
+files. If source changed, it re-generates tarballs and saves <samp>packages.json</samp> as described in <a onclick='tab_switch("repository");'>Repository</a> section of this document.
+Now all you have to do is copy the later along with the tarballs onto a webserver, specify the url in your production server's <a onclick='tab_switch("configuration");'>configuration</a> and your deployment system is good to go!</p>
+<pre>
+$ php public/index.php mkrepo
+Scanning for packages: 15 found
+  CMS: skip OK
+  CookieAlert: skip OK
+  Core: skip OK
+  DataLibrary: skip OK
+  Developer: skip OK
+  EplosCMS: skip OK
+  Extensions: skip OK
+  GPIO: skip OK
+  Gallery: skip OK
+  GeoLocation: skip OK
+  YouTube: skip OK
+  bootstrap: skip OK
+  bootstrapcdn: skip OK
+  spectrum: skip OK
+  wyswyg: skip OK
+Saving packages info: OK
+</pre>
+<div class='alert alert-info'>This tool also calls deploy utility if <samp>public/source.php</samp> exists and is newer than <samp>public/index.php</samp> because this is the tool I personaly use to create the PHPPE repository itself.</div>
+<h3>Deploy utility</h3>
+<p>It job is to compress the human readable, commented <samp>public/source.php</samp> into <samp>public/index.php</samp>, a minified, production ready format and to update the documentation you're reading now.
+This utility is only useful if you alter PHPPE Core.</p>
+<div class='alert alert-danger'><b>WARNING</b>: never alter Core as it would break compatibility. Use event hooks or Extensions if possible. Only use this tool if you really know what you're doing.</div>
+<pre>
+$ php public/index.php deploy
+Compressing index.php: aa1c80932e73551a9816f7b84fabe43622c5adf4 80782 (0) OK
+Updating documentation: OK
+</pre>
+
+</div>
+
 <div id='helloworld' class='tab' rel='getstarted'>
 <h1>Classic Hello World! Tutorial</h1>
 <h3>Simpliest</h3>
