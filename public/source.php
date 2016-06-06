@@ -3749,9 +3749,9 @@ class ClassMap extends Extension
                    substr($app, -4) == '.php' || substr($ac, -4) == '.php') {
                     $app = $this->template = '403';
                 }
-                //! default template
+                //! default template, it's empty on CLI
                 else {
-                    $this->template = $app.'_'.$ac;
+                    $this->template = self::$w ? $app.'_'.$ac : '';
                 }
 
                 //! canonize application's class' name
