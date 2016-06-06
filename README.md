@@ -14,7 +14,7 @@ This 80k bytes of PHP code will give you:
 - [PHPUnit](https://phpunit.de) compatibility with [100% code coverage](http://bztsrc.github.io/phppe3/coverage)
 - [Bootstrap](https://getbootstrap.com/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
-- Very low footprint, less than 1MiB, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
+- Very low footprint, less than 768KiB, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
 - Highly modular, easy to expand structure with Class autoloader
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
@@ -34,12 +34,16 @@ This 80k bytes of PHP code will give you:
 
 Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (~80KiB) to save the day and give you an easy start.
 
-For full CMS capability you'll also need the Content Editor with [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (24KiB), because PHPPE Core on it's own only serves contents.
+For full CMS capability you'll also need the Content Editor with [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (28KiB), because PHPPE Core on it's own only serves contents.
 
 Requirements
 ------------
 
-At least PHP 7.0. If you install the full environment (with Pack, CMS, Extensions and Developer), no more than 768k disk space needed.
+- At least PHP 7.0
+- SSH terminal access (use ssh or PuTTY)
+- Apache or nginx with php-fpm on server side
+- Any HTML5 compatible browser on client side
+- No more than 768KiB free space if you install the full basic environment (with Pack, CMS, Extensions and Developer)
 
 Installation with Packagist
 ---------------------------
@@ -133,7 +137,7 @@ This will provide you utilities like
     $ php public/index.php tests run
     $ php public/index.php mkrepo
 
-You can use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole developer repository (including tarballs):
+You can use [Packagist](https://packagist.org/packages/bztsrc/phppe3) to install the whole repository with all extensions:
 
     $ composer create-project "bztsrc/phppe3:dev-master"
 
