@@ -29,6 +29,10 @@ class Repository
 	//! PHPPE core source and deployment file path
 	static $sourceFile="public/source.php";
 	static $deployFile="public/index.php";
+    //! self test page
+    static $selfTestFile="vendor/phppe/Core/views/index.tpl";
+    //! documentation
+    static $docFile="public/index.html";
 	//! This can be overridden from command line
     static $repoBase="https://bztsrc.github.io/phppe3/";
 	//static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
@@ -72,6 +76,35 @@ class Repository
 	}
 
 /**
+ * Update download and self test page in documentation
+ */
+    static function updateDoc()
+    {
+        if(file_exists(self::$docFile)) {
+            echo("Updating documentation: ");
+            //! get data
+            $doc = file_get_contents(self::$docFile);
+            $dep = file_get_contents(self::$deployFile);
+            $tpl = file_get_contents(self::$selfTestFile);
+            preg_match("|\"VERSION\",\"([^\"]+)|",$dep,$ver);
+            //! replace
+            $doc = preg_replace(
+                "|/\*core\*/\"data:text\/plain[^\"\']+|",
+                "/*core*/\"data:text/plain;base64,".base64_encode($dep),
+                preg_replace(
+                "|/\*view\*/\"data:text\/plain[^\"\']+|",
+                "/*view*/\"data:text/plain;base64,".base64_encode($tpl),
+                    preg_replace(
+                        "|<small data-ver>v[^<]+</small>|",
+                        "<small data-ver>v".$ver[1]."</small>"))));
+            //! write out
+            if(!file_put_contents(self::$docFile, $doc))
+                die("unable to write ".self::$docFile);
+            echo("OK\n");
+        }
+    }
+
+/**
  * Create extension tarballs and packages.json for PHP Composer
  * @usage php public/index.php mkrepo
  */
@@ -85,8 +118,10 @@ class Repository
 
 		//! if source changed, regenerate deployment file
 		if(file_exists(self::$sourceFile) &&
-			filemtime(self::$sourceFile) > filemtime(self::$deployFile))
+			filemtime(self::$sourceFile) > filemtime(self::$deployFile)) {
 			self::compress();
+            self::updateDoc();
+        }
 
 		//! tar executable. On MacOSX this will avoid extra files in tarballs
 		if(strtolower(trim(exec("uname -s")))=="darwin")

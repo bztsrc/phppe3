@@ -15,6 +15,8 @@ class DeployController {
 
 		//! convert source to deployment format
 		\PHPPE\Repository::compress();
+        //! update document
+        \PHPPE\Repository::updateDoc();
 		die;
 	}
 
