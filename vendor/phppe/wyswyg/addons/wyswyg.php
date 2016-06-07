@@ -11,11 +11,7 @@ class wyswyg extends \PHPPE\AddOn
     public $heightClass="wyswyg";
     public $minHeight=200;
     public $adjust=[24, 500=>48];
-
-    function init()
-    {
-        Core::addon("wyswyg", "WYSiWYG", "", "*(iconheight) obj.field");
-    }
+    public $conf = "*(iconheight) obj.field";
 
     function show(  )
     {

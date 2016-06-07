@@ -66,12 +66,18 @@ namespace PHPPE {
  */
     class AddOn
     {
-        public $name;                //!< instance name
-        public $args;                //!< arguments in pharenthesis after type
-        public $fld;                 //!< field name
-        public $value;               //!< object field's value
-        public $attrs;               //!< attributes, everything after the name in tag
-        public $css;                 //!< css class to use, input or reqinput, occasionally errinput added
+        protected $name;          //!< instance name
+        protected $args;          //!< arguments in pharenthesis after type
+        protected $fld;           //!< field name
+        public $value;            //!< object field's value
+        protected $attrs;         //!< attributes, everything after the name in tag
+        protected $css;           //!< css class to use, input or reqinput, occasionally errinput added
+        protected $conf;          //!< configuration scheme
+
+/**
+ * Magic getter to implement read-only properties
+ */
+        function __get($n) { return $this->$n; }
 
 /**
  * Constructor, do not try to override, use init() instead.
@@ -102,8 +108,8 @@ namespace PHPPE {
  */
         //! function init($cfgarray)
         //! {
-        //!   call \PHPPE\Core::addon() and specify your Add-On's details
-        //!   \PHPPE\Core::jslib() to load javascripts and
+        //!   \PHPPE\Core::jslib() to load javascript libraries
+        //!   \PHPPE\Core::js() to add javascript functions and
         //!   \PHPPE\Core::css() for style sheets here
         //! }
 
@@ -1713,6 +1719,7 @@ namespace PHPPE {
         private static $o = [];       //!< templater objects
         private static $tc;           //!< try button counter
         private static $p;            //!< templater default path for views
+        private static $addons = [];  //!< list of initialized widgets
         public static $e = '';        //!< last expression to evaluate
         public static $C;             //!< php expression cache
 
@@ -1743,6 +1750,7 @@ namespace PHPPE {
 
             //! register built-in fields and widgets all at once
             //! this is required for \PHPPE\Core::isInst() to always return true for built-ins
+/*
             Core::addon( "hidden", "Hidden value", "", "*obj.field" );
             Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
             Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
@@ -1757,6 +1765,7 @@ namespace PHPPE {
             Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
             Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
             Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
+*/
         }
 
 /**
@@ -2357,12 +2366,10 @@ namespace PHPPE {
                                     //ok, got it
                                     $F = new $d($a, $n, $v, $A, !$G&&$R);
                                     //if it has an init() method, and not called yet, call it
-                                    if (!Core::addon($f)) {
-                                        if (method_exists($F, 'init')) {
+                                    if (empty(self::$addons[$f])) {
+                                        if (method_exists($F, 'init'))
                                             $F->init();
-                                        } else {
-                                            Core::addon($f, "addon $f");
-                                        }
+                                        self::$addons[$f]=1;
                                     }
                                     //! cms icon
                                     if ($G) {
@@ -3295,8 +3302,7 @@ class ClassMap extends Extension
         private $form;                   //!< name of the submitted form
         private $try;                    //!< none-zero for update transaction starts, 1 up to 9
         private $error;                  //!< error messages array
-        private $libs = [];              //!< list of initialized modules and libraries
-        private $addons = [];            //!< list of initialized widgets
+        private $libs = [];              //!< list of initialized services and libraries
         private $disabled = [];          //!< list of disabled extensions
         private static $started;         //!< script start time in msec, float
         private static $v;               //!< validator data
@@ -3900,7 +3906,7 @@ class ClassMap extends Extension
         {
             $L = &self::$core->libs;
             if (empty($o)) {
-                //! return list of lib or a specific module instance
+                //! return list of lib or a specific service instance
                 return empty($n) ? $L : (empty($L[$n]) ? null : $L[$n]);
             } else {
                 //! check dependencies
@@ -3928,49 +3934,6 @@ class ClassMap extends Extension
         }
 
 /**
- * Return all registered Add-Ons.
- * @usage addon()
- * @return array of Add-Ons
- *
- * Register an Add-On in PHPPE
- * @usage addon(n,...) call it from your Add-On's init() method
- * @param name
- * @param description
- * @param dependencies
- * @param configuration string (see self::addon() calls in View init)
- */
-        public static function addon($n = '', $l = '', $D = '', $c = '')
-        {
-            if (empty($n)) {
-                return self::$core->addons;
-            }
-            if (empty($l))
-                return isset(self::$core->addons[$n]);
-            //! register an add-on with dependency check
-            $d = '';
-            //! check dependencies
-            if ($D) {
-                if (!is_array($D)) {
-                    $D = str_getcsv($D, ',');
-                }
-                foreach ($D as $v) {
-                    if (!self::isInst($v)) {
-                        $d .= ($d ? ',' : '').$v;
-                    }
-                }
-            }
-            if (empty($d)) {
-                self::lang($n);
-                self::$core->addons[$n] = [
-                    'name' => L($l),
-                    'conf' => $c,
-               ];
-            } else {
-                self::log('E', "$n depends on: $d");
-            }
-        }
-
-/**
  * Checks if an extension or an Add-On is installed or not.
  *
  * @param name
@@ -3982,9 +3945,9 @@ class ClassMap extends Extension
             //! check for installed library or..
             return isset(self::$core->libs[$n]) || ClassMap::has('\\PHPPE\\'.$n) ||
             //! ...available addon...
-                isset(self::$core->addons[$n]) || ClassMap::has('\\PHPPE\\AddOn\\'.$n) || ClassMap::has($n) ||
+                ClassMap::has('\\PHPPE\\AddOn\\'.$n) || 
             //! ...or any other JS only extension
-                is_dir('vendor/phppe/'.$n);
+                ClassMap::has($n) || is_dir('vendor/phppe/'.$n);
         }
 
 /**

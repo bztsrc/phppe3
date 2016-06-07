@@ -4,11 +4,8 @@ use \PHPPE\Core as Core;
 use \PHPPE\View as View;
 
 class setsel extends \PHPPE\AddOn {
+    public $conf = "*(singleselection,height,filters,itemtemplate,header,titlefield) obj.field options [cssclass [itemcssclass [filterhtml]]]";
 
-    function init()
-    {
-        Core::addon( "setsel", "Set list selection", "", "*(singleselection,height,filters,itemtemplate,header,titlefield) obj.field options [cssclass [itemcssclass [filterhtml]]]" );
-    }
     function show()
     {
         return "";
@@ -22,7 +19,9 @@ class setsel extends \PHPPE\AddOn {
         $a = $this->attrs;
         $opts = ! empty($a[ 0 ]) && $a[ 0 ] != "-" ? View::getval($a[ 0 ]) : [];
         if(is_string($opts))
-            $opts = explode(",", $opts);
+            $opts = str_getcsv($opts, ",");
+        if(!is_array($opts))
+            $opts = "";
         if(is_string($this->value))
             $val = explode(",", $this->value);
         elseif(isset($this->value[0]['id'])) {
@@ -55,16 +54,21 @@ class setsel extends \PHPPE\AddOn {
             $id=$k; $name=$v; $title="";
             $blk="<div";
             $rep=!empty($this->args[3])?$this->args[3]:"%name%";
+            $rep=str_ireplace("%KEY%",$k,$rep);
             if(is_array($v)||is_object($v)) {
                 foreach($v as $K=>$V) {
                     if(isset($filters[$K]))
                         $flt[$K][$V]=!empty($idx[$K])&&!empty($v[$idx[$K]])?$v[$idx[$K]]:$V;
-                    $rep=str_ireplace("%".$K."%",$V,$rep);
+                    if(!is_scalar($V))
+                        continue;
+                    $rep=str_ireplace("%".$K."%",$V."",$rep);
                     if(!empty($this->args[5]) && $K==trim($this->args[5])) $title=$V;
                     if($K=="name") $name=$V; else
                     if($K=="id") $id=$V; else
                         $blk.=" data-".$K."=\"".htmlspecialchars($V)."\"";
                 }
+            } else {
+                $rep=str_ireplace("%VALUE%",$v,$rep);
             }
             $blk.=" class='setsel_item".
                 (!empty($this->args[0])&&isset($i[$id])?" setsel_itemactive":"").

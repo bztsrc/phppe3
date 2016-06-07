@@ -7,6 +7,9 @@ use \PHPPE\Core as PHPPE;
 
 class test1 extends \PHPPE\AddOn
 {
+    function init()
+    {
+    }
 	function show(  )
 	{
 		return "show1";

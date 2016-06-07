@@ -52,39 +52,6 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 	}
 
-	public function testAddon()
-	{
-		$addons = Core::addon();
-		$this->assertEmpty($addons,"Addons");
-
-		Core::addon("test1","Test1");
-		$addons2 = Core::addon();
-
-		$this->assertGreaterThan(count($addons),count($addons2),"Loaded manually");
-		$this->assertTrue(Core::isInst("test1"),"isInst unloaded");
-
-		\PHPPE\View::_t("<!form test><!field test2 test.field></form>");
-
-		$addons = Core::addon();
-		$this->assertNotEmpty($addons["test2"],"Autoloading");
-
-		$this->assertTrue(Core::isInst("test2"),"isInst loaded");
-
-		$value="<";
-		$addon = new \PHPPE\AddOn([],"test3",$value,[],1);
-		$this->assertEquals("PHPPE\\AddOn(test3)",$addon,"AddOn toString");
-
-		$this->assertEquals("&lt;",$addon->show(),"Show method");
-
-		$addons = Core::addon();
-		Core::addon("test4","Test4","noSuchModule");
-		$addons2 = Core::addon();
-
-		$this->assertEquals(count($addons),count($addons2),"Failed AddOn dep");
-
-
-	}
-
 	public function testClient()
 	{
 		$lang = $_SESSION['pe_l'];

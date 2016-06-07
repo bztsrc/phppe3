@@ -10,11 +10,7 @@ class pagelist extends \PHPPE\AddOn\setsel
     public $heightClass = "setsel_boxw";
     public $headerHeight = 30;
     public $forceFull = 80;
-
-	function init()
-	{
-		\PHPPE\Core::addon( "pagelist", "CMS Page List Selector", "", "*(views) obj.field options [cssclass]" );
-	}
+    public $conf = "*(views) obj.field options [cssclass]";
 
 	function edit()
 	{

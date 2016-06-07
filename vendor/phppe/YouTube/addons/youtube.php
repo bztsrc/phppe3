@@ -4,10 +4,8 @@ use \PHPPE\Core as Core;
 
 class youtube extends \PHPPE\AddOn
 {
-	function init()
-	{
-		Core::addon("youtube", "YouTube video", "", "([width,[height,[autoplay,[autohide,[controls,[loop,[playlist]]]]]]]) videoid");
-	}
+	public $conf = "([width,[height,[autoplay,[autohide,[controls,[loop,[playlist]]]]]]]) videoid";
+
 	function show()
 	{
 		if($this->args[0]<64) $this->args[0]=380;

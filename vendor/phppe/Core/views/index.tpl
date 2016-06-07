@@ -448,10 +448,10 @@ Password input field
 
     <div class="row">
         <div class="col-sm-2" dir="ltr">
-&lt;!field select obj.select0 <span title='list values'>core.addon()</span>>
+&lt;!field select obj.select0 <span title='list values'>core.lib()</span>>
         </div>
         <div class="col-sm-4">
-<!field select obj.select0 core.addon()>
+<!field select obj.select0 core.lib()>
         </div>
         <div class="col-sm-6 text-muted small">
 An option list feeded by a function
@@ -625,10 +625,10 @@ HTML5 button with javascript handler
   <div class="panel-body">
     <div class="row">
         <div class="col-sm-2" dir="ltr">
-&lt;!field setsel obj.setsel core.addon()>
+&lt;!field setsel(0,0,'','%KEY%') obj.setsel core.lib()>
         </div>
         <div class="col-sm-6">
-<!field setsel obj.setsel core.addon()>
+<!field setsel(0,0,'','%KEY%') obj.setsel core.lib()>
         </div>
         <div class="col-sm-4 text-muted small">
 Select multiple values from a set. Drag'n'drop elements and reaarange them as you wish.
