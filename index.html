@@ -18,6 +18,7 @@
 #header DIV.dock {position:fixed;top:4px;right:40px;}
 #header BUTTON {height:20px;font-size:12px;line-height:12px;top:2px;border:solid 1px #fff;color:#fff;background-color:#709504;background:linear-gradient(#d8f4a9,#709504,#baf159);}
 #search {height:20px;font-size:12px;line-height:12px;top:2px;}
+SUP SMALL { color:#A0A0A0; }
 DIV.toc {position:absolute;top:34px;left:2px;width:220px;border-right:1px solid #E0E0E0;padding:4px 4px 4px 4px;display:block;z-index:5;color:#E0E0E0;}
 DIV.toc A {text-decoration:none; color:#808080;}
 DIV.toc OL {padding-left:5px !important; }
@@ -35,7 +36,7 @@ A:hover { text-decoration:underline; }
 .dlbox A { margin-top:5px; clear:both; width:100%; text-align:center; display:block;background:#D0D0D0; text-decoration:none;color:#000;cursor:pointer;padding:3px;}
 .dlbox SPAN { margin-top:5px; clear:right; text-align:center; background:#D0D0D0; text-decoration:none;color:#000;cursor:pointer;padding:3px;}
 .dlbox B { color:#000;}
-PRE[class] { margin: 0px 0px 0px 0px; font-size: 14px; line-height: 16px; padding: 0px 0px 0px 5px; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAgCAIAAABch4VNAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wLEREfNbBQdOUAAAAidEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOHqHdDAAAAGElEQVQI12N4+/YtEwMDA9n4xYsXlOgHABagBb6SY4hyAAAAAElFTkSuQmCC"); }
+PRE[class] { margin: 0px 0px 0px 0px; font-size: 12px; line-height: 16px; padding: 0px 0px 0px 5px; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAgCAIAAABch4VNAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wLEREfNbBQdOUAAAAidEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOHqHdDAAAAGElEQVQI12N4+/YtEwMDA9n4xYsXlOgHABagBb6SY4hyAAAAAElFTkSuQmCC"); }
 PRE.php { border-top-left-radius:0px !important;border-bottom-left-radius:0px !important;}
 PRE.lineno { margin: 0px 0px 0px 0px; border-right: solid 0px; padding: 0px 0px 0px 0px; background:#F2F2F2; color:#C0C0C0; width:32px !important; float:left; text-align: right; border-top-right-radius:0px !important;border-bottom-right-radius:0px !important;}
 PRE SPAN.comment	{ color:#808080; }
@@ -203,8 +204,12 @@ function tab_check()
     for(i=0;i<obj.length;i++){
         var j,id=obj[i].getAttribute("id"),rel=obj[i].getAttribute("rel");
         if(id==null) continue;
-        keys=keys.concat([id]);
-        if(rel!=null) keys=keys.concat(rel.split(','));
+        var k=[id];
+        if(rel!=null) k=k.concat(rel.split(','));
+        for(j in k)
+            if(keys.indexOf(k[j])!=-1)
+                console.log("Duplicate section: "+k[j]);
+        keys=keys.concat(k);
     }
     obj=document.querySelectorAll("A[onclick]");
     for(i=0;i<obj.length;i++){
@@ -213,7 +218,10 @@ function tab_check()
             if(keys.indexOf(k)==-1 && miss.indexOf(k)==-1) miss=miss.concat([k]);
         }
     }
-    console.log(miss);
+    if(miss.length!=0) {
+        console.log(miss.length+" missing section(s):");
+        console.log(miss);
+    }
 }
 function init()
 {
@@ -318,7 +326,6 @@ function init()
     <li><a onclick='tab_switch("phppe_registry");'>PHPPE\Registry</a><sup><small>Pack</small></sup></li>
     <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a><sup><small>Pack</small></sup></li>
     <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a><sup><small>Pack</small></sup></li>
-    <li><a onclick='tab_switch("phppe_extensions");'>PHPPE\Extensions</a><sup><small>Extensions</small></sup></li>
     <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a><sup><small>GPIO</small></sup></li>
 </ol></li>
     <li><a class='header' onclick='tab_switch("downloads");'>Downloads</a>
@@ -327,7 +334,7 @@ function init()
 
 <div id='notab' class='tab'></div>
 
-<div id='downloads' class='tab' rel='production,deploy,download,source,git,github,latest'>
+<div id='downloads' class='tab' rel='production,download,source,git,github,latest'>
 <h1>Downloads</h1>
 <h3>PHPPE Core</h3>
 <span class='dlbox'>
@@ -534,7 +541,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li>sys_field() &rarr; <a onclick='tab_switch("addon");'>PHPPE\Core::addon()</a></li>
 <li>$sys->fields&nbsp;&rarr;&nbsp;PHPPE\Core::$core->addons</li>
 <li>$db &rarr; <a onclick='tab_switch("db");'>PHPPE\DS</a></li>
-<li>db_init() &rarr; <a onclick='tab_switch("dbInit");'>PHPPE\DS::db()</a></li>
+<li>db_init() &rarr; <a onclick='tab_switch("db");'>PHPPE\DS::db()</a></li>
 <li>db_like() &rarr; <a onclick='tab_switch("like");'>PHPPE\DS::like()</a></li>
 <li>db_fetch() &rarr; <a onclick='tab_switch("fetch");'>PHPPE\DS::fetch()</a></li>
 <li>db_array() &rarr; <a onclick='tab_switch("query");'>PHPPE\DS::query()</a></li>
@@ -733,7 +740,7 @@ This can be set in <samp>phppe/config.php</samp> with <samp>$core->runlevel=X</s
 2 - development<br>
 3 - debug
 <h3>Template or Layout</h3>
-It's an (usually, but not necessairly) xml with placeholders for application properties and tags for <a onclick='tab_switch("views:650");'>control structures</a> and <a onclick='tab_switch("views:2340");'>Add-Ons</a>. Views are generated using templates.
+It's an (usually, but not necessairly) xml with placeholders for application properties and tags for <a onclick='tab_switch("views:650");'>control structures</a> and <a onclick='tab_switch("views:2140");'>Add-Ons</a>. Views are generated using templates.
 </div>
 
 <div id='install' class='tab' rel='diagnostics,sudo'>
@@ -925,13 +932,14 @@ This will bootstrap the basic <a onclick='tab_switch("phppe_core");'>PHPPE Core<
 Available properties can be found on <a onclick='tab_switch("phppe_core");'>PHPPE\Core Class</a> documentation,
 these are only the most commonly used ones.</p>
 <table class='table table-striped'>
-<tr><td style='vertical-align:top'><b>db</b></td><td>specifies primary <a onclick='tab_switch("dbInit");'>database connection</a></td></tr>
+<tr><td style='vertical-align:top'><b>db</b></td><td>specifies primary <a onclick='tab_switch("db");'>database connection</a></td></tr>
 <tr><td><b>title</b></td><td>name of the site (page title)</td></tr>
 <tr><td><b>runlevel</b></td><td>select production (0), verbose/testing (1), developer (2) or debug (3) mode</td></tr>
 <tr><td><b>maintenance</b></td><td>if set to true, will bypass all routing and controller, and only displays mainteance view for all urls</td></tr>
 <tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's Email sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
 <tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
 <tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
+<tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("developer:1270");'>passwd</a> utility to generate hash)</td></tr>
 <tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Extensions repository</a> section.</td></tr>
 <tr><td><b>...</b></td><td>See <a onclick='tab_switch("phppe_core");'>PHPPE\Core</a> for all properties</td></tr>
 </table>
@@ -1138,9 +1146,9 @@ The $islib boolean variable is set if the framework was included from another ph
 <div class='row'><div class='col-md-4'>
 <pre>
       constructor
-           <span style='color:#E0E0E0;'>↓</span>
+           <span style='color:#C0C0C0;'>↓</span>
        autoload
-           <span style='color:#E0E0E0;'>↓
+           <span style='color:#C0C0C0;'>↓
    <span class='condition'>(diagnostic mode?)</span>
       y ↙     ↘ n
 <span class='function'>bootdiag()</span>   <span class='keyword'>Init event</span>
@@ -1306,47 +1314,11 @@ that returns a boolean value.</p>
 <p>PHPPE Core has four built-in filters:</p><ul>
 <li>get - checks if the url was called with HTTP GET method</li>
 <li>post - checks if the url was called with HTTP POST method</li>
-<li><a onclick='tab_switch("isTry");'>csrf</a> - checks validity of a request when user tries to send a transaction, in other words save a form (Cross Site Request Forgery)</li>
+<li><a onclick='tab_switch("istry");'>csrf</a> - checks validity of a request when user tries to send a transaction, in other words save a form (Cross Site Request Forgery)</li>
 <li>loggedin - this filter redirects user to login page if not logged in</li>
 </ul>
 <div class='alert alert-warning'><b>NOTE</b> the difference of filters "@loggedin" and "loggedin". The former simply returns true/false, the second redirects user to login page and arranges that he/she will be redirected back after successful authentication.</div>
-<h3>Source</h3>
-<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
-<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\get <span class='keyword'>extends</span> \PHPPE\Filter
-{
-  <span class='keyword'>function</span> <span class='function'>filter</span>()
-  {
-    return @<span class='variable'>$_SERVER</span>[ <span class='stringconst'>'REQUEST_METHOD'</span> ] == <span class='stringconst'>"GET"</span> ? <span class='keyword'>true</span> : <span class='keyword'>false</span>;
-  }
-}</pre>
-</p>
-<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
-<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\post <span class='keyword'>extends</span> \PHPPE\Filter
-{
-  <span class='keyword'>function</span> <span class='function'>filter</span>()
-  {
-    return @<span class='variable'>$_SERVER</span>[ <span class='stringconst'>'REQUEST_METHOD'</span> ] == <span class='stringconst'>"POST"</span> ? <span class='keyword'>true</span> : <span class='keyword'>false</span>;
-  }
-}</pre></p>
-<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
-<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\csrf <span class='keyword'>extends</span> \PHPPE\Filter
-{
-  <span class='keyword'>function</span> <span class='function'>filter</span>()
-  {
-    return <span class='function'>\PHPPE\Core::isTry</span>();
-  }
-}</pre></p>
-<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10</pre>
-<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\loggedin <span class='keyword'>extends</span> \PHPPE\Filter
-{
-  <span class='keyword'>function</span> <span class='function'>filter</span>()
-  {
-    if (<span class='variable'>\PHPPE\Core::$user-&gt;id</span>)
-      return <span class='keyword'>true</span>;
-    <span class='comment'>/* save request uri for returning after successful login */</span>
-    <span class='function'>PHPPE\Http::redirect</span>(<span class='stringconst'>"login"</span>, <span class='keyword'>true</span>);
-  }
-}</pre></p>
+<p>You can find <a onclick='tab_switch("phppe_filter");'>filter examples</a> in the API section.</p>
 </div>
 
 <div id='models' class='tab'>
@@ -1499,19 +1471,28 @@ You can access the basic object's properties and methods with
 <p>Both field types and widgets are extended from <a onclick='tab_switch("phppe_addon");'>PHPPE\Addon</a> class. The difference is how you refer to them in view templates.</p>
 <pre>
 <span style='color:#808080;'>//create an add-on instance for a form field.</span>
-&lt;!field [ @acl ] [*]type [ ( args ) ] objectname.fieldname [ attributes ]>
-&lt;!var [ @acl ] [*]type [ ( args ) ] objectname.fieldname [ attributes ]>
-&lt;!widget [ @acl ] [*]type [ ( args ) ] instancename [ attributes ]>
-&lt;!cms [ @acl ] [*]type [ ( args ) ] app.propname [ attributes ]>
+&lt;!field [ @acl ] [*]addon [ ( args ) ] objectname.fieldname [ attributes ]>
+&lt;!var [ @acl ] [*]addon [ ( args ) ] objectname.fieldname [ attributes ]>
+&lt;!widget [ @acl ] [*]addon [ ( args ) ] instancename [ attributes ]>
+&lt;!cms [ @acl ] [*]addon [ ( args ) ] app.propname [ attributes ]>
 </pre>
+<p>The reason for having four different kind of tags is to ease the creation for templates. For example with "var" you can display and edit a database record with a single template,
+so you won't have to create more templates for the same object. Similarly "widget" can be used to place an AddOn on the page regardless whether it's showing it's face or it's configuration. Both will use the same template.</p>
 <p>The "field" tag will call the edit() method of the Add-On to render html content, regadless if there's a show() method or not.
 If you use "var" instead of "field", the show() hook will be called, edit() will be limited to edit mode only ($_SESSION['pe_e'] is true). If edit() hook is undefined, fallbacks to show(). If neither show() method found, "var" will output raw value, while "field" reports an error.</p>
 <p>Widgets works just like "var", show() method should draw it's face, and edit() method displays a widget configuration form (optional, if $_SESSION['pe_c'] is true).<br>
 Technically "var" and "widget" are the same, the difference is limited to the meaning of what edit() renders, and when edit() gets called instead of show().</p>
 <p>The "cms" tag will use edit() only if page opened in <a onclick='tab_switch("contents");'>Content Editor</a>. Normally it won't display anything unless it's marked mandatory (by an asterisk prefix in type), when it will use show(), just like "var". Also you can specify editor mode only templater blocks with "<code>&lt;!if cms></code>...<code>&lt;!/if></code>", see conditional block above.
 </p>
+<p><b>Comparision</b></p>
+<table class='table table-bordered'>
+<tr><td style='border:none 0px;'></td><th>field</th><th>var</th><th>widget</th><th>cms</th><th>Purpose</th></tr>
+<tr><th>Normal</th><td class='text-danger'>edit()</td><td class='text-success'>show()</td><td class='text-success'>show()</td><td class='text-success'>- / show()</td><td>Display a record with formated values to the user, also showing widget faces.</td></tr>
+<tr><th>Edit</th><td class='text-danger'>edit()</td><td class='text-danger'>edit()</td><td class='text-success'>show()</td><td class='text-success'>- / show()</td><td>User editable form for a record with the same view template.</td></tr>
+<tr><th>Conf</th><td class='text-danger'>edit()</td><td class='text-success'>show()</td><td class='text-danger'>edit()</td><td class='text-success'>- / show()</td><td>Widget configuration.</td></tr>
+<tr><th>Cms</th><td class='text-danger'>edit()</td><td class='text-success'>show()</td><td class='text-success'>show()</td><td class='text-danger'>edit()</td><td>Editing content on the page.</td></tr>
+</table>
 <p>It's easy to expand functionality with new Add-Ons, see <a onclick='tab_switch("widget");'>tutorial</a> for an example.</p>
-
 </div>
 
 <div id='cache' class='tab' rel='caching,memcache,apc'>
@@ -2941,13 +2922,13 @@ Tutotiral myaction view
 
 <div id='widget' class='tab'>
 <h1>Widget Tutorial</h1>
-<p>See <a onclick='tab_switch("addon");'>PHPPE\Core::addon()</a> and <a onclick='tab_switch("views:2080");'>templater</a>.</p>
+<p>See <a onclick='tab_switch("addon");'>PHPPE\Core::addon()</a> and <a onclick='tab_switch("views:2140");'>templater</a>.</p>
 <p>You can use this Add-On in view templates as:</p>
 <pre>
 &lt;!widget tutorialwgt(1,2,3,4,5,6) instancename>
 </pre>
 <p>The "widget" tag calls show(), unless configuration mode ($_SESSION['pe_<b>c</b>']) is true in which case it renders configuration panel by calling edit() hook. The "var" tag calls show(), unless edit mode ($_SESSION['pe_<b>e</b>']) is true.</p>
-<div class='alert alert-info'><b>NOTE</b>: <a onclick='tab_switch("views:2080");'>var tag</a> checks <b>edit mode</b>, while widget checks <b>conf mode</b> to display edit().</div>
+<div class='alert alert-info'><b>NOTE</b>: <a onclick='tab_switch("views:2140");'>var tag</a> checks <b>edit mode</b>, while widget checks <b>conf mode</b> to display edit().</div>
 
 <samp>app/addons/tutorialwgt.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br></pre>
@@ -3101,8 +3082,8 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <h3>Session variables</h3>
 <p>To save values accross pages, the Core uses some SESSION variable.</p>
 <table class='table table-striped'>
-<tr><td><var>$_SESSION['pe_e']</var></td><td>True if user logged in and turned edit mode on (<a onclick='tab_switch("views:2080");'>templater var</a> tags)</td></tr>
-<tr><td><var>$_SESSION['pe_c']</var></td><td>True if user logged in and turned widget configuration mode on (<a onclick='tab_switch("views:2080");'>templater widget</a> tags)</td></tr>
+<tr><td><var>$_SESSION['pe_e']</var></td><td>True if user logged in and turned edit mode on (<a onclick='tab_switch("views:2140");'>templater var</a> tags)</td></tr>
+<tr><td><var>$_SESSION['pe_c']</var></td><td>True if user logged in and turned widget configuration mode on (<a onclick='tab_switch("views:2140");'>templater widget</a> tags)</td></tr>
 <tr><td><var>$_SESSION['pe_u']</var></td><td>Logged in user</td></tr>
 <tr><td><var>$_SESSION['pe_s']</var></td><td>Security tokens</td></tr>
 <tr><td><var>$_SESSION['pe_v']</var></td><td>Validator data (filled by <a onclick='tab_switch("template");'>PHPPE\View::template()</a>, read on post by <a onclick='tab_switch("req2arr");'>PHPPE\Core:req2obj()</a>)</td></tr>
@@ -3133,7 +3114,7 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td><var>PHPPE\Core::$core-&gt;disabled</var></td><td>list of disabled Extensions</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;repos</var></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Repositories</a></td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;output</var></td><td>Output format, defaults to "html"</td></tr>
-<tr><td><var>PHPPE\Core::$core-&gt;masterpasswd</var></td><td>Encrypted password hash for superadmin (also works if no PHPPE\Users module installed)</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;masterpasswd</var></td><td>Encrypted password hash for superadmin (also works if PHPPE\Users class does not exists)</td></tr>
 </table>
 <h3>Generated properties</h3>
 <table class='table table-striped'>
@@ -3150,8 +3131,8 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td><var>PHPPE\Core::$core-&gt;now</var></td><td>current UNIX timestamp, from primary datasource if available</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;noframe</var></td><td>If not set, application's output will be placed in a frame</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;fm</var></td><td>File max size</td></tr>
-<tr><td><var>PHPPE\Core::$core-&gt;form</var></td><td>Name of the submitted form if <a onclick='tab_switch("isTry");'>PHPPE\Core::isTry()</a> returns non-zero</td></tr>
-<tr><td><var>PHPPE\Core::$core->try</var></td><td>On submit the form's pressed button's serial, query with <a onclick='tab_switch("isTry");'>PHPPE\Core::isTry()</a></td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;form</var></td><td>Name of the submitted form if <a onclick='tab_switch("istry");'>PHPPE\Core::isTry()</a> returns non-zero</td></tr>
+<tr><td><var>PHPPE\Core::$core->try</var></td><td>On submit the form's pressed button's serial, query with <a onclick='tab_switch("istry");'>PHPPE\Core::isTry()</a></td></tr>
 <tr><td><var>PHPPE\Core::$core->error</var></td><td>array of error messages, see <a onclick='tab_switch("error");'>PHPPE\Core::error()</a> and <a onclick='tab_switch("iserror");'>PHPPE\Core::isError()</a></td></tr>
 <tr><td><var>PHPPE\Core::$core->libs</var></td><td>List of loaded modules, register and query with <a onclick='tab_switch("lib");'>PHPPE\Core::lib()</a></td></tr>
 <tr><td><var>PHPPE\Core::$core->addons</var></td><td>List of loaded field types and widgets, register and query with <a onclick='tab_switch("addon");'>PHPPE\Core::addon()</a></td></tr>
@@ -3170,7 +3151,7 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td><a onclick='tab_switch("isinst");'>isInst()</a></td><td>Checks if an extension or Add-On is installed</td></tr>
 <tr><td><a onclick='tab_switch("lang");'>lang()</a></td><td>Load language dictionary for an extension in current language</td></tr>
 <tr><td><a onclick='tab_switch("log");'>log()</a></td><td>Log a message</td></tr>
-<tr><td><a onclick='tab_switch("isTry");'>isTry()</a></td><td>Checks if user tries to save a form with valid CSRF token</td></tr>
+<tr><td><a onclick='tab_switch("istry");'>isTry()</a></td><td>Checks if user tries to save a form with valid CSRF token</td></tr>
 <tr><td><a onclick='tab_switch("error");'>error()</a></td><td>Query and register error messages</td></tr>
 <tr><td><a onclick='tab_switch("iserror");'>isError()</a></td><td>Checks if there was an error</td></tr>
 <tr><td><a onclick='tab_switch("event");'>event()</a></td><td>Trigger a specific event</td></tr>
@@ -3239,7 +3220,12 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <p>None.</p>
 <h3>Methods</h3>
 <table class='table table-striped'>
-<tr><td><a onclick='tab_switch("");'>()</a></td><td></td></tr>
+<tr><td>static <a onclick='tab_switch("url");'>url()</a></td><td>Generate permanent url</td></tr>
+<tr><td>static <a onclick='tab_switch("redirect");'>redirect()</a></td><td>Redirect user to url</td></tr>
+<tr><td>static <a onclick='tab_switch("route");'>route()</a></td><td>Add routes to the routing table</td></tr>
+<tr><td>static <a onclick='tab_switch("mime");'>mime()</a></td><td>Generate HTTP headers for the given mime type</td></tr>
+<tr><td>static <a onclick='tab_switch("urlmatch");'>urlMatch()</a></td><td>Query routing table and return class, method for an url</td></tr>
+<tr><td>static <a onclick='tab_switch("get");'>get()</a></td><td>Perform a HTTP GET or POST request and return response</td></tr>
 </table>
 </div>
 
@@ -3248,10 +3234,20 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <p>DataSource services.</p>
 <div class='alert alert-danger'>This is a low level interface, you should use <a onclick='tab_switch("phppe_db");'>SQL Query Builder</a> instead.</div>
 <h3>Properties</h3>
-<p>None.</p>
+<table class='table table-striped'>
+<tr><td><var>$name</var></td><td>Name of primary datasource driver</td></tr>
+</table>
 <h3>Methods</h3>
 <table class='table table-striped'>
-<tr><td><a onclick='tab_switch("");'>()</a></td><td></td></tr>
+<tr><td>static <a onclick='tab_switch("db");'>db()</a></td><td>Add new database or return current datasource's PDO instance</td></tr>
+<tr><td>static <a onclick='tab_switch("ds");'>ds()</a></td><td>Select datasource or return current selector</td></tr>
+<tr><td>static <a onclick='tab_switch("like");'>like()</a></td><td>Convert user input into an sql like phrase</td></tr>
+<tr><td>static <a onclick='tab_switch("exec");'>exec()</a></td><td>Execute sql on current datasource</td></tr>
+<tr><td>static <a onclick='tab_switch("query");'>query()</a></td><td>Perform a SELECT query and return it's results</td></tr>
+<tr><td>static <a onclick='tab_switch("fetch");'>fetch()</a></td><td>Get the first record from database</td></tr>
+<tr><td>static <a onclick='tab_switch("field");'>field()</a></td><td>Get one field's value from database</td></tr>
+<tr><td>static <a onclick='tab_switch("tree");'>tree()</a></td><td>Execute a reentrant SELECT to get a tree from database</td></tr>
+<tr><td>static <a onclick='tab_switch("bill");'>bill()</a></td><td>Return time consumed by database operations</td></tr>
 </table>
 </div>
 
@@ -3288,7 +3284,16 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <p>None.</p>
 <h3>Methods</h3>
 <table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("assign");'>assign()</a></td><td>Assign a variable to the templater</td></tr>
+<tr><td>static <a onclick='tab_switch("css");'>css()</a></td><td>Add stylesheet to the output</td></tr>
+<tr><td>static <a onclick='tab_switch("jslib");'>jslib()</a></td><td>Add JavaScript library to the output</td></tr>
+<tr><td>static <a onclick='tab_switch("js");'>js()</a></td><td>Add JavaScript function to the output</td></tr>
+<tr><td>static <a onclick='tab_switch("menu");'>menu()</a></td><td>Add menu to PE Panel</td></tr>
 <tr><td>static <a onclick='tab_switch("template");'>template()</a></td><td>Get and parse a view template</td></tr>
+<tr><td>static <a onclick='tab_switch("gettemp");'>get()</a></td><td>Get and return raw template without parsing it</td></tr>
+<tr><td>static <a onclick='tab_switch("getval");'>getval()</a></td><td>Evaluate a templater expression</td></tr>
+<tr><td>static <a onclick='tab_switch("e");'>e()</a></td><td>Format an error message according to output</td></tr>
+<tr><td>static <a onclick='tab_switch("picture");'>picture()</a></td><td>Crop, resize and watermark imagery</td></tr>
 </table>
 </div>
 
@@ -3304,6 +3309,198 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td>static <a onclick='tab_switch("ssh");'>ssh()</a></td><td>Executes shell command securely on a remote server</td></tr>
 <tr><td>static <a onclick='tab_switch("copy");'>copy()</a></td><td>Copies files securely to a remote server</td></tr>
 </table>
+</div>
+
+<div id='phppe_filter' class='tab'>
+<h1>PHPPE\Filter</h1>
+<p>Classes in <code>PHPPE\Filter</code> namespace that are inherited from the <code>PHPPE\Filter</code> class can be used as <a onclick='tab_switch("filters");'>URL filters</a>.
+For that it has only one argumentless method that returns a boolean success flag.
+You can apply filters to <a onclick='tab_switch("routing:560");'>route</a> calls as 4th argument, and they will be executed when the routing decision is made.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("events:1120");'>filter()</a></td><td>Logic that checks validity for an URL and returns boolean</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\get <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>public static function</span> <span class='function'>filter</span>()
+  {
+    return @<span class='variable'>$_SERVER</span>[ <span class='stringconst'>'REQUEST_METHOD'</span> ] == <span class='stringconst'>"GET"</span> ? <span class='keyword'>true</span> : <span class='keyword'>false</span>;
+  }
+}</pre>
+</p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\post <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>public static function</span> <span class='function'>filter</span>()
+  {
+    return @<span class='variable'>$_SERVER</span>[ <span class='stringconst'>'REQUEST_METHOD'</span> ] == <span class='stringconst'>"POST"</span> ? <span class='keyword'>true</span> : <span class='keyword'>false</span>;
+  }
+}</pre></p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\csrf <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>public static function</span> <span class='function'>filter</span>()
+  {
+    return <span class='function'>\PHPPE\Core::isTry</span>();
+  }
+}</pre></p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10</pre>
+<pre class='php'><span class='keyword'>class</span> \PHPPE\Filter\loggedin <span class='keyword'>extends</span> \PHPPE\Filter
+{
+  <span class='keyword'>public static function</span> <span class='function'>filter</span>()
+  {
+    if (<span class='variable'>\PHPPE\Core::$user-&gt;id</span>)
+      return <span class='keyword'>true</span>;
+    <span class='comment'>/* save request uri for returning after successful login */</span>
+    <span class='function'>PHPPE\Http::redirect</span>(<span class='stringconst'>"login"</span>, <span class='keyword'>true</span>);
+  }
+}</pre></p>
+
+</div>
+
+<div id='phppe_addon' class='tab' rel='addon'>
+<h1>PHPPE\AddOn</h1>
+<p>These are the building blocks of the <a onclick='tab_switch("views");'>view layer</a>.
+They implement user input boxes, widgets and basicly everything that has to display formated values in a view.</p>
+<p>To include an AddOn in a template, you use
+<pre>
+    &lt!<i>tag</i> <span class='keyword'>addon(arguments)</span> name <span class='keyword'>attributes</span>&gt;
+</pre></p>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$name</var></td><td>Name of the instance. Most likely something like "object.property"</td></tr>
+<tr><td><var>$fld</var></td><td>Name of the instance, appropriate for DOM id or name. Most likely something like "object_property"</td></tr>
+<tr><td><var>$value</var></td><td>Value of the instance. It's passed by reference in most cases.</td></tr>
+<tr><td><var>$args</var></td><td>Arguments passed in pharenthesis after addon name.</td></tr>
+<tr><td><var>$attrs</var></td><td>Attributes passed after instance name.</td></tr>
+<tr><td><var>$css</var></td><td>Generated class name, "input", "reqinput" or "errinput". You can add more css classes with attributes if you like.</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("events:3400");'>init()</a></td><td>Initialization <a onclick='tab_switch("events:3400");'>event handler</a>. Called once for every referenced AddOn per page generation.</td></tr>
+<tr><td><a onclick='tab_switch("events:4320");'>show()</a></td><td>Uneditable html representation of the value. For fields is a formated value, for widgets it means the widget's face.</td></tr>
+<tr><td><a onclick='tab_switch("events:4320");'>edit()</a></td><td>Editable html representation of the value. For fields is more likely one or more INPUT fields, for widgets it's the configuration form.</td></tr>
+<tr><td>static <a onclick='tab_switch("events:3800");'>validate()</a></td><td>Validates or alters the AddOn's value.</td></tr>
+</table>
+</div>
+
+<div id='phppe_users' class='tab' rel='user'>
+<h1>PHPPE\Users, PHPPE\User</h1>
+<p>This class is a bit tricky as PHPPE Core provides PHPPE\User (note singular) that can handle only one adminstrator user, whom
+password hash is set in <a onclick='tab_switch("configuration");'>configuration</a> file.
+As soon as PHPPE Pack is installed under vendor/phppe/Core, that class will be transparently substituted with PHPPE\Users
+(note the prular) which can handle more users.</p>
+<p>This class is a classic Model, it's inherited from <a onclick='tab_switch("phppe_model");'>PHPPE\Model</a> therefore you can use the find() method to list users.</p>
+<div class='alert alert-info'><b>HINT</b>: you can use the "passwd" utility shipped with PHPPE Developer to generate password hash.</div>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$id</var></td><td>Numeric identifier of the user</td></tr>
+<tr><td><var>$name</var></td><td>Login name</td></tr>
+<tr><td><var>$email</var></td><td>Email address of the user</td></tr>
+<tr><td><var>$parentid</var></td><td>The parent user's id. Users can be organized in a tree.</td></tr>
+<tr><td><var>$active</var></td><td>True if user is allowed to log in</td></tr>
+<tr><td><var>$data</var></td><td>User preferences in an associative array</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("has");'>has()</a></td><td>Checks whether the given user has an ACE</td></tr>
+<tr><td><a onclick='tab_switch("grant");'>grant()</a></td><td>Grant ACE to the user</td></tr>
+<tr><td><a onclick='tab_switch("clear");'>clear()</a></td><td>Terminate access</td></tr>
+<tr><td><a onclick='tab_switch("login");'>login()</a></td><td>Authenticate user with login name and password</td></tr>
+<tr><td><a onclick='tab_switch("logout");'>logout()</a></td><td>Log out user</td></tr>
+</table>
+</div>
+
+<div id='phppe_registry' class='tab' rel='registry'>
+<h1>PHPPE\Registry</h1>
+<p>In most cases <a onclick='tab_switch("configuration");'>configuration</a> file is enough for extensions.
+But sometimes extensions need to store a value as well, e.g.: timestamp of the lust run. Because PHPPE does not allow
+the webserver's user to write php files, it cannot change config.php, so it would need a different mechanism, and that's
+what Registry is for. Without a datasource, it will use local files to store changable configuration variables, uses 'registry' table otherwise.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("setreg");'>set()</a></td><td>Store a value for key in registry</td></tr>
+<tr><td>static <a onclick='tab_switch("getreg");'>get()</a></td><td>Retrieve a value for key from registry</td></tr>
+<tr><td>static <a onclick='tab_switch("delreg");'>del()</a></td><td>Remove a key from registry</td></tr>
+</table>
+</div>
+
+<div id='phppe_db' class='tab' rel='sql'>
+<h1>PHPPE\DB</h1>
+<p>SQL Query Builder, built on top of <a onclick='tab_switch("phppe_ds");'>datasource</a>.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("select");'>select()</a></td><td>Start to build a SELECT query</td></tr>
+<tr><td>static <a onclick='tab_switch("update");'>update()</a></td><td>Start to build an UPDATE statement</td></tr>
+<tr><td>static <a onclick='tab_switch("insert");'>insert()</a></td><td>Start to build an INSERT statement</td></tr>
+<tr><td>static <a onclick='tab_switch("replace");'>replace()</a></td><td>Start to build a REPLACE statement</td></tr>
+<tr><td>static <a onclick='tab_switch("delete");'>delete()</a></td><td>Start to build a DELETE statement</td></tr>
+<tr><td>static <a onclick='tab_switch("truncate");'>truncate()</a></td><td>Start a TRUNCATE statement</td></tr>
+<tr><td><a onclick='tab_switch("table");'>table()</a></td><td>Add plus table to the query with table multiplication</td></tr>
+<tr><td><a onclick='tab_switch("join");'>join()</a></td><td>Join a table to the query</td></tr>
+<tr><td><a onclick='tab_switch("fields");'>fields()</a></td><td>Specify fields to query</td></tr>
+<tr><td><a onclick='tab_switch("where");'>where()</a></td><td>Add where clause</td></tr>
+<tr><td><a onclick='tab_switch("orderby");'>orderBy()</a></td><td>Sort records</td></tr>
+<tr><td><a onclick='tab_switch("groupby");'>groupBy()</a></td><td>Group records</td></tr>
+<tr><td><a onclick='tab_switch("having");'>having()</a></td><td>Same as where clause, but filters aggregated records</td></tr>
+<tr><td><a onclick='tab_switch("sql");'>sql(), __toString()</a></td><td>Return SQL sentence string</td></tr>
+<tr><td><a onclick='tab_switch("execute");'>execute()</a></td><td>Execute the query/statement on current datasource</td></tr>
+</table>
+<h3>Exceptions</h3>
+<p>Throws <code>DBException</code>.</p>
+</div>
+
+<div id='phppe_email' class='tab' rel='email'>
+<h1>PHPPE\Email</h1>
+<p>Email builder and sender. Supports multipart messages and can speak SMTP directly (no dependency to third lib classes).</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("newemail");'>__constructor()</a></td><td>Create an Email object</td></tr>
+<tr><td><a onclick='tab_switch("getemail");'>get()</a></td><td>Returns Email object in JSON</td></tr>
+<tr><td><a onclick='tab_switch("to");'>to()</a></td><td>Set recipient</td></tr>
+<tr><td><a onclick='tab_switch("replyto");'>replyTo()</a></td><td>Set return address</td></tr>
+<tr><td><a onclick='tab_switch("cc");'>cc()</a></td><td>Set carbon copy address</td></tr>
+<tr><td><a onclick='tab_switch("bcc");'>bcc()</a></td><td>Set hidden carbon copy address</td></tr>
+<tr><td><a onclick='tab_switch("subject");'>subject()</a></td><td>Set subject</td></tr>
+<tr><td><a onclick='tab_switch("message");'>message()</a></td><td>Set message body using string</td></tr>
+<tr><td><a onclick='tab_switch("template");'>template()</a></td><td>Set message body using a view template</td></tr>
+<tr><td><a onclick='tab_switch("attachfile");'>attachFile()</a></td><td>Add attachment from file</td></tr>
+<tr><td><a onclick='tab_switch("attachdata");'>attachData()</a></td><td>Add attachment from a string</td></tr>
+<tr><td><a onclick='tab_switch("send");'>send()</a></td><td>Send the email</td></tr>
+</table>
+<h3>Exceptions</h3>
+<p>Throws <code>EmailException</code>.</p>
+</div>
+
+<div id='phppe_gpio' class='tab' rel='gpio'>
+<h1>PHPPE\GPIO</h1>
+<p>Allows manipulation of Raspberry Pi GPIO ports from PHP, and also queries some useful property of the board.</p>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$pins</var></td><td>Pin layout</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("reset");'>reset()</a></td><td>Reset all pins to input mode</td></tr>
+<tr><td>static <a onclick='tab_switch("rpipcb");'>RPiPCB()</a></td><td>Returns board revision number (for pin autodetection)</td></tr>
+<tr><td>static <a onclick='tab_switch("temp");'>temp()</a></td><td>Returns board temperature in SI <sup>o</sup>C</td></tr>
+<tr><td>static <a onclick='tab_switch("freq");'>freq()</a></td><td>Returns CPU frequency</td></tr>
+<tr><td>static <a onclick='tab_switch("mode");'>mode()</a></td><td>Set direction (in or out mode) for a pin</td></tr>
+<tr><td>static <a onclick='tab_switch("getgpio");'>get()</a></td><td>Read level of a pin</td></tr>
+<tr><td>static <a onclick='tab_switch("setgpio");'>set()</a></td><td>Set high or low level on a pin</td></tr>
+</table>
+<h3>Exceptions</h3>
+<p>Throws <code>GPIOException</code>.</p>
 </div>
 
 <script type='text/javascript'>
