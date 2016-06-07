@@ -3868,7 +3868,7 @@ class ClassMap extends Extension
 
 /*** Core library ***/
 /**
- * List all registered libraries (extensions).
+ * List all registered libraries (services).
  * @usage lib()
  * @return array of library instances
  *
@@ -3877,7 +3877,7 @@ class ClassMap extends Extension
  * @param name, optional
  * @return library instance or null
  *
- * Define a new library
+ * Define a new library (service)
  * @usage lib(n,o,d)
  * @param name
  * @param object instance or class name
@@ -3915,16 +3915,16 @@ class ClassMap extends Extension
         }
 
 /**
- * return all registered addons.
+ * Return all registered Add-Ons.
  * @usage addon()
- * @return array of addons
+ * @return array of Add-Ons
  *
- * register an addon in PHPPE
- * @usage addon(n,...) call it from your add-on's init() method
+ * Register an Add-On in PHPPE
+ * @usage addon(n,...) call it from your Add-On's init() method
  * @param name
  * @param description
  * @param dependencies
- * @param configuration string (see self::addon() calls in bootstrap)
+ * @param configuration string (see self::addon() calls in View init)
  */
         public static function addon($n = '', $l = '', $D = '', $c = '')
         {
@@ -3958,7 +3958,7 @@ class ClassMap extends Extension
         }
 
 /**
- * checks if an extension or an add-on is installed or not.
+ * Checks if an extension or an Add-On is installed or not.
  *
  * @param name
  *
@@ -4296,7 +4296,7 @@ class ClassMap extends Extension
         }
 
 /**
- * convert a templater expression into an array by splitting at separator.
+ * Convert a templater expression into an array by splitting at separator.
  *
  * @param input string
  * @param separator (defaults to comma)
@@ -4323,7 +4323,7 @@ class ClassMap extends Extension
         }
 
 /**
- * flat a recursive array (sub-levels in "_") into simple one level array
+ * Flat a recursive array (sub-levels in "_") into simple one level array
  * this is useful if you want to use an option list on trees.
  *
  * @param input tree array
