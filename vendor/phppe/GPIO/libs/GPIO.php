@@ -47,7 +47,6 @@ class GPIO
 	const PATH_UNEXPORT = '/sys/class/gpio/unexport';
 
 	public $pins=[];
-	public $hack=[];
 	public $hdlr=[];
 	static private $self;
 
@@ -86,7 +85,7 @@ class GPIO
 	}
 
 /**
- * reset all pins to out mode and unexport
+ * reset all pins to in mode and unexport
  */
 	function reset()
 	{
@@ -131,20 +130,6 @@ class GPIO
     }
 
 /**
- * export interface to userland
- *
- * @param pin number
- */
-    static public function export($pin)
-    {
-        $pin=intval($pin);
-        if(empty(self::$self->pins[$pin])) throw new GPIOException("bad pin");
-        if(!is_dir(self::PATH_GPIO.$pin)) {
-            // Export pin
-            @file_put_contents(self::PATH_EXPORT,$pin);
-        }
-    }
-/**
  * Setup pin for direction (in or out)
  *
  * @param pin number
@@ -155,8 +140,12 @@ class GPIO
     {
         $pin=intval($pin);
     	if($dir!="in"&&$dir!="out") throw new GPIOException("bad dir");
+        if(empty(self::$self->pins[$pin])) throw new GPIOException("bad pin");
         try {
-            self::export($pin);
+            if(!is_dir(self::PATH_GPIO.$pin)) {
+                // Export pin
+                @file_put_contents(self::PATH_EXPORT,$pin);
+            }
             if(trim(@file_get_contents(self::PATH_GPIO.$pin.'/direction'))!=$dir){
                 @file_put_contents(self::PATH_GPIO.$pin.'/direction', $dir);
     		//@file_put_contents(self::PATH_GPIO.$pin.'/value',"1");
@@ -177,7 +166,6 @@ class GPIO
     static public function read($pin)
     {
         $pin=intval($pin);
-    	@self::export($pin);
         return intval(@file_get_contents(self::PATH_GPIO.$pin.'/value'))==1?false:true;
     }
 
@@ -192,7 +180,6 @@ class GPIO
     {
         $pin=intval($pin);
         if(empty(self::$self->pins[$pin])||@self::$self->hdlr[$pin]!="out") throw new GPIOException("bad pin");
-        @self::export($pin);
         file_put_contents(self::PATH_GPIO.$pin.'/value',empty($value)?"0":"1");
     }
 

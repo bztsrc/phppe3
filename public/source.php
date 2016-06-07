@@ -165,6 +165,9 @@ namespace PHPPE {
         public $screen = [];        //!< screen dimensions
         public  $geo = [];          //!< geo location data (filled in by a third party extension)
 
+/**
+ * Magic getter to implement read-only properties
+ */
         function __get($n) { return $this->$n; }
 /**
  * Constructor. Starts user session
@@ -881,6 +884,9 @@ namespace PHPPE {
         private static $s = 0;        //!< data source selector
         private static $b = 0;        //!< time consumed by data source queries (bill for db)
 
+/**
+ * Magic getter to implement read-only properties
+ */
         function __get($n) { return $this->$n; }
 
 /**
@@ -1270,6 +1276,9 @@ namespace PHPPE {
         private $name;                //!< implementation
         public static $mc;            //!< memcache instance
 
+/**
+ * Magic getter to implement read-only properties
+ */
         function __get($n) { return $this->$n; }
 /**
  * Constructor. Called by core.
@@ -1870,7 +1879,7 @@ namespace PHPPE {
         }
 
 /**
- * Load view from cache.
+ * Load view from cache. Called by Core::run()
  *
  * @param cache key
  *
@@ -3297,6 +3306,10 @@ class ClassMap extends Extension
 /*! BENCHMARK START */
         public static $bm;               //!< benchmarking data
 /*! BENCHMARK END */
+
+/**
+ * Magic getter to implement read-only properties
+ */
         function __get($n) { return $this->$n; }
 /**
  * Constructor. If you pass true as argument, it will build up PHPPE environment,
