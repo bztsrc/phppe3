@@ -151,8 +151,9 @@ function tab_activatesearch(e)
     if(c<20||(c>=33&&c<=40)||c==46||c==116||c==224)return true;
     if(tab_mod==1) { tab_mod=0; return true; }
     s=String.fromCharCode(c);
-    if(document.activeElement.id!='search')
+    if(document.activeElement.id!='search') {
         document.getElementById('search').focus();
+    }
     return true;
 }
 function tab_dosearch(str)
@@ -304,13 +305,21 @@ function init()
     <li><a onclick='tab_switch("phppe_core");'>PHPPE\Core</a></li>
     <li><a onclick='tab_switch("phppe_classmap");'>PHPPE\ClassMap</a></li>
     <li><a onclick='tab_switch("phppe_client");'>PHPPE\Client</a></li>
-    <li><a onclick='tab_switch("phppe_users");'>PHPPE\Users</a></li>
-    <li><a onclick='tab_switch("phppe_ds");'>PHPPE\DS</a></li>
-    <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a></li>
+    <li><a onclick='tab_switch("phppe_model");'>PHPPE\Model</a></li>
     <li><a onclick='tab_switch("phppe_http");'>PHPPE\Http</a></li>
-    <li><a onclick='tab_switch("phppe_View");'>PHPPE\View</a></li>
-    <li><a onclick='tab_switch("phppe_addons");'>PHPPE\AddOns</a></li>
+    <li><a onclick='tab_switch("phppe_ds");'>PHPPE\DS</a></li>
+    <li><a onclick='tab_switch("phppe_cache");'>PHPPE\Cache</a></li>
+    <li><a onclick='tab_switch("phppe_assets");'>PHPPE\Assets</a></li>
+    <li><a onclick='tab_switch("phppe_view");'>PHPPE\View</a></li>
     <li><a onclick='tab_switch("phppe_tools");'>PHPPE\Tools</a></li>
+    <li><a onclick='tab_switch("phppe_filter");'>PHPPE\Filter</a></li>
+    <li><a onclick='tab_switch("phppe_addon");'>PHPPE\AddOn</a></li>
+    <li><a onclick='tab_switch("phppe_users");'>PHPPE\Users</a><sup><small>Pack</small></sup></li>
+    <li><a onclick='tab_switch("phppe_registry");'>PHPPE\Registry</a><sup><small>Pack</small></sup></li>
+    <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a><sup><small>Pack</small></sup></li>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a><sup><small>Pack</small></sup></li>
+    <li><a onclick='tab_switch("phppe_extensions");'>PHPPE\Extensions</a><sup><small>Extensions</small></sup></li>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a><sup><small>GPIO</small></sup></li>
 </ol></li>
     <li><a class='header' onclick='tab_switch("downloads");'>Downloads</a>
 </ol>
@@ -513,7 +522,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 </td><td valign='top' width='33%'>
 <ul>
 <li>$sys &rarr; <a onclick='tab_switch("phppe_core");'>PHPPE\Core::$core</a></li>
-<li>$user &rarr; <a onclick='tab_switch("phppe_user");'>PHPPE\Core::$user</a></li>
+<li>$user &rarr; <a onclick='tab_switch("phppe_users");'>PHPPE\Core::$user</a></li>
 <li><i>&Oslash;</i> &rarr; <a onclick='tab_switch("phppe_client");'>PHPPE\Core::$client</a></li>
 <li>sys_*() &rarr; PHPPE\Core::*()</li>
 <li>$sys-><b>log</b>level &rarr; PHPPE\Core::$core-><b>run</b>level</li>
@@ -665,7 +674,7 @@ An application is written once, but used many-many times, that should make the p
 <div id='glossary' class='tab' rel='phrases'>
 <h1>Glossary</h1>
 <h3>Access Control Entry (ACE)</h3>
-Specifies which user can do what, optionally on which object. It can be granted to <a onclick='tab_switch("phppe_user");'>PHPPE\Users</a> object like <a onclick='tab_switch("grant");'>PHPPE\Core::$user->grant("editgroup")</a>. If you want to limit access to a specific object, you
+Specifies which user can do what, optionally on which object. It can be granted to <a onclick='tab_switch("phppe_users");'>PHPPE\Users</a> object like <a onclick='tab_switch("grant");'>PHPPE\Core::$user->grant("editgroup")</a>. If you want to limit access to a specific object, you
 can append it's id to the ACE: PHPPE\Core::$user->grant("editgroup:13").
 <h3>Access Control List (ACL)</h3>
 A list of ACEs. In Menu, <A onclick='tab_switch("filters");'>URL filters</a> as well in Templates you can refer to an ACE with "@" prefix, like "@loggedin". For a list, use pipe to concatenate ACEs (like "@siteeditor|siteadmin") or in php you can use an array.
@@ -966,7 +975,7 @@ It's strongly advised to follow webserver's and PHP tickets on CVE, upgrade secu
 Also, webserver configuration should limit vhost's file access to it's ProjectRoot (that is PHP's open_basedir restricted to DocumentRoot/..).
 </div><div class='col-md-4'>
 <h3>User access</h3>
-The framework has a built-in access control. Access control entries can be granted to <a onclick='tab_switch("phppe_user");'>PHPPE\User</a> instances. Calling actions and displaying view blocks may require specific access entries depending on view templates.<br>
+The framework has a built-in access control. Access control entries can be granted to <a onclick='tab_switch("phppe_users");'>PHPPE\Users</a> instances. Calling actions and displaying view blocks may require specific access entries depending on view templates.<br>
 You can group access control entries into role groups and grant them to users at once.
 See <a onclick='tab_switch("has");'>(PHPPE\User)-&gt;has()</a>.
 </div></div>
@@ -1482,12 +1491,12 @@ Templater will generate <span style="background:#F00000;color:#FEC0C0;padding:3p
 You can access the basic object's properties and methods with
 <table class='table table-striped'>
 <tr><td><a onclick='tab_switch("phppe_core");'>PHPPE\Core::$core</a></td><td><code>core.</code></td><td><i>PHPPE Core</i></td></tr>
-<tr><td><a onclick='tab_switch("phppe_user");'>PHPPE\Core::$user</a></td><td><code>user.</code></td><td><i>Logged in user</i></td></tr>
+<tr><td><a onclick='tab_switch("phppe_users");'>PHPPE\Core::$user</a></td><td><code>user.</code></td><td><i>Logged in user</i></td></tr>
 <tr><td><a onclick='tab_switch("phppe_client");'>PHPPE\Core::$client</a></td><td><code>client.</code></td><td><i>Client's (browser's) properties</i></td></tr>
 <tr><td><a onclick='tab_switch("controllers");'>Controller instance</a></td><td><code>app.</code></td><td><i>Your application's controller class. Properties can be accessed without prefix as well</i></td></tr>
 </table>
 <h4>Templater Add-Ons</h4>
-<p>Both field types and widgets are extended from <a href='javascript:tab_switch("phppe_addon");'>PHPPE\Addon</a> class. The difference is how you refer to them in view templates.</p>
+<p>Both field types and widgets are extended from <a onclick='tab_switch("phppe_addon");'>PHPPE\Addon</a> class. The difference is how you refer to them in view templates.</p>
 <pre>
 <span style='color:#808080;'>//create an add-on instance for a form field.</span>
 &lt;!field [ @acl ] [*]type [ ( args ) ] objectname.fieldname [ attributes ]>
@@ -1499,9 +1508,9 @@ You can access the basic object's properties and methods with
 If you use "var" instead of "field", the show() hook will be called, edit() will be limited to edit mode only ($_SESSION['pe_e'] is true). If edit() hook is undefined, fallbacks to show(). If neither show() method found, "var" will output raw value, while "field" reports an error.</p>
 <p>Widgets works just like "var", show() method should draw it's face, and edit() method displays a widget configuration form (optional, if $_SESSION['pe_c'] is true).<br>
 Technically "var" and "widget" are the same, the difference is limited to the meaning of what edit() renders, and when edit() gets called instead of show().</p>
-<p>The "cms" tag will use edit() only if page opened in <a href='javascript:tab_switch("contents");'>Content Editor</a>. Normally it won't display anything unless it's marked mandatory (by an asterisk prefix in type), when it will use show(), just like "var". Also you can specify editor mode only templater blocks with "<code>&lt;!if cms></code>...<code>&lt;!/if></code>", see conditional block above.
+<p>The "cms" tag will use edit() only if page opened in <a onclick='tab_switch("contents");'>Content Editor</a>. Normally it won't display anything unless it's marked mandatory (by an asterisk prefix in type), when it will use show(), just like "var". Also you can specify editor mode only templater blocks with "<code>&lt;!if cms></code>...<code>&lt;!/if></code>", see conditional block above.
 </p>
-<p>It's easy to expand functionality with new Add-Ons, see <a href='javascript:tab_switch("widget");'>tutorial</a> for an example.</p>
+<p>It's easy to expand functionality with new Add-Ons, see <a onclick='tab_switch("widget");'>tutorial</a> for an example.</p>
 
 </div>
 
@@ -1840,7 +1849,7 @@ mkdir vendor/phppe/EplosCMS && curl https://bztsrc.github.io/phppe3/phppe3_eplos
  */</span>
 <span class='keyword'>function</span> <span class='function'>stat</span>()
 {
-	<span class='keyword'>return</span> <span class='stringconst'>"<img src='images/icon_ok.png'>"</span>;
+	<span class='keyword'>return</span> <span class='stringconst'>"&lt;img src='images/icon_ok.png'&gt;"</span>;
 }
 </pre></p>
 
@@ -1898,7 +1907,7 @@ Note that Add-On class' constructor can be called several times, but init event 
 <h3>Add-On input validation event</h3>
 <table class='table table-striped'>
 <tr><th>Defined</th><td>in PHPPE\AddOn classes</td></tr>
-<tr><th>Called</th><td>when <a onclick='tab_switch("req2obj");'>PHPPE\Core::req2arr()</a> called in an action handler.</td></tr>
+<tr><th>Called</th><td>when <a onclick='tab_switch("req2arr");'>PHPPE\Core::req2arr()</a> called in an action handler.</td></tr>
 <tr><th>Purpose</th><td>validate or sanitize user input. You can chain more Add-On validators on a specific input field with <a onclick='tab_switch("validate");'>PHPPE\Core::validate()</a>.</td></tr>
 </table>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17</pre>
@@ -2250,76 +2259,76 @@ If everything went well, you should see something similar to this:</p>
 </tr><tr>
     <td><i>phppatch<i></td>
     <td align='right'><small>0.000000</small></td>
-    <td><nobr><meter value='1' style='margin-left:0px;width:0.64px;'></meter><small><small>&nbsp;0.000064</small></small></nobr></td>
+    <td><nobr><meter value='1' style='margin-left:0px;width:0.55px;'></meter><small><small>&nbsp;0.000055</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>getconfig<i></td>
-    <td align='right'><small>0.000064</small></td>
-    <td><nobr><meter value='1' style='margin-left:0.64px;width:2px;'></meter><small><small>&nbsp;0.000200</small></small></nobr></td>
+    <td align='right'><small>0.000055</small></td>
+    <td><nobr><meter value='1' style='margin-left:0.55px;width:1.58px;'></meter><small><small>&nbsp;0.000158</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>autoload<i></td>
-    <td align='right'><small>0.000264</small></td>
-    <td><nobr><meter value='1' style='margin-left:2.64px;width:29.67px;'></meter><small><small>&nbsp;0.002967</small></small></nobr></td>
+    <td align='right'><small>0.000213</small></td>
+    <td><nobr><meter value='1' style='margin-left:2.13px;width:25.28px;'></meter><small><small>&nbsp;0.002528</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>init<i></td>
-    <td align='right'><small>0.003231</small></td>
-    <td><nobr><meter value='1' style='margin-left:32.31px;width:11.94px;'></meter><small><small>&nbsp;0.001194</small></small></nobr></td>
+    <td align='right'><small>0.002741</small></td>
+    <td><nobr><meter value='1' style='margin-left:27.41px;width:10.77px;'></meter><small><small>&nbsp;0.001077</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>tokens<i></td>
-    <td align='right'><small>0.004425</small></td>
-    <td><nobr><meter value='1' style='margin-left:44.25px;width:0.54px;'></meter><small><small>&nbsp;0.000054</small></small></nobr></td>
+    <td align='right'><small>0.003818</small></td>
+    <td><nobr><meter value='1' style='margin-left:38.18px;width:0.47px;'></meter><small><small>&nbsp;0.000047</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>viewinit<i></td>
-    <td align='right'><small>0.004479</small></td>
-    <td><nobr><meter value='1' style='margin-left:44.79px;width:0.26px;'></meter><small><small>&nbsp;0.000026</small></small></nobr></td>
+    <td align='right'><small>0.003865</small></td>
+    <td><nobr><meter value='1' style='margin-left:38.65px;width:1.91px;'></meter><small><small>&nbsp;0.000191</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>routing<i></td>
-    <td align='right'><small>0.004505</small></td>
-    <td><nobr><meter value='1' style='margin-left:45.05px;width:1.9px;'></meter><small><small>&nbsp;0.000190</small></small></nobr></td>
+    <td align='right'><small>0.004056</small></td>
+    <td><nobr><meter value='1' style='margin-left:40.56px;width:1.9px;'></meter><small><small>&nbsp;0.000190</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>cache<i></td>
-    <td align='right'><small>0.004695</small></td>
-    <td><nobr><meter value='1' style='margin-left:46.95px;width:7.85px;'></meter><small><small>&nbsp;0.000785</small></small></nobr></td>
+    <td align='right'><small>0.004246</small></td>
+    <td><nobr><meter value='1' style='margin-left:42.46px;width:8.71px;'></meter><small><small>&nbsp;0.000871</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>controller<i></td>
-    <td align='right'><small>0.005480</small></td>
-    <td><nobr><meter value='1' style='margin-left:54.8px;width:0.16px;'></meter><small><small>&nbsp;0.000016</small></small></nobr></td>
+    <td align='right'><small>0.005117</small></td>
+    <td><nobr><meter value='1' style='margin-left:51.17px;width:0.15px;'></meter><small><small>&nbsp;0.000015</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>action<i></td>
-    <td align='right'><small>0.005496</small></td>
-    <td><nobr><meter value='1' style='margin-left:54.96px;width:8.76px;'></meter><small><small>&nbsp;0.000876</small></small></nobr></td>
+    <td align='right'><small>0.005132</small></td>
+    <td><nobr><meter value='1' style='margin-left:51.32px;width:5.85px;'></meter><small><small>&nbsp;0.000585</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>view<i></td>
-    <td align='right'><small>0.006372</small></td>
-    <td><nobr><meter value='1' style='margin-left:63.72px;width:245.64px;'></meter><small><small>&nbsp;0.024564</small></small></nobr></td>
+    <td align='right'><small>0.005717</small></td>
+    <td><nobr><meter value='1' style='margin-left:57.17px;width:225.82px;'></meter><small><small>&nbsp;0.022582</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>header<i></td>
-    <td align='right'><small>0.030936</small></td>
-    <td><nobr><meter value='1' style='margin-left:309.36px;width:4.95px;'></meter><small><small>&nbsp;0.000495</small></small></nobr></td>
+    <td align='right'><small>0.028299</small></td>
+    <td><nobr><meter value='1' style='margin-left:282.99px;width:1.55px;'></meter><small><small>&nbsp;0.000155</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>content<i></td>
-    <td align='right'><small>0.031431</small></td>
-    <td><nobr><meter value='1' style='margin-left:314.31px;width:1.18px;'></meter><small><small>&nbsp;0.000118</small></small></nobr></td>
+    <td align='right'><small>0.028454</small></td>
+    <td><nobr><meter value='1' style='margin-left:284.54px;width:1.25px;'></meter><small><small>&nbsp;0.000125</small></small></nobr></td>
 </tr>
 <tr>
     <td><i>footer<i></td>
-    <td align='right'><small>0.031549</small></td>
-    <td><nobr><meter value='1' style='margin-left:315.49px;width:0.95px;'></meter><small><small>&nbsp;0.000095</small></small></nobr></td>
+    <td align='right'><small>0.028579</small></td>
+    <td><nobr><meter value='1' style='margin-left:285.79px;width:0.91px;'></meter><small><small>&nbsp;0.000091</small></small></nobr></td>
 </tr>
 <tr>
     <td align='right'><i>Total</i></td>
-    <td align='right'><b><small>0.031644</small></b></td>
+    <td align='right'><b><small>0.02867</small></b></td>
     <td><b><small>secs</small></b></td>
 </tr>
 </table>
@@ -2334,121 +2343,121 @@ If everything went well, you should see something similar to this:</p>
     <th colspan='2'>Max</th>
 </tr><tr>
     <td><i>phppatch</i></td>
-    <td align='right'><small>0.000041</small></td>
-    <td align='right' title='-0.00002300'><meter value='0.00002300' max='0.003912'></meter></td>
-    <td align='right'><small>0.000064</small></td>
-    <td title='+0.00005900'><meter value='0.00005900' max='0.003912'></meter></td>
-    <td align='right'><small>0.000123</small></td>
+    <td align='right'><small>0.000042</small></td>
+    <td align='right' title='-0.00001300'><meter value='0.00001300' max='0.001218'></meter></td>
+    <td align='right'><small>0.000055</small></td>
+    <td title='+0.00002300'><meter value='0.00002300' max='0.001218'></meter></td>
+    <td align='right'><small>0.000078</small></td>
 </tr>
 <tr>
     <td><i>getconfig</i></td>
     <td align='right'><small>0.000119</small></td>
-    <td align='right' title='-0.00008100'><meter value='0.00008100' max='0.003912'></meter></td>
-    <td align='right'><small>0.000200</small></td>
-    <td title='+0.00019200'><meter value='0.00019200' max='0.003912'></meter></td>
-    <td align='right'><small>0.000392</small></td>
+    <td align='right' title='-0.00003900'><meter value='0.00003900' max='0.001218'></meter></td>
+    <td align='right'><small>0.000158</small></td>
+    <td title='+0.00007400'><meter value='0.00007400' max='0.001218'></meter></td>
+    <td align='right'><small>0.000232</small></td>
 </tr>
 <tr>
     <td><i>autoload</i></td>
-    <td align='right'><small>0.002016</small></td>
-    <td align='right' title='-0.00095100'><meter value='0.00095100' max='0.003912'></meter></td>
-    <td align='right'><small>0.002967</small></td>
-    <td title='+0.00230900'><meter value='0.00230900' max='0.003912'></meter></td>
-    <td align='right'><small>0.005276</small></td>
+    <td align='right'><small>0.002089</small></td>
+    <td align='right' title='-0.00043900'><meter value='0.00043900' max='0.001218'></meter></td>
+    <td align='right'><small>0.002528</small></td>
+    <td title='+0.00077900'><meter value='0.00077900' max='0.001218'></meter></td>
+    <td align='right'><small>0.003307</small></td>
 </tr>
 <tr>
     <td><i>init</i></td>
-    <td align='right'><small>0.000879</small></td>
-    <td align='right' title='-0.00031500'><meter value='0.00031500' max='0.003912'></meter></td>
-    <td align='right'><small>0.001194</small></td>
-    <td title='+0.00069000'><meter value='0.00069000' max='0.003912'></meter></td>
-    <td align='right'><small>0.001884</small></td>
+    <td align='right'><small>0.000910</small></td>
+    <td align='right' title='-0.00016700'><meter value='0.00016700' max='0.001218'></meter></td>
+    <td align='right'><small>0.001077</small></td>
+    <td title='+0.00019000'><meter value='0.00019000' max='0.001218'></meter></td>
+    <td align='right'><small>0.001267</small></td>
 </tr>
 <tr>
     <td><i>tokens</i></td>
-    <td align='right'><small>0.000034</small></td>
-    <td align='right' title='-0.00002000'><meter value='0.00002000' max='0.003912'></meter></td>
-    <td align='right'><small>0.000054</small></td>
-    <td title='+0.00002800'><meter value='0.00002800' max='0.003912'></meter></td>
-    <td align='right'><small>0.000082</small></td>
+    <td align='right'><small>0.000038</small></td>
+    <td align='right' title='-0.00000900'><meter value='0.00000900' max='0.001218'></meter></td>
+    <td align='right'><small>0.000047</small></td>
+    <td title='+0.00000800'><meter value='0.00000800' max='0.001218'></meter></td>
+    <td align='right'><small>0.000055</small></td>
 </tr>
 <tr>
     <td><i>viewinit</i></td>
-    <td align='right'><small>0.000016</small></td>
-    <td align='right' title='-0.00001000'><meter value='0.00001000' max='0.003912'></meter></td>
-    <td align='right'><small>0.000026</small></td>
-    <td title='+0.00002200'><meter value='0.00002200' max='0.003912'></meter></td>
-    <td align='right'><small>0.000048</small></td>
+    <td align='right'><small>0.000164</small></td>
+    <td align='right' title='-0.00002700'><meter value='0.00002700' max='0.001218'></meter></td>
+    <td align='right'><small>0.000191</small></td>
+    <td title='+0.00005300'><meter value='0.00005300' max='0.001218'></meter></td>
+    <td align='right'><small>0.000244</small></td>
 </tr>
 <tr>
     <td><i>routing</i></td>
-    <td align='right'><small>0.000146</small></td>
-    <td align='right' title='-0.00004400'><meter value='0.00004400' max='0.003912'></meter></td>
+    <td align='right'><small>0.000154</small></td>
+    <td align='right' title='-0.00003600'><meter value='0.00003600' max='0.001218'></meter></td>
     <td align='right'><small>0.000190</small></td>
-    <td title='+0.00011300'><meter value='0.00011300' max='0.003912'></meter></td>
-    <td align='right'><small>0.000303</small></td>
+    <td title='+0.00006000'><meter value='0.00006000' max='0.001218'></meter></td>
+    <td align='right'><small>0.000250</small></td>
 </tr>
 <tr>
     <td><i>cache</i></td>
-    <td align='right'><small>0.000599</small></td>
-    <td align='right' title='-0.00018600'><meter value='0.00018600' max='0.003912'></meter></td>
-    <td align='right'><small>0.000785</small></td>
-    <td title='+0.00021900'><meter value='0.00021900' max='0.003912'></meter></td>
-    <td align='right'><small>0.001004</small></td>
+    <td align='right'><small>0.000604</small></td>
+    <td align='right' title='-0.00026700'><meter value='0.00026700' max='0.001218'></meter></td>
+    <td align='right'><small>0.000871</small></td>
+    <td title='+0.00030700'><meter value='0.00030700' max='0.001218'></meter></td>
+    <td align='right'><small>0.001178</small></td>
 </tr>
 <tr>
     <td><i>controller</i></td>
-    <td align='right'><small>0.000011</small></td>
-    <td align='right' title='-0.00000500'><meter value='0.00000500' max='0.003912'></meter></td>
-    <td align='right'><small>0.000016</small></td>
-    <td title='+0.00000200'><meter value='0.00000200' max='0.003912'></meter></td>
+    <td align='right'><small>0.000012</small></td>
+    <td align='right' title='-0.00000300'><meter value='0.00000300' max='0.001218'></meter></td>
+    <td align='right'><small>0.000015</small></td>
+    <td title='+0.00000300'><meter value='0.00000300' max='0.001218'></meter></td>
     <td align='right'><small>0.000018</small></td>
 </tr>
 <tr>
     <td><i>action</i></td>
-    <td align='right'><small>0.000680</small></td>
-    <td align='right' title='-0.00019600'><meter value='0.00019600' max='0.003912'></meter></td>
-    <td align='right'><small>0.000876</small></td>
-    <td title='+0.00055800'><meter value='0.00055800' max='0.003912'></meter></td>
-    <td align='right'><small>0.001434</small></td>
+    <td align='right'><small>0.000500</small></td>
+    <td align='right' title='-0.00008500'><meter value='0.00008500' max='0.001218'></meter></td>
+    <td align='right'><small>0.000585</small></td>
+    <td title='+0.00016600'><meter value='0.00016600' max='0.001218'></meter></td>
+    <td align='right'><small>0.000751</small></td>
 </tr>
 <tr>
     <td><i>view</i></td>
-    <td align='right'><small>0.022827</small></td>
-    <td align='right' title='-0.00173700'><meter value='0.00173700' max='0.003912'></meter></td>
-    <td align='right'><small>0.024564</small></td>
-    <td title='+0.00217500'><meter value='0.00217500' max='0.003912'></meter></td>
-    <td align='right'><small>0.026739</small></td>
+    <td align='right'><small>0.022353</small></td>
+    <td align='right' title='-0.00022900'><meter value='0.00022900' max='0.001218'></meter></td>
+    <td align='right'><small>0.022582</small></td>
+    <td title='+0.00016800'><meter value='0.00016800' max='0.001218'></meter></td>
+    <td align='right'><small>0.022750</small></td>
 </tr>
 <tr>
     <td><i>header</i></td>
-    <td align='right'><small>0.000463</small></td>
-    <td align='right' title='-0.00003200'><meter value='0.00003200' max='0.003912'></meter></td>
-    <td align='right'><small>0.000495</small></td>
-    <td title='+0.00002900'><meter value='0.00002900' max='0.003912'></meter></td>
-    <td align='right'><small>0.000524</small></td>
+    <td align='right'><small>0.000145</small></td>
+    <td align='right' title='-0.00001000'><meter value='0.00001000' max='0.001218'></meter></td>
+    <td align='right'><small>0.000155</small></td>
+    <td title='+0.00001100'><meter value='0.00001100' max='0.001218'></meter></td>
+    <td align='right'><small>0.000166</small></td>
 </tr>
 <tr>
     <td><i>content</i></td>
-    <td align='right'><small>0.000097</small></td>
-    <td align='right' title='-0.00002100'><meter value='0.00002100' max='0.003912'></meter></td>
     <td align='right'><small>0.000118</small></td>
-    <td title='+0.00001100'><meter value='0.00001100' max='0.003912'></meter></td>
-    <td align='right'><small>0.000129</small></td>
+    <td align='right' title='-0.00000700'><meter value='0.00000700' max='0.001218'></meter></td>
+    <td align='right'><small>0.000125</small></td>
+    <td title='+0.00000900'><meter value='0.00000900' max='0.001218'></meter></td>
+    <td align='right'><small>0.000134</small></td>
 </tr>
 <tr>
     <td><i>footer</i></td>
-    <td align='right'><small>0.000093</small></td>
-    <td align='right' title='-0.00000200'><meter value='0.00000200' max='0.003912'></meter></td>
-    <td align='right'><small>0.000095</small></td>
-    <td title='+0.00000200'><meter value='0.00000200' max='0.003912'></meter></td>
-    <td align='right'><small>0.000097</small></td>
+    <td align='right'><small>0.000090</small></td>
+    <td align='right' title='-0.00000100'><meter value='0.00000100' max='0.001218'></meter></td>
+    <td align='right'><small>0.000091</small></td>
+    <td title='+0.00000000'><meter value='0.00000000' max='0.001218'></meter></td>
+    <td align='right'><small>0.000091</small></td>
 </tr>
 </table>
 </div>
 </div>
     
-<div id='developer' class='tab' rel='tests,lang,create,deploy,mkrepo'>
+<div id='developer' class='tab' rel='tests,langutil,create,deploy,mkrepo'>
 <h1>PHPPE Developer</h1>
 <p>Even if you don't want to contribute to the framework, just using it or writing your own Extensions, it's worth installing the Developer package!</p>
 <p>To install, copy'n'paste one of these into your SSH Terminal:</p>
@@ -2765,7 +2774,7 @@ See <a onclick='tab_switch("route");'>PHPPE\Http::route()</a> documentation on h
 tide it to an object so that their values get filled in autimatically, and finaly how to retrive the
 user provided data with validation.</p>
 <p>Let's assume we're using the url <i>(base)/tutorialapp</i> and <i>(base)/tutorialapp/myaction</i>.
-For details see <a href='javascript:tab_switch("routing");'>routing</a>. In this tutorial, it's enough to know we're relying on default routing.</p>
+For details see <a onclick='tab_switch("routing");'>routing</a>. In this tutorial, it's enough to know we're relying on default routing.</p>
 <p>Now, create the views for our urls with forms in them.</p>
 <samp>app/views/tutorialapp.tpl:</samp>
 <pre>
@@ -2777,7 +2786,7 @@ Tutorial default action's view
 &lt;!field update>
 &lt;/form>
 </pre>
-<tt>app/views/tutorialapp_myaction.tpl:</tt>
+<samp>app/views/tutorialapp_myaction.tpl:</samp>
 <pre>
 Tutotiral myaction view
 &lt;!form tutobj>
@@ -2847,7 +2856,7 @@ Tutotiral myaction view
 <div id='servicetut' class='tab'>
 <h1>Service Tutorial</h1>
 <h3>Configuration</h3>
-<tt>vendor/phppe/MyService/config.php:</tt>
+<samp>vendor/phppe/MyService/config.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4</pre>
 <pre class='php'>
 <span class='comment'>//Configuration</span>
@@ -2856,7 +2865,7 @@ Tutotiral myaction view
 ];
 </pre></p>
 <h3>Translations</h3>
-<tt>vendor/phppe/MyService/lang/en.php:</tt>
+<samp>vendor/phppe/MyService/lang/en.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3</pre>
 <pre class='php'>
 <span class='keyword'>return</span> [
@@ -2865,7 +2874,7 @@ Tutotiral myaction view
 </pre></p>
 <h3>Initialization</h3>
 <p>The initialization file will be loaded for each extension. This is the place to set routes and return service instance:</p>
-<tt>vendor/phppe/<i>MyService</i>/<i>init</i>.php</tt>
+<samp>vendor/phppe/<i>MyService</i>/<i>init</i>.php</samp>
 <p><pre class='lineno'>1<br>2<br>3</pre>
 <pre class='php'>
 &lt;?php
@@ -2874,105 +2883,107 @@ Tutotiral myaction view
 </pre></p>
 <h3>Service Provider class</h3>
 <p>These class will be used by applications for <a onclick='tab_switch("services");'>services</a>. It also acts a <a onclick='tab_switch("controllers");'>controller</a>.</p>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46</pre>
 <pre class='php'>
 &lt;?php
-class MyModule {
-    public $version = "1.0.0";
-    private $dosomthingextra = false;
+<span class='keyword'>class</span> MyService {
+    <span class='keyword'>public</span> <span class='variable'>$version</span> = <span class='stringconst'>"1.0.0"</span>;
+    <span class='keyword'>private</span> <span class='variable'>$dosomthingextra</span> = <span class='keyword'>false</span>;
 
-    //! some service your module provides
-    function exampleService( $a, $b, $c ) {
-	return ( L("myservice_helloworld") . round( $a + $b - $c ) );
+    <span class='comment'>//! some service your module provides</span>
+    <span class='keyword'>function</span> <span class='function'>exampleService</span>( <span class='variable'>$a</span>, <span class='variable'>$b</span>, <span class='variable'>$c</span> ) {
+	return ( <span class='function'>L</span>(<span class='stringconst'>"myservice_helloworld"</span>) . <span class='function'>round</span>( <span class='variable'>$a</span> + <span class='variable'>$b</span> - <span class='variable'>$c</span> ) );
     }
 
-    //! initialize our module. This method gets config.php as argument
-    function init($cfg)
+    <span class='comment'>//! initialize our module. This method gets config.php as argument</span>
+    <span class='keyword'>function</span> <span class='function'>init</span>(<span class='variable'>$cfg</span>)
     {
-	//! Register our module with dependency check
-	PHPPE\Core::lib(
-		"MyModule",			//! unix name
-		$this,			//! service reference
-		[ "DB", "Users" ],		//! dependencies
+	<span class='comment'>//! Register our module with dependency check</span>
+	<span class='function'>PHPPE\Core::lib</span>(
+		<span class='stringconst'>"MyService"</span>,		<span class='comment'>//! unix name</span>
+		<span class='variable'>$this</span>,			<span class='comment'>//! service reference</span>
+		[ <span class='stringconst'>"DB"</span>, <span class='stringconst'>"Users"</span> ],	<span class='comment'>//! dependencies</span>
 	);
 
-	//! parse and validate your configuration here
-	if ( !empty( $cfg["dosomething"] ) )
-		$this->dosomethingextra = true;
+	<span class='comment'>//! parse and validate your configuration here</span>
+	if ( !<span class='function'>empty</span>( <span class='variable'>$cfg</span>[<span class='stringconst'>"dosomething"</span>] ) )
+		<span class='variable'>$this->dosomethingextra</span> = <span class='keyword'>true</span>;
 
-	//! Do any module specific tests here, use PHPPE\Core::log() to indicate errors
-	if ( $this->dosomething ) {
-	    //! Do feature specific tests here. If some test fails,
+	<span class='comment'>//! Do any module specific tests here, use PHPPE\Core::log() to indicate errors</span>
+	if ( <span class='variable'>$this->dosomething</span> ) {
+	    <span class='comment'>//! Do feature specific tests here. If some test fails,
 	    //! Use PHPPE\Core::log('E',...) for high level modules,
 	    //!	if your module called by applications directly (no other module depends on it)
 	    //! Use PHPPE\Core::log('C',...) for low level modules,
 	    //!	if you expect other modules dependenting on your module
-	    ...
-	    PHPPE\Core::log ( 'D', "Feature dosomething initialized." );
+	    ...</span>
+	    <span class='function'>PHPPE\Core::log</span> ( <span class='stringconst'>'D'</span>, <span class='stringconst'>"Feature dosomething initialized."</span> );
 	} else
-	    PHPPE\Core::log ( 'D', "Feature dosomething disabled." );
+	    <span class='function'>PHPPE\Core::log</span> ( <span class='stringconst'>'D'</span>, <span class='stringconst'>"Feature dosomething disabled."</span> );
 
-	//! register menu on PHPPE Panel
-	PHPPE\View::menu( L( "MyService" ), "myservice/myaction" );
+	<span class='comment'>//! register menu on PHPPE Panel</span>
+	<span class='function'>PHPPE\View::menu</span>( <span class='function'>L</span>( <span class='stringconst'>"MyService"</span> ), <span class='stringconst'>"myservice/myaction"</span> );
     }
 
-    //! register a status icon on PHPPE panel
-    function stat()
+    <span class='comment'>//! register a status icon on PHPPE panel</span>
+    <span class='keyword'>function</span> <span class='function'>stat</span>()
     {
-	echo( "&lt;img alt='That is me!" . ( $this->dosomething ? " ds" : "" ) . "'>" );
+	echo( <span class='stringconst'>"&lt;img alt='That is me!"</span> . ( <span class='variable'>$this->dosomething</span> ? <span class='stringconst'>" ds"</span> : <span class='stringconst'>""</span> ) . <span class='stringconst'>"'>"</span> );
     }
 }
-</pre>
+</pre></p>
 <p>In runtime you can access the service as simply as</p>
 <p><pre class='lineno'>1</pre>
 <pre class='php'>
-PHPPE\Core::lib("MyService")->exampleService(1, 2, 3);
+<span class='function'>PHPPE\Core::lib</span>(<span class='stringconst'>"MyService"</span>)-><span class='function'>exampleService</span>(<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>);
 </pre></p>
 </div>
 
 <div id='widget' class='tab'>
 <h1>Widget Tutorial</h1>
-<p>See <a href='javascript:tab_switch("addon");'>PHPPE\Core::addon()</a> and <a href='javascript:tab_switch("views:2080");'>templater</a>.</p>
+<p>See <a onclick='tab_switch("addon");'>PHPPE\Core::addon()</a> and <a onclick='tab_switch("views:2080");'>templater</a>.</p>
 <p>You can use this Add-On in view templates as:</p>
 <pre>
 &lt;!widget tutorialwgt(1,2,3,4,5,6) instancename>
 </pre>
 <p>The "widget" tag calls show(), unless configuration mode ($_SESSION['pe_<b>c</b>']) is true in which case it renders configuration panel by calling edit() hook. The "var" tag calls show(), unless edit mode ($_SESSION['pe_<b>e</b>']) is true.</p>
-<div class='alert alert-info'><b>NOTE</b>: <a href='javascript:tab_switch("views:2080");'>var tag</a> checks <b>edit mode</b>, while widget checks <b>conf mode</b> to display edit().</div>
+<div class='alert alert-info'><b>NOTE</b>: <a onclick='tab_switch("views:2080");'>var tag</a> checks <b>edit mode</b>, while widget checks <b>conf mode</b> to display edit().</div>
 
 <samp>app/addons/tutorialwgt.php:</samp>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br></pre>
 <pre class='php'>
-namespace PHPPE\AddOn;
-class tutorialwgt extends \PHPPE\AddOn {
-    //! initialize - this is used by view template editor to get configuration for this widget
-    //! also called right before the first "show" or "edit" method call once
-    function init()
+<span class='keyword'>namespace</span> PHPPE\AddOn;
+<span class='keyword'>class</span> tutorialwgt <span class='keyword'>extends</span> \PHPPE\AddOn {
+    <span class='comment'>//! initialize - this is used by view template editor to get configuration for this widget
+    //! also called right before the first "show" or "edit" method call once</span>
+    <span class='keyword'>function</span> <span class='function'>init</span>()
     {
-	PHPPE\Core::addon( "tutorialwgt", "Widget tutorial" );
-	//! Include widget specific stylesheet
-	PHPPE\View::css( "tutorialwgt.css" );
+	<span class='function'>PHPPE\Core::addon</span>( <span class='stringconst'>"tutorialwgt"</span>, <span class='stringconst'>"Widget tutorial"</span> );
+	<span class='comment'>//! Include widget specific stylesheet</span>
+	<span class='function'>PHPPE\View::css</span>( <span class='stringconst'>"tutorialwgt.css"</span> );
     }
 
-    //! function to draw widget face
-    function show( )
+    <span class='comment'>//! function to draw widget face</span>
+    <span class='keyword'>function</span> <span class='function'>show</span>( )
     {
-	//! Include widget's JavaScript - has to be done here since it requires instance name
-	PHPPE\View::jslib( "tutorialwgt.js", "tutorialwgt_init('" . $this->name . "');" );
-	//! $this->args = [ 1, 2, 3, 4, 5, 6 ];
-	//! $this->attrs = [ $opts ];
-	return "face";
+	<span class='comment'>//! Include widget's JavaScript - has to be done here since it requires instance name</span>
+	<span class='function'>PHPPE\View::jslib</span>( <span class='stringconst'>"tutorialwgt.js"</span>, <span class='stringconst'>"tutorialwgt_init('"</span> . <span class='variable'>$this->name</span> . <span class='stringconst'>"');"</span> );
+	<span class='comment'>//! $this->args = [ 1, 2, 3, 4, 5, 6 ];
+	//! $this->attrs = [ $opts ];</span>
+	return <span class='stringconst'>"face"</span>;
     }
 
-    //! function to create widget configuration form
-    //! OPTIONAL, leave it empty if there's no configuration at all
-    function edit( ) {
-	return "&lt;input type='text' onchange='tutorialwgt_saveconfig();' class='reqinput' ".
-	    "name='" . $this->name . "_cfgopt1' value=''>&lt;br>\n" .
-	    "&lt;input type='check' onchange='tutorialwgt_saveconfig();' name='" . $this->name . "_cfgopt2'> ".
-	    L( "tutorialwgt_cfgopt2" );
+    <span class='comment'>//! function to create widget configuration form
+    //! OPTIONAL, leave it empty if there's no configuration at all</span>
+    <span class='keyword'>function</span> <span class='function'>edit</span>( ) {
+	return <span class='stringconst'>"&lt;input type='text' onchange='tutorialwgt_saveconfig();' class='reqinput' "</span>.
+	    <span class='stringconst'>"name='"</span> . <span class='variable'>$this->fld</span> . <span class='stringconst'>"_cfgopt1' value=''>&lt;br>\n"</span>.
+	    <span class='stringconst'>"&lt;input type='check' onchange='tutorialwgt_saveconfig();' name='"</span> . <span class='variable'>$this->fld</span> . <span class='stringconst'>"_cfgopt2'> "</span>.
+	    <span class='function'>L</span>( <span class='stringconst'>"tutorialwgt_cfgopt2"</span> );
     }
 
 }
-</pre>
+</pre></p>
 
 </div>
 
@@ -2985,13 +2996,13 @@ class tutorialwgt extends \PHPPE\AddOn {
 <pre>
 # apt-get install lightdm nginx php5-cli php5-fpm phpp5-apcu php5-gd php5-sqlite openbox chromium
 </pre>
-<p>Many of these may have already been installed on your Raspberry, and you can choose alternative db drivers like <tt>php5-pdo_mysql</tt> as well. Note that jessie may not include chromium, so you'll have to use this for RPi2:<br>
+<p>Many of these may have already been installed on your Raspberry, and you can choose alternative db drivers like <samp>php5-pdo_mysql</samp> as well. Note that jessie may not include chromium, so you'll have to use this for RPi2:<br>
 <a href='https://launchpad.net/ubuntu/precise/armhf/chromium-browser'>https://launchpad.net/ubuntu/precise/armhf/chromium-browser</a><br>
 <a href='https://launchpad.net/ubuntu/precise/armhf/chromium-codecs-ffmpeg-extra'>https://launchpad.net/ubuntu/precise/armhf/chromium-codecs-ffmpeg-extra</a>
 </p>
 <h3>Step 3: configure nginx</h3>
 <p>You can find many tutorials on how to do this, but here's a brief configuration:</p>
-<tt>/etc/nginx/sites-available/default</tt>
+<samp>/etc/nginx/sites-available/default</samp>
 <pre>
 server {
 	listen 80 default_server;
@@ -3012,7 +3023,7 @@ server {
 }
 </pre>
 Basically we pass control to php5-fpm and we do a little rewrite trick.<br>
-For testing, create <tt>/var/www/localhost/public/index.php</tt>:
+For testing, create <samp>/var/www/localhost/public/index.php</samp>:
 <pre>
 &lt;?php
 phpinfo();
@@ -3023,15 +3034,15 @@ systemctl enable nginx
 systemctl start nginx
 </pre>
 <h3>Step 4: setup automatic login</h3>
-In <tt>/etc/lightdm/lightdm.conf</tt>, change the following lines:
+In <samp>/etc/lightdm/lightdm.conf</samp>, change the following lines:
 <pre>
 autologin-user=pi
 autologin-user-timeout=0
 </pre>
-Alternatively you can use <tt>raspi-config</tt> to get the job done for you.
+Alternatively you can use <samp>raspi-config</samp> to get the job done for you.
 <h3>Step 5: set up full screen browser</h3>
 For that we have to arrange a few things first. Create a session resource and copy the following lines to it.<br>
-<tt>/home/pi/.xsessionrc</tt>
+<samp>/home/pi/.xsessionrc</samp>
 <pre>
 export DISPLAY=":0"
 xset s off
@@ -3046,7 +3057,7 @@ First line sets the display to be used, the x* commands turn screen blanking off
 in this tutorial I've used openbox since it's the default. The line after that logs a message on console so that you will know when it's executing (Raspberry's bootup process is slow).
 And finally, the last line starts a fullscreen browser and makes sure of it that it would respawn if crashed.<br><br>
 Now tell openbox to start chromium in fullscreen without decorations:<br>
-<tt>/home/pi/openbox_rc.xml</tt>
+<samp>/home/pi/openbox_rc.xml</samp>
 <pre>
 &lt;?xml version="1.0" encoding="UTF-8">
 &lt;openbox_config xmlns="http://openbox.org/3.4/rc" xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -3061,26 +3072,238 @@ Now tell openbox to start chromium in fullscreen without decorations:<br>
 </pre>
 
 <h3>Step 6: install PHPPE</h3>
-Read further <a href='javascript:tab_switch("install");'>instructions here</a>. In a nutshell copy index.php there, call diagnostics mode then update with composer or download Pack tarball.
+Read further <a onclick='tab_switch("install");'>instructions here</a>. In a nutshell copy index.php there, call diagnostics mode then update with composer or download Pack tarball.
 <h3>Step 7: configure PHPPE</h3>
-<tt>/var/www/localhost/phppe/config.php</tt>
+<samp>/var/www/localhost/phppe/config.php</samp>
 <pre class='php'>
-$core->db = "sqlite:data/sqlite.db";
-$core->cache = "apc";
+'db' => "sqlite:data/sqlite.db",
+'cache' => "apc",
 </pre>
 <h3>Step 8: Reboot and enjoy!</h3>
 You should see the PHPPE Self Test and Cheat Sheet page in fullscreen after reboot, served by your own Raspberry!<br><br>
 If you want to control your Raspberry Pi from your PHPPE Application (of course you do), you can use the GPIO Extension:
 <pre class='php'>
-PHPPE::lib("GPIO")->mode(n,in/out);
-PHPPE::lib("GPIO")->read(n);
-PHPPE::lib("GPIO")->write(n,value);
+PHPPE\Core::lib("GPIO")->mode(n,in/out);
+PHPPE\Core::lib("GPIO")->read(n);
+PHPPE\Core::lib("GPIO")->write(n,value);
 </pre>
 But first you should add your webserver's user to gpio group:
 <pre>
 # addgroup www-data gpio
 </pre>
-Read <a href='javascript:tab_switch("phppe_gpio");'>more</a>.
+Read <a onclick='tab_switch("phppe_gpio");'>more</a>.
+</div>
+
+<div id='phppe_core' class='tab' rel='core'>
+<h1>PHPPE\Core</h1>
+<p>This is the main class of PHPPE. One singleton instance can be always accessed with <code>PHPPE\Core::$core</code>.
+Some properties are run-time generated, others can be <a onclick='tab_switch("configuration");'>configured</a>.</p>
+<h3>Session variables</h3>
+<p>To save values accross pages, the Core uses some SESSION variable.</p>
+<table class='table table-striped'>
+<tr><td><var>$_SESSION['pe_e']</var></td><td>True if user logged in and turned edit mode on (<a onclick='tab_switch("views:2080");'>templater var</a> tags)</td></tr>
+<tr><td><var>$_SESSION['pe_c']</var></td><td>True if user logged in and turned widget configuration mode on (<a onclick='tab_switch("views:2080");'>templater widget</a> tags)</td></tr>
+<tr><td><var>$_SESSION['pe_u']</var></td><td>Logged in user</td></tr>
+<tr><td><var>$_SESSION['pe_s']</var></td><td>Security tokens</td></tr>
+<tr><td><var>$_SESSION['pe_v']</var></td><td>Validator data (filled by <a onclick='tab_switch("template");'>PHPPE\View::template()</a>, read on post by <a onclick='tab_switch("req2arr");'>PHPPE\Core:req2obj()</a>)</td></tr>
+<tr><td><var>$_SESSION['pe_r']</var></td><td>Set if <a onclick='tab_switch("redirect");'>PHPPE\Http::redirect()</a> should go back to referer (return url after authentication)</td></tr>
+</table>
+
+<h3>Configurable properties</h3>
+<table class='table table-striped'>
+<tr><td style='width:300px;'><var>PHPPE\Core::$core-&gt;title</var></td><td>title of the site or name of the project</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;meta</var></td><td>Site global meta tags.</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;link</var></td><td>Site global link tags.</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;runlevel</var></td><td>current runlevel</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;syslog</var></td><td>if true, no log files will be written but messages will be sent to syslog</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;trace</var></td><td>if true, debug trace will also be written along log messages</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;timeout</var></td><td>Session timeout in seconds</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;sessionvar</var></td><td>Override session variable name (optional, defaults to "pe_sid")</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;secsession</var></td><td>Only use session on secure channel (https only cookie)</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;mailer</var></td><td>Email backend, used by PHPPE Pack's Email sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;realmailer</var></td><td>If Email backend is a queue in database ($core->mailer = "db"), sendmail script uses this backend when consuming mails from queue.</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;nocache</var></td><td>Set it to true to force refresh in templater and avoid asset caching</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;noaggr</var></td><td>Set it to true to turn static css and js content aggregation off in html header</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;nominify</var></td><td>Set it to true to turn css and js minifier off</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;cache</var></td><td>Connection url for caching</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;cachettl</var></td><td>View output and asset cache time to live in sec</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;db</var></td><td>Primary datasource</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;noctrl</var></td><td>Disable dynamic content controller scripts</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;allowed</var></td><td>list of allowed functions in a view template, leave it unset for no restrictions</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;disabled</var></td><td>list of disabled Extensions</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;repos</var></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Repositories</a></td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;output</var></td><td>Output format, defaults to "html"</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;masterpasswd</var></td><td>Encrypted password hash for superadmin (also works if no PHPPE\Users module installed)</td></tr>
+</table>
+<h3>Generated properties</h3>
+<table class='table table-striped'>
+<tr><td><var>PHPPE\Core::$core</var></td><td>PHPPE Core instance (self reference)</td></tr>
+<tr><td><var>PHPPE\Core::$user</var></td><td><a onclick='tab_switch("phppe_users");'>PHPPE Users</a> instance, logged in user</td></tr>
+<tr><td><var>PHPPE\Core::$client</var></td><td><a onclick='tab_switch("phppe_client");'>PHPPE Client</a> instance</td></tr>
+<tr><td><var>PHPPE\Core::$core->id</var></td><td>Magic, PHPPE version (read-only)</td></tr>
+<tr><td><var>PHPPE\Core::$core->base</var></td><td>Base url used by <a onclick='tab_switch("url");'>url()</a> (read-only)</td></tr>
+<tr><td><var>PHPPE\Core::$core->url</var></td><td>Page specific part of the url (read-only)</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;app</var></td><td>current application, (read-only, but see <a onclick='tab_switch("events:1430");'>route event</a>)</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;action</var></td><td>current action (read-only)</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;item</var></td><td>current item or null</td></tr>
+<tr><td><var>PHPPE\Core::$core->template</var></td><td>Template's name used by view layer. Defaults to "<i>(application)_(action)</i>"</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;now</var></td><td>current UNIX timestamp, from primary datasource if available</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;noframe</var></td><td>If not set, application's output will be placed in a frame</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;fm</var></td><td>File max size</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;form</var></td><td>Name of the submitted form if <a onclick='tab_switch("isTry");'>PHPPE\Core::isTry()</a> returns non-zero</td></tr>
+<tr><td><var>PHPPE\Core::$core->try</var></td><td>On submit the form's pressed button's serial, query with <a onclick='tab_switch("isTry");'>PHPPE\Core::isTry()</a></td></tr>
+<tr><td><var>PHPPE\Core::$core->error</var></td><td>array of error messages, see <a onclick='tab_switch("error");'>PHPPE\Core::error()</a> and <a onclick='tab_switch("iserror");'>PHPPE\Core::isError()</a></td></tr>
+<tr><td><var>PHPPE\Core::$core->libs</var></td><td>List of loaded modules, register and query with <a onclick='tab_switch("lib");'>PHPPE\Core::lib()</a></td></tr>
+<tr><td><var>PHPPE\Core::$core->addons</var></td><td>List of loaded field types and widgets, register and query with <a onclick='tab_switch("addon");'>PHPPE\Core::addon()</a></td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;sec</var></td><td>True if called over ssl and channel is secure</td></tr>
+<tr><td><var>PHPPE\Core::$started</var></td><td>Framework start time in microsecs, required by monitoring stats</td></tr>
+<tr><td><var>PHPPE\Core::$v</var></td><td>Validator data</td></tr>
+<tr><td><var>PHPPE\Core::$paths</var></td><td>Paths to extensions (important if file system is case-sensitive)</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("running");'>__construct()</a></td><td>PHPPE Core constructor. Called by public/index.php</td></tr>
+<tr><td><a onclick='tab_switch("running");'>bootdiag()</a></td><td>Run diagnostics mode</td></tr>
+<tr><td><a onclick='tab_switch("run");'>run()</a></td><td>Run the current application</td></tr>
+<tr><td><a onclick='tab_switch("lib");'>lib()</a></td><td>Query and register libraries (<a onclick='tab_switch("services");'>services</a>)</td></tr>
+<tr><td><a onclick='tab_switch("addon");'>addon()</a></td><td>Query and register Add-Ons</td></tr>
+<tr><td><a onclick='tab_switch("isinst");'>isInst()</a></td><td>Checks if an extension or Add-On is installed</td></tr>
+<tr><td><a onclick='tab_switch("lang");'>lang()</a></td><td>Load language dictionary for an extension in current language</td></tr>
+<tr><td><a onclick='tab_switch("log");'>log()</a></td><td>Log a message</td></tr>
+<tr><td><a onclick='tab_switch("isTry");'>isTry()</a></td><td>Checks if user tries to save a form with valid CSRF token</td></tr>
+<tr><td><a onclick='tab_switch("error");'>error()</a></td><td>Query and register error messages</td></tr>
+<tr><td><a onclick='tab_switch("iserror");'>isError()</a></td><td>Checks if there was an error</td></tr>
+<tr><td><a onclick='tab_switch("event");'>event()</a></td><td>Trigger a specific event</td></tr>
+<tr><td><a onclick='tab_switch("tobytes");'>toBytes()</a></td><td>Convert human readable php ini value to bytes</td></tr>
+<tr><td><a onclick='tab_switch("validate");'>validate()</a></td><td>Add a validator on a form field</td></tr>
+<tr><td><a onclick='tab_switch("req2arr");'>req2arr(), req2obj()</a></td><td>Convert user request into an associative array or object</td></tr>
+<tr><td><a onclick='tab_switch("arr2str");'>arr2str(), obj2str()</a></td><td>Convert an associative array or object into a quote-safe string</td></tr>
+<tr><td><a onclick='tab_switch("val2arr");'>val2arr()</a></td><td>Convert a templater expression into an array</td></tr>
+<tr><td><a onclick='tab_switch("tre2arr");'>tre2arr()</a></td><td>Flat a tree (recursive array, sub-levels in "_") into a simple one level array</td></tr>
+</table>
+</div>
+
+<div id='phppe_classmap' class='tab' rel='classmap'>
+<h1>PHPPE\ClassMap</h1>
+<p>This class takes care of autoloading. It's bullet-proof and PSR-0 / PSR-4 compatible.</p>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$file</var></td><td>Name of the cache json file (<samp>.tmp/.classmap</samp>)</td></tr>
+<tr><td><var>$map</var></td><td>The generated map, used by spl_autoload_register closure</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("hasclass");'>has()</a></td><td>Check if a class or method exists</td></tr>
+</table>
+</div>
+
+<div id='phppe_client' class='tab' rel='client'>
+<h1>PHPPE\Client</h1>
+<p>This class holds every information on client. It's populated consistently in CLI as well in web mode, so you don't have to bother yourself with different $_SERVER keys.</p>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$ip</var></td><td>Client's remote address (valid for forwarded requests and server behind proxies as well or "CLI" if called from command line)</td></tr>
+<tr><td><var>$agent</var></td><td>Client's agent (browser or terminal type)</td></tr>
+<tr><td><var>$user</var></td><td>Client's user (HTTP Authenticated user or UNIX user)</td></tr>
+<tr><td><var>$tz</var></td><td>Client's timezone (browser's or from environment variable TZ or /etc/localtime)</td></tr>
+<tr><td><var>$lang</var></td><td>Client's preferred language's code on two characters (from request or environment variable LANG)</td></tr>
+<tr><td><var>$agent</var></td><td>Client's agent (browser or terminal type)</td></tr>
+<tr><td><var>$screen[]</var></td><td>Client's screen [width, height] in pixel (or in characters, from tput utility)</td></tr>
+<tr><td><var>$geo[]</var></td><td>Client's geo location (as returned by php's <a href='http://php.net/manual/en/function.geoip-record-by-name.php' target='_new'>geoip_record_by_name()</a>)</td></tr>
+</table>
+<h3>Methods</h3>
+<p>None.</p>
+</div>
+
+<div id='phppe_model' class='tab' rel='model'>
+<h1>PHPPE\Model</h1>
+<p>Object Relational Mapper prototype that correlates each record in database to a Model instance. Should not be used directly, instead inherited.</p>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$id</var></td><td>Numeric identifier of the record</td></tr>
+<tr><td><var>$name</var></td><td>Name of the record to show to the user (if nothing else, #id)</td></tr>
+<tr><td>static <var>$_table</var></td><td>Name of the table where the records are stored</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("load");'>load()</a></td><td>Loads data from database into the object</td></tr>
+<tr><td><a onclick='tab_switch("save");'>save()</a></td><td>Saves data from object into database</td></tr>
+<tr><td>static <a onclick='tab_switch("find");'>find()</a></td><td>Look up records in database</td></tr>
+</table>
+</div>
+
+<div id='phppe_http' class='tab' rel='http'>
+<h1>PHPPE\Http</h1>
+<p>HTTP protocol helpers.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("");'>()</a></td><td></td></tr>
+</table>
+</div>
+
+<div id='phppe_ds' class='tab' rel='datasource'>
+<h1>PHPPE\DS</h1>
+<p>DataSource services.</p>
+<div class='alert alert-danger'>This is a low level interface, you should use <a onclick='tab_switch("phppe_db");'>SQL Query Builder</a> instead.</div>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td><a onclick='tab_switch("");'>()</a></td><td></td></tr>
+</table>
+</div>
+
+<div id='phppe_cache' class='tab'>
+<h1>PHPPE\Cache</h1>
+<p>Wrapper around cache implementations.</p>
+<h3>Properties</h3>
+<table class='table table-striped'>
+<tr><td><var>$name</var></td><td>Current implementation (class under PHPPE\Cache namespace)</td></tr>
+<tr><td>static <var>$mc</var></td><td>Memcache instance</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("setcache");'>set()</a></td><td>Store a value for key in cache</td></tr>
+<tr><td>static <a onclick='tab_switch("getcache");'>get()</a></td><td>Retrieve a value for key from cache</td></tr>
+</table>
+</div>
+
+<div id='phppe_assets' class='tab'>
+<h1>PHPPE\Assets</h1>
+<p>This extension proxies assets under vendor directory. It also make use of cache if possible.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("minify");'>minify()</a></td><td>A very small and fast asset minifier</td></tr>
+</table>
+</div>
+
+<div id='phppe_view' class='tab'>
+<h1>PHPPE\View</h1>
+<p>The PHPPE templater.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("template");'>template()</a></td><td>Get and parse a view template</td></tr>
+</table>
+</div>
+
+<div id='phppe_tools' class='tab' rel='tools'>
+<h1>PHPPE\Tools</h1>
+<p>Set of useful file manipulation tools.</p>
+<h3>Properties</h3>
+<p>None.</p>
+<h3>Methods</h3>
+<table class='table table-striped'>
+<tr><td>static <a onclick='tab_switch("rmdir");'>rmdir()</a></td><td>Recursive directory remover</td></tr>
+<tr><td>static <a onclick='tab_switch("untar");'>untar()</a></td><td>Extracts a file from an archive or execute a callback for each</td></tr>
+<tr><td>static <a onclick='tab_switch("ssh");'>ssh()</a></td><td>Executes shell command securely on a remote server</td></tr>
+<tr><td>static <a onclick='tab_switch("copy");'>copy()</a></td><td>Copies files securely to a remote server</td></tr>
+</table>
 </div>
 
 <script type='text/javascript'>
