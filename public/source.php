@@ -1747,25 +1747,6 @@ namespace PHPPE {
             }
             //! try button counter
             self::$tc = 0;
-
-            //! register built-in fields and widgets all at once
-            //! this is required for \PHPPE\Core::isInst() to always return true for built-ins
-/*
-            Core::addon( "hidden", "Hidden value", "", "*obj.field" );
-            Core::addon( "button", "Button", "", "*label onclickjs [cssclass]" );
-            Core::addon( "update", "Update", "", "*[label [onclickjs [cssclass]]]" );
-            Core::addon( "text", "Text", "", "*(size[,maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue]]]]" );
-            Core::addon( "pass", "Password", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
-            Core::addon( "num", "Decimal number", "", "*(size[,maxlen[,min[,max]]]) obj.field [onchangejs [cssclass]" );
-            Core::addon( "select", "Option list", "", "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]" );
-            Core::addon( "check", "Checkbox", "", "*(truevalue) obj.field [label [cssclass]]" );
-            Core::addon( "radio", "Radiobutton", "", "*(value) obj.field [label [cssclass]]" );
-            Core::addon( "phone", "Phone", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
-            Core::addon( "email", "Email", "", "*(size[,maxlen]) obj.field [onchangejs [cssclass]]" );
-            Core::addon( "file", "File", "", "*(size[,maxlen]) obj.field [cssclass]" );
-            Core::addon( "color", "Color picker", "", "*obj.field [onchangejs [cssclass]]" );
-            Core::addon( "label", "Label", "", "*obj.field [label [cssclass]]" );
-*/
         }
 
 /**
@@ -4589,11 +4570,11 @@ namespace PHPPE\AddOn {
 
 /**
  * hidden field element.
- *
- * @usage obj.field
  */
     class hidden extends \PHPPE\AddOn
     {
+        public $conf = "*obj.field";
+
         public function edit()
         {
             return "<input type='hidden' name='".$this->fld."' value='".htmlspecialchars(trim($this->value))."'>";
@@ -4602,11 +4583,11 @@ namespace PHPPE\AddOn {
 
 /**
  * javascript button element.
- *
- * @usage label onclickjs [cssclass]
  */
     class button extends \PHPPE\AddOn
     {
+        public $conf = "*label onclickjs [cssclass]";
+
         public function show()
         {
             return $this->edit();
@@ -4622,11 +4603,11 @@ namespace PHPPE\AddOn {
 
 /**
  * form submit button element.
- *
- * @usage [label [onclickjs [cssclass]]]
  */
     class update extends \PHPPE\AddOn
     {
+        public $conf = "*[label [onclickjs [cssclass]]]";
+
         public function edit()
         {
             $t = $this;
@@ -4638,11 +4619,11 @@ namespace PHPPE\AddOn {
 
 /**
  * text field element.
- *
- * @usage (maxlen[,rows]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue [pattern]]]]]
  */
     class text extends \PHPPE\AddOn
     {
+        public $conf = "*([maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue [pattern]]]]]";
+
         public function show()
         {
             return htmlspecialchars($this->value);
@@ -4687,11 +4668,11 @@ namespace PHPPE\AddOn {
 
 /**
  * password field element.
- *
- * @usage (maxlen) obj.field [cssclass [placeholder]]
  */
     class pass extends \PHPPE\AddOn
     {
+        public $conf = "*([maxlen]) obj.field [cssclass [placeholder]]";
+
         public function show()
         {
             return '******';
@@ -4724,11 +4705,11 @@ namespace PHPPE\AddOn {
 
 /**
  * number element. Note you have to specify both min and max values
- *
- * @usage ([min,max]) obj.field [cssclass]
  */
     class num extends \PHPPE\AddOn
     {
+        public $conf = "*([min,max]) obj.field [cssclass]";
+
         public function show()
         {
             return htmlspecialchars($this->value);
@@ -4769,11 +4750,11 @@ namespace PHPPE\AddOn {
 
 /**
  * option list element.
- *
- * @usage (size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]
  */
     class select extends \PHPPE\AddOn
     {
+        public $conf = "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]";
+
         public function show()
         {
             return htmlspecialchars(is_array($this->value) ? implode(', ', $this->value) : $this->value);
@@ -4819,11 +4800,11 @@ namespace PHPPE\AddOn {
 
 /**
  * checkbox element.
- *
- * @usage (truevalue) obj.field [label [cssclass]]
  */
     class check extends \PHPPE\AddOn
     {
+        public $conf = "*(truevalue) obj.field [label [cssclass]]";
+
         public function show()
         {
             $t = $this;
@@ -4852,11 +4833,11 @@ namespace PHPPE\AddOn {
 
 /**
  * radiobutton elements.
- *
- * @usage (value) obj.field [label [cssclass]]
  */
     class radio extends \PHPPE\AddOn
     {
+        public $conf = "*(value) obj.field [label [cssclass]]";
+
         public function show()
         {
             $t = $this;
@@ -4879,11 +4860,11 @@ namespace PHPPE\AddOn {
 
 /**
  * phone number field element.
- *
- * @usage (maxlen) obj.field [cssclass]
  */
     class phone extends \PHPPE\AddOn
     {
+        public $conf = "*([maxlen]) obj.field [onchangejs [cssclass]]";
+
         public function show()
         {
             return htmlspecialchars($this->value);
@@ -4907,11 +4888,11 @@ namespace PHPPE\AddOn {
 
 /**
  * email address field element.
- *
- * @usage (maxlen) obj.field [cssclass]
  */
     class email extends \PHPPE\AddOn
     {
+        public $conf = "*([maxlen]) obj.field [onchangejs [cssclass]]";
+
         public function show()
         {
             if (empty(Core::$core->output) || Core::$core->output != 'html') {
@@ -4940,11 +4921,11 @@ namespace PHPPE\AddOn {
 
 /**
  * file upload input box.
- *
- * @usage obj.field [cssclass]
  */
     class file extends \PHPPE\AddOn
     {
+        public $conf = "*obj.field [onchangejs [cssclass]]";
+
         public function show()
         {
             return '';
@@ -4956,7 +4937,7 @@ namespace PHPPE\AddOn {
             $e = Core::isError($t->name);
 
             return
-                '<input'.@View::v($t, $t->attrs[0], $t->attrs[1], $t->args)." type='file' style='display:inline;' title='".round(Core::$core->fm / 1048576)."Mb'>";
+                '<input'.@View::v($t, $t->attrs[1], $t->attrs[0], $t->args)." type='file' style='display:inline;' title='".round(Core::$core->fm / 1048576)."Mb'>";
         }
 
         public static function validate($n, &$v, $a, $t)
@@ -4972,11 +4953,11 @@ namespace PHPPE\AddOn {
 
 /**
  * colorpicker element.
- *
- * @usage obj.field [cssclass]
  */
     class color extends \PHPPE\AddOn
     {
+        public $conf = "*obj.field [onchangejs [cssclass]]";
+
         public function show()
         {
             return "<span style='width:10px;height:10px;background-color:".$this->value.";'></span> ".$this->value;
@@ -4991,11 +4972,11 @@ namespace PHPPE\AddOn {
 
 /**
  * field label.
- *
- * @usage obj.field label [cssclass]
  */
     class label extends \PHPPE\AddOn
     {
+        public $conf = "*obj.field [cssclass]";
+
         public function show()
         {
             return $this->edit();
