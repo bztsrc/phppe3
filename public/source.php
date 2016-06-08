@@ -3934,7 +3934,7 @@ class ClassMap extends Extension
 /**
  * Load a new language dictionary into memory.
  *
- * @param class name (module name)
+ * @param class name (extension name)
  */
         public static function lang($c = '')
         {
@@ -4031,6 +4031,8 @@ class ClassMap extends Extension
 /**
  * Return button number when user tries to save a form.
  *
+ * @param form name
+ * 
  * @return integer button number
  */
         public static function isTry($f = '')
