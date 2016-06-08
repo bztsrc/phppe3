@@ -349,6 +349,7 @@ namespace PHPPE {
  * @param search phrase
  * @param where clause with placeholders
  * @param order by
+ * @param fields
  *
  * @return array of associative arrays
  */
