@@ -8,6 +8,11 @@ class DBTest extends PHPUnit_Framework_TestCase
 		if(!\PHPPE\ClassMap::has("PHPPE\DB"))
 			$this->markTestSkipped();
 
+        $this->assertEquals(
+            "%some%thing%",
+            \PHPPE\DB::like("some thing"),
+            "like");
+
 		$this->assertEquals(
 			"SELECT * FROM users",
 			\PHPPE\DB::select("users"),

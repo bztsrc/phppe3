@@ -49,6 +49,18 @@ class DB extends Extension
     private $wheres = [];
 
     /**
+     * Alias of DS::like()
+     *
+     * @param string
+     *
+     * @return sql-safe search ready like phrase
+     */
+    public static function like($str)
+    {
+        return DS::like($str);
+    }
+ 
+    /**
      * Define a select query with table.
      *
      * @param table table name

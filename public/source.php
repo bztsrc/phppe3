@@ -1199,7 +1199,7 @@ namespace PHPPE {
         public static function query($f, $t, $w = '', $g = '', $o = '', $s = 0, $l = 0, $a = [])
         {
             //! execute a query that returns records of associative arrays
-            $q = 'SELECT '.$f.($t ? ' FROM '.$t : '').($w ? ' WHERE '.$w : '').($g ? ' GROUP BY '.$g : '').($o ? ' ORDER BY '.$o : '').($l ? (' LIMIT '.($s ? $s.',' : '').$l) : '').';';
+            $q = 'SELECT '.(is_array($f)?implode(",",$f):$f).($t ? ' FROM '.$t : '').($w ? ' WHERE '.$w : '').($g ? ' GROUP BY '.$g : '').($o ? ' ORDER BY '.$o : '').($l ? (' LIMIT '.($s ? $s.',' : '').$l) : '').';';
 
             return self::exec($q, $a);
         }
