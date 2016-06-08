@@ -19,7 +19,7 @@
 #header BUTTON {height:20px;font-size:12px;line-height:12px;top:2px;border:solid 1px #fff;color:#fff;background-color:#709504;background:linear-gradient(#d8f4a9,#709504,#baf159);}
 #search {height:20px;font-size:12px;line-height:12px;top:2px;}
 SUP SMALL { color:#A0A0A0; }
-DIV.toc {position:absolute;top:34px;left:2px;width:220px;border-right:1px solid #E0E0E0;padding:4px 4px 4px 4px;display:block;z-index:5;color:#E0E0E0;}
+DIV.toc {position:fixed;overflow:auto;top:34px;left:2px;width:220px;border-right:1px solid #E0E0E0;padding:4px 4px 4px 4px;display:block;z-index:5;color:#E0E0E0;}
 DIV.toc A {text-decoration:none; color:#808080;}
 DIV.toc OL {padding-left:5px !important; }
 DIV.toc LI { display:block; padding-left:5px;}
@@ -57,7 +57,8 @@ TD.optional { font-style:italic; color:#808080; }
 TD.optional::after { content: url('data:image/svg+xml;charset=utf8,%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20height%3D%2220%22%20width%3D%2270%22%3E%0A%0A%20%20%3CforeignObject%20y%3D%220%22%20x%3D%225%22%20height%3D%22100%25%22%20width%3D%22100%25%22%3E%0A%09%3Csmall%20style%3D%22font%2Dsize%3A8%3Bcolor%3A%20%23A0A0A0%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxhtml%22%3E%3Ci%3Eoptional%3C%2Fi%3E%3C%2Fsmall%3E%0A%20%20%3C%2FforeignObject%3E%0A%3C%2Fsvg%3E'); }
 TD.readonly { font-style:italic; color:#600000; }
 TD.readonly::after { content: url('data:image/svg+xml;charset=utf8,%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20height%3D%2220%22%20width%3D%2270%22%3E%0A%0A%20%20%3CforeignObject%20y%3D%220%22%20x%3D%225%22%20height%3D%22100%25%22%20width%3D%22100%25%22%3E%0A%09%3Csmall%20style%3D%22font%2Dsize%3A8%3Bcolor%3A%20%23A06060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxhtml%22%3E%3Ci%3Eread%2Donly%3C%2Fi%3E%3C%2Fsmall%3E%0A%20%20%3C%2FforeignObject%3E%0A%3C%2Fsvg%3E'); }
-TABLE.parameter > TBODY > TR > TD:first-child { width:300px; }
+TABLE.parameter > TBODY > TR > TD:first-child { width:300px; color:#808080; }
+TABLE.parameter > TBODY > TR > TD:first-child SPAN { color:#6495ED; }
 .installpreview {border:solid 2px black;padding:5px 5px 5px 5px;font-family:times new roman;}
 .installpreview H1 {font-size:2em;font-weight:bold;}
 .installpreview PRE {border:0px none;background:#fff !important;}
@@ -97,10 +98,17 @@ function tab_switch(name,skiphist)
         no.innerHTML="<div style='margin:50px;padding:10px;font-size:20px;color:#fff;background:#FF0000;'>Sorry, no such section: <b>"+d[0]+"</b></div>";
     }
     if(skiphist==null && tab_history[tab_history.length-1]!=tab_current){
-        tab_history.push(tab_current+':'+tab_scroll);
+        tab_history.push(tab_current+':'+Math.floor(window.pageYOffset || document.documentElement.scrollTop));
     }
     tab_current=d[0];
-    tab_scroll=d[1]>0?d[1]:0;
+    if(parseInt(d[1])>0) {
+        var h=document.getElementById(d[0]).querySelectorAll("h1, h2, h3, h4");
+        tab_scroll=parseInt(h[d[1]].offsetTop+(
+            h[d[1]].offsetParent&&
+            h[d[1]].offsetParent.className!='tab'?
+            h[d[1]].offsetParent.offsetTop:0)-32);
+    } else
+        tab_scroll=0;
     window.scrollTo(0,tab_scroll);
     document.getElementById('back').style.display=(tab_history.length>1?"block":"none");
     tab_getscroll();
@@ -109,36 +117,43 @@ function tab_switch(name,skiphist)
 function tab_back()
 {
     var d=tab_history.pop();
+    if(d==null) d='';
     var d2=d.split(":"),name,offs;
     name=d2[0]; offs=d2[1]==''||d2[1]==null||d2[1]==undefined?0:d2[1];
     if(name=='' || name==null || name==undefined) name="introduction";
     tab_switch(name,true);
     if(offs>0)
-        window.scrollBy(0,offs);
+        window.scrollTo(0,offs);
 }
 function tab_getscroll()
 {
     var o=document.getElementById('infobox');
-    tab_scroll=Math.floor(window.pageYOffset || document.documentElement.scrollTop);
+    var s=Math.floor(window.pageYOffset || document.documentElement.scrollTop);
+    var i,h=document.getElementById(tab_current).querySelectorAll("h1, h2, h3, h4");
+    for(i in h) {
+        if(h[i].offsetTop+(h[i].offsetParent&&h[i].offsetParent.className!='tab'?h[i].offsetParent.offsetTop:0)<s+42)
+            tab_scroll=i;
+    }
     var t='#'+tab_current+' :'+tab_scroll;
     if(o!=null&&o!=undefined) o.innerHTML=t;
 }
 function tab_permalink()
 {
     var d=document.location.href.split("#")[0];
-    document.location.href=d+'#'+tab_current+(tab_scroll>30?':'+Math.floor(tab_scroll):'');
+    document.location.href=d+'#'+tab_current+(tab_scroll>0?':'+Math.floor(tab_scroll):'');
 }
 function toc_switch(name)
 {
-    var obj,toc=document.getElementById('toc');
+    var obj=null,toc=document.getElementById('toc');
+    toc.style.height=window.innerHeight+'px';
     if (typeof name == 'string')
         obj=document.getElementById(name);
-    else
+    else if(name!=null)
         obj=name.nextSibling.nextSibling;
-    if(obj==null || obj==undefined) return;
-    if(obj.style.display==null||obj.style.display=='') {obj.style.display='none';}
-    else obj.style.display=(obj.style.display=='block'?'none':'block');
-    toc.style.position=window.innerHeight>toc.clientHeight?'fixed':'absolute';
+    if(obj!=null && obj!=undefined) {
+        if(obj.style.display==null||obj.style.display=='') {obj.style.display='none';}
+        else obj.style.display=(obj.style.display=='block'?'none':'block');
+    }
 }
 
 function tab_search(obj)
@@ -152,11 +167,11 @@ function tab_activatesearch(e)
     var c=e.keyCode>0?e.keyCode:e.which,s;
     if(tab_skip && c>=33 && c<=40){tab_closesearch();tab_skip=0;return true;}
     tab_skip=0;
-    if(c==37) tab_back();
-    if(c==27) {tab_closesearch();return false;}
-    if(c==17||c==18||c==224) tab_mod=1;
-    if(c<20||(c>=33&&c<=40)||c==46||c==116||c==224)return true;
-    if(tab_mod==1) { tab_mod=0; return true; }
+    if(c==37 && document.activeElement.id!='search') tab_back();
+    if(c==32) {tab_permalink();return false;}
+    if(c==116) {tab_permalink();return true;}
+    if(c==27||c==38||c==40) {tab_closesearch();return true;}
+    if(c<20||(c>=33&&c<40)||c==46||c==224)return true;
     s=String.fromCharCode(c);
     if(document.activeElement.id!='search') {
         document.getElementById('search').focus();
@@ -244,6 +259,7 @@ function init()
         tab_switch("introduction");
     tab_getscroll();
     tab_check();
+    toc_switch();
 }
 </script>
 </head>
@@ -266,11 +282,11 @@ function init()
     <li style='padding-top:10px !important;'><a class='header' onclick='toc_switch(this);'>Introduction</a>
     <ol style='display:none;'>
     <li><a onclick='tab_switch("introduction");'>Welcome</a></li>
-    <li><a onclick='tab_switch("introduction");'>Features</a></li>
-    <li><a onclick='tab_switch("introduction:850");'>Requirements</a></li>
-    <li><a onclick='tab_switch("introduction:930");'>License</a></li>
-    <li><a onclick='tab_switch("introduction:1330");'>Brief history</a></li>
-    <li><a onclick='tab_switch("introduction:1500");'>Migration guide</a></li>
+    <li><a onclick='tab_switch("introduction:2");'>Features</a></li>
+    <li><a onclick='tab_switch("introduction:3");'>Requirements</a></li>
+    <li><a onclick='tab_switch("introduction:5");'>License</a></li>
+    <li><a onclick='tab_switch("introduction:6");'>Brief history</a></li>
+    <li><a onclick='tab_switch("introduction:7");'>Migration guide</a></li>
     <li><a onclick='tab_switch("glossary");'>Glossary</a></li>
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>Get Started</a>
@@ -648,11 +664,11 @@ An application is written once, but used many-many times, that should make the p
 <table class='table table-striped'>
 <tr><td></td><td><b>views/<i>application</i>_<i>action</i>.tpl<br>views/<i>application</i>.tpl</b></td><td>view templates. If action specific template found, it will be used.</td></tr>
 <tr><td></td><td><b>addons/<i>addon</i>.php</b></td><td>if the extension provides Add-Ons for the view layer.</td></tr>
-<tr><td></td><td><b>css/</b></td><td>module specific stylesheets</td></tr>
-<tr><td></td><td><b>images/</b></td><td>images used by the module</td></tr>
-<tr><td></td><td><b>js/</b></td><td>javascript libraries provided by the module</td></tr>
-<tr><td></td><td><b>fonts/</b></td><td>webfonts provided by the module</td></tr>
-<tr><td></td><td><b>lang/<i>lang</i>.php</b></td><td>language specific text definitons for each module</td></tr>
+<tr><td></td><td><b>css/</b></td><td>extension specific stylesheets</td></tr>
+<tr><td></td><td><b>images/</b></td><td>images used by the extension</td></tr>
+<tr><td></td><td><b>js/</b></td><td>javascript libraries provided by the extension</td></tr>
+<tr><td></td><td><b>fonts/</b></td><td>webfonts provided by the extension</td></tr>
+<tr><td></td><td><b>lang/<i>lang</i>.php</b></td><td>language specific text definitons for each extension</td></tr>
 <tr><td></td><td><b>out/<i>format</i>_header.php<br>out/<i>format</i>_footer.php</b></td><td>for formats other than HTML (like RSS), their header and footer generating code goes there</td></tr>
 </table>
 
@@ -717,26 +733,26 @@ will create the <a onclick='tab_switch("directory");'>directory structure</a> fo
 This can be invoked only from CLI by passing the argument "--diag". In this mode Core will examine the ProjectRoot's directory structure, will fix missing files and if run with root
 privileges it will fix file permissions as well.
 <h3>Dock</h3>
-Right corner of Panel, populated by Modules with their dock() hook methods.
+Right corner of Panel, holds status information anout extensions. Populated by <a onclick='tab_switch("events:8");'>stat()</a> hook methods.
 <h3>DocumentRoot</h3>
 The base folder where the webserver will look up files. It's the folder named <samp>public</samp> under your ProjectRoot.
 <h3>Extension</h3>
-Any Add-On or Module that can be added to or removed from your PHPPE environment. One Extension can add several Add-Ons and Modules at once to the system.
+Any Add-On or Service that can be added to or removed from your PHPPE environment. One Extension can add several Add-Ons and Services at once to the system.
 <h3>Frame</h3>
 This is the main template that frames every application views. Within a <a onclick='tab_switch("sitebuilds");'>frame template</a>, use <code>&lt;!app&gt;</code> tag to mark the place of your application, in other words this tag separates frame header and footer. Header usually contains a page menu and a navigation bar, while footer has a sitemap and an impressum line.
 <h3>Maintenance mode</h3>
 This can be turned on in <samp>phppe/config.php</samp> with <samp>$core->maintenance=true</samp>. In this mode controllers are skipped and only a view displayed with a template called "maintenance". This is
 used to temporarily put your site down until you finish with delicate upgrades.
 <h3>Menu</h3>
-Left side of Panel, populated by Modules with <a onclick='tab_switch("menu");'>PHPPE\View::menu()</a> calls during their initialization.
+Left side of Panel, populated by extensions with <a onclick='tab_switch("menu");'>PHPPE\View::menu()</a> calls during their initialization.
 <h3>Model/View/Controller</h3>
 PHPPE uses MVC design pattern. <a onclick='tab_switch("routing");'>Routing</a> desides which controller's method to run, which in turn finds out which models to call to get data for the view.
-<h3>Module</h3>
-Is an Extension that adds service (in form of a php class) or JS libraries, skins even controllers to the PHPPE environment. Basicly everything that's not an Add-On is considered to be a Module.
+<h3>Service</h3>
+Is an extension that adds a <a onclick='tab_switch("services");'>function library</a> (in form of a php class) to your environment.
 <h3>Object Relational Mapper</h3>
 Model that's inherited from <a onclick='tab_switch("phppe_model");'>PHPPE\Model</a> has the ability to be mapped directly to database tables.
 <h3>Panel</h3>
-If the user is logged in and has "panel" ACE, a nice panel will be shown on top of the page at fixed position. This panel holds the Menu and the Dock icons for Modules as well as the language selector dropdown and the user menu with profile and logout links.
+If the user is logged in and has "panel" ACE, a nice panel will be shown on top of the page at fixed position. This panel holds the Menu and the Dock with status icons for extensions; as well as the language selector dropdown and the user menu with profile and logout links.
 <h3>ProjectRoot</h3>
 The main directory of your project. It has the main <samp>composer.json</samp> and the folders <samp>app</samp>, <samp>public</samp>, <samp>vendor</samp> etc.
 <h3>Runlevel</h3>
@@ -746,7 +762,7 @@ This can be set in <samp>phppe/config.php</samp> with <samp>$core->runlevel=X</s
 2 - development<br>
 3 - debug
 <h3>Template or Layout</h3>
-It's an (usually, but not necessairly) xml with placeholders for application properties and tags for <a onclick='tab_switch("views:650");'>control structures</a> and <a onclick='tab_switch("views:2140");'>Add-Ons</a>. Views are generated using templates.
+It's an (usually, but not necessairly) xml with placeholders for application properties and tags for <a onclick='tab_switch("views:11");'>control structures</a> and <a onclick='tab_switch("views:13");'>Add-Ons</a>. Views are generated using templates.
 </div>
 
 <div id='install' class='tab' rel='diagnostics,sudo'>
@@ -945,11 +961,11 @@ these are only the most commonly used ones.</p>
 <tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's Email sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
 <tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
 <tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
-<tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("developer:1270");'>passwd</a> utility to generate hash)</td></tr>
+<tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("developer:6");'>passwd</a> utility to generate hash)</td></tr>
 <tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Extensions repository</a> section.</td></tr>
 <tr><td><b>...</b></td><td>See <a onclick='tab_switch("phppe_core");'>PHPPE\Core</a> for all properties</td></tr>
 </table>
-<div class='alert alert-info'><b>NOTE</b>: this file is only for configuring the framework itself, module and application configuration located in separate files!</div>
+<div class='alert alert-info'><b>NOTE</b>: this file is only for configuring the framework itself, extension and application configuration located in separate files!</div>
 <h2>Application configuration</h2>
 <p>Your application's configuration resides in <samp>app/config.php</samp>. Your <a onclick='tab_switch("services");'>application's init() method</a> will receive it as it's only argument.</p>
 <h2>Extension configuration</h2>
@@ -1343,7 +1359,7 @@ that returns a boolean value.</p>
 <p>These classes are the glue that connects HTTP requests with <a onclick='tab_switch("models");'>models</a> and a <a onclick='tab_switch("views");'>view</a>.</p>
 <p>An application (a PHPPE extension) can house several controllers, and each controller can hold code for several (but at least one) action handler.</p>
 <p>Using <a onclick='tab_switch("route");'>PHPPE\Http::route()</a> you can specify any controller and action to run for a specific url, or you can rely
-on <a onclick='tab_switch("routing:1270");'>default route</a> to choose the controller and action method.</p>
+on <a onclick='tab_switch("routing:2");'>default route</a> to choose the controller and action method.</p>
 <p>Controllers are located under the <a onclick='tab_switch("directory");'>ctrl/</a> directory of every extension (and in your application as well). PHPPE gives you
 freedom on how you want to organize them, you can have one single controller class with more action handlers, or separate classes for each action. There's no
 inheritance involved, but controllers should reside in the PHPPE\Ctrl namespace.</p>
@@ -1430,7 +1446,7 @@ Object can be either an instance or an associative array. If neither application
 </div>
 <div class='col-md-3'>
 <h4>Date/Time formating</h4>
-<p>Human readable format and time units are specified in translations (available in <a onclick='tab_switch("install:5000");'>PHPPE Pack</a>). Without that it will fallback to ISO date format (YYYY-mm-dd HH:MM:SS) and English units (sec, min, hour, day etc.).</p>
+<p>Human readable format and time units are specified in translations (available in <a onclick='tab_switch("install:7");'>PHPPE Pack</a>). Without that it will fallback to ISO date format (YYYY-mm-dd HH:MM:SS) and English units (sec, min, hour, day etc.).</p>
 <pre>&lt;!date expression></pre>
 <p>Display an integer (UTC UNIX timestamp) as a human readable, localized date.</p>
 <pre>&lt;!time expression></pre>
@@ -1617,7 +1633,7 @@ directory lookup and file read penalty for subsequent downloads.</div>
 <li>Fonts are like images, reference them with "<code>fonts/</code>"</li>
 </ul>
 <p>These should be called in init() method of Add-Ons or action handler classes. Don't call them in <a onclick='tab_switch("services");'>service</a> intitialization, as the referenced assets would be included in every output even if they're not needed at all.</p>
-<div class='alert alert-info'><b>NOTE</b> that you only pass the filename to these methods, the path will be looked up automatically depending on the caller's location. This means that every module can add only assets shipped with it, but not the other's.</div>
+<div class='alert alert-info'><b>NOTE</b> that you only pass the filename to these methods, the path will be looked up automatically depending on the caller's location. This means that every extension can add only assets shipped with it, but not the other's.</div>
 <p>One subdirectory is supported for grouping assets, but only one level for performance (to speed up directory lookups).</p>
 <h3>Dynamic Assets</h3>
 <p>It's possible to generate assets on-the-fly. For that you'll have to append ".php" extension to the filename. When you refer these, do that without that extension, PHPPE is clever enough to handle them on it's own.</p>
@@ -1680,6 +1696,7 @@ The Content Editor stores the changes to the database that resides on <samp>dbsr
 <p>Visitors are accessing the site on <span style='color:green;'>http(s)</span> protocol targeting a <samp>load balancer</samp>. The <samp>load balancer</samp> forwards the <span style='color:green;'>http(s)</span> request to one of the <samp>websrv</samp> instances that run <a onclick='tab_switch("webserver");'>Apache or nginx</a>. The cheapest and simpliest solution is to use DNS load balancing, where the domain name resolves to several A records, each pointing to one of the <samp>websrv</samp> ip's. More professional load balancers can terminate ssl and forward plain <span style='color:green'>http</span> to save resources, and may also monitor the current load on <samp>websrv</samp> instances to route to the least loaded one.</p>
 <p>All the <samp>websrv</samp> instances have the same document root and run PHPPE Core to act as a Content Server that in turn loads the content from <samp>dbsrv</samp> via <span style='color:brown;'>sql</span> connection. To speed up things ever more, Content Servers can <a onclick='tab_switch("cache");'>cache the contents</a> as well.</p>
 <div class='alert alert-warning'><b>NOTE:</b> Don't forget that in this scenario you'll have to configure php to store session info in database instead of files, otherwise strange things will happen!</div>
+<div class='alert alert-warning'><b>NOTE:</b> Also you should set up syslog on webservers to proxy the messages to a central syslog server.</div>
 <h2>EplosCMS</h2>
 <p>There's also an extension to support pages generated by third party software. EplosCMS generates pre-constructed pages in the "<samp>pages/</samp>" directory, this extension read files from there and creates routing entries as they are referenced. You can install this extension with:</p>
 <pre>
@@ -1727,7 +1744,7 @@ mkdir vendor/phppe/EplosCMS && curl https://bztsrc.github.io/phppe3/phppe3_eplos
 <table class='table table-striped'>
 <tr><th>Defined</th><td>in extension classes returned by init.php</td></tr>
 <tr><th>Called</th><td>in diagnostics mode (when called from command line with "--diag" argument)</td></tr>
-<tr><th>Purpose</th><td>do checks on module's data consistency</td></tr>
+<tr><th>Purpose</th><td>do checks on extension's data integrity and consistency</td></tr>
 </table>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</pre>
 <pre class='php'>
@@ -1942,7 +1959,7 @@ Note that Add-On class' constructor can be called several times, but init event 
 	<span class='keyword'>return</span> <span class='stringconst'>"&lt;input type='hidden' name='"</span>.<span class='variable'>$this->fld</span>.<span class='stringconst'>"' value='"</span>.<span class='function'>htmlspecialchars</span>(<span class='variable'>$this->value</span>).<span class='stringconst'>"'&gt;"</span>;
 }
 </pre></p>
-<div class='alert alert-info'><b>NOTE</b> that templater tags and user session influence which one of these gets called, see <a onclick='tab_switch("views:2340");'>templater</a> for details.</div>
+<div class='alert alert-info'><b>NOTE</b> that templater tags and user session influence which one of these gets called, see <a onclick='tab_switch("views:11");'>templater</a> for details.</div>
 
 <h3>JavaScript onload event</h3>
 <table class='table table-striped'>
@@ -2082,7 +2099,7 @@ $ cat ~/.ssh/id_rsa.pub | ssh <i style='color:red;'>host</i> -p <i style='color:
 <p>You'll need a plain simple webserver for that. Place the tarballs and the <samp>packages.json</samp> in DocumentRoot, and you're done.</p>
 <div class='alert alert-info'><b>NOTE</b>: you can use the "mkrepo" utility in PHP Developer to create packages.json and tarballs out of your /vendor/phppe/ directory.</div>
 <h3>Extension tarballs</h3>
-<p>Create gzipped tarballs with ".tgz" file extension of your modules and add-ons. Omit leading directory, tar files should contain files relative to <samp>vendor/phppe/<i>(extension)</i>/</samp>.</p>
+<p>Create gzipped tarballs with ".tgz" file extension of your extensions and add-ons. Omit leading directory, tar files should contain files relative to <samp>vendor/phppe/<i>(extension)</i>/</samp>.</p>
 <h4>Extension meta info</h4>
 <samp>composer.json</samp>
 <p>The first file in the tarball *MUST* be composer.json. <a onclick='tab_switch("extensions");'>PHPPE Extensions</a> Manager will check it and refuses to install tarballs without valid meta info.
@@ -2223,7 +2240,7 @@ Don't ever use underscore in your class names.</p>
 </ul>
 <p>The last two are often called in view templates.</p>
 <h3>Application or Extension?</h3>
-<p>As the framework allows controllers in applications (app) as well as in modules (vendor/phppe/*), you may ask which one to use for your project?<br>
+<p>As the framework allows controllers in applications (app) as well as in extensions (vendor/phppe/*), you may ask which one to use for your project?<br>
 Short answer: application. If you later on plan to use your code on several sites, it's easy to convert it into an extension as they share the same <a onclick='tab_switch("directory");'>directory structure</a>. The only difference is that an extension must be inside PHPPE namespace, an application is not limited by that.</p>
 </div>
 
@@ -2675,9 +2692,9 @@ It has to be done in the extension's initialization code.</p>
 <h3>Controllerless route</h3>
 <p>This is the simpliest, the view will be directly mapped to the url. For an example, see <a onclick='tab_switch("helloworld");'>Hello World!</a> tutorial.</p>
 <h3>Default application</h3>
-<p>If no route given, or neither of them applies, PHPPE will fallback to <a onclick='tab_switch("routing:1280");'>default route</a>. This is not the scope of this tutorial either.</p>
+<p>If no route given, or neither of them applies, PHPPE will fallback to <a onclick='tab_switch("routing:2");'>default route</a>. This is not the scope of this tutorial either.</p>
 <h3>Specify application</h3>
-<p>Adding application to routes, but still relying on <a onclick='tab_switch("routing:1680");'>default action route</a>.
+<p>Adding application to routes, but still relying on <a onclick='tab_switch("routing:4");'>default action route</a>.
 See <a onclick='tab_switch("route");'>PHPPE\Http::route()</a> documentation on how to specify routes.</p>
 <samp>app/init.php:</samp>
 <p><pre class='lineno'>1</pre>
@@ -2870,22 +2887,23 @@ Tutotiral myaction view
 </pre></p>
 <h3>Service Provider class</h3>
 <p>These class will be used by applications for <a onclick='tab_switch("services");'>services</a>. It also acts a <a onclick='tab_switch("controllers");'>controller</a>.</p>
-<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46</pre>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47</pre>
 <pre class='php'>
 &lt;?php
 <span class='keyword'>class</span> MyService {
     <span class='keyword'>public</span> <span class='variable'>$version</span> = <span class='stringconst'>"1.0.0"</span>;
     <span class='keyword'>private</span> <span class='variable'>$dosomthingextra</span> = <span class='keyword'>false</span>;
 
-    <span class='comment'>//! some service your module provides</span>
+    <span class='comment'>//! some service your extension provides</span>
     <span class='keyword'>function</span> <span class='function'>exampleService</span>( <span class='variable'>$a</span>, <span class='variable'>$b</span>, <span class='variable'>$c</span> ) {
 	return ( <span class='function'>L</span>(<span class='stringconst'>"myservice_helloworld"</span>) . <span class='function'>round</span>( <span class='variable'>$a</span> + <span class='variable'>$b</span> - <span class='variable'>$c</span> ) );
     }
 
-    <span class='comment'>//! initialize our module. This method gets config.php as argument</span>
+    <span class='comment'>//! initialize our service. This method gets config.php as argument</span>
     <span class='keyword'>function</span> <span class='function'>init</span>(<span class='variable'>$cfg</span>)
     {
-	<span class='comment'>//! Register our module with dependency check</span>
+	<span class='comment'>//! Register our service with dependency check
+    //! this is not a must, it's enough to return an instance from init.php</span>
 	<span class='function'>PHPPE\Core::lib</span>(
 		<span class='stringconst'>"MyService"</span>,		<span class='comment'>//! unix name</span>
 		<span class='variable'>$this</span>,			<span class='comment'>//! service reference</span>
@@ -2896,13 +2914,13 @@ Tutotiral myaction view
 	if ( !<span class='function'>empty</span>( <span class='variable'>$cfg</span>[<span class='stringconst'>"dosomething"</span>] ) )
 		<span class='variable'>$this->dosomethingextra</span> = <span class='keyword'>true</span>;
 
-	<span class='comment'>//! Do any module specific tests here, use PHPPE\Core::log() to indicate errors</span>
+	<span class='comment'>//! Do any extension specific tests here, use PHPPE\Core::log() to indicate errors</span>
 	if ( <span class='variable'>$this->dosomething</span> ) {
 	    <span class='comment'>//! Do feature specific tests here. If some test fails,
-	    //! Use PHPPE\Core::log('E',...) for high level modules,
-	    //!	if your module called by applications directly (no other module depends on it)
-	    //! Use PHPPE\Core::log('C',...) for low level modules,
-	    //!	if you expect other modules dependenting on your module
+	    //! Use PHPPE\Core::log('E',...) for high level services,
+	    //!	if your service called by applications directly (no other service depends on it)
+	    //! Use PHPPE\Core::log('C',...) for low level services,
+	    //!	if you expect other services dependenting on your service
 	    ...</span>
 	    <span class='function'>PHPPE\Core::log</span> ( <span class='stringconst'>'D'</span>, <span class='stringconst'>"Feature dosomething initialized."</span> );
 	} else
@@ -2928,13 +2946,13 @@ Tutotiral myaction view
 
 <div id='widget' class='tab'>
 <h1>Widget Tutorial</h1>
-<p>See <a onclick='tab_switch("views:2140");'>templater</a>.</p>
+<p>See <a onclick='tab_switch("views:11");'>templater</a>.</p>
 <p>You can use this Add-On in view templates as:</p>
 <pre>
 &lt;!widget tutorialwgt(1,2,3,4,5,6) instancename>
 </pre>
 <p>The "widget" tag calls show(), unless configuration mode ($_SESSION['pe_<b>c</b>']) is true in which case it renders configuration panel by calling edit() hook. The "var" tag calls show(), unless edit mode ($_SESSION['pe_<b>e</b>']) is true.</p>
-<div class='alert alert-info'><b>NOTE</b>: <a onclick='tab_switch("views:2140");'>var tag</a> checks <b>edit mode</b>, while widget checks <b>conf mode</b> to display edit().</div>
+<div class='alert alert-info'><b>NOTE</b>: <a onclick='tab_switch("views:13");'>var tag</a> checks <b>edit mode</b>, while widget checks <b>conf mode</b> to display edit().</div>
 
 <samp>app/addons/tutorialwgt.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br></pre>
@@ -3088,8 +3106,8 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <h3>Session variables</h3>
 <p>To save values accross pages, the Core uses some SESSION variable.</p>
 <table class='table table-striped'>
-<tr><td><var>$_SESSION['pe_e']</var></td><td>True if user logged in and turned edit mode on (<a onclick='tab_switch("views:2140");'>templater var</a> tags)</td></tr>
-<tr><td><var>$_SESSION['pe_c']</var></td><td>True if user logged in and turned widget configuration mode on (<a onclick='tab_switch("views:2140");'>templater widget</a> tags)</td></tr>
+<tr><td><var>$_SESSION['pe_e']</var></td><td>True if user logged in and turned edit mode on (<a onclick='tab_switch("views:13");'>templater var</a> tags)</td></tr>
+<tr><td><var>$_SESSION['pe_c']</var></td><td>True if user logged in and turned widget configuration mode on (<a onclick='tab_switch("views:13");'>templater widget</a> tags)</td></tr>
 <tr><td><var>$_SESSION['pe_u']</var></td><td>Logged in user</td></tr>
 <tr><td><var>$_SESSION['pe_s']</var></td><td>Security tokens</td></tr>
 <tr><td><var>$_SESSION['pe_v']</var></td><td>Validator data (filled by <a onclick='tab_switch("template");'>PHPPE\View::template()</a>, read on post by <a onclick='tab_switch("req2arr");'>PHPPE\Core:req2obj()</a>)</td></tr>
@@ -3130,7 +3148,7 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td class='readonly'><var>PHPPE\Core::$core->id</var></td><td>Magic, PHPPE version (read-only)</td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$core->base</var></td><td>Base url used by <a onclick='tab_switch("url");'>url()</a> (read-only)</td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$core->url</var></td><td>Page specific part of the url (read-only)</td></tr>
-<tr><td class='readonly'><var>PHPPE\Core::$core-&gt;app</var></td><td>current application, (read-only, but see <a onclick='tab_switch("events:1430");'>route event</a>)</td></tr>
+<tr><td class='readonly'><var>PHPPE\Core::$core-&gt;app</var></td><td>current application, (read-only, but see <a onclick='tab_switch("events:5");'>route event</a>)</td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$core-&gt;action</var></td><td>current action (read-only)</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;item</var></td><td>current item or null</td></tr>
 <tr><td><var>PHPPE\Core::$core->template</var></td><td>Template's name used by view layer. Defaults to "<i>(application)_(action)</i>"</td></tr>
@@ -3140,7 +3158,7 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td class='readonly'><var>PHPPE\Core::$core-&gt;form</var></td><td>Name of the submitted form if <a onclick='tab_switch("istry");'>PHPPE\Core::isTry()</a> returns non-zero</td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$core->try</var></td><td>On submit the form's pressed button's serial, query with <a onclick='tab_switch("istry");'>PHPPE\Core::isTry()</a></td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$core->error</var></td><td>array of error messages, see <a onclick='tab_switch("error");'>PHPPE\Core::error()</a> and <a onclick='tab_switch("iserror");'>PHPPE\Core::isError()</a></td></tr>
-<tr><td class='readonly'><var>PHPPE\Core::$core->libs</var></td><td>List of loaded modules, register and query with <a onclick='tab_switch("lib");'>PHPPE\Core::lib()</a></td></tr>
+<tr><td class='readonly'><var>PHPPE\Core::$core->libs</var></td><td>List of loaded libraries, register and query with <a onclick='tab_switch("lib");'>PHPPE\Core::lib()</a></td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$core-&gt;sec</var></td><td>True if called over ssl and channel is secure</td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$started</var></td><td>Framework start time in microsecs, required by monitoring stats</td></tr>
 <tr><td class='readonly'><var>PHPPE\Core::$v</var></td><td>Validator data</td></tr>
@@ -3170,7 +3188,9 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 
 <div id='phppe_classmap' class='tab' rel='classmap'>
 <h1>PHPPE\ClassMap</h1>
-<p>This class takes care of autoloading. It's bullet-proof and PSR-0 / PSR-4 compatible.</p>
+<p>This class takes care of autoloading. It's bullet-proof and PSR-0 / PSR-4 compatible. It stores the map in JSON format because in PHPPE webserver is not allowed to write PHP files. The map is automatically regenerated if an extension is installed or removed.</p>
+<h3>Files</h3>
+<p><samp>.tmp/.classmap</samp></p>
 <h3>Properties</h3>
 <table class='table table-striped'>
 <tr><td>static <var>$file</var></td><td>Name of the cache json file (<samp>.tmp/.classmap</samp>)</td></tr>
@@ -3318,12 +3338,12 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <h1>PHPPE\Filter</h1>
 <p>Classes in <code>PHPPE\Filter</code> namespace that are inherited from the <code>PHPPE\Filter</code> class can be used as <a onclick='tab_switch("filters");'>URL filters</a>.
 For that it has only one argumentless method that returns a boolean success flag.
-You can apply filters to <a onclick='tab_switch("routing:560");'>route</a> calls as 4th argument, and they will be executed when the routing decision is made.</p>
+You can apply filters to <a onclick='tab_switch("routing:1");'>route</a> calls as 4th argument, and they will be executed when the routing decision is made.</p>
 <h3>Properties</h3>
 <p>None.</p>
 <h3>Methods</h3>
 <table class='table table-striped'>
-<tr><td>static <a onclick='tab_switch("events:1120");'>filter()</a></td><td>Logic that checks validity for an URL and returns boolean</td></tr>
+<tr><td>static <a onclick='tab_switch("events:4");'>filter()</a></td><td>Logic that checks validity for an URL and returns boolean</td></tr>
 </table>
 <h3>Examples</h3>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
@@ -3385,10 +3405,10 @@ They implement user input boxes, widgets and basicly everything that has to disp
 </table>
 <h3>Methods</h3>
 <table class='table table-striped'>
-<tr><td><a onclick='tab_switch("events:3400");'>init()</a></td><td>Initialization <a onclick='tab_switch("events:3400");'>event handler</a>. Called once for every referenced AddOn per page generation.</td></tr>
-<tr><td><a onclick='tab_switch("events:4320");'>show()</a></td><td>Uneditable html representation of the value. For fields is a formated value, for widgets it means the widget's face.</td></tr>
-<tr><td><a onclick='tab_switch("events:4320");'>edit()</a></td><td>Editable html representation of the value. For fields is more likely one or more INPUT fields, for widgets it's the configuration form.</td></tr>
-<tr><td>static <a onclick='tab_switch("events:3800");'>validate()</a></td><td>Validates or alters the AddOn's value.</td></tr>
+<tr><td><a onclick='tab_switch("events:10");'>init()</a></td><td>Initialization <a onclick='tab_switch("events:10");'>event handler</a>. Called once for every referenced AddOn per page generation.</td></tr>
+<tr><td><a onclick='tab_switch("events:12");'>show()</a></td><td>Uneditable html representation of the value. For fields is a formated value, for widgets it means the widget's face.</td></tr>
+<tr><td><a onclick='tab_switch("events:12");'>edit()</a></td><td>Editable html representation of the value. For fields is more likely one or more INPUT fields, for widgets it's the configuration form.</td></tr>
+<tr><td>static <a onclick='tab_switch("events:11");'>validate()</a></td><td>Validates or alters the AddOn's value.</td></tr>
 </table>
 </div>
 
@@ -3514,8 +3534,8 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <p>Execute a PHPPE Application.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
-<tr><td class='optional'>string $app</td><td>Override application</td></tr>
-<tr><td class='optional'>string $action</td><td>Override action</td></tr>
+<tr><td class='optional'>string <span>$app</span></td><td>Override application</td></tr>
+<tr><td class='optional'>string <span>$action</span></td><td>Override action</td></tr>
 </table>
 <h3>Return value</h3>
 <p>None.</p>
@@ -3528,7 +3548,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 </div>
 
 <div id='lib' class='tab'>
-<h1>(PHPPE\Core)->lib()</h1>
+<h1>PHPPE\Core::lib()</h1>
 <h2>Synopsis</h2>
 <pre>
 <span class='comment'>public static</span> <span class='function'>lib</a>( );
@@ -3539,9 +3559,9 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <p>Normally you'll never ever need to register a service. You should instead return an instance from your extension's <a onclick='tab_switch("services");'>init.php</a>.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
-<tr><td class='optional'>string $name</td><td>Name of the library / service</td></tr>
-<tr><td class='optional'>string/object $service</td><td>Name of the class (if it's static) or instance reference</td></tr>
-<tr><td class='optional'>string/array $dependencies</td><td>Dependencies, comma separated string list or array</td></tr>
+<tr><td class='optional'>string <span>$name</span></td><td>Name of the library / service</td></tr>
+<tr><td class='optional'>string/object <span>$service</span></td><td>Name of the class (if it's static) or instance reference</td></tr>
+<tr><td class='optional'>string/array <span>$dependencies</span></td><td>Dependencies, comma separated string list or array</td></tr>
 </table>
 <h3>Return value</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -3564,7 +3584,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 </div>
 
 <div id='isinst' class='tab'>
-<h1>(PHPPE\Core)->isInst()</h1>
+<h1>PHPPE\Core::isInst()</h1>
 <h2>Synopsis</h2>
 <pre>
 <span class='comment'>public static</span> <span class='function'>isInst</a>( <span class='comment'>string</span> <span class='variable'>$name</span> );
@@ -3572,7 +3592,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <p>Installation check, returns true if service or AddOn exists.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
-<tr><td class='optional'>string $name</td><td>Name of the library / service / AddOn</td></tr>
+<tr><td>string <span>$name</span></td><td>Name of the library / service / AddOn</td></tr>
 </table>
 <h3>Return value</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -3583,6 +3603,219 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <pre class='php'>
 <span class='comment'>//! check if a service is installed</span>
 <span class='variable'>$hasGpio</span> = <span class='function'>Core::isInst</span>(<span class='stringconst'>"GPIO"</span>);
+</pre></p>
+</div>
+
+<div id='lang' class='tab'>
+<h1>PHPPE\Core::lang()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>lang</a>( <span class='comment'>string</span> <span class='variable'>$name</span> );
+</pre>
+<p>Loads a language dictionary into memory for a class (extension).</p>
+<div class='alert alert-info'><b>HINT</b>: you can use the "<a onclick='tab_switch("developer:7");'>lang</a>" utility to generate dictionaries.</div>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$name</span></td><td>Name of the class / extension</td></tr>
+</table>
+<h3>Return value</h3>
+<p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br></pre>
+<pre class='php'>
+<span class='comment'>//! load a language dictionary</span>
+<span class='function'>Core::lang</span>(<span class='stringconst'>"GPIO"</span>);
+</pre></p>
+</div>
+
+<div id='log' class='tab'>
+<h1>PHPPE\Core::log()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>log</a>( <span class='comment'>string</span> <span class='variable'>$weight</span>, <span class='comment'>string</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$facility</span> );
+</pre>
+<p>Logger. Don't forget that your messages most probably will be parsed by scripts, so use English messages if possible without translation.</p>
+<p>When configured to <a onclick='tab_switch("configuration");'>log to syslog</a>, no files will be written, and the message will be sent as:</p>
+<pre>
+(vhost name):PHPPE-(A|W|E|C|I|D)-(facility):(original message without line breaks)
+</pre>
+<p>It's easy to grep. If you also turn on <a onclick='tab_switch("phppe_core:2");'>trace</a>, then the caller's filename and line will be logged as well.</p>
+<h3>Files</h3>
+<p><samp>data/log</samp></p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$weight</span></td><td>Can be one of:<br>
+<b>A</b> - Audit (will be logged regardless to runlevel)<br>
+<b>D</b> - Debug (only logged at runlevel 3)<br>
+<b>I</b> - informational<br>
+<b>W</b> - Warning (some features will be disabled)<br>
+<b>E</b> - Error (some important part failed, but page can be still generated)<br>
+<b>C</b> - Critical (main part failed, the page cannot be generated)<br>
+<div class='alert alert-danger'><b>NOTE</b>: logging Critical message will stop PHP script execution.</div>
+</td></tr>
+<tr><td>string <span>$message</span></td><td>The message to log. Put in as much useful information as you can.</td></tr>
+<tr><td class='optional'>string <span>$facility</span></td><td>Which logfile to use. If not given, it will be autodetected after the extension name calling</td></tr>
+</table>
+<h3>Return value</h3>
+<p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='function'>Core::log</span>(<span class='stringconst'>"D"</span>, <span class='stringconst'>"I'm running!"</span>, <span class='stringconst'>"myService"</span>);
+</pre></p>
+</div>
+
+<div id='istry' class='tab'>
+<h1>PHPPE\Core::isTry()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>isTry</a>( <span class='comment'>string</span> <span class='optional'>$name</span> );
+</pre>
+<p>Checks if the user is trying to save a form. This includes CSRF as well.</p>
+<div class='alert alert-info'><b>HINT</b>: this method is available as <a onclick='tab_switch("phppe_filter");'>PHPPE\Filter\csrf</a> filter.</div>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td class='optional'>string <span>$name</span></td><td>Name of form to check, if not given, the first form is checked.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>int</td><td>The serialnumber of the button pressed on the form, starts with 1. Zero means no button was pressed, or CSRF failed.</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'>
+<span class='comment'>//! typical in action handlers</span>
+if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"</span>)) {
+    <span class='variable'>$myform</span> = <span class='function'>Core::req2arr</span>(<span class='stringconst'>"myform"</span>);
+    ...
+}
+<span class='comment'>//! save which button was pressed</span>
+<span class='variable'>$btnNo</span> = <span class='function'>Core::isTry</span>(<span class='stringconst'>"userform"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_filter");'>PHPPE\Filter</a></li>
+    <li><a onclick='tab_switch("error");'>PHPPE\Core::error()</a></li>
+    <li><a onclick='tab_switch("iserror");'>PHPPE\Core::isError()</a></li>
+    <li><a onclick='tab_switch("validate");'>PHPPE\Core::validate()</a></li>
+    <li><a onclick='tab_switch("req2arr");'>PHPPE\Core::req2arr()</a></li>
+</ul>
+</div>
+
+<div id='error' class='tab'>
+<h1>PHPPE\Core::error()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>error</a>( );
+<span class='comment'>public static</span> <span class='function'>error</a>( <span class='comment'>string</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$field</span> );
+</pre>
+<p>When called without arguments, returns error messages, otherwise adds a new error to the page or to a field.</p>
+<div class='alert alert-info'><b>HINT</b>: if you want to display error messages in a view template, use <code>&lt;!include errorbox&gt;</code></div>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td class='optional'>string <span>$message</span></td><td>The error message</td></tr>
+<tr><td class='optional'>string <span>$field</span></td><td>If the message is related to a field, it's name</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>array of messages</td><td>When called without arguments, returns all messages</td></tr>
+<tr><td>null</td><td>When called with arguments, registers new message</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br></pre>
+<pre class='php'>
+<span class='comment'>//! query error messages</span>
+<span class='variable'>$errors</span> = <span class='function'>Core::error</span>();
+<span class='comment'>//! set an error message</span>
+<span class='function'>Core::error</span>(<span class='stringconst'>"Something went wrong!"</span>);
+<span class='comment'>//! set an error for a field</span>
+<span class='function'>Core::error</span>(<span class='stringconst'>"Please fill out this field."</span>, <span class='stringconst'>"myform.username"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("istry");'>PHPPE\Core::isTry()</a></li>
+    <li><a onclick='tab_switch("iserror");'>PHPPE\Core::isError()</a></li>
+    <li><a onclick='tab_switch("validate");'>PHPPE\Core::validate()</a></li>
+    <li><a onclick='tab_switch("req2arr");'>PHPPE\Core::req2arr()</a></li>
+</ul>
+</div>
+
+<div id='iserror' class='tab'>
+<h1>PHPPE\Core::isError()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>isError</a>( <span class='comment'>string</span> <span class='optional'>$field</span> );
+</pre>
+<p>Check if there was an error.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td class='optional'>string <span>$field</span></td><td>If you are interested in a specific field, it's name</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>boolean</td><td>True if there was an error</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br></pre>
+<pre class='php'>
+<span class='comment'>//! is there any error message?</span>
+<span class='variable'>$wasError</span> = <span class='function'>Core::isError</span>();
+<span class='comment'>//! is there a problem with a field?</span>
+<span class='variable'>$badInput</span> = <span class='function'>Core::isError</span>(<span class='stringconst'>"myform.username"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("istry");'>PHPPE\Core::isTry()</a></li>
+    <li><a onclick='tab_switch("error");'>PHPPE\Core::error()</a></li>
+    <li><a onclick='tab_switch("validate");'>PHPPE\Core::validate()</a></li>
+    <li><a onclick='tab_switch("req2arr");'>PHPPE\Core::req2arr()</a></li>
+</ul>
+</div>
+
+<div id='event' class='tab'>
+<h1>PHPPE\Core::event()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>event</a>( <span class='comment'>string</span> <span class='variable'>$type</span>, <span class='comment'>array</span> <span class='optional'>$context</span> );
+</pre>
+<p>Triggers an event, and executes all <a onclick='tab_switch("events");'>event hook</a> for it. You don't have to use this method, as events are triggered by Core.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$event</span></td><td>Event type</td></tr>
+<tr><td class='optional'>array <span>$context</span></td><td>Optional context. Each event type has different context.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>array</td><td>Optionally altered context</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br></pre>
+<pre class='php'>
+<span class='comment'>//! trigger event</span>
+list(<span class='variable'>$app</span>, <span class='variable'>$action</span>) = <span class='function'>Core::event</span>(<span class='stringconst'>"route"</span>, [<span class='variable'>$app</span>, <span class='variable'>$action</span>]);
+</pre></p>
+</div>
+
+<div id='tobytes' class='tab'>
+<h1>PHPPE\Core::toBytes()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>toBytes</a>( <span class='comment'>string</span> <span class='variable'>$inivar</span> );
+</pre>
+<p>Returns a PHP ini value in bytes.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$inivar</span></td><td>Name of the PHP ini value.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>int</td><td>The value in bytes.</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br></pre>
+<pre class='php'>
+<span class='comment'>//! ini_get('post_max_size') would return '2M'</span>
+<span class='variable'>$postMaxInBytes</span> = <span class='function'>Core::toBytes</span>(<span class='stringconst'>"post_max_size"</span>);
 </pre></p>
 </div>
 
