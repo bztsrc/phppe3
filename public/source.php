@@ -68,7 +68,7 @@ namespace PHPPE {
     {
         protected $name;          //!< instance name
         protected $args;          //!< arguments in pharenthesis after type
-        protected $fld;           //!< field name
+        public $fld;              //!< field name
         public $value;            //!< object field's value
         protected $attrs;         //!< attributes, everything after the name in tag
         protected $css;           //!< css class to use, input or reqinput, occasionally errinput added
@@ -591,7 +591,7 @@ namespace PHPPE {
 /**
  * HTTP helpers.
  */
-    class Http extends Extension
+    class Http
     {
         private static $r;            //!< url routes
 
@@ -707,25 +707,25 @@ namespace PHPPE {
                 if (!is_array($f)) {
                     $f = str_getcsv($f, ',');
                 }
-                self::$r[Core::h($u, $n, $a)] = [$u, $n, $a, $f];
+                self::$r[self::h($u, $n, $a)] = [$u, $n, $a, $f];
             }
             //! associative array
             elseif (is_array($u) && !empty($u[$U]) && !empty($u[$N])) {
                 $f = !empty($u[$F]) ? $u[$F] : [];
                 $a = !empty($u[$A]) ? $u[$A] : '';
-                self::$r[Core::h($u[$U], $u[$N], $a)] = [$u[$U], $u[$N], $a, is_array($f) ? $f : explode(',', $f)];
+                self::$r[self::h($u[$U], $u[$N], $a)] = [$u[$U], $u[$N], $a, is_array($f) ? $f : explode(',', $f)];
             }
             //! mass import from an array
             elseif (is_array($u) && !empty(current($u)[0])) {
                 foreach ($u as $v) {
-                    self::$r[Core::h($v[0], $v[1], (!empty($v[2]) ? $v[2] : ''))] = $v;
+                    self::$r[self::h($v[0], $v[1], (!empty($v[2]) ? $v[2] : ''))] = $v;
                 }
             }
             //! from stdClass
             elseif (is_object($u) && !empty($u->$U) && !empty($u->$N)) {
                 $f = !empty($u->$F) ? $u->$F : [];
                 $a = !empty($u->$A) ? $u->$A : '';
-                self::$r[Core::h($u->$U, $u->$N, $a)] = [$u->$U, $u->$N, $a, is_array($f) ? $f : explode(',', $f)];
+                self::$r[self::h($u->$U, $u->$N, $a)] = [$u->$U, $u->$N, $a, is_array($f) ? $f : explode(',', $f)];
             } else {
                 throw new \Exception('bad route: '.serialize($u));
             }
@@ -876,6 +876,13 @@ namespace PHPPE {
 
                 return $t ? strtr($d, ["\r" => '']) : $d;
             }
+        }
+/**
+ * Calculate hash for routes and others
+ */
+        private static function h($a, $b, $c = '')
+        {
+            return sha1($a.'|'.$b.'|'.$c);
         }
     }
 
@@ -4103,33 +4110,12 @@ class ClassMap extends Extension
 
 /*** Data layer ***/
 /**
- * Convert human readble php ini value to bytes.
- *
- * @param php ini variable name (value of units)
- *
- * @return in bytes
- */
-        public static function toBytes($i)
-        {
-            $v = trim(ini_get($i));
-            $l = strtolower($v[strlen($v) - 1]);
-            switch ($l) {
-                case 't' : $v *= 1024;
-                case 'g' : $v *= 1024;
-                case 'm' : $v *= 1024;
-                case 'k' : $v *= 1024;
-            }
-
-            return $v;
-        }
-
-/**
  * Add a validator on a field value.
  *
  * @usage call it *BEFORE* req2obj or req2arr
  *
  * @param field name
- * @param validator name (will use \PHPPE\(validator)::validate)
+ * @param validator name (will use \PHPPE\AddOn\(validator)::validate)
  * @param is value required
  * @param arguments
  * @param attributes
@@ -4145,7 +4131,7 @@ class ClassMap extends Extension
  * Render user request to object. Validates user input and returns an stdClass.
  *
  * @param form prefix (request name)
- * @param validator data (if given, ovverrides templater's validator list)
+ * @param validator data (if given, overrides templater's validator list)
  *
  * @return form fields in stdClass
  */
@@ -4336,7 +4322,20 @@ class ClassMap extends Extension
             return $d;
         }
 
-/*** private helper functions for Core ***/
+/**
+ * Create a benchmark point
+ *
+ * @param name
+ */
+        public static function bm($name)
+        {
+/*! BENCHMARK START */
+            $d=microtime(1)-self::$started;
+            self::$bm[$name]=[sprintf("%.6f",$d-end(self::$bm)[1]),sprintf("%.6f",$d)];
+/*! BENCHMARK END */
+        }
+
+/*** private helper functions for Core classes ***/
 /**
  * Return constructor started time
  */
@@ -4377,25 +4376,26 @@ class ClassMap extends Extension
         }
 
 /**
- * Calculate hash for routes and others
+ * Convert human readble php ini value to bytes.
+ *
+ * @param php ini variable name (value of units)
+ *
+ * @return in bytes
  */
-        public static function h($a, $b, $c = '')
+        private static function toBytes($i)
         {
-            return sha1($a.'|'.$b.'|'.$c);
+            $v = trim(ini_get($i));
+            $l = strtolower($v[strlen($v) - 1]);
+            switch ($l) {
+                case 't' : $v *= 1024;
+                case 'g' : $v *= 1024;
+                case 'm' : $v *= 1024;
+                case 'k' : $v *= 1024;
+            }
+
+            return $v;
         }
 
-/**
- * Create a benchmark point
- *
- * @param name
- */
-        public static function bm($name)
-        {
-/*! BENCHMARK START */
-            $d=microtime(1)-self::$started;
-            self::$bm[$name]=[sprintf("%.6f",$d-end(self::$bm)[1]),sprintf("%.6f",$d)];
-/*! BENCHMARK END */
-        }
 
     }//class
 

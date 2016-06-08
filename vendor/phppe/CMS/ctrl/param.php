@@ -31,8 +31,6 @@ class CMSParam
 
         //! if not called as it should, return
         if(empty($item) || empty($_SESSION['cms_url']) || empty($_SESSION['cms_param'][$item])) {
-print_r($item);
-print_r(array_keys($_SESSION['cms_param']));
             Core::$core->template = "403";
             return;
         }
@@ -110,6 +108,6 @@ print_r(array_keys($_SESSION['cms_param']));
         }
 
         //! focus first input
-        \PHPPE\View::js("init()", "var inp=document.querySelector('.input');if(inp!=null){inp.focus();inp.selectionStart=inp.selectionEnd=(inp.value!=null?inp.value:inp.innerHTML).length;}", true);
+        \PHPPE\View::js("init()", "var inp=document.querySelector('.reqinput,.input');if(inp!=null){inp.focus();inp.selectionStart=inp.selectionEnd=(inp.value!=null?inp.value:inp.innerHTML).length;}", true);
     }
 }

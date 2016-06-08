@@ -199,7 +199,7 @@ class Page extends \PHPPE\Model
     }
 
 /**
- * Sale Dynamic data sets for a page
+ * Save Dynamic data sets for a page
  *
  * @param page id
  * @param dds array

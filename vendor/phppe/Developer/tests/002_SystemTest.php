@@ -24,8 +24,6 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEmpty($core->url,"Url");
 		$this->assertEquals(\PHPPE\Core::$core->output,$core->output, "Output");
 
-		$this->assertEquals(sha1("a|b|c"),Core::h("a","b","c"),"Hash");
-
 		$this->assertGreaterThan(\PHPPE\Core::$core->now,\PHPPE\Core::started(),"Started");
 	}
 
