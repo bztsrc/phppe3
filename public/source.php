@@ -3041,7 +3041,7 @@ namespace PHPPE {
             }
 
             //! we cannot install localy, that would use webserver's user, forbidden to write.
-            //! So we must use remote user identity even when host is localhost.
+            //! So we must use remote user's identity even when host is localhost.
             $idfile = tempnam('.tmp', '.id_');
             file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n", LOCK_EX);
             chmod($idfile, 0400);
