@@ -169,7 +169,7 @@ namespace PHPPE {
         private $tz;                //!< client's timezone
         public $lang;               //!< client's prefered language
         public $screen = [];        //!< screen dimensions
-        public  $geo = [];          //!< geo location data (filled in by a third party extension)
+        public $geo = [];           //!< geo location data (filled in by a third party extension)
 
 /**
  * Magic getter to implement read-only properties
