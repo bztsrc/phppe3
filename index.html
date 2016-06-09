@@ -340,6 +340,7 @@ function init()
     <li><a onclick='tab_switch("phppe_classmap");'>PHPPE\ClassMap</a></li>
     <li><a onclick='tab_switch("phppe_client");'>PHPPE\Client</a></li>
     <li><a onclick='tab_switch("phppe_model");'>PHPPE\Model</a></li>
+    <li><a onclick='tab_switch("phppe_ctrl");'>PHPPE\Ctrl</a></li>
     <li><a onclick='tab_switch("phppe_http");'>PHPPE\Http</a></li>
     <li><a onclick='tab_switch("phppe_ds");'>PHPPE\DS</a></li>
     <li><a onclick='tab_switch("phppe_cache");'>PHPPE\Cache</a></li>
@@ -1379,7 +1380,7 @@ that returns a boolean value.</p>
 on <a onclick='tab_switch("routing:2");'>default route</a> to choose the controller and action method.</p>
 <p>Controllers are located under the <a onclick='tab_switch("directory");'>ctrl/</a> directory of every extension (and in your application as well). PHPPE gives you
 freedom on how you want to organize them, you can have one single controller class with more action handlers, or separate classes for each action. There's no
-inheritance involved, but controllers should reside in the PHPPE\Ctrl namespace.</p>
+inheritance involved, but controllers should reside in the <a onclick='tab_switch("phppe_ctrl");'>PHPPE\Ctrl namespace</a>.</p>
 <div class='alert alert-warning'><b>NOTE</b>: as PHPPE is very flexible, it allows you to specify any class as controller, it's strongly recommended to use the PHPPE\Ctrl namespace for code readability.</div>
 <samp>vendor/phppe/MyExtension/init.php:</samp>
 <p><pre class='lineno'>1</pre>
@@ -3267,6 +3268,23 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td><a onclick='tab_switch("load");'>load()</a></td><td>Loads data from database into the object</td></tr>
 <tr><td><a onclick='tab_switch("save");'>save()</a></td><td>Saves data from object into database</td></tr>
 <tr><td>static <a onclick='tab_switch("find");'>find()</a></td><td>Look up records in database</td></tr>
+</table>
+</div>
+
+<div id='phppe_ctrl' class='tab' rel='ctrl'>
+<h1>PHPPE\Ctrl</h1>
+<p>This is not a class, but a namespace for <a onclick='tab_switch("controllers");'>controllers</a>. Each class in this namespace can have the following properties:</p>
+<h3>Properties</h3>
+<table class='table table-striped parameter'>
+<tr><td class='optional'>string <var>$cli</var></td><td>Hint for CLI arguments</td></tr>
+<tr><td class='optional'>string <var>$mimetype</var></td><td>Change the default mime type of the output. Defults to 'text/html'.</td></tr>
+<tr><td class='optional'>string <var>$title</var></td><td>Controller specific page title.</td></tr>
+<tr><td class='optional'>string <var>$favicon</var></td><td>Controller specific favicon.</td></tr>
+<tr><td class='optional'>array <var>$meta</var></td><td>Additional meta tags for the controller.</td></tr>
+</table>
+<h3>Methods</h3>
+<table class='table table-striped parameter'>
+<tr><td><a onclick='tab_switch("routing:4");'>action()</a></td><td>Default action handler, see routing.</td></tr>
 </table>
 </div>
 
@@ -5317,6 +5335,215 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h3>See also</h3>
 <ul>
     <li><a onclick='tab_switch("ssh");'>PHPPE\Tools::ssh()</a></li>
+</ul>
+</div>
+
+<div id='has' class='tab'>
+<h1>(PHPPE\Users)->has()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>final public</span> <span class='function'>has</a>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
+</pre>
+<p>Checks if the user has the given Access Control Entry.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string/array <span>$ace</span></td><td>Pipe separated list or array of Access Control Entries</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>boolean</td><td>True if user has the access</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$loggedin</span> = <span class='variable'>Core::$user-></span><span class='function'>has</span>(<span class='stringconst'>"loggedin"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("grant");'>PHPPE\Users::grant()</a></li>
+    <li><a onclick='tab_switch("clear");'>PHPPE\Users::clear()</a></li>
+</ul>
+</div>
+
+<div id='grant' class='tab'>
+<h1>(PHPPE\Users)->grant()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>final public</span> <span class='function'>grant</a>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
+</pre>
+<p>Grant access to the user.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string/array <span>$ace</span></td><td>Pipe separated list or array of Access Control Entries</td></tr>
+</table>
+<h3>Return value</h3>
+<p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>Core::$user-></span><span class='function'>grant</span>(<span class='stringconst'>"webadm|siteadm"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("has");'>PHPPE\Users::has()</a></li>
+    <li><a onclick='tab_switch("clear");'>PHPPE\Users::clear()</a></li>
+</ul>
+</div>
+
+<div id='clear' class='tab'>
+<h1>(PHPPE\Users)->clear()</h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>final public</span> <span class='function'>clear</a>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
+</pre>
+<p>Revoke access from the user.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string/array <span>$ace</span></td><td>Pipe separated list or array of Access Control Entries</td></tr>
+</table>
+<h3>Return value</h3>
+<p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>Core::$user-></span><span class='function'>clear</span>(<span class='stringconst'>"webadm|siteadm"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("has");'>PHPPE\Users::has()</a></li>
+    <li><a onclick='tab_switch("grant");'>PHPPE\Users::grant()</a></li>
+</ul>
+</div>
+
+<div id='login' class='tab'>
+<h1>(PHPPE\Users)->login()<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>login</a>( <span class='comment'>string</span> <span class='variable'>$username</span>, <span class='comment'>string</span> <span class='variable'>$password</span> );
+</pre>
+<p>Authenticate user.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$username</span></td><td>Name of the user</td></tr>
+<tr><td>string <span>$password</span></td><td>Password of the user</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>boolean</td><td>True if authentication was successful</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3</pre>
+<pre class='php'>
+if (<span class='variable'>Core::$user-></span><span class='function'>login</span>(<span class='stringconst'>"admin"</span>, <span class='stringconst'>"changeme"</span>) ) {
+    <span class='comment'>//! user logged in successfully</span>
+}
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("logout");'>PHPPE\Users::logout()</a></li>
+</ul>
+</div>
+
+<div id='logout' class='tab'>
+<h1>(PHPPE\Users)->logout()<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>logout</a>( );
+</pre>
+<p>Log out user.</p>
+<h3>Parameters</h3>
+<p>None.</p>
+<h3>Return value</h3>
+</p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>Core::$user-></span><span class='function'>logout</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("login");'>PHPPE\Users::login()</a></li>
+</ul>
+</div>
+
+<div id='setreg' class='tab'>
+<h1>PHPPE\Registry::set()<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>set</a>( <span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='variable'>$value</span> );
+</pre>
+<p>Sets a value for key in registry.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$key</span></td><td>Key to use</td></tr>
+<tr><td>mixed <span>$value</span></td><td>Value to store</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>boolean</td><td>True if value stored successfully</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='function'>Registry::set</span>(<span class='stringconst'>"myService_lastRun"</span>, <span class='function'>time</span>() );
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("getreg");'>PHPPE\Registry::get()</a></li>
+    <li><a onclick='tab_switch("delreg");'>PHPPE\Registry::del()</a></li>
+</ul>
+</div>
+
+<div id='getreg' class='tab'>
+<h1>PHPPE\Registry::get()<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>get</a>( <span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='optional'>$default</span> );
+</pre>
+<p>Get a value for key from registry.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$key</span></td><td>Key for which to get value</td></tr>
+<tr><td class='optional'>mixed <span>$default</span></td><td>Default value if key not found</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>mixed</td><td>Value or null</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$lastrun</span> = <span class='function'>Registry::get</span>(<span class='stringconst'>"myService_lastRun"</span>, 0);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("setreg");'>PHPPE\Registry::set()</a></li>
+    <li><a onclick='tab_switch("delreg");'>PHPPE\Registry::del()</a></li>
+</ul>
+</div>
+
+<div id='delreg' class='tab'>
+<h1>PHPPE\Registry::del()<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>del</a>( <span class='comment'>string</span> <span class='variable'>$key</span> );
+</pre>
+<p>Remove a key and it's value from registry.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$key</span></td><td>Key to delete</td></tr>
+</table>
+<h3>Return value</h3>
+<p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='function'>Registry::del</span>(<span class='stringconst'>"myService_lastRun"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("setreg");'>PHPPE\Registry::set()</a></li>
+    <li><a onclick='tab_switch("getreg");'>PHPPE\Registry::get()</a></li>
 </ul>
 </div>
 
