@@ -1999,7 +1999,7 @@ namespace PHPPE {
                 //! evaluate an expression for templater and return it's value
                 //! security check: look for variables and let operator
                 if (strpos($x, '$') !== false || preg_match('/[^!=]=[^=]/', $x)) {
-                    return self::e('W', 'BADINP', $x);
+                    return self::e('W', $x, 'BADINP');
                 }
                 $l = $r = '';
                 $d = $x;
@@ -2070,7 +2070,7 @@ namespace PHPPE {
                         elseif ($b == '(' && ($j - $i != 1 || $d[$i] != 'L') && substr($d, $i, 5) != 'core.' &&
                             substr($d, $i, $j - $i) != 'array' && !empty(Core::$core->allowed) && !in_array(substr($d, $i, $j - $i),
                             Core::$core->allowed)) {
-                            return self::e('E', 'BADFNC', $x);
+                            return self::e('E', $x, 'BADFNC');
                         }
                     }
                     $r .= ($c == '.' ? '->' : (isset($d[$i]) ? $d[$i] : ''));
@@ -2122,7 +2122,7 @@ namespace PHPPE {
  *
  * @return formated message
  */
-        public static function e($w, $c, $m)
+        public static function e($w, $m, $c="")
         {
             if (!is_string($m)) {
                 $m = json_encode($m);
@@ -2140,7 +2140,7 @@ namespace PHPPE {
         {
             //! parse a template string
             //check recursion limit
-            $L = self::e('W', 'TOOMNY', L('recursion limit exceeded').'!');
+            $L = self::e('W', L('recursion limit exceeded').'!', 'TOOMNY');
             if ($re >= 64) {
                 return $L;
             }
@@ -2165,7 +2165,7 @@ namespace PHPPE {
                     }
                 }
                 if ($I) {
-                    return self::e('W', 'UNCLS', L('unclosed tag'));
+                    return self::e('W', L('unclosed tag'), 'UNCLS');
                 }
                 unset($o);
                 //parse tags
@@ -2381,10 +2381,10 @@ namespace PHPPE {
                                     break;
                                 }
                                 else
-                                    $w .= self::e('W', 'UNKADDON', $f);
+                                    $w .= self::e('W', $f, 'UNKADDON');
                             }
                             break;
-                        default : $w = self::e('W', 'UNKTAG', $t);
+                        default : $w = self::e('W', $t, 'UNKTAG');
                     }
                     //replace templater tag with output, not using any search-and-replace algorithms
                     $D = $N + $C && $x[$N + $C - 1] == "\n" ? 1 : 0;

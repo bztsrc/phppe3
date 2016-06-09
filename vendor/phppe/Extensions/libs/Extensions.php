@@ -127,7 +127,7 @@ class Extensions {
 				$d=explode('"',$r[0]);if(empty($d[3])||$d[3]=="phppe3") $d[3]="No name";
 				$t="{ \"name\": \"".($d[3]=="No name"?L($d[3]):$d[3])."\" }";
 			} else
-				$t="{ \"name\": \"".\PHPPE\View::e("","",substr(trim($r[0]),0,4)=="cat:"?L("Run diagnostics first!"):str_replace("\r","",str_replace("\n"," ",trim(empty($r[1])?$r[0]:$r[1]))))."\" }";
+				$t="{ \"name\": \"".\PHPPE\View::e("",substr(trim($r[0]),0,4)=="cat:"?L("Run diagnostics first!"):str_replace("\r","",str_replace("\n"," ",trim(empty($r[1])?$r[0]:$r[1]))),"")."\" }";
 			if( !self::isErr(@$r[1]) && !self::isErr(@$r[2])) {
 				foreach($r as $v) {
 					$d=explode("\"",$v);
@@ -137,7 +137,7 @@ class Extensions {
 		}
 		//! fallback to local, but without remote it's read only
 		else {
-			$t="{ \"name\": \"".\PHPPE\View::e("","",L("configure remote access in Extensions"))."\" }";
+			$t="{ \"name\": \"".\PHPPE\View::e("",L("configure remote access in Extensions"),"")."\" }";
 			$d=glob("vendor/phppe/*"."/composer.json"); $d[]="vendor/phppe/composer.json";
 			foreach($d as $v) {
 				$j=json_decode(file_get_contents($v),true);

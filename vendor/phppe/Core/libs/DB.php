@@ -366,7 +366,7 @@ class DB extends Extension
         try {
             return $this->sql();
         } catch (\Exception $e) {
-            return View::e('E', 'DB', $e->getMessage());
+            return View::e('E', $e->getMessage(), 'DB');
         }
     }
 }

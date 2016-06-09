@@ -29,12 +29,12 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$core->output = "ncurses";
 		$this->assertEquals(
 			"module-D: message",
-			trim(\PHPPE\View::e('D',"module","message")),
+			trim(\PHPPE\View::e('D',"message","module")),
 			"error string #1");
 		\PHPPE\Core::$core->output = "html";
 		$this->assertEquals(
 			"<span style='background:#F00000;color:#FEA0A0;padding:3px;'>E-module:&nbsp;[&quot;message&quot;]</span>",
-			trim(\PHPPE\View::e('E',"module",["message"])),
+			trim(\PHPPE\View::e('E',["message"],"module")),
 			"error string #2");
 		\PHPPE\Core::$core->output = $o;
 
