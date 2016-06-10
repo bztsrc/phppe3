@@ -75,9 +75,8 @@ TD { padding:2px; }
 @media (max-width:512px){#search{max-width:100px;}}
 </style>
 <script type='text/javascript'>
-var tab_current="introduction",tab_history=new Array();
-var tab_tmr=null, tab_close=null, tab_scroll=0, tab_skip=0, tab_mod=0;
-function tab_switch(name,skiphist){var i,w=0,obj=document.querySelectorAll("div.tab"),d=name.split(":");for(i=0;i<obj.length;i++){var j,txt="",r=obj[i].getAttribute('rel')!=null?','+obj[i].getAttribute('rel')+',':null;obj[i].setAttribute('style','display:none;');if(obj[i].id!=null && (obj[i].id==d[0]||(r!=null && r.indexOf(','+d[0]+',')>-1))){d[0]=obj[i].id;obj[i].style.display="block";w=1;var h=obj[i].getElementsByTagName("h1")[0];if(h!=null){t=h.innerHTML;document.title=t.replace("&gt;",">");}}}if(w==0){var no=document.getElementById('notab');no.style.display="block";no.innerHTML="<div style='margin:50px;padding:10px;font-size:20px;color:#fff;background:#FF0000;'>Sorry, no such section: <b>"+d[0]+"</b></div>";}if(skiphist==null && tab_history[tab_history.length-1]!=tab_current){tab_history.push(tab_current+':'+Math.floor(window.pageYOffset || document.documentElement.scrollTop));}tab_current=d[0];if(parseInt(d[1])>0){var h=document.getElementById(d[0]).querySelectorAll("h1, h2, h3, h4");tab_scroll=parseInt(h[d[1]].offsetTop+(h[d[1]].offsetParent&&h[d[1]].offsetParent.className!='tab'?h[d[1]].offsetParent.offsetTop:0)-32);} else tab_scroll=0;window.scrollTo(0,tab_scroll);document.getElementById('back').style.display=(tab_history.length>1?"block":"none");tab_getscroll();}
+var tab_current="introduction",tab_history=new Array(),tab_tmr=null,tab_close=null,tab_scroll=0,tab_skip=0,tab_mod=0;
+function tab_switch(name,skiphist){var i,w=0,obj=document.querySelectorAll("div.tab"),d=name.split(":");for(i=0;i<obj.length;i++){var j,txt="",r=obj[i].getAttribute('rel')!=null?','+obj[i].getAttribute('rel')+',':null;obj[i].setAttribute('style','display:none;');if(obj[i].id!=null && (obj[i].id==d[0]||(r!=null && r.indexOf(','+d[0]+',')>-1))){d[0]=obj[i].id;obj[i].style.display="block";w=1;var h=obj[i].getElementsByTagName("h1")[0];if(h!=null){t=h.innerHTML;document.title=t.split('<')[0].replace("&gt;",">");}}}if(w==0){var no=document.getElementById('notab');no.style.display="block";no.innerHTML="<div style='margin:50px;padding:10px;font-size:20px;color:#fff;background:#FF0000;'>Sorry, no such section: <b>"+d[0]+"</b></div>";}if(skiphist==null && tab_history[tab_history.length-1]!=tab_current){tab_history.push(tab_current+':'+Math.floor(window.pageYOffset || document.documentElement.scrollTop));}tab_current=d[0];if(parseInt(d[1])>0){var h=document.getElementById(d[0]).querySelectorAll("h1, h2, h3, h4");tab_scroll=parseInt(h[d[1]].offsetTop+(h[d[1]].offsetParent&&h[d[1]].offsetParent.className!='tab'?h[d[1]].offsetParent.offsetTop:0)-32);} else tab_scroll=0;window.scrollTo(0,tab_scroll);document.getElementById('back').style.display=(tab_history.length>1?"block":"none");tab_getscroll();}
 function tab_back(){var d=tab_history.pop();if(d==null) d='';var d2=d.split(":"),name,offs;name=d2[0]; offs=d2[1]==''||d2[1]==null||d2[1]==undefined?0:d2[1];if(name=='' || name==null || name==undefined) name="introduction";tab_switch(name,true);if(offs>0)window.scrollTo(0,offs);}
 function tab_getscroll(){var o=document.getElementById('infobox');var s=Math.floor(window.pageYOffset || document.documentElement.scrollTop);var i,h=document.getElementById(tab_current).querySelectorAll("h1, h2, h3, h4");for(i in h){if(h[i].offsetTop+(h[i].offsetParent&&h[i].offsetParent.className!='tab'?h[i].offsetParent.offsetTop:0)<s+42)tab_scroll=i;}var t='#'+tab_current+' :'+tab_scroll;if(o!=null&&o!=undefined) o.innerHTML=t;}
 function tab_permalink(){var d=document.location.href.split("#")[0];document.location.href=d+'#'+tab_current+(tab_scroll>0?':'+Math.floor(tab_scroll):'');}
@@ -803,7 +802,7 @@ these are only the most commonly used ones.</p>
 <tr><td><b>title</b></td><td>name of the site (page title)</td></tr>
 <tr><td><b>runlevel</b></td><td>select production (0), verbose/testing (1), developer (2) or debug (3) mode</td></tr>
 <tr><td><b>maintenance</b></td><td>if set to true, will bypass all routing and controller, and only displays mainteance view for all urls</td></tr>
-<tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's Email sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
+<tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's <a onclick='tab_switch("phppe_email");'>Email</a> sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
 <tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
 <tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
 <tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("developer:6");'>passwd</a> utility to generate hash)</td></tr>
@@ -906,7 +905,7 @@ It's easy to grep.<br><br>
 
 <div id='cron' class='tab' rel='script,background'>
 <h1>Background Jobs</h1>
-<div class='alert alert-info'><b>NOTE</b>: most garbage colletors (such as PHPPE\Cache\Files' clean up method) are connected to "cron minute" background job.</div>
+<div class='alert alert-info'><b>NOTE</b>: PHPPE\Cache\Files' clean up method and the database PHPPE\Email sender are connected to "cron minute" background job.</div>
 Use crontab command from SSH Terminal. This will invoke an interactive editor:
 <pre>
 $ <span class='keyword'>crontab -e</span>
@@ -3363,14 +3362,26 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <p>Throws <code>DBException</code>.</p>
 </div>
 
-<div id='phppe_email' class='tab' rel='email'>
+<div id='phppe_email' class='tab'>
 <h1>PHPPE\Email<sup><small>PHPPE Pack</small></sup></h1>
 <p>Email builder and sender. Supports multipart messages and can speak SMTP directly (no dependency to third lib classes).</p>
+<p>The backend is configured in <a onclick='tab_switch("configuration");'>phppe/config.php</a>.</p>
+<div class='alert alert-info'>If you use "db" in "mailer", the messages will be sent through the backend given in <b>realmailer</b>.</div>
+<h3>Backends</h3>
+<table class='table table-striped parameter'>
+<tr><td>smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]</td><td>This is the default backend, speaks SMTP natively, no dependencies required.</td></tr>
+<tr><td>mime</td><td>This backend builds and returns the mime message but does not send any email.</td></tr>
+<tr><td>log</td><td>This backend does not send any email either, it's just writes the log, for testing purposes.</td></tr>
+<tr><td>mail</td><td>Uses PHP's built-in mail() function. Not recommended.</td></tr>
+<tr><td>sendmail</td><td>Sends mails by calling sendmail through a pipe. Not recommended.</td></tr>
+<tr><td>phpmailer</td><td>Uses the well-known PHPMailer class to send out the emails.</td></tr>
+<tr><td>db</td><td>Stores emails in database. In this case the <a onclick='tab_switch("cron");'>cron minute</a> background job will send out the mail with the backend configured in "realmailer".</td></tr>
+</table>
 <h3>Properties</h3>
 <p>None.</p>
 <h3>Methods</h3>
 <table class='table table-striped parameter'>
-<tr><td><a onclick='tab_switch("newemail");'>__constructor()</a></td><td>Create an Email object</td></tr>
+<tr><td><a onclick='tab_switch("email");'>__constructor()</a></td><td>Create an Email object</td></tr>
 <tr><td><a onclick='tab_switch("getemail");'>get()</a></td><td>Returns Email object in JSON</td></tr>
 <tr><td><a onclick='tab_switch("to");'>to()</a></td><td>Set recipient</td></tr>
 <tr><td><a onclick='tab_switch("replyto");'>replyTo()</a></td><td>Set return address</td></tr>
@@ -3378,7 +3389,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <tr><td><a onclick='tab_switch("bcc");'>bcc()</a></td><td>Set hidden carbon copy address</td></tr>
 <tr><td><a onclick='tab_switch("subject");'>subject()</a></td><td>Set subject</td></tr>
 <tr><td><a onclick='tab_switch("message");'>message()</a></td><td>Set message body using string</td></tr>
-<tr><td><a onclick='tab_switch("template");'>template()</a></td><td>Set message body using a view template</td></tr>
+<tr><td><a onclick='tab_switch("templateemail");'>template()</a></td><td>Set message body using a view template</td></tr>
 <tr><td><a onclick='tab_switch("attachfile");'>attachFile()</a></td><td>Add attachment from file</td></tr>
 <tr><td><a onclick='tab_switch("attachdata");'>attachData()</a></td><td>Add attachment from a string</td></tr>
 <tr><td><a onclick='tab_switch("send");'>send()</a></td><td>Send the email</td></tr>
@@ -3411,7 +3422,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <div id='run' class='tab'>
 <h1>(PHPPE\Core)->run()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public</span> <span class='function'>run</a>( <span class='comment'>string</span> <span class='optional'>$app</span>, <span class='comment'>string</span> <span class='optional'>$action</span> );</pre>
+<pre><span class='comment'>public</span> <span class='function'>run</span>( <span class='comment'>string</span> <span class='optional'>$app</span>, <span class='comment'>string</span> <span class='optional'>$action</span> );</pre>
 <p>Execute a PHPPE Application.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -3432,9 +3443,9 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <h1>PHPPE\Core::lib()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>lib</a>( );
-<span class='comment'>public static</span> <span class='function'>lib</a>( <span class='comment'>string</span> <span class='variable'>$name</span> );
-<span class='comment'>public static</span> <span class='function'>lib</a>( <span class='comment'>string</span> <span class='variable'>$name</span>, <span class='comment'>string/object</span> <span class='variable'>$service</span>, <span class='comment'>string/array</span> <span class='optional'>$dependencies</span> );
+<span class='comment'>public static</span> <span class='function'>lib</span>( );
+<span class='comment'>public static</span> <span class='function'>lib</span>( <span class='comment'>string</span> <span class='variable'>$name</span> );
+<span class='comment'>public static</span> <span class='function'>lib</span>( <span class='comment'>string</span> <span class='variable'>$name</span>, <span class='comment'>string/object</span> <span class='variable'>$service</span>, <span class='comment'>string/array</span> <span class='optional'>$dependencies</span> );
 </pre>
 <p>This method is for dealing with libraries (<a onclick='tab_switch("services");'>services</a>). Calling without argument or with exactly one argument is a query, applying more arguments define a new service.</p>
 <p>Normally you'll never ever need to register a service. You should instead return an instance from your extension's <a onclick='tab_switch("services");'>init.php</a>.</p>
@@ -3468,7 +3479,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <h1>PHPPE\Core::isInst()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>isInst</a>( <span class='comment'>string</span> <span class='variable'>$name</span> );
+<span class='comment'>public static</span> <span class='function'>isInst</span>( <span class='comment'>string</span> <span class='variable'>$name</span> );
 </pre>
 <p>Installation check, returns true if service or AddOn exists.</p>
 <h3>Parameters</h3>
@@ -3491,7 +3502,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <h1>PHPPE\Core::lang()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>lang</a>( <span class='comment'>string</span> <span class='variable'>$name</span> );
+<span class='comment'>public static</span> <span class='function'>lang</span>( <span class='comment'>string</span> <span class='variable'>$name</span> );
 </pre>
 <p>Loads a language dictionary into memory for a class (extension).</p>
 <div class='alert alert-info'><b>HINT</b>: you can use the "<a onclick='tab_switch("developer:7");'>lang</a>" utility to generate dictionaries.</div>
@@ -3513,7 +3524,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <h1>PHPPE\Core::log()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>log</a>( <span class='comment'>string</span> <span class='variable'>$weight</span>, <span class='comment'>string</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$facility</span> );
+<span class='comment'>public static</span> <span class='function'>log</span>( <span class='comment'>string</span> <span class='variable'>$weight</span>, <span class='comment'>string</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$facility</span> );
 </pre>
 <p>Logger. Don't forget that your messages most probably will be parsed by scripts, so use English messages if possible without translation.</p>
 <p>When configured to <a onclick='tab_switch("configuration");'>log to syslog</a>, no files will be written, and the message will be sent as:</p>
@@ -3554,7 +3565,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <h1>PHPPE\Core::isTry()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>isTry</a>( <span class='comment'>string</span> <span class='optional'>$name</span> );
+<span class='comment'>public static</span> <span class='function'>isTry</span>( <span class='comment'>string</span> <span class='optional'>$name</span> );
 </pre>
 <p>Checks if the user is trying to save a form. This includes CSRF as well.</p>
 <div class='alert alert-info'><b>HINT</b>: this method is available as <a onclick='tab_switch("phppe_filter");'>PHPPE\Filter\csrf</a> filter.</div>
@@ -3591,8 +3602,8 @@ if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"
 <h1>PHPPE\Core::error()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>error</a>( );
-<span class='comment'>public static</span> <span class='function'>error</a>( <span class='comment'>string</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$field</span> );
+<span class='comment'>public static</span> <span class='function'>error</span>( );
+<span class='comment'>public static</span> <span class='function'>error</span>( <span class='comment'>string</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$field</span> );
 </pre>
 <p>When called without arguments, returns error messages, otherwise adds a new error to the page or to a field.</p>
 <div class='alert alert-info'><b>HINT</b>: if you want to display error messages in a view template, use <code>&lt;!include errorbox&gt;</code></div>
@@ -3629,7 +3640,7 @@ if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"
 <h1>PHPPE\Core::isError()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>isError</a>( <span class='comment'>string</span> <span class='optional'>$field</span> );
+<span class='comment'>public static</span> <span class='function'>isError</span>( <span class='comment'>string</span> <span class='optional'>$field</span> );
 </pre>
 <p>Check if there was an error.</p>
 <h3>Parameters</h3>
@@ -3661,7 +3672,7 @@ if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"
 <h1>PHPPE\Core::event()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>event</a>( <span class='comment'>string</span> <span class='variable'>$type</span>, <span class='comment'>array</span> <span class='optional'>$context</span> );
+<span class='comment'>public static</span> <span class='function'>event</span>( <span class='comment'>string</span> <span class='variable'>$type</span>, <span class='comment'>array</span> <span class='optional'>$context</span> );
 </pre>
 <p>Triggers an event, and executes all <a onclick='tab_switch("events");'>event hook</a> for it. You don't have to use this method, as events are triggered by Core.</p>
 <h3>Parameters</h3>
@@ -3689,7 +3700,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>) 
 <h1>PHPPE\Core::validate()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>validate</a>( <span class='comment'>string</span> <span class='variable'>$name</span>, <span class='comment'>string</span> <span class='variable'>$validator</span>, <span class='comment'>boolean</span> <span class='optional'>$required</span>, <span class='comment'>array</span> <span class='optional'>$arguments</span>, <span class='comment'>array</span> <span class='optional'>$attributes</span> );
+<span class='comment'>public static</span> <span class='function'>validate</span>( <span class='comment'>string</span> <span class='variable'>$name</span>, <span class='comment'>string</span> <span class='variable'>$validator</span>, <span class='comment'>boolean</span> <span class='optional'>$required</span>, <span class='comment'>array</span> <span class='optional'>$arguments</span>, <span class='comment'>array</span> <span class='optional'>$attributes</span> );
 </pre>
 <p>Adds extra validation rule to a field. Note that type of the field automaticaly adds validation.</p>
 <p>Validator will be prefixed by "PHPPE\AddOn" and the resulting class' <a onclick='tab_switch("events:11");'>validate()</a> method will be used.</p>
@@ -3723,8 +3734,8 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>) 
 <h1>PHPPE\Core::req2arr(), PHPPE\Core::req2obj()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>req2arr</a>( <span class='comment'>string</span> <span class='variable'>$form</span>, <span class='comment'>array</span> <span class='optional'>$rules</span> );
-<span class='comment'>public static</span> <span class='function'>req2obj</a>( <span class='comment'>string</span> <span class='variable'>$form</span>, <span class='comment'>array</span> <span class='optional'>$rules</span> );
+<span class='comment'>public static</span> <span class='function'>req2arr</span>( <span class='comment'>string</span> <span class='variable'>$form</span>, <span class='comment'>array</span> <span class='optional'>$rules</span> );
+<span class='comment'>public static</span> <span class='function'>req2obj</span>( <span class='comment'>string</span> <span class='variable'>$form</span>, <span class='comment'>array</span> <span class='optional'>$rules</span> );
 </pre>
 <p>Get user input from dragon land with validation and return it in an associative array (or stdClass). Usually you don't have to
 worry about validation rules as <a onclick='tab_switch("template");'>PHPPE\View::template()</a> will build the appropriate $rules array according to the fields used in the view.</p>
@@ -3761,8 +3772,8 @@ if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"
 <h1>PHPPE\Core::arr2str(), PHPPE\Core::obj2str()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>arr2str</a>( <span class='comment'>array</span> <span class='variable'>$subject</span>, <span class='comment'>string/array</span> <span class='optional'>$exclude</span>, <span class='comment'>string</span> <span class='optional'>$separator</span> );
-<span class='comment'>public static</span> <span class='function'>obj2str</a>( <span class='comment'>object</span> <span class='variable'>$subject</span>, <span class='comment'>string/array</span> <span class='optional'>$exclude</span>, <span class='comment'>string</span> <span class='optional'>$separator</span> );
+<span class='comment'>public static</span> <span class='function'>arr2str</span>( <span class='comment'>array</span> <span class='variable'>$subject</span>, <span class='comment'>string/array</span> <span class='optional'>$exclude</span>, <span class='comment'>string</span> <span class='optional'>$separator</span> );
+<span class='comment'>public static</span> <span class='function'>obj2str</span>( <span class='comment'>object</span> <span class='variable'>$subject</span>, <span class='comment'>string/array</span> <span class='optional'>$exclude</span>, <span class='comment'>string</span> <span class='optional'>$separator</span> );
 </pre>
 <p>Convert an associative array or object into a properly escaped string, appropriate for XML attributes or SQL queries.</p>
 <h3>Parameters</h3>
@@ -3804,7 +3815,7 @@ if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"
 <h1>PHPPE\Core::val2arr()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>val2arr</a>( <span class='comment'>string</span> <span class='variable'>$expression</span>, <span class='comment'>string</span> <span class='optional'>$separator</span> );
+<span class='comment'>public static</span> <span class='function'>val2arr</span>( <span class='comment'>string</span> <span class='variable'>$expression</span>, <span class='comment'>string</span> <span class='optional'>$separator</span> );
 </pre>
 <p>Get the value of a templater expression and convert it into an array.</p>
 <h3>Parameters</h3>
@@ -3837,8 +3848,8 @@ if (<span class='function'>Core::isTry</span>(<span class='stringconst'>"myform"
 <h1>PHPPE\Core::tre2arr()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>tre2arr</a>( <span class='comment'>array</span> <span class='variable'>$subject</span>, <span class='comment'>string</span> <span class='optional'>$prefix</span> );
-<span class='comment'>public static</span> <span class='function'>tre2arr</a>( <span class='comment'>array</span> <span class='variable'>$subject</span>, <span class='comment'>string</span> <span class='variable'>$prefix</span>, <span class='comment'>string</span> <span class='variable'>$suffix</span> );
+<span class='comment'>public static</span> <span class='function'>tre2arr</span>( <span class='comment'>array</span> <span class='variable'>$subject</span>, <span class='comment'>string</span> <span class='optional'>$prefix</span> );
+<span class='comment'>public static</span> <span class='function'>tre2arr</span>( <span class='comment'>array</span> <span class='variable'>$subject</span>, <span class='comment'>string</span> <span class='variable'>$prefix</span>, <span class='comment'>string</span> <span class='variable'>$suffix</span> );
 </pre>
 <p>Flat a tree stored in an array into a one-level array. It has two operation modes:<br>
 &nbsp;&nbsp;1. without suffix it generates arrays for SELECT boxes.<br>
@@ -4028,7 +4039,7 @@ print_r($arr2); // XML
 <h1>PHPPE\Core::bm()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>bm</a>( <span class='comment'>string</span> <span class='variable'>$name</span> );
+<span class='comment'>public static</span> <span class='function'>bm</span>( <span class='comment'>string</span> <span class='variable'>$name</span> );
 </pre>
 <p>Sets a <a onclick='tab_switch("benchmark");'>benchmark</a> point in code. Every point is measured relative to it's accessor point.</p>
 <h3>Parameters</h3>
@@ -4055,7 +4066,7 @@ print_r($arr2); // XML
 <h1>PHPPE\ClassMap::has()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>has</a>( <span class='comment'>string</span> <span class='variable'>$class</span>, <span class='comment'>string</span> <span class='optional'>$method</span> );
+<span class='comment'>public static</span> <span class='function'>has</span>( <span class='comment'>string</span> <span class='variable'>$class</span>, <span class='comment'>string</span> <span class='optional'>$method</span> );
 </pre>
 <p>Checks if a class can be autoloaded or if it has a method.</p>
 <h3>Parameters</h3>
@@ -4081,8 +4092,8 @@ print_r($arr2); // XML
 <h1>(PHPPE\Model)->load()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>load</a>( <span class='comment'>int</span> <span class='variable'>$id</span> );
-<span class='comment'>public</span> <span class='function'>load</a>( <span class='comment'>string</span> <span class='variable'>$searchphrase</span>, <span class='comment'>string</span> <span class='variable'>$where</span>, <span class='comment'>string</span> <span class='optional'>$order</span> );
+<span class='comment'>public</span> <span class='function'>load</span>( <span class='comment'>int</span> <span class='variable'>$id</span> );
+<span class='comment'>public</span> <span class='function'>load</span>( <span class='comment'>string</span> <span class='variable'>$searchphrase</span>, <span class='comment'>string</span> <span class='variable'>$where</span>, <span class='comment'>string</span> <span class='optional'>$order</span> );
 </pre>
 <p>Loads object properties from the first database record found.</p>
 <div class='alert alert-warning'><b>NOTE</b>: regardless which columns the database scheme has, it only loads the properties that are defined in the Model.</div>
@@ -4116,7 +4127,7 @@ print_r($arr2); // XML
 <h1>(PHPPE\Model)->save()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>save</a>( <span class='comment'>boolean</span> <span class='optional'>$new</span> );
+<span class='comment'>public</span> <span class='function'>save</span>( <span class='comment'>boolean</span> <span class='optional'>$new</span> );
 </pre>
 <p>Saves a Model object into database. If the model has no identifier, it will be INSERTed, otherwise UPDATEd. With flag given it will INSERT the object with the given id.</p>
 <h3>Parameters</h3>
@@ -4147,7 +4158,7 @@ print_r($arr2); // XML
 <h1>PHPPE\Model::find()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>find</a>( <span class='comment'>string</span> <span class='optional'>$searchphrase</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$order</span>, <span class='comment'>string</span> <span class='optional'>$fields</span> );
+<span class='comment'>public</span> <span class='function'>find</span>( <span class='comment'>string</span> <span class='optional'>$searchphrase</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$order</span>, <span class='comment'>string</span> <span class='optional'>$fields</span> );
 </pre>
 <p>Finds instances of a model in database.</p>
 <div class='alert alert-warning'><b>NOTE</b>: unlike load(), this method will return all columns defined by the scheme.</div>
@@ -4180,7 +4191,7 @@ print_r($arr2); // XML
 <div id='url' class='tab'>
 <h1>PHPPE\Http::url(), url()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>url</a>( <span class='comment'>string</span> <span class='optional'>$app</span>, <span class='comment'>string</span> <span class='optional'>$action</span> );</pre>
+<pre><span class='comment'>public static</span> <span class='function'>url</span>( <span class='comment'>string</span> <span class='optional'>$app</span>, <span class='comment'>string</span> <span class='optional'>$action</span> );</pre>
 <p>Generate a permanent url for the current (or other) application and it's action. It will use Core properties to do that, namely <var>$core->sec</var> and <var>$core->base</var>.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -4206,7 +4217,7 @@ print_r($arr2); // XML
 <div id='redirect' class='tab'>
 <h1>PHPPE\Http::redirect()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>redirect</a>( <span class='comment'>string</span> <span class='optional'>$url</span>, <span class='comment'>boolean</span> <span class='optional'>$save</span> );</pre>
+<pre><span class='comment'>public static</span> <span class='function'>redirect</span>( <span class='comment'>string</span> <span class='optional'>$url</span>, <span class='comment'>boolean</span> <span class='optional'>$save</span> );</pre>
 <p>Redirects user. Without argument, to the current page or to the saved URL.</p>
 <div class='alert alert-warning'><b>IMPORTANT</b>: always use URL relative to base href for inside page reditections. Only start it by "http" when redirecting to another site.</div>
 <h3>Parameters</h3>
@@ -4240,7 +4251,7 @@ if (!<span class='variable'>Core::$user->id</span>)
 <div id='get' class='tab'>
 <h1>PHPPE\Http::get()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>get</a>( <span class='comment'>string</span> <span class='variable'>$url</span>, <span class='comment'>array</span> <span class='optional'>$post</span>, <span class='comment'>int</span> <span class='optional'>$timeout</span> );</pre>
+<pre><span class='comment'>public static</span> <span class='function'>get</span>( <span class='comment'>string</span> <span class='variable'>$url</span>, <span class='comment'>array</span> <span class='optional'>$post</span>, <span class='comment'>int</span> <span class='optional'>$timeout</span> );</pre>
 <p>Get content by making a HTTP request. This is better than file_get_contents() and CURL, because it handles redirections and keep track of cookie changes as well. Also it automatically passes the user's preferred language.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -4270,11 +4281,11 @@ if (!<span class='variable'>Core::$user->id</span>)
 <div id='route' class='tab'>
 <h1>PHPPE\Http::route()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>route</a>( <span class='comment'>string</span> <span class='variable'>$urlmask</span>, <span class='comment'>string</span> <span class='variable'>$class</span>, <span class='comment'>string</span> <span class='optional'>$method</span>, <span class='comment'>string/array</span> <span class='optional'>$filters</span>);
-<span class='comment'>public static</span> <span class='function'>route</a>( <span class='keyword'>stdClass</span>( <span class='variable'>url</span> => <span class='variable'>$urlmask</span>, <span class='variable'>name</span> => <span class='variable'>$class</span>, <span class='optional'>action</span> => <span class='optional'>$method</span>, <span class='optional'>filters</span> => <span class='optional'>$filters</span> ) );
-<span class='comment'>public static</span> <span class='function'>route</a>( [ <span class='stringconst'>"url"</span> => <span class='variable'>$urlmask</span>, <span class='stringconst'>"name"</span> => <span class='variable'>$class</span>, <span class='stringconst'>"action"</span> => <span class='optional'>$method</span>, <span class='stringconst'>"filters"</span> => <span class='optional'>$filters</span> ] );
-<span class='comment'>public static</span> <span class='function'>route</a>( [ <span class='variable'>$urlmask</span> => [ <span class='variable'>$class</span>, <span class='optional'>$method</span>, <span class='optional'>$filters</span> ] ] );
-<span class='comment'>public static</span> <span class='function'>route</a>( [ <span class='variable'>$urlmask</span> => [ <span class='variable'>$class</span>, <span class='optional'>$method</span>, <span class='optional'>$filters</span> ], ... ] );
+<pre><span class='comment'>public static</span> <span class='function'>route</span>( <span class='comment'>string</span> <span class='variable'>$urlmask</span>, <span class='comment'>string</span> <span class='variable'>$class</span>, <span class='comment'>string</span> <span class='optional'>$method</span>, <span class='comment'>string/array</span> <span class='optional'>$filters</span>);
+<span class='comment'>public static</span> <span class='function'>route</span>( <span class='keyword'>stdClass</span>( <span class='variable'>url</span> => <span class='variable'>$urlmask</span>, <span class='variable'>name</span> => <span class='variable'>$class</span>, <span class='optional'>action</span> => <span class='optional'>$method</span>, <span class='optional'>filters</span> => <span class='optional'>$filters</span> ) );
+<span class='comment'>public static</span> <span class='function'>route</span>( [ <span class='stringconst'>"url"</span> => <span class='variable'>$urlmask</span>, <span class='stringconst'>"name"</span> => <span class='variable'>$class</span>, <span class='stringconst'>"action"</span> => <span class='optional'>$method</span>, <span class='stringconst'>"filters"</span> => <span class='optional'>$filters</span> ] );
+<span class='comment'>public static</span> <span class='function'>route</span>( [ <span class='variable'>$urlmask</span> => [ <span class='variable'>$class</span>, <span class='optional'>$method</span>, <span class='optional'>$filters</span> ] ] );
+<span class='comment'>public static</span> <span class='function'>route</span>( [ <span class='variable'>$urlmask</span> => [ <span class='variable'>$class</span>, <span class='optional'>$method</span>, <span class='optional'>$filters</span> ], ... ] );
 </pre>
 <p>Add new <a onclick='tab_switch("routing:1");'>URL route</a> to the routing table. Call it from <a onclick='tab_switch("routetut");'>init.php</a> or from extension <a onclick='tab_switch("events:2");'>init()</a> method.</p>
 <div class='alert alert-warning'><b>IMPORTANT</b>: always use URL relative to base href.</div>
@@ -4304,7 +4315,7 @@ if (!<span class='variable'>Core::$user->id</span>)
 <div id='urlmatch' class='tab'>
 <h1>PHPPE\Http::urlMatch()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>urlMatch</a>( <span class='comment'>string</span> <span class='optional'>$app</span>, <span class='comment'>string</span> <span class='optional'>$action</span>, <span class='comment'>string</span> <span class='optional'>$url</span> );</pre>
+<pre><span class='comment'>public static</span> <span class='function'>urlMatch</span>( <span class='comment'>string</span> <span class='optional'>$app</span>, <span class='comment'>string</span> <span class='optional'>$action</span>, <span class='comment'>string</span> <span class='optional'>$url</span> );</pre>
 <p>Returns <a onclick='tab_switch("controllers");'>controller</a> and action handler name for current (or given) URL.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -4334,8 +4345,8 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::db()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>db</a>( );
-<span class='comment'>public static</span> <span class='function'>db</a>( <span class='comment'>string</span> <span class='variable'>$pdodsn</span>, <span class='comment'>object</span> <span class='optional'>$instance</span> );
+<span class='comment'>public static</span> <span class='function'>db</span>( );
+<span class='comment'>public static</span> <span class='function'>db</span>( <span class='comment'>string</span> <span class='variable'>$pdodsn</span>, <span class='comment'>object</span> <span class='optional'>$instance</span> );
 </pre>
 <p>When called without arguments, returns the current PDO instance. Otherwise connects a new database as datasource.</p>
 <div class='alert alert-info'><b>NOTE</b>: the dsn given in <a onclick='tab_switch("configuration");'>configuration</a>'s 'db' key will be automatically connected during framework initialization.</div>
@@ -4374,8 +4385,8 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::ds()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>ds</a>( );
-<span class='comment'>public static</span> <span class='function'>ds</a>( <span class='comment'>int</span> <span class='variable'>$selector</span> );
+<span class='comment'>public static</span> <span class='function'>ds</span>( );
+<span class='comment'>public static</span> <span class='function'>ds</span>( <span class='comment'>int</span> <span class='variable'>$selector</span> );
 </pre>
 <p>When called without arguments, returns the current datasource selector. With argument given selects a new datasource.</p>
 <div class='alert alert-info'><b>NOTE</b>: You have to first connect data sources with db().</div>
@@ -4409,7 +4420,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::like(), PHPPE\DB::like()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>like</a>( <span class='comment'>string</span> <span class='variable'>$str</span> );
+<span class='comment'>public static</span> <span class='function'>like</span>( <span class='comment'>string</span> <span class='variable'>$str</span> );
 </pre>
 <p>Converts a user provided string into an sql-safe, search ready like phrase.</p>
 <h3>Parameters</h3>
@@ -4437,7 +4448,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::exec()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>exec</a>( <span class='comment'>string</span> <span class='variable'>$sql</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
+<span class='comment'>public static</span> <span class='function'>exec</span>( <span class='comment'>string</span> <span class='variable'>$sql</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
 </pre>
 <p>Executes an sql query on current datasource.</p>
 <div class='alert alert-info'><b>NOTE</b>: if the execution fails due to missing table, this method will look for the scheme, load it, and execute the query again transparently.</div>
@@ -4471,7 +4482,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::query()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>query</a>(<span class='comment'>string/array</span> <span class='variable'>$fields</span>, <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$groupBy</span>, <span class='comment'>string</span> <span class='optional'>$orderBy</span>, <span class='comment'>int</span> <span class='optional'>$offset</span>, <span class='comment'>int</span> <span class='optional'>$limit</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
+<span class='comment'>public static</span> <span class='function'>query</span>(<span class='comment'>string/array</span> <span class='variable'>$fields</span>, <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$groupBy</span>, <span class='comment'>string</span> <span class='optional'>$orderBy</span>, <span class='comment'>int</span> <span class='optional'>$offset</span>, <span class='comment'>int</span> <span class='optional'>$limit</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
 </pre>
 <p>Executes an sql SELECT query on current datasource. This is a low level method, you should use <a onclick='tab_switch("phppe_db");'>PHPPE\DB</a> instead.</p>
 <h3>Parameters</h3>
@@ -4516,7 +4527,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::fetch()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>fetch</a>(<span class='comment'>string/array</span> <span class='variable'>$fields</span>, <span class='comment'>string</span> <span class='optional'>$table</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$groupBy</span>, <span class='comment'>string</span> <span class='optional'>$orderBy</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
+<span class='comment'>public static</span> <span class='function'>fetch</span>(<span class='comment'>string/array</span> <span class='variable'>$fields</span>, <span class='comment'>string</span> <span class='optional'>$table</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$groupBy</span>, <span class='comment'>string</span> <span class='optional'>$orderBy</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
 </pre>
 <p>Executes an sql SELECT query on current datasource and returns the first record. This is a low level method, you should use <a onclick='tab_switch("phppe_db");'>PHPPE\DB</a> instead.</p>
 <h3>Parameters</h3>
@@ -4557,7 +4568,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::field()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>fetch</a>(<span class='comment'>string/array</span> <span class='variable'>$fields</span>, <span class='comment'>string</span> <span class='optional'>$table</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$groupBy</span>, <span class='comment'>string</span> <span class='optional'>$orderBy</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
+<span class='comment'>public static</span> <span class='function'>fetch</span>(<span class='comment'>string/array</span> <span class='variable'>$fields</span>, <span class='comment'>string</span> <span class='optional'>$table</span>, <span class='comment'>string</span> <span class='optional'>$where</span>, <span class='comment'>string</span> <span class='optional'>$groupBy</span>, <span class='comment'>string</span> <span class='optional'>$orderBy</span>, <span class='comment'>array</span> <span class='optional'>$args</span> );
 </pre>
 <p>Executes an sql SELECT query on current datasource and returns the first column of the first record. This is a low level method, you should use <a onclick='tab_switch("phppe_db");'>PHPPE\DB</a> instead.</p>
 <h3>Parameters</h3>
@@ -4591,7 +4602,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::tree()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>tree</a>( <span class='comment'>string</span> <span class='variable'>$sql</span>, <span class='comment'>int</span> <span class='optional'>$parentId</span> );
+<span class='comment'>public static</span> <span class='function'>tree</span>( <span class='comment'>string</span> <span class='variable'>$sql</span>, <span class='comment'>int</span> <span class='optional'>$parentId</span> );
 </pre>
 <p>Executes several sql queries on current datasource to return a tree (or sub-tree). You can use <a onclick='tab_switch("tre2arr");'>Core::tre2arr()</a> to convert the result into an option list or XML tree.</p>
 <h3>Parameters</h3>
@@ -4622,7 +4633,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\DS::bill()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>bill</a>( );
+<span class='comment'>public static</span> <span class='function'>bill</span>( );
 </pre>
 <p>Returns the time consumed by database queries in second with microsec precision.</p>
 <h3>Parameters</h3>
@@ -4648,7 +4659,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\Cache::set()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>set</a>(<span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='variable'>$value</span>, <span class='comment'>int</span> <span class='optional'>$ttl</span>, <span class='comment'>boolean</span> <span class='optional'>$force</span> );
+<span class='comment'>public static</span> <span class='function'>set</span>(<span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='variable'>$value</span>, <span class='comment'>int</span> <span class='optional'>$ttl</span>, <span class='comment'>boolean</span> <span class='optional'>$force</span> );
 </pre>
 <p>Saves a value to cache for key.</p>
 <h3>Parameters</h3>
@@ -4677,7 +4688,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\Cache::get()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>get</a>(<span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>boolean</span> <span class='optional'>$force</span> );
+<span class='comment'>public static</span> <span class='function'>get</span>(<span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>boolean</span> <span class='optional'>$force</span> );
 </pre>
 <p>Retrive a value from cache for key.</p>
 <h3>Parameters</h3>
@@ -4703,7 +4714,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <div id='minify' class='tab'>
 <h1>PHPPE\Assets::minify()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>minify</a>( <span class='comment'>string</span> <span class='variable'>$subject</span>, <span class='comment'>string</span> <span class='variable'>$type</span> );</pre>
+<pre><span class='comment'>public static</span> <span class='function'>minify</span>( <span class='comment'>string</span> <span class='variable'>$subject</span>, <span class='comment'>string</span> <span class='variable'>$type</span> );</pre>
 <p>Compress code by removing whitespace characters. If installed, it will use CSSMin and JSMin. Minifying can be turned off by setting <var>Core::$core->nominify</var> in <a onclick='tab_switch("configuration");'>configuration</a>.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
@@ -4727,7 +4738,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <div id='assign' class='tab'>
 <h1>PHPPE\View::assign()</h1>
 <h2>Synopsis</h2>
-<pre><span class='comment'>public static</span> <span class='function'>assign</a>( <span class='comment'>string</span> <span class='variable'>$name</span>, <span class='comment'>mixed</span> <span class='variable'>$variable</span> );</pre>
+<pre><span class='comment'>public static</span> <span class='function'>assign</span>( <span class='comment'>string</span> <span class='variable'>$name</span>, <span class='comment'>mixed</span> <span class='variable'>$variable</span> );</pre>
 <p>Assign variable to templater.</p>
 <div class='alert alert-info'><b>NOTE</b>: the <a onclick='tab_switch("controllers");'>controller</a> class' properties can be referenced in <a onclick='tab_switch("views");'>templates</a> without assigning, as well as <var>Core::$core</var>, <var>Core::$user</var> and <var>Core::$client</var>.</div>
 <h3>Parameters</h3>
@@ -4750,8 +4761,8 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::css()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>css</a>( );
-<span class='comment'>public static</span> <span class='function'>css</a>( <span class='comment'>string</span> <span class='variable'>$file</span> );
+<span class='comment'>public static</span> <span class='function'>css</span>( );
+<span class='comment'>public static</span> <span class='function'>css</span>( <span class='comment'>string</span> <span class='variable'>$file</span> );
 </pre>
 <p>When called without parameters, returns assigned stylesheets, add a new css to templater otherwise.</p>
 <div class='alert alert-info'><b>NOTE</b>: use paths relative to your extension's css/ directory. For <a onclick='tab_switch("assets:2");'>dynamic assets</a> don't use '.php' extension</div>
@@ -4780,8 +4791,8 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::jslib()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>jslib</a>( );
-<span class='comment'>public static</span> <span class='function'>jslib</a>( <span class='comment'>string</span> <span class='variable'>$file</span>, <span class='comment'>string</span> <span class='optional'>$initcode</span>, <span class='comment'>int</span> <span class='optional'>$priority</span> );
+<span class='comment'>public static</span> <span class='function'>jslib</span>( );
+<span class='comment'>public static</span> <span class='function'>jslib</span>( <span class='comment'>string</span> <span class='variable'>$file</span>, <span class='comment'>string</span> <span class='optional'>$initcode</span>, <span class='comment'>int</span> <span class='optional'>$priority</span> );
 </pre>
 <p>When called without parameters, returns assigned JavaScript libraries, add a new library to templater otherwise.</p>
 <div class='alert alert-info'><b>NOTE</b>: use paths relative to your extension's js/ directory. For <a onclick='tab_switch("assets:2");'>dynamic assets</a> don't use '.php' extension</div>
@@ -4815,7 +4826,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::js()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>js</a>( <span class='comment'>string</span> <span class='variable'>$function</span>, <span class='comment'>string</span> <span class='optional'>$code</span>, <span class='comment'>boolean</span> <span class='optional'>$append</span> );
+<span class='comment'>public static</span> <span class='function'>js</span>( <span class='comment'>string</span> <span class='variable'>$function</span>, <span class='comment'>string</span> <span class='optional'>$code</span>, <span class='comment'>boolean</span> <span class='optional'>$append</span> );
 </pre>
 <p>Adds a JavaScript function to output.</p>
 <div class='alert alert-warning'><b>NOTE</b>: always use append on 'init()' function!</div>
@@ -4844,9 +4855,9 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::menu()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>menu</a>( );
-<span class='comment'>public static</span> <span class='function'>menu</a>( <span class='comment'>string</span> <span class='variable'>$title</span>, <span class='comment'>string</span> <span class='variable'>$link</span> );
-<span class='comment'>public static</span> <span class='function'>menu</a>( <span class='comment'>string</span> <span class='variable'>$title</span>, <span class='comment'>array</span> <span class='variable'>$submenu</span> );
+<span class='comment'>public static</span> <span class='function'>menu</span>( );
+<span class='comment'>public static</span> <span class='function'>menu</span>( <span class='comment'>string</span> <span class='variable'>$title</span>, <span class='comment'>string</span> <span class='variable'>$link</span> );
+<span class='comment'>public static</span> <span class='function'>menu</span>( <span class='comment'>string</span> <span class='variable'>$title</span>, <span class='comment'>array</span> <span class='variable'>$submenu</span> );
 </pre>
 <p>When called without parameters, returns current menu structure, add a new menuitem to PE Panel otherwise.</p>
 <h3>Parameters</h3>
@@ -4879,7 +4890,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::template()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>template</a>( <span class='comment'>string</span> <span class='variable'>$template</span> );
+<span class='comment'>public static</span> <span class='function'>template</span>( <span class='comment'>string</span> <span class='variable'>$template</span> );
 </pre>
 <p>Load, parse and evaluate a template.</p>
 <h3>Parameters</h3>
@@ -4907,7 +4918,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::get()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>get</a>( <span class='comment'>string</span> <span class='variable'>$template</span> );
+<span class='comment'>public static</span> <span class='function'>get</span>( <span class='comment'>string</span> <span class='variable'>$template</span> );
 </pre>
 <p>Load and return template as is, without parsing.</p>
 <h3>Parameters</h3>
@@ -4935,7 +4946,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h1>PHPPE\View::getval()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>getval</a>( <span class='comment'>string</span> <span class='variable'>$expression</span> );
+<span class='comment'>public static</span> <span class='function'>getval</span>( <span class='comment'>string</span> <span class='variable'>$expression</span> );
 </pre>
 <p>Evaluate a templater expression and return the result. Used by <code>&lt;!=...&gt;</code> tag.<br>
 In nested layout iterations, you can refer to fields of outter iteration with prefix <code>parent.</code>.
@@ -4975,7 +4986,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>PHPPE\View::e()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>e</a>( <span class='comment'>string</span> <span class='variable'>$weight</span>, <span class='comment'>string/array</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$facility</span> );
+<span class='comment'>public static</span> <span class='function'>e</span>( <span class='comment'>string</span> <span class='variable'>$weight</span>, <span class='comment'>string/array</span> <span class='variable'>$message</span>, <span class='comment'>string</span> <span class='optional'>$facility</span> );
 </pre>
 <p>Properly format an error message, depending on <var>Core::$core->output</var>.</p>
 <h3>Parameters</h3>
@@ -5003,7 +5014,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>PHPPE\View::picture()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>picture</a>( <span class='comment'>string</span> <span class='variable'>$source</span>, <span class='comment'>string</span> <span class='variable'>$target</span>, <span class='comment'>int</span> <span class='variable'>$maxWidth</span>, <span class='comment'>int</span> <span class='variable'>$maxHeight</span>, <span class='comment'>boolean</span> <span class='variable'>$crop</span>, <span class='comment'>boolean</span> <span class='variable'>$lossless</span>, <span class='comment'>string</span> <span class='variable'>$watermark</span>, <span class='comment'>int</span> <span class='variable'>$maxSize</span>, <span class='comment'>int</span> <span class='optional'>$minQuality</span> );
+<span class='comment'>public static</span> <span class='function'>picture</span>( <span class='comment'>string</span> <span class='variable'>$source</span>, <span class='comment'>string</span> <span class='variable'>$target</span>, <span class='comment'>int</span> <span class='variable'>$maxWidth</span>, <span class='comment'>int</span> <span class='variable'>$maxHeight</span>, <span class='comment'>boolean</span> <span class='variable'>$crop</span>, <span class='comment'>boolean</span> <span class='variable'>$lossless</span>, <span class='comment'>string</span> <span class='variable'>$watermark</span>, <span class='comment'>int</span> <span class='variable'>$maxSize</span>, <span class='comment'>int</span> <span class='optional'>$minQuality</span> );
 </pre>
 <p>Resize, crop and watermark image. Will reduce file size by decreasing quality to the given limit.</p>
 <p>When crop, it will resize the image to the width or to the height which is smaller, then cut along the larger one. The resulting image's dimensions will be exactly maxWidth x maxHeight.</p>
@@ -5039,7 +5050,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>PHPPE\Tools::rmdir()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>rmdir</a>( <span class='comment'>string</span> <span class='variable'>$directory</span> );
+<span class='comment'>public static</span> <span class='function'>rmdir</span>( <span class='comment'>string</span> <span class='variable'>$directory</span> );
 </pre>
 <p>Recursively remove a directory with all of it's contents.</p>
 <h3>Parameters</h3>
@@ -5065,8 +5076,8 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>PHPPE\Tools::untar()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>untar</a>( <span class='comment'>string</span> <span class='variable'>$archive</span>, <span class='comment'>string</span> <span class='variable'>$filename</span> );
-<span class='comment'>public static</span> <span class='function'>untar</a>( <span class='comment'>string</span> <span class='variable'>$archive</span>, <span class='comment'>callback</span> [ <span class='comment'>string</span> <span class='variable'>$class</span>, <span class='comment'>string</span> <span class='variable'>$method</span> ] );
+<span class='comment'>public static</span> <span class='function'>untar</span>( <span class='comment'>string</span> <span class='variable'>$archive</span>, <span class='comment'>string</span> <span class='variable'>$filename</span> );
+<span class='comment'>public static</span> <span class='function'>untar</span>( <span class='comment'>string</span> <span class='variable'>$archive</span>, <span class='comment'>callback</span> [ <span class='comment'>string</span> <span class='variable'>$class</span>, <span class='comment'>string</span> <span class='variable'>$method</span> ] );
 </pre>
 <p>Useful tool to deal with archive files. Autodetects file format and can handle PKZIP, tar, tar gz, tar bz2, cpio, cpio gz, cpio bz2 and pax.</p>
 <p>When second argument is a string, it will look for the file in the archive and returns it's contents.</p>
@@ -5106,7 +5117,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>PHPPE\Tools::ssh()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>ssh</a>( <span class='comment'>string</span> <span class='variable'>$command</span>, <span class='comment'>string</span> <span class='optional'>$input</span>, <span class='comment'>string</span> <span class='optional'>$localCommand</span> );
+<span class='comment'>public static</span> <span class='function'>ssh</span>( <span class='comment'>string</span> <span class='variable'>$command</span>, <span class='comment'>string</span> <span class='optional'>$input</span>, <span class='comment'>string</span> <span class='optional'>$localCommand</span> );
 </pre>
 <p>Execute a command on a remote server that's defined in current user's preferences in <var>Core::$user->data['remote']</var>. For details, see <a onclick='tab_switch("extensions:5");'>Extensions</a>.</p>
 <h3>Parameters</h3>
@@ -5139,7 +5150,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>PHPPE\Tools::copy()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>copy</a>( <span class='comment'>string/array</span> <span class='variable'>$files</span>, <span class='comment'>string</span> <span class='optional'>$destination</span> );
+<span class='comment'>public static</span> <span class='function'>copy</span>( <span class='comment'>string/array</span> <span class='variable'>$files</span>, <span class='comment'>string</span> <span class='optional'>$destination</span> );
 </pre>
 <p>Copy files to a remote server that's defined in current user's preferences in <var>Core::$user->data['remote']</var>. For details, see <a onclick='tab_switch("extensions:5");'>Extensions</a>.</p>
 <h3>Parameters</h3>
@@ -5169,7 +5180,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>(PHPPE\Users)->has()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>final public</span> <span class='function'>has</a>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
+<span class='comment'>final public</span> <span class='function'>has</span>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
 </pre>
 <p>Checks if the user has the given Access Control Entry.</p>
 <h3>Parameters</h3>
@@ -5196,7 +5207,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>(PHPPE\Users)->grant()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>final public</span> <span class='function'>grant</a>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
+<span class='comment'>final public</span> <span class='function'>grant</span>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
 </pre>
 <p>Grant access to the user.</p>
 <h3>Parameters</h3>
@@ -5221,7 +5232,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>(PHPPE\Users)->clear()</h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>final public</span> <span class='function'>clear</a>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
+<span class='comment'>final public</span> <span class='function'>clear</span>( <span class='comment'>string/array</span> <span class='variable'>$ace</span> );
 </pre>
 <p>Revoke access from the user.</p>
 <h3>Parameters</h3>
@@ -5246,7 +5257,7 @@ VALUE - the value of the array element you are currently iteration on<br>
 <h1>(PHPPE\Users)->login()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>login</a>( <span class='comment'>string</span> <span class='variable'>$username</span>, <span class='comment'>string</span> <span class='variable'>$password</span> );
+<span class='comment'>public</span> <span class='function'>login</span>( <span class='comment'>string</span> <span class='variable'>$username</span>, <span class='comment'>string</span> <span class='variable'>$password</span> );
 </pre>
 <p>Authenticate user.</p>
 <h3>Parameters</h3>
@@ -5275,7 +5286,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>(PHPPE\Users)->logout()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>logout</a>( );
+<span class='comment'>public</span> <span class='function'>logout</span>( );
 </pre>
 <p>Log out user.</p>
 <h3>Parameters</h3>
@@ -5297,7 +5308,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\Registry::set()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>set</a>( <span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='variable'>$value</span> );
+<span class='comment'>public static</span> <span class='function'>set</span>( <span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='variable'>$value</span> );
 </pre>
 <p>Sets a value for key in registry.</p>
 <h3>Parameters</h3>
@@ -5325,7 +5336,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\Registry::get()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>get</a>( <span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='optional'>$default</span> );
+<span class='comment'>public static</span> <span class='function'>get</span>( <span class='comment'>string</span> <span class='variable'>$key</span>, <span class='comment'>mixed</span> <span class='optional'>$default</span> );
 </pre>
 <p>Get a value for key from registry.</p>
 <h3>Parameters</h3>
@@ -5353,7 +5364,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\Registry::del()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>del</a>( <span class='comment'>string</span> <span class='variable'>$key</span> );
+<span class='comment'>public static</span> <span class='function'>del</span>( <span class='comment'>string</span> <span class='variable'>$key</span> );
 </pre>
 <p>Remove a key and it's value from registry.</p>
 <h3>Parameters</h3>
@@ -5378,7 +5389,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\DB::select()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>select</a>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public static</span> <span class='function'>select</span>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Create a SELECT query sentance.</p>
 <h3>Parameters</h3>
@@ -5407,7 +5418,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\DB::update()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>update</a>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public static</span> <span class='function'>update</span>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Create an UPDATE sentance.</p>
 <h3>Parameters</h3>
@@ -5436,7 +5447,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\DB::insert()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>insert</a>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public static</span> <span class='function'>insert</span>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Create an INSERT INTO sentance.</p>
 <h3>Parameters</h3>
@@ -5465,7 +5476,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\DB::replace()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>replace</a>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public static</span> <span class='function'>replace</span>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Create a REPLACE INTO sentance.</p>
 <h3>Parameters</h3>
@@ -5494,7 +5505,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\DB::delete()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>delete</a>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public static</span> <span class='function'>delete</span>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Create a DELETE sentance.</p>
 <h3>Parameters</h3>
@@ -5523,7 +5534,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>PHPPE\DB::truncate()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public static</span> <span class='function'>truncate</a>( <span class='comment'>string</span> <span class='variable'>$table</span> );
+<span class='comment'>public static</span> <span class='function'>truncate</span>( <span class='comment'>string</span> <span class='variable'>$table</span> );
 </pre>
 <p>Create a TRUNCATE sentance.</p>
 <h3>Parameters</h3>
@@ -5551,7 +5562,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>(PHPPE\DB)->table()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>table</a>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public</span> <span class='function'>table</span>( <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Add a new table multiplication to a sentance.</p>
 <div class='alert alert-warning'><b>NOTE</b>: use JOIN instead of table multiplication if possible as they are less resource consuming.</div>
@@ -5582,7 +5593,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>(PHPPE\DB)->join()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>join</a>( <span class='comment'>string</span> <span class='variable'>$type</span>, <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='variable'>$condition</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
+<span class='comment'>public</span> <span class='function'>join</span>( <span class='comment'>string</span> <span class='variable'>$type</span>, <span class='comment'>string</span> <span class='variable'>$table</span>, <span class='comment'>string</span> <span class='variable'>$condition</span>, <span class='comment'>string</span> <span class='optional'>$alias</span> );
 </pre>
 <p>Add a new table by joining it to a sentance.</p>
 <h3>Parameters</h3>
@@ -5614,7 +5625,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>(PHPPE\DB)->fields()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>fields</a>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
+<span class='comment'>public</span> <span class='function'>fields</span>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
 </pre>
 <p>Add fields to a sentance.</p>
 <h3>Parameters</h3>
@@ -5644,7 +5655,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <h1>(PHPPE\DB)->where()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>where</a>( <span class='comment'>string/array</span> <span class='variable'>$wheres</span>, <span class='comment'>string</span> <span class='optional'>$operator</span> );
+<span class='comment'>public</span> <span class='function'>where</span>( <span class='comment'>string/array</span> <span class='variable'>$wheres</span>, <span class='comment'>string</span> <span class='optional'>$operator</span> );
 </pre>
 <p>Add WHERE clause(s) to a sentance. If you want to filter after grouping, you should use <a onclick='tab_switch("having");'>having()</a>.</p>
 <h3>Parameters</h3>
@@ -5683,7 +5694,7 @@ And the 3rd value will be quoted automatically if it's not a placeholder, and if
 <h1>(PHPPE\DB)->orderBy()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>orderBy</a>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
+<span class='comment'>public</span> <span class='function'>orderBy</span>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
 </pre>
 <p>Add ORDER BY fields to a sentance.</p>
 <h3>Parameters</h3>
@@ -5713,7 +5724,7 @@ And the 3rd value will be quoted automatically if it's not a placeholder, and if
 <h1>(PHPPE\DB)->groupBy()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>groupBy</a>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
+<span class='comment'>public</span> <span class='function'>groupBy</span>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
 </pre>
 <p>Add GROUP BY fields to a sentance.</p>
 <h3>Parameters</h3>
@@ -5743,7 +5754,7 @@ And the 3rd value will be quoted automatically if it's not a placeholder, and if
 <h1>(PHPPE\DB)->having()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>having</a>( <span class='comment'>string/array</span> <span class='variable'>$wheres</span>, <span class='comment'>string</span> <span class='optional'>$operator</span> );
+<span class='comment'>public</span> <span class='function'>having</span>( <span class='comment'>string/array</span> <span class='variable'>$wheres</span>, <span class='comment'>string</span> <span class='optional'>$operator</span> );
 </pre>
 <p>Add HAVING clause(s) to a sentance.</p>
 <h3>Parameters</h3>
@@ -5773,7 +5784,7 @@ And the 3rd value will be quoted automatically if it's not a placeholder, and if
 <h1>(PHPPE\DB)->limit()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>limit</a>( <span class='comment'>int</span> <span class='variable'>$limit</span> );
+<span class='comment'>public</span> <span class='function'>limit</span>( <span class='comment'>int</span> <span class='variable'>$limit</span> );
 </pre>
 <p>Add LIMIT to a sentance. Set the maximum number of rows returned.</p>
 <h3>Parameters</h3>
@@ -5802,7 +5813,7 @@ And the 3rd value will be quoted automatically if it's not a placeholder, and if
 <h1>(PHPPE\DB)->offset()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>offset</a>( <span class='comment'>int</span> <span class='variable'>$offset</span> );
+<span class='comment'>public</span> <span class='function'>offset</span>( <span class='comment'>int</span> <span class='variable'>$offset</span> );
 </pre>
 <p>Add OFFSET to a sentance. Skip the first given number rows returned.</p>
 <h3>Parameters</h3>
@@ -5831,7 +5842,7 @@ And the 3rd value will be quoted automatically if it's not a placeholder, and if
 <h1>(PHPPE\DB)->sql()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>sql</a>( );
+<span class='comment'>public</span> <span class='function'>sql</span>( );
 </pre>
 <p>Convert SQL sentance object into a string.</p>
 <div class='alert alert-info'><b>NOTE</b>: this method is also called by the magic __toString() method</div> 
@@ -5859,7 +5870,7 @@ echo ( <span class='function'>DB::delete</span>(<span class='stringconst'>"forum
 <h1>(PHPPE\DB)->execute()<sup><small>PHPPE Pack</small></sup></h1>
 <h2>Synopsis</h2>
 <pre>
-<span class='comment'>public</span> <span class='function'>execute</a>( <span class='comment'>array</span> <span class='optional'>$arguments</span>, <span class='comment'>int</span> <span class='optional'>$selector</span> );
+<span class='comment'>public</span> <span class='function'>execute</span>( <span class='comment'>array</span> <span class='optional'>$arguments</span>, <span class='comment'>int</span> <span class='optional'>$selector</span> );
 </pre>
 <p><a onclick='tab_switch("exec");'>Execute</a> the SQL sentance on a datasource.</p>
 <h3>Parameters</h3>
@@ -5885,6 +5896,350 @@ echo ( <span class='function'>DB::delete</span>(<span class='stringconst'>"forum
     <li><a onclick='tab_switch("db");'>PHPPE\DS::db()</a></li>
     <li><a onclick='tab_switch("ds");'>PHPPE\DS::ds()</a></li>
     <li><a onclick='tab_switch("exec");'>PHPPE\DS::exec()</a></li>
+</ul>
+</div>
+
+<div id='email' class='tab'>
+<h1>(PHPPE\Email)<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='variable'>$email</span> = <span class='keyword'>new</span> <span class='function'>Email</span>( );
+<span class='variable'>$email</span> = <span class='keyword'>new</span> <span class='function'>Email</span>( <span class='comment'>string</span> <span class='optional'>$saved</span> );
+</pre>
+<p>Creates a new Email object.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td class='optional'>string <span>$saved</span></td><td>Email dump previously saved by <a onclick='tab_switch("getemail");'>get()</a>.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span> = <span class='keyword'>new</span> <span class='function'>Email</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("getemail");'>(PHPPE\Email)->get()</a></li>
+</ul>
+</div>
+
+<div id='getemail' class='tab'>
+<h1>(PHPPE\Email)->get<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>get</span>( );
+</pre>
+<p>Dumps and Email object to be stored in database. You can recreate the Email object by providing this dump to a new instance.</p>
+<h3>Parameters</h3>
+<p>None.</p>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string</td><td>JSON encoded reprezentasion of the Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2</pre>
+<pre class='php'>
+<span class='variable'>$email</span> = <span class='keyword'>new</span> <span class='function'>Email</span>();
+<span class='variable'>$dump</span> = <span class='variable'>$email</span>-><span class='function'>get</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("email");'>new PHPPE\Email</a></li>
+</ul>
+</div>
+
+<div id='to' class='tab'>
+<h1>(PHPPE\Email)->to<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>to</span>( <span class='comment'>string</span> <span class='variable'>$address</span> );
+</pre>
+<p>Set primary recipient of the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$address</span></td><td>Email address</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>to</span>(<span class='stringconst'>"SomeBody &lt;somebody@somewhere.com&gt;"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("replyto");'>(PHPPE\Email)->replyTo()</a></li>
+    <li><a onclick='tab_switch("cc");'>(PHPPE\Email)->cc()</a></li>
+    <li><a onclick='tab_switch("bcc");'>(PHPPE\Email)->bcc()</a></li>
+</ul>
+</div>
+
+<div id='replyto' class='tab'>
+<h1>(PHPPE\Email)->replyTo<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>replyTo</span>( <span class='comment'>string</span> <span class='variable'>$address</span> );
+</pre>
+<p>Set reply address of the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$address</span></td><td>Email address</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>replyTo</span>(<span class='stringconst'>"SomeBody &lt;somebody@somewhere.com&gt;"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("to");'>(PHPPE\Email)->to()</a></li>
+    <li><a onclick='tab_switch("cc");'>(PHPPE\Email)->cc()</a></li>
+    <li><a onclick='tab_switch("bcc");'>(PHPPE\Email)->bcc()</a></li>
+</ul>
+</div>
+
+<div id='cc' class='tab'>
+<h1>(PHPPE\Email)->cc<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>cc</span>( <span class='comment'>string</span> <span class='variable'>$address</span> );
+</pre>
+<p>Set carbon copy address of the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$address</span></td><td>Email address</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>cc</span>(<span class='stringconst'>"SomeBody &lt;somebody@somewhere.com&gt;"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("to");'>(PHPPE\Email)->to()</a></li>
+    <li><a onclick='tab_switch("replyto");'>(PHPPE\Email)->replyTo()</a></li>
+    <li><a onclick='tab_switch("bcc");'>(PHPPE\Email)->bcc()</a></li>
+</ul>
+</div>
+
+<div id='bcc' class='tab'>
+<h1>(PHPPE\Email)->bcc<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>bcc</span>( <span class='comment'>string</span> <span class='variable'>$address</span> );
+</pre>
+<p>Set the hidden carbon copy address of the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$address</span></td><td>Email address</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>bcc</span>(<span class='stringconst'>"SomeBody &lt;somebody@somewhere.com&gt;"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("to");'>(PHPPE\Email)->to()</a></li>
+    <li><a onclick='tab_switch("replyto");'>(PHPPE\Email)->replyTo()</a></li>
+    <li><a onclick='tab_switch("cc");'>(PHPPE\Email)->cc()</a></li>
+</ul>
+</div>
+
+<div id='subject' class='tab'>
+<h1>(PHPPE\Email)->subject<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>subject</span>( <span class='comment'>string</span> <span class='variable'>$subject</span> );
+</pre>
+<p>Set subject for the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$subject</span></td><td>Subject. Never leave it empty.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>subject</span>(<span class='stringconst'>"Something"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("message");'>(PHPPE\Email)->message()</a></li>
+    <li><a onclick='tab_switch("templateemail");'>(PHPPE\Email)->template()</a></li>
+</ul>
+</div>
+
+<div id='message' class='tab'>
+<h1>(PHPPE\Email)->message<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>message</span>( <span class='comment'>string</span> <span class='variable'>$message</span> );
+</pre>
+<p>Set message body for the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$message</span></td><td>Raw email body.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>message</span>(<span class='stringconst'>"Dear Santa,\n\nI was a good boy!"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("subject");'>(PHPPE\Email)->subject()</a></li>
+    <li><a onclick='tab_switch("templateemail");'>(PHPPE\Email)->template()</a></li>
+</ul>
+</div>
+
+<div id='templateemail' class='tab'>
+<h1>(PHPPE\Email)->template<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>template</span>( <span class='comment'>string</span> <span class='variable'>$template</span>, <span class='comment'>array</span> <span class='optional'>$arguments</span> );
+</pre>
+<p>Set message body for the email using a <a onclick='tab_switch("views:3");'>view template</a>.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$template</span></td><td>Template to use to generate email body.</td></tr>
+<tr><td class='optional'>array <span>$arguments</span></td><td>Arguments for the template. Refer them with <code>email.</code> prefix.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>template</span>(<span class='stringconst'>"email_order"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("subject");'>(PHPPE\Email)->subject()</a></li>
+    <li><a onclick='tab_switch("message");'>(PHPPE\Email)->message()</a></li>
+    <li><a onclick='tab_switch("template");'>PHPPE\View::template()</a></li>
+</ul>
+</div>
+
+<div id='attachfile' class='tab'>
+<h1>(PHPPE\Email)->attachFile<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>attachFile</span>( <span class='comment'>string</span> <span class='variable'>$file</span>, <span class='comment'>string</span> <span class='optional'>$mimetype</span> );
+</pre>
+<p>Attach a local file to the email.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$file</span></td><td>Path and filename.</td></tr>
+<tr><td class='optional'>string <span>$mimetype</span></td><td>Mime type of the file. If not given, it will be autodetected.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>attachFile</span>(<span class='stringconst'>"data/invoices/1234.pdf"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("attachdata");'>(PHPPE\Email)->attachData()</a></li>
+</ul>
+</div>
+
+<div id='attachdata' class='tab'>
+<h1>(PHPPE\Email)->attachData<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>attachData</span>( <span class='comment'>string</span> <span class='variable'>$data</span>, <span class='comment'>string</span> <span class='optional'>$mimetype</span>, <span class='comment'>string</span> <span class='optional'>$filename</span> );
+</pre>
+<p>Attach a file to the email from memory.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>string <span>$data</span></td><td>File contents in memory.</td></tr>
+<tr><td class='optional'>string <span>$mimetype</span></td><td>Mime type of the file. Defaults to 'application/octet-stream'.</td></tr>
+<tr><td class='optional'>string <span>$filename</span></td><td>Filename to use for the attachment.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>Email</td><td>Email object</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4</pre>
+<pre class='php'>
+<span class='function'>ob_start()</span>;
+<span class='function'>imagepng</span>(<span class='variable'>$img</span>);
+<span class='variable'>$image</span> = <span class='function'>ob_get_clean()</span>;
+<span class='variable'>$email</span>-><span class='function'>attachData</span>(<span class='variable'>$image</span>, <span class='stringconst'>"image/png"</span>, <span class='stringconst'>"welcome.png"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("attachfile");'>(PHPPE\Email)->attachFile()</a></li>
+</ul>
+</div>
+
+<div id='send' class='tab'>
+<h1>(PHPPE\Email)->send<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>send</span>( <span class='comment'>string</span> <span class='optional'>$backend</span> );
+</pre>
+<p>Send out the email.</p>
+<div class='alert alert-info'>If backend is "db", the email will be stored in database, and "cron minute" will send it out for real using the backend given in <b>realmailer</b>.</div>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td class='optional'>string <span>$backend</span></td><td>Email backend. If not given, the one given in <a onclick='tab_switch("configuration");'>configuration</a> will be used.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>boolean</td><td>True on success</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$email</span>-><span class='function'>send</span>(<span class='stringconst'>"phpmailer"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
+    <li><a onclick='tab_switch("cron");'>Background jobs</a></li>
 </ul>
 </div>
 
