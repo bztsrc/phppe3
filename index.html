@@ -2930,19 +2930,20 @@ Read further <a onclick='tab_switch("install");'>instructions here</a>. In a nut
 'db' => "sqlite:data/sqlite.db",
 'cache' => "apc",
 </pre>
-<h3>Step 8: Reboot and enjoy!</h3>
-You should see the PHPPE Self Test and Cheat Sheet page in fullscreen after reboot, served by your own Raspberry!<br><br>
-If you want to control your Raspberry Pi from your PHPPE Application (of course you do), you can use the GPIO Extension:
-<pre class='php'>
-PHPPE\Core::lib("GPIO")->mode(n,in/out);
-PHPPE\Core::lib("GPIO")->read(n);
-PHPPE\Core::lib("GPIO")->write(n,value);
-</pre>
-But first you should add your webserver's user to gpio group:
+<h3>Step 8: configure php for GPIO</h3>
+<p>Add webserver's user to gpio group:</p>
 <pre>
 # addgroup www-data gpio
 </pre>
-Read <a onclick='tab_switch("phppe_gpio");'>more</a>.
+<p>Also, you should add <code>/sys/class/gpio</code> and <code>/proc/cpuinfo</code> to open_basedir in your php.ini file.</p>
+<h3>Step 9: Reboot and enjoy!</h3>
+<p>You should see the PHPPE Self Test and Cheat Sheet page in fullscreen after reboot, served by your own Raspberry!</p>
+<p>If you want to control your Raspberry Pi from your PHPPE Application (of course you do), you can use the <a onclick='tab_switch("phppe_gpio");'>GPIO Extension</a> as simply as:</p>
+<pre class='php'>
+<span class='function'>PHPPE\GPIO::mode</span>(<span class='number'>pin</span>, <span class='stringconst'>'in'</span>/<span class='stringconst'>'out'</span>);
+<span class='function'>PHPPE\GPIO::get</span>(<span class='number'>pin</span>);
+<span class='function'>PHPPE\GPIO::set</span>(<span class='number'>pin</span>,<span class='keyword'>true</span>/<span class='keyword'>false</span>);
+</pre>
 </div>
 
 <div id='carousel' class='tab'>
@@ -3401,6 +3402,13 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <div id='phppe_gpio' class='tab' rel='gpio'>
 <h1>PHPPE\GPIO<sup><small>PHPPE GPIO</small></sup></h1>
 <p>Allows manipulation of Raspberry Pi GPIO ports from PHP, and also queries some useful property of the board.</p>
+<div class='alert alert-warning'>This Extension unregisters itself if GPIO kernel interface cannot be used.</div>
+<h3>Setup</h3>
+<p>In order to get GPIO working, you'll have to add the webserver's user to the gpio group:</p>
+<pre>
+# addgroup www-data gpio
+</pre>
+<p>Also, you should add <code>/sys/class/gpio</code> and <code>/proc/cpuinfo</code> to open_basedir in your php.ini file.</p>
 <h3>Properties</h3>
 <table class='table table-striped parameter'>
 <tr><td><var>array $pins</var></td><td>Pin layout</td></tr>
@@ -6240,6 +6248,198 @@ echo ( <span class='function'>DB::delete</span>(<span class='stringconst'>"forum
 <ul>
     <li><a onclick='tab_switch("phppe_email");'>PHPPE\Email</a></li>
     <li><a onclick='tab_switch("cron");'>Background jobs</a></li>
+</ul>
+</div>
+
+<div id='rpipcb' class='tab'>
+<h1>PHPPE\GPIO::RPiPCB<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>RPiPCB</span>( );
+</pre>
+<p>Return Raspberry Pi Board Revision number from <code>/proc/cpuinfo</code>.</p>
+<h3>Parameters</h3>
+<p>None.</p>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>int</td><td>Board Revision number</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$pcb</span> = <span class='function'>GPIO::RPiPCB</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("temp");'>PHPPE\GPIO::temp()</a></li>
+    <li><a onclick='tab_switch("freq");'>PHPPE\GPIO::freq()</a></li>
+</ul>
+</div>
+
+<div id='temp' class='tab'>
+<h1>PHPPE\GPIO::temp<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>temp</span>( );
+</pre>
+<p>Return Raspberry Pi's temperature from <code>/sys/class/thermal/thermal_zone0</code>.</p>
+<h3>Parameters</h3>
+<p>None.</p>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>float</td><td>Board temperature in SI <sup>o</sup>C.</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$SITemp</span> = <span class='function'>GPIO::temp</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("rpipcb");'>PHPPE\GPIO::RPiPCB()</a></li>
+    <li><a onclick='tab_switch("freq");'>PHPPE\GPIO::freq()</a></li>
+</ul>
+</div>
+
+<div id='freq' class='tab'>
+<h1>PHPPE\GPIO::freq<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>freq</span>( );
+</pre>
+<p>Return Raspberry Pi's CPU frequency from <code>/sys/devices/system/cpu/cpu0/cpufreq</code>.</p>
+<h3>Parameters</h3>
+<p>None.</p>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>float</td><td>CPU frequency.</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$freq</span> = <span class='function'>GPIO::freq</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("rpipcb");'>PHPPE\GPIO::RPiPCB()</a></li>
+    <li><a onclick='tab_switch("temp");'>PHPPE\GPIO::temp()</a></li>
+</ul>
+</div>
+
+<div id='reset' class='tab'>
+<h1>PHPPE\GPIO::reset<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>reset</span>( );
+</pre>
+<p>Reset all GPIO ports to input mode and unexport them from userspace.</p>
+<h3>Parameters</h3>
+<p>None.</p>
+<h3>Return value</h3>
+<p>None.</p>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='function'>GPIO::reset</span>();
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("mode");'>PHPPE\GPIO::mode()</a></li>
+    <li><a onclick='tab_switch("getgpio");'>PHPPE\GPIO::get()</a></li>
+    <li><a onclick='tab_switch("setgpio");'>PHPPE\GPIO::set()</a></li>
+</ul>
+</div>
+
+<div id='mode' class='tab'>
+<h1>PHPPE\GPIO::mode<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>mode</span>( <span class='comment'>int</span> <span class='variable'>$pin</span>, <span class='comment'>string</span> <span class='optional'>$direction</span>);
+</pre>
+<p>Reset all GPIO ports to input mode and unexport them from userspace.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>int <span>$pin</span></td><td>Pin number</td></tr>
+<tr><td class='optional'>string <span>$direction</span></td><td>The string 'in' or 'out'. Defaults to 'out'.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>GPIO</td><td>GPIO instance</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='function'>GPIO::mode</span>(<span class='number'>1</span>, <span class='stringconst'>"out"</span>)-><span class='function'>mode</span>(<span class='number'>2</span>, <span class='stringconst'>"out"</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("reset");'>PHPPE\GPIO::reset()</a></li>
+    <li><a onclick='tab_switch("getgpio");'>PHPPE\GPIO::get()</a></li>
+    <li><a onclick='tab_switch("setgpio");'>PHPPE\GPIO::set()</a></li>
+</ul>
+</div>
+
+<div id='setgpio' class='tab'>
+<h1>PHPPE\GPIO::set<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>set</span>( <span class='comment'>int</span> <span class='variable'>$pin</span>, <span class='comment'>boolean</span> <span class='optional'>$value</span>);
+</pre>
+<p>Write to a GPIO port.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>int <span>$pin</span></td><td>Pin number</td></tr>
+<tr><td class='optional'>boolean <span>$value</span></td><td>Set port to high on true. Defaults to true.</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>GPIO</td><td>GPIO instance</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='function'>GPIO::mode</span>(<span class='number'>1</span>, <span class='stringconst'>"out"</span>)-><span class='function'>set</span>(<span class='number'>1</span>, <span class='keyword'>true</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("reset");'>PHPPE\GPIO::reset()</a></li>
+    <li><a onclick='tab_switch("mode");'>PHPPE\GPIO::mode()</a></li>
+    <li><a onclick='tab_switch("getgpio");'>PHPPE\GPIO::get()</a></li>
+</ul>
+</div>
+
+<div id='getgpio' class='tab'>
+<h1>PHPPE\GPIO::get<sup><small>PHPPE GPIO</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public static</span> <span class='function'>get</span>( <span class='comment'>int</span> <span class='variable'>$pin</span>);
+</pre>
+<p>Read a GPIO port's current level.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>int <span>$pin</span></td><td>Pin number</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>boolean</td><td>True if the port level is high, false if it's low.</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+<span class='variable'>$pressed</span> = <span class='function'>GPIO::get</span>(<span class='number'>1</span>);
+</pre></p>
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_gpio");'>PHPPE\GPIO</a></li>
+    <li><a onclick='tab_switch("reset");'>PHPPE\GPIO::reset()</a></li>
+    <li><a onclick='tab_switch("mode");'>PHPPE\GPIO::mode()</a></li>
+    <li><a onclick='tab_switch("setgpio");'>PHPPE\GPIO::set()</a></li>
 </ul>
 </div>
 
