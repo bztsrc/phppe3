@@ -174,7 +174,7 @@ class Email extends Extension
         if (!empty($file)) {
             $this->attach[] = [
                 'file' => $file,
-                'mime' => !empty($mime) && strpos($mime, '/') ? $mime : 'application/octet-stream',
+                'mime' => !empty($mime) && strpos($mime, '/') ? $mime : mime_content_type($file),
             ];
         }
 
