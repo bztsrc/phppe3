@@ -47,6 +47,11 @@ class DB extends Extension
     private $deltable;
     private $fields = [];
     private $wheres = [];
+    private $havings = [];
+    private $groupBys = [];
+    private $orderBys = [];
+    private $offset = 0;
+    private $limit = 0;
 
     /**
      * Alias of DS::like()
@@ -218,14 +223,42 @@ class DB extends Extension
     }
 
     /**
-     * Add where clause to query.
+     * Add group by to query.
      *
-     * @param wheres array or string, array element can be [left,condition,right]
-     * @param op operator, 'AND' or 'OR'. Only used if array passed
+     * @param fields array or string
      *
      * @return DB instance
      */
-    public function where($wheres, $op = 'AND')
+    public function groupBy($fields)
+    {
+        if (is_array($fields)) {
+            $this->groupBys += $fields;
+        } else {
+            $this->groupBys += str_getcsv($fields, ',');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add order by to query.
+     *
+     * @param fields array or string
+     *
+     * @return DB instance
+     */
+    public function orderBy($fields)
+    {
+        if (is_array($fields)) {
+            $this->orderBys += $fields;
+        } else {
+            $this->orderBys += str_getcsv($fields, ',');
+        }
+
+        return $this;
+    }
+
+    private function condition($type, $wheres, $op = 'AND')
     {
         $op = strtoupper($op);
         if ($op != 'AND' && $op != 'OR') {
@@ -251,14 +284,70 @@ class DB extends Extension
                 }
             }
             if (!empty($d)) {
-                $this->wheres[] = '('.implode(' '.strtoupper($op).' ', $d).')';
+                $this->$type[] = '('.implode(' '.strtoupper($op).' ', $d).')';
             }
         } else {
-            $this->wheres[] = $wheres;
+            $this->$type[] = $wheres;
         }
 
         return $this;
     }
+
+    /**
+     * Add where clause to query.
+     *
+     * @param wheres array or string, array element can be [left,condition,right]
+     * @param op operator, 'AND' or 'OR'. Only used if array passed
+     *
+     * @return DB instance
+     */
+    public function where($wheres, $op = 'AND')
+    {
+        return $this->condition("wheres", $wheres, $op);
+    }
+
+    /**
+     * Add having clause to query.
+     *
+     * @param wheres array or string, array element can be [left,condition,right]
+     * @param op operator, 'AND' or 'OR'. Only used if array passed
+     *
+     * @return DB instance
+     */
+    public function having($wheres, $op = 'AND')
+    {
+        return $this->condition("havings", $wheres, $op);
+    }
+
+    /**
+     * Set offset
+     *
+     * @param offset
+     *
+     * @return DB instance
+     */
+     public function offset($offs)
+     {
+        if($offs>=0)
+            $this->offset = $offs;
+
+        return $this;
+     }
+
+    /**
+     * Set limit
+     *
+     * @param limit
+     *
+     * @return DB instance
+     */
+     public function limit($limit)
+     {
+        if($limit>=0)
+            $this->limit = $limit;
+
+        return $this;
+     }
 
     /**
      * Build an sql sentance from object properties.
@@ -270,6 +359,9 @@ class DB extends Extension
         //! common checks
         if (empty($this->table)) {
             throw new DBException(L('No table specified'));
+        }
+        if (empty($this->limit) && !empty($this->offset)) {
+            throw new DBException(L('Offset without limit'));
         }
         //! build sql
         $sql = $this->command;
@@ -320,6 +412,25 @@ class DB extends Extension
         //! add where clause
         if (count($this->wheres)) {
             $sql .= ' WHERE '.implode(' AND ', $this->wheres);
+        }
+        //! add group by
+        if (count($this->groupBys)) {
+            $sql .= ' GROUP BY '.implode(',', $this->groupBys);
+        }
+        //! add order by
+        if (count($this->orderBys)) {
+            $sql .= ' ORDER BY '.implode(',', $this->orderBys);
+        }
+        //! add having clause
+        if (count($this->havings)) {
+            $sql .= ' HAVING '.implode(' AND ', $this->havings);
+        }
+        //! add limit clause
+        if (!empty($this->limit)) {
+            $sql .= ' LIMIT '.intval($this->limit);
+            if (!empty($this->offset)) {
+                $sql .= ' OFFSET '.intval($this->offset);
+            }
         }
 
         return $sql;

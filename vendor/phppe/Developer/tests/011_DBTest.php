@@ -62,6 +62,47 @@ class DBTest extends PHPUnit_Framework_TestCase
 		}catch(\Exception $e){ $wasExc=true; }
 		$this->assertTrue($wasExc,"bad where exception");
 
+		$this->assertEquals(
+			"SELECT * FROM users HAVING id=?",
+			\PHPPE\DB::select("users")->having("id=?"),
+			"Select with having");
+
+		$this->assertEquals(
+			"SELECT * FROM users LIMIT 10",
+			\PHPPE\DB::select("users")->limit(10),
+			"Select with limit #1");
+
+		$wasExc=false;
+		try{
+			\PHPPE\DB::select("users")->offset(5)->sql();
+		}catch(\Exception $e){ $wasExc=true; }
+		$this->assertTrue($wasExc,"Select with limit #2");
+
+		$this->assertEquals(
+			"SELECT * FROM users LIMIT 10 OFFSET 5",
+			\PHPPE\DB::select("users")->limit(10)->offset(5),
+			"Select with limit #3");
+
+		$this->assertEquals(
+			"SELECT * FROM users GROUP BY name",
+			\PHPPE\DB::select("users")->groupBy("name"),
+			"Select with group by #1");
+
+		$this->assertEquals(
+			"SELECT * FROM users GROUP BY name,id",
+			\PHPPE\DB::select("users")->groupBy(["name","id"]),
+			"Select with group by #2");
+
+		$this->assertEquals(
+			"SELECT * FROM users ORDER BY id",
+			\PHPPE\DB::select("users")->orderBy("id"),
+			"Select with order by #1");
+
+		$this->assertEquals(
+			"SELECT * FROM users ORDER BY id",
+			\PHPPE\DB::select("users")->orderBy(["id"]),
+			"Select with order by #2");
+
 		$wasExc=false;
 		try{
 			\PHPPE\DB::update("users")->sql();
