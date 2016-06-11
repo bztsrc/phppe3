@@ -148,8 +148,8 @@ function phppe_archive(){window.open("data:text/plain;base64,PD9waHAKLyoKICogIFB
     <li><a onclick='tab_switch("extensions");'>Extensions</a></li>
     <li><a onclick='tab_switch("repository");'>Repositories</a></li>
     <li><a onclick='tab_switch("coding");'>Coding standards</a></li>
+    <li><a onclick='tab_switch("developer");'>Developing</a></li>
     <li><a onclick='tab_switch("benchmark");'>Benchmarks</a></li>
-    <li><a onclick='tab_switch("developer");'>Developer</a></li>
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>Tutorials</a>
     <ol style='display:none;'>
@@ -544,59 +544,63 @@ can append it's id to the ACE: PHPPE\Core::$user->grant("editgroup:13").
 <h3>Access Control List (ACL)</h3>
 A list of ACEs. In Menu, <A onclick='tab_switch("filters");'>URL filters</a> as well in Templates you can refer to an ACE with "@" prefix, like "@loggedin". For a list, use pipe to concatenate ACEs (like "@siteeditor|siteadmin") or in php you can use an array.
 <h3>Add-On</h3>
-Kind of Extension that expands Templater's functionality on <samp>&lt;!var</samp>, <samp>&lt;!field</samp> and <samp>&lt;!widget</samp> tags. They have to be inherited from <a onclick='tab_switch("phppe_addon");'>PHPPE\AddOn</a>.
+Kind of Extension that expands <a onclick='tab_switch("views:3");'>templater</a>'s functionality on <code>&lt;!var&gt;</code>, <code>&lt;!field&gt;</code>, <code>&lt;!widget&gt;</code> and <code>&lt;!cms&gt;</code> tags. They have to be inherited from <a onclick='tab_switch("phppe_addon");'>PHPPE\AddOn</a>.
 <h3>Application</h3>
-This is the main part that generates the page. Usually has one or more controllers. Your main application resides in app folder, and it's controllers in app/ctrl, models in app/libs and views in app/views.
-Otherwise every Extension can provide controllers, models, views and therefore act as an application. Also, your application is symlinked as an Extension in vendor/phppe/app so that it's a Service at once. The PHPPE environment is a set of applications, each responsible for different urls.
+This is the main part that generates the page. Usually has one or more <a onclick='tab_switch("controllers");'>controllers</a>.
+Your main application resides in <a onclick='tab_switch("directory");'>app/</a> folder, and it's controllers in app/ctrl, models in app/libs and views in app/views.
+Otherwise every Extension can provide controllers, models, views and therefore act as an application. Also, your application is symlinked as an Extension in vendor/phppe/app so that it can be a <a onclick='tab_switch("services");'>Service</a> as well. The PHPPE environment is a set of applications, each responsible for different urls.
 <h3>Client</h3>
-End user's application that interacts with PHPPE. It's a webbrowser or a shell running in a terminal. <a onclick='tab_switch("phppe_client");'>PHPPE\Client</a> class holds every information you'll ever need about it.
+End user's application that interacts with PHPPE. It's a webbrowser or a shell running in a terminal. <a onclick='tab_switch("phppe_client");'>PHPPE\Client</a> class holds every information you'll ever need about it, but if not, it can be expanded using <a onclick='tab_switch("extensions");'>extensions</a>.
 <h3>Concept</h3>
 The PHPPE concept of how a homepage is organized and should be generated is as follows:
 <ul>
-	<li>Views are generated from templates, so called layouts (eg.: "blogpost"). These have special tags marking variable places (like <samp>&lt;!=title&gt;</samp>, <samp>&lt;!=createdate&gt;</samp> etc.).</li>
-	<li>The common homepage layout is described by a specific template, called "frame". This layout frames all the others. This is the place for the header, the menu, and the footer etc.</li>
+	<li>Views are generated from <a onclick='tab_switch("views");'>templates</a>, so called layouts (eg.: "blogpost"). These have special tags marking variable places (like <samp>&lt;!=title&gt;</samp>, <samp>&lt;!=createdate&gt;</samp> etc.).</li>
+	<li>The common homepage layout is described by a specific template, called "<a onclick='tab_switch("sitebuilds");'>frame</a>". This layout frames all the others. This is the place for the header, the menu, and the footer etc.</li>
 	<li>Each page corresponds to an url, and it's an instance of a layout. Page parameters fill in variable places in templates (eg.: by replacing <samp>&lt;!=createdate&gt;</samp> with the blog post's actual creation date).</li>
 	<li>Pages can be grouped in page lists. Each page can be member of several lists. There's one special page list, called "mainmenu" which always exists. Unlike other CMS alternatives, in PHPPE you don't have to put a page in the menu if you want to expose it's url to the user. In PHPPE you can access it by entering it's url directly regardless of menus. So if you want to disable a specific url, simply unpublish the corresponding page.</li>
 	<li>Page lists can be used in <samp>&lt;!foreach</samp> when generating view (eg.: "blogfrontpage", which lists pages of layout "blogpost", ordered by descending creation date).</li>
-	<li>There's always a user object reflecting the actor on client side, if not authenticated then a restricted anonymous.</li>
-	<li>Controllers are executed before view generated, so that action handlers can redirect the user or influence the output.</li>
-	<li>A page with a unique, dynamically generated view (hence not using any content template or page parameter) is considered to be an application.</li>
+	<li>There's always a <a onclick='tab_switch("phppe_users");'>user</a> object reflecting the actor on client side, if not authenticated then a restricted anonymous.</li>
+	<li><a onclick='tab_switch("controllers");'>Controllers</a> are executed before view generated, so that action handlers can redirect the user or influence the output.</li>
+	<li>A page with it's own controller and view (hence not using any content template or page parameter) is considered to be an application.</li>
 </ul>
 <h3>Core</h3>
-This is the heart of the single file framework, <samp>public/index.php</samp>. Also the very basic extension, PHPPE Pack ships files under <samp>vendor/phppe/Core</samp>. If the latter not installed, the Core
-will create the <a onclick='tab_switch("directory");'>directory structure</a> for it when executed in diagnostics mode.
+This is the heart of the single file framework, defined in <samp><a onclick='tab_switch("phppe_core");'>public/index.php</a></samp>. It's also the name of the first extension, that's located in <samp>vendor/phppe/Core</samp>, so to distingwish between, the latter called Pack.
+If the extension Core is not installed, the built-in Core will create the <a onclick='tab_switch("directory");'>directory structure</a> for it when executed in diagnostics mode.
 <h3>Diagnostics mode</h3>
-This can be invoked only from CLI by passing the argument "--diag". In this mode Core will examine the ProjectRoot's directory structure, will fix missing files and if run with root
-privileges it will fix file permissions as well.
+This can be <a onclick='tab_switch("running");'>invoked</a> only from CLI by passing the argument "--diag". In this mode Core will examine the ProjectRoot's directory structure, will fix missing files and if run with root
+privileges it will fix file permissions as well. Nonetheless it fires <a onclick='tab_switch("events:3");'>diag event</a>, so that extensions can run their own, specific diagnostic functions.
 <h3>Dock</h3>
-Right corner of Panel, holds status information anout extensions. Populated by <a onclick='tab_switch("events:8");'>stat()</a> hook methods.
+Right corner of <a onclick='tab_switch("sitebuilds");'>Panel</a>, holds status information about extensions. Populated by <a onclick='tab_switch("events:8");'>stat()</a> hook methods.
 <h3>DocumentRoot</h3>
-The base folder where the webserver will look up files. It's the folder named <samp>public</samp> under your ProjectRoot.
+The <a onclick='tab_switch("directory");'>base folder</a> where the webserver will look up files. It's the folder named <samp>public</samp> under your ProjectRoot.
 <h3>Extension</h3>
 Any Add-On or Service that can be added to or removed from your PHPPE environment. One Extension can add several Add-Ons and Services at once to the system.
+It was one of the main goals that installing an extension should require no more than copying it's files. In case file access rights aren't set up correctly, you can run diagnostics mode.
 <h3>Frame</h3>
-This is the main template that frames every application views. Within a <a onclick='tab_switch("sitebuilds");'>frame template</a>, use <code>&lt;!app&gt;</code> tag to mark the place of your application, in other words this tag separates frame header and footer. Header usually contains a page menu and a navigation bar, while footer has a sitemap and an impressum line.
+This is the main template that frames every application's output. Within a <a onclick='tab_switch("sitebuilds");'>frame template</a>, use <code>&lt;!app&gt;</code> tag to mark the place of your application, in other words this tag separates frame header and footer. Header usually contains a page menu and a navigation bar, while footer has a sitemap and an impressum line.
 <h3>Maintenance mode</h3>
-This can be turned on in <samp>phppe/config.php</samp> with <samp>$core->maintenance=true</samp>. In this mode controllers are skipped and only a view displayed with a template called "maintenance". This is
+This can be turned on in <samp><a onclick='tab_switch("configuration");'>phppe/config.php</a></samp> with <code>'maintenance'=&gt;true</code>. In this mode controllers are skipped and only a view displayed using a template called "maintenance". This is
 used to temporarily put your site down until you finish with delicate upgrades.
 <h3>Menu</h3>
-Left side of Panel, populated by extensions with <a onclick='tab_switch("menu");'>PHPPE\View::menu()</a> calls during their initialization.
+Left side of <a onclick='tab_switch("sitebuilds");'>Panel</a>, populated by extensions with <a onclick='tab_switch("menu");'>PHPPE\View::menu()</a> calls during their initialization.
 <h3>Model/View/Controller</h3>
-PHPPE uses MVC design pattern. <a onclick='tab_switch("routing");'>Routing</a> desides which controller's method to run, which in turn finds out which models to call to get data for the view.
+PHPPE uses MVC design pattern. <a onclick='tab_switch("routing");'>Routing</a> desides which <a onclick='tab_switch("controllers");'>controller</a>'s method to run, which in turn finds out which <a onclick='tab_switch("models");'>models</a> to call to get data for filling in the gaps in <a onclick='tab_switch("views");'>view</a> template.
 <h3>Service</h3>
 Is an extension that adds a <a onclick='tab_switch("services");'>function library</a> (in form of a php class) to your environment.
 <h3>Object Relational Mapper</h3>
 Model that's inherited from <a onclick='tab_switch("phppe_model");'>PHPPE\Model</a> has the ability to be mapped directly to database tables.
+<h3>Pack</h3>
+Is the name of the first extension that ships <samp><a onclick='tab_switch("directory");'>vendor/phppe/Core</a></samp>. It's called that way because it ships more classes, and also because the name <a onclick='tab_switch("phppe_core");'>Core</a> is already used for the class defined in <samp>public/index.php</samp>. 
 <h3>Panel</h3>
-If the user is logged in and has "panel" ACE, a nice panel will be shown on top of the page at fixed position. This panel holds the Menu and the Dock with status icons for extensions; as well as the language selector dropdown and the user menu with profile and logout links.
+If the user is logged in and has "panel" ACE, a nice <a onclick='tab_switch("sitebuilds");'>panel</a> will be shown on top of the page at fixed position. This panel holds the Menu and the Dock with status icons for extensions; as well as the language selector dropdown and the user menu with profile and logout links.
 <h3>ProjectRoot</h3>
-The main directory of your project. It has the main <samp>composer.json</samp> and the folders <samp>app</samp>, <samp>public</samp>, <samp>vendor</samp> etc.
+The main <a onclick='tab_switch("directory");'>directory</a> of your project. It has the main <samp>composer.json</samp> and the folders <samp>app</samp>, <samp>public</samp>, <samp>vendor</samp> etc.
 <h3>Runlevel</h3>
-This can be set in <samp>phppe/config.php</samp> with <samp>$core->runlevel=X</samp>. This modifies how PHPPE behaves and the verbose level of <a onclick='tab_switch("log");'>logs</a> it generates.<br>
-0 - production<br>
-1 - verbose / testing<br>
-2 - development<br>
-3 - debug
+This can be set in <samp><a onclick='tab_switch("configuration");'>phppe/config.php</a></samp> with <code>'runlevel'=&gt;X</code>. This modifies how PHPPE behaves and the verbose level of <a onclick='tab_switch("log");'>logs</a> it generates.<br>
+&nbsp;&nbsp;0 - production<br>
+&nbsp;&nbsp;1 - verbose / testing<br>
+&nbsp;&nbsp;2 - development<br>
+&nbsp;&nbsp;3 - debug
 <h3>Template or Layout</h3>
 It's an (usually, but not necessairly) xml with placeholders for application properties and tags for <a onclick='tab_switch("views:11");'>control structures</a> and <a onclick='tab_switch("views:13");'>Add-Ons</a>. Views are generated using templates.
 </div>
@@ -645,7 +649,7 @@ $EDITOR phppe/config.php
 </div>
 </div>
 <div class='alert alert-info'><b>HINT</b>: If you already have a running PHPPE somewhere, you can use <a onclick='tab_switch("extensions");'>PHPPE Extensions</a> Manager to
-bootstrap the framework on another server. All you need is a key based SSH connection.</div>
+bootstrap the framework on another server. All you need is a <a onclick='tab_switch("extensions:6");'>key based SSH connection</a>.</div>
 <h3>1. Get the single file framework</h3>
 <p>Open up a terminal, and ssh to your server (or use a windowed ssh client).
 Change working directory to your ProjectRoot, then type</p>
@@ -789,7 +793,7 @@ This will bootstrap the basic <a onclick='tab_switch("phppe_core");'>PHPPE Core<
 <span class='variable'>$phppe</span> = <span class='function'>include</span>(<span class='stringconst'>"public/index.php"</span>);
 <span class='variable'>$phppe</span>-><span class='function'>run</span>();
 </pre></p>
-<div class='alert alert-info'><b>NOTE</b> that the latter is quite uncommon and discouraged. It's clearer to create a controller than calling run() directly.</div>
+<div class='alert alert-info'><b>NOTE</b> that the latter is quite uncommon and discouraged. It's clearer to use routing than calling run() directly.</div>
 </div>
 
 <div id='configuration' class='tab' rel='config.php,environment'>
@@ -1015,7 +1019,7 @@ The $islib boolean variable is set if the framework was included from another ph
            <span style='color:#C0C0C0;'>↓</span>
        autoload
            <span style='color:#C0C0C0;'>↓
-   <span class='condition'>(diagnostic mode?)</span>
+<span class='condition'>(CLI and has "--diag"?)</span>
       y ↙     ↘ n
 <span class='function'>bootdiag()</span>   <span class='keyword'>Init event</span>
      ↓           ↓
@@ -1431,7 +1435,7 @@ PHPPE Core ships APC(u) and Files cache extensions. If you decide to use local f
 <p>Every extension can have an init.php that holds initilization code. If that file returns an object instance, that's called a Service.<br>
 Services provide library functions to PHPPE, or can extend functionality by implementing <a onclick='tab_switch("events");'>event hooks</a>.</p>
 <p>If classname is not obvious, other parts of the system can ask for a service by calling <a onclick='tab_switch("lib");'>PHPPE\Core::lib(<i>servicename</i>)</a> which will return the instance.</p>
-<div class='alert alert-info'><b>HINT</b>: you can use the "create" utility in PHPPE Developer to generate your exctension along with init.php</div>
+<div class='alert alert-info'><b>HINT</b>: you can use the "<a onclick='tab_switch("developer:8");'>create</a>" utility in PHPPE Developer to generate your extension along with init.php</div>
 <samp>vendor/phppe/MyExtension/init.php:</samp>
 <p><pre class='lineno'>1<br>2<br></pre>
 <pre class='php'>
@@ -1565,10 +1569,10 @@ mkdir vendor/phppe/EplosCMS && curl https://bztsrc.github.io/phppe3/phppe3_eplos
 <p>In PHPPE you don't set handlers by calling a method with giving event name and a function. Instead, you simply name your method after the event in your class.</p>
 <h2>Overview</h2>
 <table class='table table-striped'>
-<tr><td>Service events:</td><td>init($cfg), diag(), route($app,$action), ctrl($app,$action), view($html), stat(), cron()</td></tr>
-<tr><td>Filtering event:</td><td>filter()</td></tr>
-<tr><td>Add-On events:</td><td>init(), validate($name,$value,$required,$args,$attribs), show(), edit()</td></tr>
-<tr><td>JavaScript event:</td><td>onload</td></tr>
+<tr><td>Service events:</td><td><a onclick='tab_switch("events:2");'>init($cfg)</a>, <a onclick='tab_switch("events:3");'>diag()</a>, <a onclick='tab_switch("events:5");'>route($app,$action)</a>, <a onclick='tab_switch("events:6");'>ctrl($app,$action)</a>, <a onclick='tab_switch("events:7");'>view($html)</a>, <a onclick='tab_switch("events:8");'>stat()</a>, <a onclick='tab_switch("events:9");'>cron()</a></td></tr>
+<tr><td>Filtering event:</td><td><a onclick='tab_switch("events:4");'>filter()</a></td></tr>
+<tr><td>Add-On events:</td><td><a onclick='tab_switch("events:10");'>init()</a>, <a onclick='tab_switch("events:11");'>validate($name,$value,$required,$args,$attribs)</a>, <a onclick='tab_switch("events:12");'>show()</a>, <a onclick='tab_switch("events:12");'>edit()</a></td></tr>
+<tr><td>JavaScript event:</td><td><a onclick='tab_switch("events:13");'>onload</a></td></tr>
 </table>
 <h3>Service initialization event</h3>
 <table class='table table-striped'>
@@ -1830,8 +1834,6 @@ Note that Add-On class' constructor can be called several times, but init event 
 <p>Type one of these into your SSH Terminal:</p>
 <pre>
 $ mkdir vendor/<i style='color:red;'>(extension name)</i> && curl <i style='color:red;'>(repository)/(extension tarball).tgz</i> | tar -xz -C vendor/<i style='color:red;'>(extension name)</i>
-<span style='color:#808080;'> - or -</span>
-$ mkdir vendor/<i style='color:red;'>(extension name)</i> && wget <i style='color:red;'>(repository)/(extension tarball).tgz</i> -O - | tar -xz -C vendor/<i style='color:red;'>(extension name)</i>
 </pre>
 <h3>Query list of installed Extensions without Manager or Composer</h3>
 <p>Type into your SSH Terminal:</p>
@@ -1839,7 +1841,7 @@ $ mkdir vendor/<i style='color:red;'>(extension name)</i> && wget <i style='colo
 find vendor/phppe -name composer.json -print -exec sh -c "cat {} \| grep -e version[^_]" \;
 </pre></p>
 <div class='alert alert-warning'>Depending on your shell, it's possible you'll have to replace <samp>\|</samp> with <samp>|</samp>.</div>
-<h2>PHPPE Extensions Manager</h2>
+<h2>Extensions Manager<sup><small>PHPPE Extensions</small></sup></h2>
 <p>The <a onclick='tab_switch("downloads");'>PHPPE Extensions</a> Manager is a tool to install extensions over a web interface.
 It does not provide the same functionality as PHP Composer, so it's not recommended in development environments.
 Instead it's a comfortable and secure way to deploy tarballs remotely via web UI.</p>
@@ -1859,7 +1861,7 @@ On the other hand if you're running a single user page without Users class, you'
 <pre class='php'>
 <span class='stringconst'>'masterpasswd'</span> => <span class='function'>password_hash</span>(<span class='stringconst'>"changeme"</span>, PASSWORD_BCRYPT),
 </pre></p>
-<div class='alert alert-danger'>Don't ever use password_hash() in config.php (this is just an example), paste only the hash constant there.</div>
+<div class='alert alert-danger'>Don't ever use password_hash() in config.php (this is just an example), paste only the hash constant there. You can use the "<a onclick='tab_switch("developer:6");'>passwd</a>" utility to get the hash.</div>
 <p>In lack of user preferences, you'll also need</p>
 <samp>vendor/phppe/Extensions/config.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br></pre>
@@ -2315,8 +2317,11 @@ If everything went well, you should see something similar to this:</p>
 </div>
     
 <div id='developer' class='tab' rel='tests,langutil,create,deploy,mkrepo'>
-<h1>PHPPE Developer</h1>
-<p>Even if you don't want to contribute to the framework, just using it or writing your own Extensions, it's worth installing the Developer package!</p>
+<h1>Developing in PHPPE<sup><small>PHPPE Developer</small></sup></h1>
+<div class='alert alert-info'><b>HINT</b>: Developer extension will guide you and generate PHP code for you!</div>
+<p>You see, just like most of the developers, I'm a lazy one. I'd rather spend an hour developing a small utility for a simple task knowing it will be at hand next time needed, than repeating the same process over and over again.
+So one of the main <a onclick='tab_switch("goals");'>goal</a> was to make life easier and development effective. Simple, consistent directory structure, useful API, following the standards like <a onclick='tab_switch("coding");'>PSR-2</a> etc.
+So even if you don't want to contribute to the framework, just using it or writing your own Extensions, it's worth installing the Developer package!</p>
 <p>To install, copy'n'paste one of these into your SSH Terminal:</p>
 <pre>
 composer require "phppe/Developer"
@@ -2417,7 +2422,7 @@ Writing vendor/phppe/MyServiceTest/tests/MyServiceTest.php
 <p>This small tool is very useful if you create your own repository let's say for your company's applications.
 This will scan all extensions under <samp>vendor/phppe/</samp> directory of your developer environment collecting information from <samp>composer.json</samp>
 files. If source changed, it re-generates tarballs and saves <samp>packages.json</samp> as described in <a onclick='tab_switch("repository");'>Repository</a> section of this document.
-Now all you have to do is copy the later along with the tarballs onto a webserver, specify the url in your production server's <a onclick='tab_switch("configuration");'>configuration</a> and your deployment system is good to go!</p>
+Now all you have to do is copy the latter along with the tarballs onto a webserver, specify the url in your production server's <a onclick='tab_switch("configuration");'>configuration</a> and your deployment system is good to go!</p>
 <pre>
 $ php public/index.php mkrepo
 Scanning for packages: 15 found
@@ -2628,7 +2633,7 @@ See <a onclick='tab_switch("route");'>PHPPE\Http::route()</a> documentation on h
 <div id='application' class='tab' rel='app/ctrl'>
 <h1>Application Tutorial</h1>
 <p>This tutorial will show you a typical application page. It will teach you how to create a form,
-tide it to an object so that their values get filled in autimatically, and finaly how to retrive the
+tide it to an object so that their values get filled in automatically, and finaly how to retrive the
 user provided data with validation.</p>
 <p>Let's assume we're using the url <i>(base)/tutorialapp</i> and <i>(base)/tutorialapp/myaction</i>.
 For details see <a onclick='tab_switch("routing");'>routing</a>. In this tutorial, it's enough to know we're relying on default routing.</p>
@@ -2692,7 +2697,7 @@ Tutotiral myaction view
     //! But only if the object is not full with user input that failed validation.</span>
     if ( <span class='variable'>$this->tutobj</span> === <span class='keyword'>null</span> && !<span class='function'>empty</span>(<span class='variable'>$item</span>) )
         <span class='comment'>//! This should be in a Model, but this is a basic tutorial</span>
-        <span class='variable'>$this->tutobj</span> = <span class='function'>PHPPE\DS::field</span>( <span class='stringconst'>"*"</span>, <span class='stringconst'>"tutorialapp"</span>, <span class='stringconst'>"id=?"</span>, <span class='stringconst'>""</span>, <span class='stringconst'>""</span>, [ <span class='variable'>$item</span> ] );
+        <span class='variable'>$this->tutobj</span> = <span class='function'>PHPPE\DS::fetch</span>( <span class='stringconst'>"*"</span>, <span class='stringconst'>"tutorialapp"</span>, <span class='stringconst'>"id=?"</span>, <span class='stringconst'>""</span>, <span class='stringconst'>""</span>, [ <span class='variable'>$item</span> ] );
   }
 
   <span class='keyword'>function</span> <span class='function'>myaction</span> (<span class='variable'>$item</span>) {
@@ -2713,7 +2718,7 @@ Tutotiral myaction view
 <div id='servicetut' class='tab'>
 <h1>Service Tutorial</h1>
 <h3>Configuration</h3>
-<samp>vendor/phppe/MyService/config.php:</samp>
+<samp>vendor/phppe/<i>MyService</i>/config.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4</pre>
 <pre class='php'>
 <span class='comment'>//Configuration</span>
@@ -2722,7 +2727,7 @@ Tutotiral myaction view
 ];
 </pre></p>
 <h3>Translations</h3>
-<samp>vendor/phppe/MyService/lang/en.php:</samp>
+<samp>vendor/phppe/<i>MyService</i>/lang/en.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3</pre>
 <pre class='php'>
 <span class='keyword'>return</span> [
@@ -2731,7 +2736,7 @@ Tutotiral myaction view
 </pre></p>
 <h3>Initialization</h3>
 <p>The initialization file will be loaded for each extension. This is the place to set routes and return service instance:</p>
-<samp>vendor/phppe/<i>MyService</i>/<i>init</i>.php</samp>
+<samp>vendor/phppe/<i>MyService</i>/init.php</samp>
 <p><pre class='lineno'>1<br>2<br>3</pre>
 <pre class='php'>
 &lt;?php
@@ -2740,6 +2745,7 @@ Tutotiral myaction view
 </pre></p>
 <h3>Service Provider class</h3>
 <p>These class will be used by applications for <a onclick='tab_switch("services");'>services</a>. It also acts a <a onclick='tab_switch("controllers");'>controller</a>.</p>
+<samp>vendor/phppe/<i>MyService</i>/libs/<i>MyService</i>.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47</pre>
 <pre class='php'>
 &lt;?php
@@ -2799,7 +2805,7 @@ Tutotiral myaction view
 
 <div id='widget' class='tab'>
 <h1>Widget Tutorial</h1>
-<p>See <a onclick='tab_switch("views:11");'>templater</a>.</p>
+<p>See <a onclick='tab_switch("views:13");'>templater</a> for details.</p>
 <p>You can use this Add-On in view templates as:</p>
 <pre>
 &lt;!widget tutorialwgt(1,2,3,4,5,6) instancename>
@@ -2816,7 +2822,7 @@ Tutotiral myaction view
     //! also called right before the first "show" or "edit" method call once</span>
     <span class='keyword'>function</span> <span class='function'>init</span>()
     {
-	<span class='function'>PHPPE\Core::addon</span>( <span class='stringconst'>"tutorialwgt"</span>, <span class='stringconst'>"Widget tutorial"</span> );
+	<span class='comment'>//! This code is instance independent, and called only once per page generation</span>
 	<span class='comment'>//! Include widget specific stylesheet</span>
 	<span class='function'>PHPPE\View::css</span>( <span class='stringconst'>"tutorialwgt.css"</span> );
     }
@@ -2848,7 +2854,7 @@ Tutotiral myaction view
 <div id='raspberry' rel='pi' class='tab'>
 <h1>Setting up PHPPE on Raspberry Pi</h1>
 <h3>Step 1: install raspbian</h3>
-<p>This is quite straightforward. Download image and use <code>dd</code> utility.</p>
+<p>This is quite straightforward. <a href='https://www.raspberrypi.org/downloads/' target='_new'>Download</a> image and use <code>dd</code> utility.</p>
 <h3>Step 2: install packages</h3>
 <p>You'll need these:</p>
 <pre>
@@ -2891,14 +2897,20 @@ s<pre>
 systemctl enable nginx
 systemctl start nginx
 </pre>
-<h3>Step 4: setup automatic login</h3>
+<h3>Step 4: configure php for GPIO</h3>
+<p>Add webserver's user to gpio group:</p>
+<pre>
+# addgroup www-data gpio
+</pre>
+<p>Also, you should add <code>/sys/class/gpio</code> and <code>/proc/cpuinfo</code> to open_basedir in your php.ini file.</p>
+<h3>Step 5: set up automatic login</h3>
 In <samp>/etc/lightdm/lightdm.conf</samp>, change the following lines:
 <pre>
 autologin-user=pi
 autologin-user-timeout=0
 </pre>
 Alternatively you can use <samp>raspi-config</samp> to get the job done for you.
-<h3>Step 5: set up full screen browser</h3>
+<h3>Step 6: set up full screen browser</h3>
 For that we have to arrange a few things first. Create a session resource and copy the following lines to it.<br>
 <samp>/home/pi/.xsessionrc</samp>
 <pre>
@@ -2929,20 +2941,14 @@ Now tell openbox to start chromium in fullscreen without decorations:<br>
 &lt;/openbox_config>
 </pre>
 
-<h3>Step 6: install PHPPE</h3>
+<h3>Step 7: install PHPPE</h3>
 Read further <a onclick='tab_switch("install");'>instructions here</a>. In a nutshell copy index.php there, call diagnostics mode then update with composer or download Pack tarball.
-<h3>Step 7: configure PHPPE</h3>
+<h3>Step 8: configure PHPPE</h3>
 <samp>/var/www/localhost/phppe/config.php</samp>
 <pre class='php'>
 'db' => "sqlite:data/sqlite.db",
 'cache' => "apc",
 </pre>
-<h3>Step 8: configure php for GPIO</h3>
-<p>Add webserver's user to gpio group:</p>
-<pre>
-# addgroup www-data gpio
-</pre>
-<p>Also, you should add <code>/sys/class/gpio</code> and <code>/proc/cpuinfo</code> to open_basedir in your php.ini file.</p>
 <h3>Step 9: Reboot and enjoy!</h3>
 <p>You should see the PHPPE Self Test and Cheat Sheet page in fullscreen after reboot, served by your own Raspberry!</p>
 <p>If you want to control your Raspberry Pi from your PHPPE Application (of course you do), you can use the <a onclick='tab_switch("phppe_gpio");'>GPIO Extension</a> as simply as:</p>
