@@ -2721,10 +2721,10 @@ namespace PHPPE {
                 //! crop from the middle
                 $X = $w;
                 $Y = $h;
-                $c = $x > $y ? floor(abs($x - $y) / 2) : 0;
-                $d = $x > $y ? 0 : floor(abs($y - $x) / 2);
-                $e = $x > $y ? floor($w * $y / $h) : $x;
-                $f = $x > $y ? $y : floor($w * $x / $h);
+                $e = $w > $h ? $x : floor($w * $y / $h);
+                $f = $w > $h ? floor($h * $x / $w) : $y;
+                $c = $w > $h ? 0 : floor(abs($x - $e) / 2);
+                $d = $w > $h ? floor(abs($y - $f) / 2) : 0;
             }
             //! create output image
             $N = imagecreatetruecolor($X, $Y);
