@@ -32,7 +32,7 @@ class Gallery
 {
     private static $self;
     public static $sizes=[];
-    public static $maxSize=512*1024;
+    public static $maxSize=512;
     public static $minQuality=5;
     public static $watermark="";
     public $wyswyg_toolbar = [ "image"=>"gallery/image" ];
@@ -53,8 +53,8 @@ class Gallery
         }
         if (!empty($cfg['maxsize'])) {
             self::$maxSize=intval($cfg['maxsize']);
-            if (self::$maxSize<128*1024)
-                self::$maxSize=128*1024;
+            if (self::$maxSize<128)
+                self::$maxSize=128;
         }
         if (!empty($cfg['watermark']) && file_exists($cfg["Watermark"])) {
             self::$watermark=intval($cfg['watermark']);
@@ -140,7 +140,7 @@ class Gallery
  */
     static function uploadBtn()
     {
-        \PHPPE\View::js("img_loading()", "var d=document.createElement('div'); d.setAttribute('style','position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;text-align:center;padding-top:50%;');d.innerHTML='<img src=\"images/loading.gif\" style=\"position:fixed;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);\">';document.body.appendChild(d);");
+        \PHPPE\View::js("img_loading()", "var d=document.createElement('div'); d.setAttribute('style','position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;text-align:center;padding-top:50%;');d.innerHTML='<img src=\"images/upload.gif\" style=\"position:fixed;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);\">';document.body.appendChild(d);");
         return "<input type='file' name='imglist_upload' onchange='img_loading();this.form.submit();' style='display:none;'>".
         "<input type='button' value='".L("Upload")."' class='setsel_button' onclick=\"this.form['pe_f'].value='imglist';this.form['imglist_upload'].click();\">";
     }
@@ -155,7 +155,7 @@ class Gallery
         "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='wyswyg_search(this,this.nextSibling);'>");
         echo("<div class='wyswyg_gallery wyswyg_scroll'>\n");
         foreach($list as $img) {
-            echo("<img src='gallery/".$img['id']."'>\n");
+            echo("<img src='gallery/1/".$img['id']."'>\n");
         }
         die("</div>");
     }
