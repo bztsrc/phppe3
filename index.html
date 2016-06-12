@@ -2854,13 +2854,15 @@ Tutotiral myaction view
 <div id='raspberry' rel='pi' class='tab'>
 <h1>Setting up PHPPE on Raspberry Pi</h1>
 <h3>Step 1: install raspbian</h3>
-<p>This is quite straightforward. <a href='https://www.raspberrypi.org/downloads/' target='_new'>Download</a> image and use <code>dd</code> utility.</p>
+<p>This is quite straightforward. <a href='https://www.raspberrypi.org/downloads/' target='_new'>Download</a> image and use <code>dd</code> utility.
+You'll need at least <b>stretch</b> for PHP 7.0.</p>
 <h3>Step 2: install packages</h3>
 <p>You'll need these:</p>
 <pre>
-# apt-get install lightdm nginx php5-cli php5-fpm phpp5-apcu php5-gd php5-sqlite openbox chromium
+# apt-get install lightdm nginx php7.0-cli php7.0-fpm php7.0-opcache php7.0-apcu php7.0-gd php7.0-sqlite openbox chromium
 </pre>
-<p>Many of these may have already been installed on your Raspberry, and you can choose alternative db drivers like <samp>php5-pdo_mysql</samp> as well. Note that jessie may not include chromium, so you'll have to use this for RPi2:<br>
+<p>Many of these may have already been installed on your Raspberry, and you can choose alternative db drivers like <samp>php7.0-pdo_mysql</samp> as well.
+For jessie PHP 7 backports, you'll find a lot of resouce on the internet, just google. Note that jessie may not include chromium, so you'll have to use this for RPi2:<br>
 <a href='https://launchpad.net/ubuntu/precise/armhf/chromium-browser'>https://launchpad.net/ubuntu/precise/armhf/chromium-browser</a><br>
 <a href='https://launchpad.net/ubuntu/precise/armhf/chromium-codecs-ffmpeg-extra'>https://launchpad.net/ubuntu/precise/armhf/chromium-codecs-ffmpeg-extra</a>
 </p>
@@ -2882,27 +2884,26 @@ server {
 	}
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
-		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		fastcgi_pass unix:/var/run/php-fpm.sock;
 	}
 }
 </pre>
-Basically we pass control to php5-fpm and we do a little rewrite trick.<br>
+Basically we pass control to php-fpm and we do a little rewrite trick.<br>
 For testing, create <samp>/var/www/localhost/public/index.php</samp>:
 <pre>
-&lt;?php
-phpinfo();
+echo "&lt;?php phpinfo();" >/var/www/localhost/public/index.php
 </pre>
 Now enable and start the service
-s<pre>
+<pre>
 systemctl enable nginx
 systemctl start nginx
 </pre>
-<h3>Step 4: configure php for GPIO</h3>
+<h3>Step 4: grant access for GPIO</h3>
 <p>Add webserver's user to gpio group:</p>
 <pre>
 # addgroup www-data gpio
 </pre>
-<p>Also, you should add <code>/sys/class/gpio</code> and <code>/proc/cpuinfo</code> to open_basedir in your php.ini file.</p>
+<p>Also, you should add <code>/sys/class/gpio</code> and <code>/proc/cpuinfo</code> to open_basedir in your php.ini file as <a onclick='tab_switch("phppe_gpio");'>GPIO Extension</a> uses the sys kernel interface and it detects the pin layout from the revision number.</p>
 <h3>Step 5: set up automatic login</h3>
 In <samp>/etc/lightdm/lightdm.conf</samp>, change the following lines:
 <pre>
