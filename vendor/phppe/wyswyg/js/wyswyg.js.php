@@ -160,13 +160,13 @@ function wyswyg_open(source, icons)
         //! html edit area
         var edit=document.createElement('div');
         edit.setAttribute('id', id+':edit');
-        edit.setAttribute('class', 'wyswyg input');
+        edit.setAttribute('class', 'input wyswyg');
         edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;background:#fff;color:#000;display:none;overflow:auto;');
         if(typeof window.parent['cms_getitem'] == 'function') {
             var style=null, item=window.parent['cms_getitem']();
             if(item!=null) {
                 style=window.getComputedStyle(item, null);
-                edit.setAttribute('class', 'wyswyg input '+item.className);
+                edit.setAttribute('class', 'input wyswyg '+item.className);
             }
             if(style!=null) {
                 //! copy only a few attributes, because designmode would fail otherwise...
@@ -225,6 +225,7 @@ function wyswyg_open(source, icons)
                     txt+=tag.replace('>'," onclick='event.preventDefault();pe_p();' onmouseover='event.preventDefault();wyswyg_setfont(event,\""+i.substr(12)+"\",\""+id+"\");'>")+LANG[i]+tag.replace('<','</');
                 }
         }
+//"
         style.innerHTML=txt;
         ib.appendChild(style);
 
