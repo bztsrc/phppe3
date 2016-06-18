@@ -1829,7 +1829,7 @@ namespace PHPPE {
                     self::$hdr['jslib'][$l] = sprintf('%02d', $p).realpath($a);
                 }
             }
-            //! also register init hook and call it on onload event
+            //! also register init hook and call it on domcomplete event
             $i = trim($i);
             if (!empty($i) && (empty(self::$hdr['js']['init()']) || strpos(self::$hdr['js']['init()'], $i) === false)) {
                 self::js('init()', $i.($i[strlen($i) - 1] != ';' ? ';' : ''), true);
@@ -2483,7 +2483,7 @@ namespace PHPPE {
                         }
                     }
                     $O .= "</style>\n";
-                    echo "$O</head>\n<body".(!empty(self::$hdr['js']['init()']) ? " onload='init();'" : '').">\n";
+                    echo "$O</head>\n<body>\n";
                     //! display PHPPE panel
                     if ($P) {
                         $H = " class='sub' style='visibility:hidden;' onmousemove='return pe_w();'";
@@ -2649,9 +2649,15 @@ namespace PHPPE {
                         // @codeCoverageIgnoreEnd
                     }
                     if (!empty($c)) {
-                        $O .= $d.">\nvar pe_ot=".($P ? 31 : 0)."$a;\n";
+                        //! Js variables: pe_i=init executed, pe_ot=offset top
+                        $O .= $d.">\nvar pe_i=0,pe_ot=".($P ? 31 : 0)."$a;\n";
                         foreach ($c as $fu => $co) {
-                            $O .= "function $fu {".$co."}\n";
+                            //! make sure init only gets called once
+                            $O .= "function $fu {".($fu=="init()"?"if(pe_i)return;pe_i=1;":"").$co."}\n";
+                        }
+                        //! add event listeners to call init() on page load
+                        if(!empty(self::$hdr['js']['init()'])) {
+                            $O .= "document.addEventListener('DOMContentLoaded', init);window.addEventListener('load', init);setTimeout(init);";
                         }
                         $O .= $e;
                     }
