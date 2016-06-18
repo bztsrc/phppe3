@@ -303,7 +303,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li><A href='https://phpunit.de' target='_new'>PHPUnit</a> compatibility with <a href='http://bztsrc.github.io/phppe3/coverage' target='_new'>100% code coverage</a></li>
 <li><A href='https://getbootstrap.com/' target='_new'>Bootstrap</a> compatibilty</li>
 <li>Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box</li>
-<li>Very low footprint, less than 768KiB, ideal on small computers such as <a href='https://www.raspberrypi.org/' target='_new'>Raspberry Pi</a></li>
+<li>Very low footprint, ideal on small computers such as <a href='https://www.raspberrypi.org/' target='_new'>Raspberry Pi</a></li>
 <li>Highly modular, easy to expand structure with Class autoloader</li>
 <li>Self consistency check and diagnostics (even fix!)</li>
 <li>Environment auto-detection (like base url, browser's language, timezone and screen size)</li>
@@ -321,7 +321,7 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li>Built-in Content Server for CMS support</li>
 <li>Uses View layer to detect Models (flexibility you've never seen)</li>
 </ul>
-<p>Of course one single file is limited, so here's the <a href='http://bztsrc.github.io/phppe3/phppe3_core.tgz'>PHPPE Pack</a> (~80KiB) to save the day and give you an easy start.</p>
+<p>Of course one single file is limited, so here's the <a href='http://bztsrc.github.io/phppe3/phppe3_core.tgz'>PHPPE Pack</a> (another ~80KiB) to save the day and give you an easy start.</p>
 <p>For full CMS capability you'll also need the Content Editor with <a href='http://bztsrc.github.io/phppe3/phppe3_cms.tgz'>PHPPE CMS</a> (28KiB), because PHPPE Core on it's own only serves contents.</p>
 
 <h2>Requirements</h2>
@@ -1231,24 +1231,26 @@ inheritance involved, but controllers should reside in the <a onclick='tab_switc
 
 <div id='views' class='tab' rel='templater'>
 <h1>Views</h1>
-<div class='alert alert-info'>View layer is omited for CLI commmands, unless a template name is set.</div>
+<p>Unlike other frameworks, in PHPPE the templater is <b>not</b> used to generate the entire output. Instead you've library
+calls to add links, meta tags, menus, stylesheets and javascripts to it. The templater is limited to the area between <code>&lt;body></code> and <code>&lt;/body></code> only. This way PHPPE can manage asset aggregation and minification transparently.
 <h3>Template used</h3>
-<p>Generates view for the first template found in order:</p>
+<div class='alert alert-info'>View layer is omited for CLI commmands, unless a template name is explicitly set.</div>
+<p>The view is generated using the first template found in order:</p>
 <ol>
 <li>PHPPE\Core::$core->template (unless application overwrites it, it defaults to <i>application_action</i>)</li>
 <li><i>application_action</i></li>
 <li><i>application</i></li>
 <li>404</li>
 </ol>
-<p>If the application clears the template's name, the view layer will not be used, and therefore there'll be no 404 page either.</p>
+<p>If the application clears the template's name, the view layer will not be used at all, and therefore there'll be no 404 page either.</p>
 <h3>Template lookup</h3>
 <p>Each of the above list will be looked up in:</p>
 <table class='table table-striped'>
 <tr><td><b>views</b> table id='<i>template</i>'</td><td>if datasource available, views table will be checked.</td></tr>
-<tr><td><b>app/views/<i>template</i>.tpl</b></td><td>if no datasource or template not found in database, application's directory will be checked. This way your application can override any view templates shipped with extensions.</td></tr>
+<tr><td><b>app/views/<i>template</i>.tpl</b></td><td>if no datasource connected or the template is not found in views table, application's directory will be checked. This way your application can override any view templates shipped with extensions.</td></tr>
 <tr><td><b>vendor/phppe/<i>application</i>/views/<i>template</i>.tpl</b></td><td>finally the template will be searched for in corresponding extension's directory.</td></tr>
 </table>
-<div class='alert alert-info'><b>HINT</b>: when using database, views can also add extra meta tags and stylesheets to the output.</div>
+<div class='alert alert-info'><b>HINT</b>: with database views you can add extra, template specific meta tags and stylesheets to the output.</div>
 <h3>Using the templater</h3>
 <div class='row'>
     <div class='col-md-3'>
@@ -1289,17 +1291,18 @@ See expression tag below.</p>
 >
  ...
 &lt;/form></pre>
-<p>Starts a form for an object. There's no closing tag, use the usual <code>&lt;/form></code> (without !). Inside a form, you can refer to it's fields with <code>&lt;!=></code>. Also, every <code>&lt;!field></code> can load and save it's properties.<br>
-Object can be either an instance or an associative array. If neither application/action url nor onsubmitjs specified, it will post the form to the same action from which it was generated.</p>
+<p>Starts a form for an object. There's no closing tag, use the usual <code>&lt;/form></code> (without !). Inside a form, you can refer to it's fields with <code>&lt;!=></code>. Also, every addon can load and save it's properties.<br>
+Object can be either an instance or an associative array. If neither application/action url nor onsubmitjs specified, it will post the form to the same url as it was generated from.</p>
 </div>
 <div class='col-md-3'>
 <h4>Date/Time formating</h4>
-<p>Human readable format and time units are specified in translations (available in <a onclick='tab_switch("install:7");'>PHPPE Pack</a>). Without that it will fallback to ISO date format (YYYY-mm-dd HH:MM:SS) and English units (sec, min, hour, day etc.).</p>
+<p>Human readable format and time units are specified in translations (available in <a onclick='tab_switch("install:7");'>PHPPE Pack</a>). Without that these tags will fallback to ISO date format (YYYY-mm-dd HH:MM:SS) and English units (sec, min, hour, day etc.).</p>
 <pre>&lt;!date expression></pre>
 <p>Display an integer (UTC UNIX timestamp) as a human readable, localized date.</p>
 <pre>&lt;!time expression></pre>
 <p>Similar to <code>&lt;!date></code>, but also displays time.</p>
-<pre>&lt;!difftime expression></pre>
+<pre>&lt;!difftime expression>
+&lt;!difftime tstamp1 tstamp2></pre>
 <p>Display the integer as difference to dates.</p>
 </div><div class='col-md-3'>
 <h4>Localization</h4>
@@ -1311,7 +1314,7 @@ Object can be either an instance or an associative array. If neither application
 <h4>Misc. tags</h4>
 <pre>&lt;!dump field></pre>
 <p>Converts object or a field to a human readble string and displays it along with it's name.<br>
-This only works if runlevel is at least 1 (verbose or testing). This level uses <i>print_r()</i> for dumping, higher levels (developer and debug) use <i>var_dump()</i>.</p>
+This only works if runlevel is at least 1 (verbose or testing). These level use <i>print_r()</i> for dumping, higher levels (developer and debug) use <i>var_dump()</i>.</p>
 <br>
 <pre>&lt;!app></pre>
 <p>This tag is unique. It's limited to <a onclick='tab_switch("sitebuilds");'>sitebuilds</a> at one position only.</p>
@@ -1319,24 +1322,29 @@ This only works if runlevel is at least 1 (verbose or testing). This level uses 
 </div>
 <a name='expression'></a>
 <h4>Expressions</h4>
-<pre><span style='color:#808080;'>//variable, expression or field. In iterations you can use special variables
-//KEY=key of the array you're iteration on; VALUE=current array element if not object;
-//IDX=iteration counter; ODD=true if IDX is odd (for nice easy readable tables)</span>
+<pre><span style='color:#808080;'>//variable, expression or object field.</span>
 &lt;!=expression></pre>
-No php allowed in expressions; you have to convert both property names (<samp>$obj->field</samp>) and associative arrays (<samp>$obj["field"]</samp>) to <samp>obj.field</samp>. Also note that there's no "greater than" operator, if you plan to use, swap sides of the expression and use "less than" operator. Besides of these it works like php, you can use number_format() and sprintf() functions as well (<samp>&lt;!=sprintf("%12d",obj.numval*2+10)>, &lt;!=myobject.mymethod(myobject.field3)></samp>).<br>
-In nested iterations you can refer to outer array's fields with prefixing fields by "parent.". Also, "parent.KEY" and "parent.IDX" will work as expected.<br>
-Calling PHPPE Core library would require the prefix "core.", like
+<p>No php allowed in expressions; you have to convert both property names (<samp>$obj->field</samp>) and associative arrays (<samp>$obj["field"]</samp>) to <code>obj.field</code>. Also note that there's no "greater than" operator, if you plan to use, swap sides of the expression and use "less than" operator. Besides of these it works like php, you can use number_format() and sprintf() functions as well (<samp>&lt;!=sprintf("%12d",obj.numval*2+10)>, &lt;!=myobject.mymethod(myobject.field3)></samp>).</p>
+<p>Inside <code>&lt;foreach></code> iteration blocks you can use a couple special variables as well:
+<ul>
+<li>KEY = key of the array you're iteration on;</li>
+<li>VALUE = current array element if it's a scalar value without fields;</li>
+<li>IDX = iteration counter;</li>
+<li>ODD = true if IDX is odd (for nice easy readable, striped blocks)</li>
+</ul>
+In nested iterations you can refer to outer array's fields by prefixing with "parent.". Also, "parent.KEY" and "parent.IDX" will work as expected.</p>
+<p>Calling PHPPE Core library would require the prefix "core.", like
 <pre>&lt;!=(core.isinst("MyAddOn") && MyAddOn.mymethod())>
 &lt;!=core.getval("core.lib()")></pre>
-When <a onclick='tab_switch("configuration");'>PHPPE\Core::$core->allowed</a> array is set, only functions listed there will work, save core functions and L() which are available all the time.
-Templater will generate <span style="background:#F00000;color:#FEC0C0;padding:3px;font-weight:bold;">E-BADFNC</span> error if it's set and referenced function is not in it and it's not a globally allowed function either.<br><br>
-You can access the basic object's properties and methods with
+You can limit the functions if <a onclick='tab_switch("configuration");'>PHPPE\Core::$core->allowed</a> array is set: only functions listed there will work, save core functions and L() which are always available.
+Otherwise templater will generate an <span style="background:#F00000;color:#FEC0C0;padding:3px;font-weight:bold;">E-BADFNC</span> error if referenced function is not listed.</p>
+<p>You can access the framework object's properties and methods with
 <table class='table table-striped'>
 <tr><td><a onclick='tab_switch("phppe_core");'>PHPPE\Core::$core</a></td><td><code>core.</code></td><td><i>PHPPE Core</i></td></tr>
 <tr><td><a onclick='tab_switch("phppe_users");'>PHPPE\Core::$user</a></td><td><code>user.</code></td><td><i>Logged in user</i></td></tr>
 <tr><td><a onclick='tab_switch("phppe_client");'>PHPPE\Core::$client</a></td><td><code>client.</code></td><td><i>Client's (browser's) properties</i></td></tr>
 <tr><td><a onclick='tab_switch("controllers");'>Controller instance</a></td><td><code>app.</code></td><td><i>Your application's controller class. Properties can be accessed without prefix as well</i></td></tr>
-</table>
+</table></p>
 <h4>Templater Add-Ons</h4>
 <p>Both field types and widgets are extended from <a onclick='tab_switch("phppe_addon");'>PHPPE\Addon</a> class. The difference is how you refer to them in view templates.</p>
 <pre>
@@ -1455,22 +1463,23 @@ Services provide library functions to PHPPE, or can extend functionality by impl
 <div id='sitebuilds' class='tab' rel='frame,photoshop,gimp,html,layout'>
 <h1>Sitebuilds</h1>
 <h3>The frame concept</h3>
-<p>There's a special template in PHPPE, that can hold a <code>&lt;!app&gt;</code> tag. This separates the page header (logo, header image etc.) from the page footer (copyright notice, impressum link etc.). So minimal frame is this tag alone.</p>
+<p>There's a special template in PHPPE, that can have an <code>&lt;!app&gt;</code> tag. This tag separates the page header (logo, header image etc.) from the page footer (copyright notice, impressum link etc.). So minimal frame is this tag alone. If you omit this tag, your application's output will not be included in the final output.</p>
 <div style='text-align:center;'>
-    <div style='width:100px;background:#E0E0E0;display:inline-block;margin:0px;'>menu</div><div style='width:100px;background:#E0E0E0;display:inline-block;margin:0px;'>(Panel)</div><div style='width:100px;background:#E0E0E0;display:inline-block;margin:0px;'>status dock</div><br>
+    <div style='width:100px;background:#E0E0E0;display:inline-block;margin:0px;'>menu</div><div style='width:100px;background:#E0E0E0;display:inline-block;margin:0px;'><i>(Panel)</i></div><div style='width:100px;background:#E0E0E0;display:inline-block;margin:0px;'>status dock</div><br>
 <div style='width:300px;background:#A0A0A0;display:inline-block;margin:0px;'>page header<br>
-(Frame)<br>
+<i>(Frame)</i><br>
 <div style='width:100px;background:#C0C0C0;display:inline-block;margin:0px;'>&lt;!app&gt;</div><br>
 page footer</div>
 </div><br>
 <p>This frame usually describes the basic layout of the website: where's the menu, where's the navigation bar, where are the ads etc.</p>
-<p>For AJAX loaded applications and popup windows you can turn it off, leaving the entire space to the application (full screen mode if you like) with</p>
-<p><pre class='lineno'>1</pre>
+<p>For AJAX loaded applications and popup windows you can turn the panel and the frame off, leaving the entire space to the application (full screen mode if you like) with</p>
+<p><pre class='lineno'>1<br>2</pre>
 <pre class='php'>
+<span class='variable'>PHPPE\Core::$core</span>->nopanel = <span class='keyword'>true</span>;
 <span class='variable'>PHPPE\Core::$core</span>->noframe = <span class='keyword'>true</span>;
 </pre></p>
 <h3>Layouts</h3>
-<p>In the views table of the database there are special records marked by a site build name. These are the layouts that can be used as frame. All of them must contain an <code>&lt;!app&gt;</code> tag.</p>
+<p>In the views table of the database there are special records marked by a site build name. These are the layouts that can be used as frame, one at a time. All of them must contain an <code>&lt;!app&gt;</code> tag.</p>
 <p>With <a onclick='tab_switch("downloads");'>PHPPE CMS</a> you can manage views on a nice web interface, and you can select one sitebuild to be used as frame with a single click.</p>
 </div>
 
@@ -4505,6 +4514,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
     <li><a onclick='tab_switch("fetch");'>PHPPE\DS::fetch()</a></li>
     <li><a onclick='tab_switch("field");'>PHPPE\DS::field()</a></li>
     <li><a onclick='tab_switch("tree");'>PHPPE\DS::tree()</a></li>
+    <li><a onclick='tab_switch("obj2str");'>PHPPE\Core::obj2str()</a></li>
 </ul>
 </div>
 
