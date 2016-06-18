@@ -1352,7 +1352,15 @@ so you won't have to create more templates for the same object. Similarly "widge
 If you use "var" instead of "field", the show() hook will be called, edit() will be limited to edit mode only ($_SESSION['pe_e'] is true). If edit() hook is undefined, fallbacks to show(). If neither show() method found, "var" will output raw value, while "field" reports an error.</p>
 <p>Widgets works just like "var", show() method should draw it's face, and edit() method displays a widget configuration form (optional, if $_SESSION['pe_c'] is true).<br>
 Technically "var" and "widget" are the same, the difference is limited to the meaning of what edit() renders, and when edit() gets called instead of show().</p>
-<p>The "cms" tag will use edit() only if page opened in <a onclick='tab_switch("contents");'>Content Editor</a>. Normally it won't display anything unless it's marked mandatory (by an asterisk prefix in type), when it will use show(), just like "var". Also you can specify editor mode only templater blocks with "<code>&lt;!if cms></code>...<code>&lt;!/if></code>", see conditional block above.
+<p>The "cms" tag will use edit() only if page opened in <a onclick='tab_switch("contents");'>Content Editor</a>. Normally it won't display anything unless it's marked mandatory (by an asterisk prefix in type), when it will use show(), just like "var". Also you can specify editor mode only templater blocks with "<code>&lt;!if cms></code>...<code>&lt;!/if></code>", see conditional block above. The "cms" tag is special in a way as it accepts extra dimension parameters to help intergation of the editor area into your layout more smoothly.
+<pre>
+<span style='color:#808080;'>//autodetect editor position and size</span>
+&lt;!cms
+<span style='color:#808080;'>//place editor at icon in given size (pixels)</span>
+&lt;!cms(width,height)
+<span style='color:#808080;'>//display editor as a modal occupying given percentage of the screen</span>
+&lt;!cms(0,0,percentage)
+</pre>
 </p>
 <p><b>Comparision</b></p>
 <table class='table table-bordered'>
@@ -1572,7 +1580,7 @@ mkdir vendor/phppe/EplosCMS && curl https://bztsrc.github.io/phppe3/phppe3_eplos
 <tr><td>Service events:</td><td><a onclick='tab_switch("events:2");'>init($cfg)</a>, <a onclick='tab_switch("events:3");'>diag()</a>, <a onclick='tab_switch("events:5");'>route($app,$action)</a>, <a onclick='tab_switch("events:6");'>ctrl($app,$action)</a>, <a onclick='tab_switch("events:7");'>view($html)</a>, <a onclick='tab_switch("events:8");'>stat()</a>, <a onclick='tab_switch("events:9");'>cron()</a></td></tr>
 <tr><td>Filtering event:</td><td><a onclick='tab_switch("events:4");'>filter()</a></td></tr>
 <tr><td>Add-On events:</td><td><a onclick='tab_switch("events:10");'>init()</a>, <a onclick='tab_switch("events:11");'>validate($name,$value,$required,$args,$attribs)</a>, <a onclick='tab_switch("events:12");'>show()</a>, <a onclick='tab_switch("events:12");'>edit()</a></td></tr>
-<tr><td>JavaScript event:</td><td><a onclick='tab_switch("events:13");'>onload</a></td></tr>
+<tr><td>JavaScript event:</td><td><a onclick='tab_switch("events:13");'>init()</a></td></tr>
 </table>
 <h3>Service initialization event</h3>
 <table class='table table-striped'>
@@ -1816,15 +1824,15 @@ Note that Add-On class' constructor can be called several times, but init event 
 	<span class='keyword'>return</span> <span class='stringconst'>"&lt;input type='hidden' name='"</span>.<span class='variable'>$this->fld</span>.<span class='stringconst'>"' value='"</span>.<span class='function'>htmlspecialchars</span>(<span class='variable'>$this->value</span>).<span class='stringconst'>"'&gt;"</span>;
 }
 </pre></p>
-<div class='alert alert-info'><b>NOTE</b> that templater tags and user session influence which one of these gets called, see <a onclick='tab_switch("views:11");'>templater</a> for details.</div>
+<div class='alert alert-info'><b>NOTE</b> that templater tags and user session influence which one of these gets called, see <a onclick='tab_switch("views:13");'>templater</a> for details.</div>
 
-<h3>JavaScript onload event</h3>
+<h3>JavaScript init event</h3>
 <table class='table table-striped'>
-<tr><th>Defined</th><td>as a second argument to <a onclick='tab_switch("jslib");'>PHPPE\View::jslib()</a> calls.</td></tr>
-<tr><th>Called</th><td>when the page and assets has been loaded on client's side</td></tr>
-<tr><th>Purpose</th><td>do JavaScript stuff that has to be done after the page and every JavaScript library fully loaded.</td></tr>
+<tr><th>Defined</th><td>as a second argument to <a onclick='tab_switch("jslib");'>PHPPE\View::jslib()</a> calls, usually <code>(library)_init()</code>.</td></tr>
+<tr><th>Called</th><td>on client side as soon as the DOM can be manipulated</td></tr>
+<tr><th>Purpose</th><td>do JavaScript stuff that has to be done after the page and JavaScript libraries loaded.</td></tr>
 </table>
-<div class='alert alert-info'>This is a client side event. No PHP at server side involved. If you really want that, use a <a onclick='tab_switch("assets");'>dynamic asset</a> as a first argument to PHPPE\View::jslib().</div>
+<div class='alert alert-info'>This is a pure client side event. No server side PHP involved. If you want that, use a <a onclick='tab_switch("assets");'>dynamic asset</a> as a first argument to PHPPE\View::jslib().</div>
 </div>
 
 <div id='extensions' class='tab' rel='upgrade'>
@@ -4821,7 +4829,7 @@ list(<span class='variable'>$app</span>, <span class='variable'>$action</span>, 
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
 <tr><td>string <span>$file</span></td><td>Name of the library to add</td></tr>
-<tr><td class='optional'>string <span>$initcode</span></td><td>Code to be executed on <a onclick='tab_switch("events:13");'>onload event</a> to initialize the library</td></tr>
+<tr><td class='optional'>string <span>$initcode</span></td><td>Code to be executed on <a onclick='tab_switch("events:13");'>init event</a> to initialize the library</td></tr>
 <tr><td class='optional'>int <span>$priority</span></td><td>Define in which order to be added.<br>
 0 = JavaScript framework libraries like jQuery<br>
 1-9 = JavaScript basic libraries like bootstrap<br>
