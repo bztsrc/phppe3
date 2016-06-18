@@ -14,7 +14,7 @@ This 80k bytes of PHP code will give you:
 - [PHPUnit](https://phpunit.de) compatibility with [100% code coverage](http://bztsrc.github.io/phppe3/coverage)
 - [Bootstrap](https://getbootstrap.com/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
-- Very low footprint, less than 768KiB, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
+- Very low footprint, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
 - Highly modular, easy to expand structure with Class autoloader
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
@@ -32,7 +32,7 @@ This 80k bytes of PHP code will give you:
 - Built-in Content Server for CMS support
 - Uses View layer to detect Models (flexibility you've never seen)
 
-Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (~80KiB) to save the day and give you an easy start.
+Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (another ~80KiB) to save the day and give you an easy start.
 
 For full CMS capability you'll also need the Content Editor with [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (28KiB), because PHPPE Core on it's own only serves contents.
 
