@@ -45,6 +45,9 @@
 		},
 		"Security":{
 			"masterpasswd":"*string($2y$10$rrDFYORgliLsPQbl5slUu.gZdhl1LN6AsdRSDUiFgnizXPYEjYoTO)",
+			"blacklist":"string",
+			"allowed":"string",
+			"denied":"string",
 			"secsession":"boolean",
 			"noctrl":"boolean(false,No,Yes)",
 			"nopanel":"notboolean"
