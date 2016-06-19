@@ -195,8 +195,8 @@ namespace PHPPE {
                 //! save logged in user if any
                 $d = 'pe_u';
                 $u = @$_SESSION[$d];
-                //! keep user object, but clear remote configuration
-                $u->data['remote']=[];
+                //! keep user object, but clear preferences
+                $u->data=[];
                 $_SESSION = [];
                 $_SESSION[$d] = $u;
                 //! redirect user to reload everything
@@ -638,7 +638,6 @@ namespace PHPPE {
                 $u = $_SESSION['pe_r'];
                 unset($_SESSION['pe_r']);
             }
-            session_write_close();
             //redirect user
             header('HTTP/1.1 302 Found');
             $f = basename(__FILE__);
@@ -964,7 +963,7 @@ namespace PHPPE {
             //! apply sql updates
             $D = [];
             foreach ($d ? ['', '.'.$d->name] : [''] as $s) {
-                $D += array_fill_keys(@glob('vendor/phppe/*/sql/upd_*'.$s.'.sql'), 0);
+                $D += array_fill_keys(@glob('vendor/phppe/*/sql/upd_*'.$s.'.sql',GLOB_NOSORT), 0);
             }
             if (count($D)) {
                 echo "DIAG-I: db update\n";
@@ -1133,10 +1132,10 @@ namespace PHPPE {
                     $d = trim(!empty($d[1]) ? $d[1] : $d[0]);
                     list($D) = explode('_', $d);
                     //! look for engine specific scheme
-                    $f = @glob('vendor/phppe/*/sql/'.$d.$m.'.sql')[0];
+                    $f = @glob('vendor/phppe/*/sql/'.$d.$m.'.sql',GLOB_NOSORT)[0];
                     //! common scheme
                     if (empty($f)) {
-                        $f = @glob('vendor/phppe/*/sql/'.$d.'.sql')[0];
+                        $f = @glob('vendor/phppe/*/sql/'.$d.'.sql',GLOB_NOSORT)[0];
                     }
                     if (!empty($f) && file_exists($f)) {
                         $c = file_get_contents($f);
@@ -1914,6 +1913,9 @@ namespace PHPPE {
 
             //! we should check cache here, but it's already handled
             //! by Core::run() because this code never reached when cached
+
+            //! clear validators
+            $_SESSION['pe_v'] = [];
 
             //! if controller cleared template name, return empty string
             $T = "";
@@ -3166,7 +3168,7 @@ class ClassMap extends Extension
         $D = [];
         $R = [];
         foreach (['*/*', '*/*/*', '*/*/*/*', '*/*/*/*/*', '*/*/*/*/*/*'] as $v) {
-            $D += array_fill_keys(@glob('vendor/'.$v.'.php'), 0);
+            $D += array_fill_keys(@glob('vendor/'.$v.'.php', GLOB_NOSORT), 0);
         }
         //iterate on list
         foreach ($D as $fn => $v) {
@@ -3388,6 +3390,10 @@ class ClassMap extends Extension
             //! functions allowed in view expressions
             if (!empty($this->allowed) && !is_array($this->allowed)) {
                 $this->allowed = explode(',', $this->allowed);
+            }
+            //! blacklisted domains
+            if (!empty($this->blacklist) && !is_array($this->blacklist)) {
+                $this->blacklist = explode(',', $this->blacklist);
             }
             //! disabled extensions
             if (!is_array($this->disabled)) {
@@ -3659,7 +3665,7 @@ class ClassMap extends Extension
             $A = ['*', '*/*', '*/*/*', '*/*/*/*', '*/*/*/*/*'];
             foreach (['data/', 'vendor/'] as $d) {
                 foreach ($A as $v) {
-                    $D += array_fill_keys(@glob($d.$v), 0);
+                    $D += array_fill_keys(@glob($d.$v,GLOB_NOSORT), 0);
                 }
             }
             //! $D now has all installed files
@@ -3758,7 +3764,6 @@ class ClassMap extends Extension
             if (!empty($_SESSION['pe_v'])) {
                 self::$v = $_SESSION['pe_v'];
             }
-            $_SESSION['pe_v'] = [];
 
             self::bm("tokens");
             //! initialize view layer
@@ -4519,7 +4524,7 @@ namespace PHPPE\Cache {
         }
         public function cronMinute($args)
         {
-            $files = glob('.tmp/cache/*/*/*.ttl');
+            $files = glob('.tmp/cache/*/*/*.ttl',GLOB_NOSORT);
             foreach ($files as $f) {
                 $ttl = intval(@file_get_contents($f));
                 $cf = substr($f, 0, strlen($f) - 4);
@@ -4921,8 +4926,10 @@ namespace PHPPE\AddOn {
         }
         public static function validate($n, &$v, $a, $t)
         {
+            $r=preg_match("/^.+\@((\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?))$/i", $v, $m);
+            if($r && !empty(Core::$core->blacklist) && in_array($m[1],Core::$core->blacklist)) { $r=0; $v=""; }
             return [
-                preg_match("/^.+\@(\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?)$/i", $v),
+                $r,
                 'invalid email address',
            ];
         }

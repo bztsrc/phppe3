@@ -172,10 +172,16 @@ class Email extends Extension
     public function attachFile($file, $mime = '')
     {
         if (!empty($file)) {
-            $this->attach[] = [
-                'file' => $file,
-                'mime' => !empty($mime) && strpos($mime, '/') ? $mime : mime_content_type($file),
-            ];
+            $fn = "";
+            foreach ([$file, '.tmp/'.$file, 'data/'.$file, 'vendor/phppe/*/'.$file] as $v) {
+                $fn = @glob($v)[0];
+                if(!empty($fn)) break;
+            }
+            if(!empty($fn))
+                $this->attach[] = [
+                    'file' => basename($file),
+                    'mime' => !empty($mime) && strpos($mime, '/') ? $mime : mime_content_type($fn),
+                ];
         }
 
         return $this;

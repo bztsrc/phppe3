@@ -30,16 +30,6 @@ DIV.dump PRE { overflow:auto;max-height:300px; }
 <a href='http://validator.w3.org/check?uri=referer' target='_blank'>W3C HTML <!=L("Validator")></a> |
 <a href='http://jigsaw.w3.org/css-validator/check/referer' target='_blank'>W3C CSS <!=L("Validator")></a>
 </p>
-<!if core.isError()>
-<div class='alert alert-danger'>
-    <b><!=L("Form validation error!")></b><br/>
-    <!foreach core.error()>
-        <!foreach VALUE>
-            &nbsp;&nbsp;<!=VALUE><br/>
-        <!/foreach>
-    <!/foreach>
-</div>
-<!/if>
 
 <div class="panel panel-primary">
   <div class="panel-heading"><b><!=L("Environment")></b></div>
@@ -303,6 +293,17 @@ Built-in object dumper for debugging.
     </div>
   </div>
 </div>
+
+<!if core.isError()>
+<div class='alert alert-danger'>
+    <b><!=L("Form validation error!")></b><br/>
+    <!foreach core.error()>
+        <!foreach VALUE>
+            &nbsp;&nbsp;<!=VALUE><br/>
+        <!/foreach>
+    <!/foreach>
+</div>
+<!/if>
 
 <!form obj>
 <div class="panel panel-primary">
