@@ -809,6 +809,7 @@ these are only the most commonly used ones.</p>
 <tr><td><b>mailer</b></td><td>Email backend, used by PHPPE Pack's <a onclick='tab_switch("phppe_email");'>Email</a> sender, like "smtp://[(user)[:(pass)@]](server)[:(port)][/(sender email address)]"</td></tr>
 <tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
 <tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
+<tr><td><b>blacklist</b></td><td>list of unwanted domains (for example in email addresses)</td></tr>
 <tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("developer:6");'>passwd</a> utility to generate hash)</td></tr>
 <tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Extensions repository</a> section.</td></tr>
 <tr><td><b>...</b></td><td>See <a onclick='tab_switch("phppe_core");'>PHPPE\Core</a> for all properties</td></tr>
@@ -3020,6 +3021,7 @@ Some properties are run-time generated, others can be <a onclick='tab_switch("co
 <tr><td><var>PHPPE\Core::$core-&gt;noctrl</var></td><td>Disable dynamic content controller scripts</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;allowed</var></td><td>list of allowed functions in a view template, leave it unset for no restrictions</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;disabled</var></td><td>list of disabled Extensions</td></tr>
+<tr><td><var>PHPPE\Core::$core-&gt;blacklist</var></td><td>list of unwanted domains (for example in email addresses)</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;repos</var></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Repositories</a></td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;output</var></td><td>Output format, defaults to "html"</td></tr>
 <tr><td><var>PHPPE\Core::$core-&gt;masterpasswd</var></td><td>Encrypted password hash for superadmin (works even if PHPPE\Users class does not exists)</td></tr>
