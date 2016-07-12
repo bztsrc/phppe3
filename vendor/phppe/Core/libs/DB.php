@@ -22,6 +22,7 @@
  * @author bzt
  * @date 1 Jan 2016
  * @brief A very basic SQL Query Builder, included in Pack
+ * @todo Build sql according to selected driver, using $db->s loaded from db_(driver).php
  */
 
 namespace PHPPE;
@@ -56,9 +57,9 @@ class DB extends Extension
     /**
      * Alias of DS::like()
      *
-     * @param string
+     * @param string    user input
      *
-     * @return sql-safe search ready like phrase
+     * @return string   sql-safe search ready like phrase
      */
     public static function like($str)
     {
@@ -68,10 +69,10 @@ class DB extends Extension
     /**
      * Define a select query with table.
      *
-     * @param table table name
-     * @param alias alias name for table
+     * @param string    table name
+     * @param string    alias name for table
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public static function select($table, $alias = null)
     {
@@ -85,10 +86,10 @@ class DB extends Extension
     /**
      * Define an update command on table.
      *
-     * @param table table name
-     * @param alias alias name for table
+     * @param string    table name
+     * @param string    alias name for table
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public static function update($table, $alias = null)
     {
@@ -102,10 +103,10 @@ class DB extends Extension
     /**
      * Define an insert command into table.
      *
-     * @param table table name
-     * @param alias alias name for table
+     * @param string    table name
+     * @param string    alias name for table
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public static function insert($table, $alias = null)
     {
@@ -119,10 +120,10 @@ class DB extends Extension
     /**
      * Define a replace command into table.
      *
-     * @param table table name
-     * @param alias alias name for table
+     * @param string    table name
+     * @param string    alias name for table
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public static function replace($table, $alias = null)
     {
@@ -136,9 +137,9 @@ class DB extends Extension
     /**
      * Define a table delete command.
      *
-     * @param table table name
+     * @param string    table name
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public static function delete($table, $alias = null)
     {
@@ -156,9 +157,9 @@ class DB extends Extension
     /**
      * Define a table truncate command.
      *
-     * @param table table name
+     * @param string    table name
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public static function truncate($table)
     {
@@ -172,10 +173,10 @@ class DB extends Extension
     /**
      * Define a table multiplication command.
      *
-     * @param table table name
-     * @param alias alias name for table
+     * @param string    table name
+     * @param string    alias name for table
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public function table($table, $alias = '')
     {
@@ -187,12 +188,12 @@ class DB extends Extension
     /**
      * Define a table join command.
      *
-     * @param type join type ('left', 'right', 'inner', 'outter' etc.)
-     * @param table table name
-     * @param on criteria
-     * @param alias alias name for table
+     * @param string    join type ('left', 'right', 'inner', 'outter' etc.)
+     * @param string    table name
+     * @param string    on criteria
+     * @param string    alias name for table
      *
-     * @return DB instance
+     * @return DB       instance
      */
     public function join($type, $table, $on, $alias = '')
     {
@@ -207,9 +208,9 @@ class DB extends Extension
     /**
      * Add fields to query.
      *
-     * @param fields array or string
+     * @param string/array  fields
      *
-     * @return DB instance
+     * @return DB           instance
      */
     public function fields($fields)
     {
@@ -225,9 +226,9 @@ class DB extends Extension
     /**
      * Add group by to query.
      *
-     * @param fields array or string
+     * @param string/array  fields
      *
-     * @return DB instance
+     * @return DB           instance
      */
     public function groupBy($fields)
     {
@@ -243,9 +244,9 @@ class DB extends Extension
     /**
      * Add order by to query.
      *
-     * @param fields array or string
+     * @param string/array  fields
      *
-     * @return DB instance
+     * @return DB           instance
      */
     public function orderBy($fields)
     {
@@ -258,6 +259,7 @@ class DB extends Extension
         return $this;
     }
 
+    // private helper
     private function condition($type, $wheres, $op = 'AND')
     {
         $op = strtoupper($op);
@@ -296,10 +298,10 @@ class DB extends Extension
     /**
      * Add where clause to query.
      *
-     * @param wheres array or string, array element can be [left,condition,right]
-     * @param op operator, 'AND' or 'OR'. Only used if array passed
+     * @param string/array  wheres, array element can be [left,condition,right]
+     * @param string        operator, 'AND' or 'OR'. Only used if array passed
      *
-     * @return DB instance
+     * @return DB           instance
      */
     public function where($wheres, $op = 'AND')
     {
@@ -309,10 +311,10 @@ class DB extends Extension
     /**
      * Add having clause to query.
      *
-     * @param wheres array or string, array element can be [left,condition,right]
-     * @param op operator, 'AND' or 'OR'. Only used if array passed
+     * @param string/array  wheres, array element can be [left,condition,right]
+     * @param string        operator, 'AND' or 'OR'. Only used if array passed
      *
-     * @return DB instance
+     * @return DB           instance
      */
     public function having($wheres, $op = 'AND')
     {
@@ -322,9 +324,9 @@ class DB extends Extension
     /**
      * Set offset
      *
-     * @param offset
+     * @param integer   offset
      *
-     * @return DB instance
+     * @return DB       instance
      */
      public function offset($offs)
      {
@@ -337,9 +339,9 @@ class DB extends Extension
     /**
      * Set limit
      *
-     * @param limit
+     * @param integer   limit
      *
-     * @return DB instance
+     * @return DB       instance
      */
      public function limit($limit)
      {
@@ -352,7 +354,7 @@ class DB extends Extension
     /**
      * Build an sql sentance from object properties.
      *
-     * @return sql sentance
+     * @return string   sql sentance
      */
     public function sql()
     {
@@ -439,10 +441,10 @@ class DB extends Extension
     /**
      * Execute a query and return number of affected rows (commands) or data set (select query).
      *
-     * @param arguments array, values for placeholders
-     * @param ds data source selector
+     * @param array             arguments array, values for placeholders
+     * @param integer           data source selector
      *
-     * @return int or array of assoc arrays
+     * @return integer/array    number of affected rows or result set (array of assoc arrays)
      */
     public function execute($arguments = [], $ds = -1)
     {
@@ -470,7 +472,7 @@ class DB extends Extension
      * String representation of the object.
      * NOTE: __toString() not allowed to throw exception!
      *
-     * @return sql sentance
+     * @return string   sql sentance
      */
     public function __toString()
     {

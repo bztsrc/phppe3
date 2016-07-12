@@ -31,10 +31,10 @@ class Registry extends Extension
     /**
      * Read a parameter value for key from registry. Will return default if key not found.
      *
-     * @param key
-     * @param optional default value
+     * @param string    key
+     * @param mixed     optional default value
      *
-     * @return value
+     * @return mixed    value
      */
     public static function get($key, $default = '')
     {
@@ -57,8 +57,8 @@ class Registry extends Extension
     /**
      * Store a parameter value for key into registry.
      *
-     * @param key
-     * @param value
+     * @param string    key
+     * @param mixed     value
      */
     public static function set($key, $value)
     {
@@ -87,7 +87,7 @@ class Registry extends Extension
     /**
      * Remove a parameter from registry.
      *
-     * @param key
+     * @param string    key
      */
     public static function del($key)
     {

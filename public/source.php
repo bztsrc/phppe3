@@ -82,11 +82,11 @@ namespace PHPPE {
 /**
  * Constructor, do not try to override, use init() instead.
  *
- * @param arguments, listed with pharenthesis after type in templates
- * @param name of the add-on
- * @param reference of object field
- * @param attributes, listed after field name in templates
- * @param required field flag
+ * @param array     arguments, listed with pharenthesis after type in templates
+ * @param string    name of the add-on
+ * @param mixed     reference of object field
+ * @param array     attributes, listed after field name in templates
+ * @param boolean   required field flag
  *
  * @return PHPHE\AddOn instance
  */
@@ -106,7 +106,7 @@ namespace PHPPE {
  * Init method is called when needed but only once per page generation
  * constructor may be called several times depending on the template.
  */
-        //! function init($cfgarray)
+        //! function init()
         //! {
         //!   \PHPPE\Core::jslib() to load javascript libraries
         //!   \PHPPE\Core::js() to add javascript functions and
@@ -116,14 +116,14 @@ namespace PHPPE {
 /**
  * Field input or widget configuration form.
  *
- * @return string output
+ * @return string   output
  */
         //! function edit() {return "";}
 
 /**
  * Display a field's value or show widget face.
  *
- * @return string output
+ * @return string   output
  */
         public function show()
         {
@@ -132,11 +132,11 @@ namespace PHPPE {
 /*
  * Value validator, returns boolean and a failure reason
  *
- * @param name of value to valudate, for error reporting
- * @param reference to value
- * @param arguments
- * @param attributes
- * @return array(boolean,error message) if the first value is true, it's valid
+ * @param string    name of value to valudate, for error reporting
+ * @param mixed     reference to value
+ * @param array     arguments
+ * @param array     attributes
+ * @return [boolean,error message] if the first value is true, it's valid
  */
         //! static function validate( $name, &$value,$args,$attrs )
         //! {
@@ -208,9 +208,9 @@ namespace PHPPE {
 /**
  * Initialize event. Collects information on client (language, timezone, screen size etc.)
  * 
- * @param configuration array
+ * @param array     configuration
  *
- * @return false if initialization failed
+ * @return boolean  false if initialization failed
  */
         public function init($cfg = [])
         {
@@ -333,7 +333,7 @@ namespace PHPPE {
 /**
  * Default model constructor. Load object with data if id given
  *
- * @param id
+ * @param integer   id
  */
         function __construct($id="")
         {
@@ -346,10 +346,10 @@ namespace PHPPE {
 /**
  * Find objects of the same kind in database.
  *
- * @param search phrase
- * @param where clause with placeholders
- * @param order by
- * @param fields
+ * @param string/array  search phrase(s)
+ * @param string        where clause with placeholders
+ * @param string        order by
+ * @param string        fields, comma separated list
  *
  * @return array of associative arrays
  */
@@ -365,9 +365,9 @@ namespace PHPPE {
 /**
  * Load, reload or find a record in database and load result into this object.
  *
- * @param id of the object to load, or (if second argument given) search phrase
- * @param where clause with placeholders
- * @param order by (optional)
+ * @param integer   id of the object to load, or (if second argument given) search phrase
+ * @param string    where clause with placeholders
+ * @param string    order by (optional)
  *
  * @return true on success
  */
@@ -396,9 +396,9 @@ namespace PHPPE {
 /**
  * Save the current object into database. May also alter $id property (and that only).
  *
- * @param bool, force insert
+ * @param boolean   force insert
  *
- * @return true on success
+ * @return boolean  true on success
  */
         public function save($f = 0)
         {
@@ -423,7 +423,7 @@ namespace PHPPE {
                 return false;
             }
             //save new id for inserts
-            if (!$this->id) {
+            if (!$this->id || $f) {
                 $this->id = $d->lastInsertId();
             }
             //return id
@@ -436,19 +436,19 @@ namespace PHPPE {
  */
     class User extends Model
     {
-        public $id = 0;                   //!< only for Anonymous. Otherwise user id can be a string as well
-        public $name = 'Anonymous';       //!< user real name
-        public $data = [];                //!< user preferences
-        // protected static $_table = "users"; //! set table name. This should be in Users class!
-        protected $acl = [];                //!< Access Control List
-        // private remote = [];           //!< remote server configuration, added run-time
+        public $id = 0;                         //!< only for Anonymous. Otherwise user id can be a string as well
+        public $name = 'Anonymous';             //!< user real name
+        public $data = [];                      //!< user preferences
+        // protected static $_table = "users";  //! set table name. This should be in Users class!
+        protected $acl = [];                    //!< Access Control List
+        // private remote = [];                 //!< remote server configuration, added run-time
 
 /**
  * Check access for an access control entry.
  *
- * @param access control entry or list (pipe separated string or array)
+ * @param string/array  access control entry or list (pipe separated string or array)
  *
- * @return bool true or false
+ * @return boolean      true or false
  */
         final public function has($l)
         {
@@ -471,7 +471,7 @@ namespace PHPPE {
 /**
  * Grant priviledge for a user.
  *
- * @param access control entry or list (pipe separated string or array)
+ * @param string/array  access control entry or list (pipe separated string or array)
  */
         public function grant($l)
         {
@@ -486,7 +486,7 @@ namespace PHPPE {
 /**
  * Drop privileges, specific access control entry or the whole access control list.
  *
- * @param access control entry or list (pipe separated string or array) or empty for dropping all
+ * @param string/array  access control entry or list (pipe separated string or array) or empty for dropping all
  */
         public function clear($l = '')
         {
@@ -510,9 +510,9 @@ namespace PHPPE {
 /**
  * Initialize event.
  * 
- * @param configuration array
+ * @param array     configuration array
  *
- * @return false if initialization failed
+ * @return boolean  false if initialization failed
  */
         public function init($cfg)
         {
@@ -529,7 +529,8 @@ namespace PHPPE {
         }
 
 /**
- * Route event. We handle login/logout actions here.
+ * Route event. We handle login/logout actions here, before routing
+ * decision is made.
  * 
  * @param current application
  * @param current action
@@ -599,8 +600,8 @@ namespace PHPPE {
 /**
  * Generate a permanent link (see also url()).
  *
- * @param application
- * @param action
+ * @param string    application
+ * @param string    action
  */
         public static function url($m = '', $p = '')
         {
@@ -623,8 +624,8 @@ namespace PHPPE {
 /**
  * Redirect user.
  *
- * @param url to redirect to
- * @param bool save current url before redirect so that it will be used next time
+ * @param string    url to redirect to
+ * @param boolean   save current url before redirect so that it will be used next time
  */
         // @codeCoverageIgnoreStart
         public static function redirect($u = '', $s = 0)
@@ -663,8 +664,8 @@ namespace PHPPE {
 /**
  * Generate http header with mime info for content.
  * 
- * @param mime type of output
- * @param boolean, client side cache enabled
+ * @param string    mime type of output
+ * @param boolean   client side cache enabled
  */
         public static function mime($m, $c = true)
         {
@@ -740,9 +741,9 @@ namespace PHPPE {
 /**
  * Get controller for an url.
  *
- * @param application
- * @param action
- * @param url
+ * @param string    application
+ * @param string    action
+ * @param string    url
  *
  * @return [application,action,arguments]
  */
@@ -790,11 +791,11 @@ namespace PHPPE {
         }
 
 /**
- * make a http request and return content. This will follow cookie changes during redirects as well.
+ * make a http request and return content. Unlike cURL, this will follow cookie changes during redirects.
  *
- * @param url
- * @param post array
- * @param timeout in sec
+ * @param string    url
+ * @param array     post variables
+ * @param integer   timeout in sec
  *
  * @return content
  */
@@ -888,12 +889,12 @@ namespace PHPPE {
 
 /**
  *  DataSource layer. It's called DS and not DB because class DB is
- *  the Sql Query Builder shipped with Pack.
+ *  the Sql Query Builder shipped with PHPPE Pack.
  */
     class DS extends Extension
     {
         private $name = '';
-        private static $db = [];        //!< database layer
+        private static $db = [];      //!< database layer
         private static $s = 0;        //!< data source selector
         private static $b = 0;        //!< time consumed by data source queries (bill for db)
 
@@ -905,7 +906,7 @@ namespace PHPPE {
 /**
  * Constructor. Initialize primary datasource if any. Called by core.
  * 
- * @param primary datasource uri
+ * @param string    primary datasource uri
  */
         public function __construct($ds = null)
         {
@@ -916,19 +917,19 @@ namespace PHPPE {
                 //get primary datasource's name
                 if (!empty(self::$db[0])) {
                     $this->name = self::$db[0]->name;
-                }
-                //! get current timestamp from primary datasoure
-                //! this will override time() in $core->now with
-                //! a time in database server's timezone. This is
-                //! important if webserver and dbserver are on
-                //! separate hosts without time synchronization.
-                try {
-                    $t = @strtotime(@self::field('CURRENT_TIMESTAMP'));
-                    if ($t > 0) {
-                        Core::$core->now = $t;
+                    //! get current timestamp from primary datasoure
+                    //! this will override time() in $core->now with
+                    //! a time in database server's timezone. This is
+                    //! important if webserver and dbserver are on
+                    //! separate hosts without time synchronization.
+                    try {
+                        $t = @strtotime(@self::field('CURRENT_TIMESTAMP'));
+                        if ($t > 0) {
+                            Core::$core->now = $t;
+                        }
+                    // @codeCoverageIgnoreStart
+                    } catch (\Exception $e) {
                     }
-                // @codeCoverageIgnoreStart
-                } catch (\Exception $e) {
                 }
                 // @codeCoverageIgnoreEnd
             }
@@ -962,7 +963,7 @@ namespace PHPPE {
             }
             //! apply sql updates
             $D = [];
-            foreach ($d ? ['', '.'.$d->name] : [''] as $s) {
+            foreach (['', '.'.$d->name] as $s) {
                 $D += array_fill_keys(@glob('vendor/phppe/*/sql/upd_*'.$s.'.sql',GLOB_NOSORT), 0);
             }
             if (count($D)) {
@@ -980,13 +981,16 @@ namespace PHPPE {
         }
 
 /**
- * Initialize a database and make connection available as a data source
- * or without arguments, return database instance for current data source.
+ * return database instance for current selector
+ * @usage DS::db()
+ * 
+ * initialize a database and make connection available as a data source
+ * @usage DS::db(pdodsn)
  *
- * @param empty for query or pdo dsn of new connection
- * @param optional: any PDO compatible class instance
+ * @param string    pdo dsn of new connection
+ * @param pdo       optional: any PDO compatible class instance
  *
- * @return pdo instance for query or selector for this new data source
+ * @return pdo/integer  pdo instance for query or selector for this new data source
  */
         public static function db($u = null, $O = null)
         {
@@ -1039,9 +1043,9 @@ namespace PHPPE {
 /**
  * Set current data source to use with exec, fetch etc. if argument given.
  *
- * @param data source selector
+ * @param integer   data source selector (returned by db())
  *
- * @return returns current selector
+ * @return integer  returns current selector
  */
         public static function ds($s = -1)
         {
@@ -1056,9 +1060,9 @@ namespace PHPPE {
 /**
  * Convert a string from user into a sql like phrase.
  *
- * @param string
+ * @param string    user profided string
  *
- * @return like string
+ * @return string   sql safe, formatted string
  */
         public static function like($s)
         {
@@ -1072,9 +1076,9 @@ namespace PHPPE {
 /**
  * Common code for executing a query on current data source. All the other methods are wrappers only.
  *
- * @param query string
+ * @param string    query string
  *
- * @return number of affected rows or data array
+ * @return array/integer    number of affected rows or data array
  */
         public static function exec($q, $a = [])
         {
@@ -1184,16 +1188,16 @@ namespace PHPPE {
 /**
  * Query records from current data source.
  *
- * @param fields
- * @param table
- * @param where clause
- * @param group by
- * @param order by
- * @param offset
- * @param limit
- * @param arguments
+ * @param string    fields
+ * @param string    table
+ * @param string    where clause
+ * @param string    group by
+ * @param string    order by
+ * @param integer   offset
+ * @param integer   limit
+ * @param array     arguments
  *
- * @return array
+ * @return array/integer
  */
         public static function query($f, $t, $w = '', $g = '', $o = '', $s = 0, $l = 0, $a = [])
         {
@@ -1206,14 +1210,14 @@ namespace PHPPE {
 /**
  * Query one record from current data source.
  *
- * @param fields
- * @param table
- * @param where clause
- * @param group by
- * @param order by
- * @param arguments
+ * @param string    fields
+ * @param string    table
+ * @param string    where clause
+ * @param string    group by
+ * @param string    order by
+ * @param array     arguments
  *
- * @return array
+ * @return array    record
  */
         public static function fetch($f, $t = '', $w = '', $g = '', $o = '', $a = [])
         {
@@ -1226,14 +1230,14 @@ namespace PHPPE {
 /**
  * Query one field from current data source.
  *
- * @param field
- * @param table
- * @param where clause
- * @param group by
- * @param order by
- * @param arguments
+ * @param string    field
+ * @param string    table
+ * @param string    where clause
+ * @param string    group by
+ * @param string    order by
+ * @param array     arguments
  *
- * @return array
+ * @return string   value
  */
         public static function field($f, $t = '', $w = '', $g = '', $o = '', $a = [])
         {
@@ -1244,8 +1248,8 @@ namespace PHPPE {
 /**
  * Query a recursive tree from current data source.
  *
- * @param query string, use '?' placeholder to mark place of parent id
- * @param root id of the tree, 0 for all
+ * @param string    query string, use '?' placeholder to mark place of parent id
+ * @param integer   root id of the tree, 0 for all
  *
  * @return array of data
  */
@@ -1272,7 +1276,7 @@ namespace PHPPE {
 /**
  * Return time consumed by database calls.
  *
- * @return secs
+ * @return integer  secs
  */
         public static function bill()
         {
@@ -1298,7 +1302,7 @@ namespace PHPPE {
  *
  * @usage configure it in vendor/phppe/Core/config.php
  * 
- * @param cache uri
+ * @param string    cache uri
  */
         public function __construct($cfg = null)
         {
@@ -1383,10 +1387,10 @@ namespace PHPPE {
 /**
  * Set a value in cache.
  *
- * @param key
- * @param value
- * @param ttl, optional
- * @param force use of cache, optional
+ * @param string    key
+ * @param mixed     value
+ * @param integer   ttl, optional
+ * @param boolean   force use of cache, optional
  */
     public static function set($k, $v, $ttl = 0, $force=false)
     {
@@ -1400,8 +1404,8 @@ namespace PHPPE {
 /**
  * Get a value from cache.
  *
- * @param key
- * @param force use of cache
+ * @param string    key
+ * @param boolean   force use of cache
  */
         public static function get($k, $force=false)
         {
@@ -1415,9 +1419,9 @@ namespace PHPPE {
 /**
  * Initialize event.
  * 
- * @param configuration array
+ * @param array     configuration array
  *
- * @return false if initialization failed
+ * @return boolean  false if initialization failed
  */
         public function init($cfg)
         {
@@ -1435,8 +1439,8 @@ namespace PHPPE {
 /**
  * Route event handler. Will look for images, css, js application.
  *
- * @param current application
- * @param current action
+ * @param string    current application
+ * @param string    current action
  */
         // @codeCoverageIgnoreStart
         public function route($app, $action)
@@ -1496,10 +1500,10 @@ namespace PHPPE {
 /**
  * Asset minifier.
  *
- * @param data
- * @param type, 'css' or 'js'
+ * @param string    data
+ * @param string    type, 'css' or 'js'
  *
- * @return minified data
+ * @return string   minified data
  */
         public static function minify($d, $t = 'js')
         {
@@ -1586,6 +1590,8 @@ namespace PHPPE {
         private static $dds = [];         //!< dynamic data sets
 /**
  * Constructor. Common code for all Content actions.
+ *
+ * @param string    url
  */
         public function __construct($u="")
         {
@@ -1663,7 +1669,7 @@ namespace PHPPE {
 /**
  * Get dynamic data sets into application properties.
  *
- * @param application object
+ * @param object    application instance
  */
         public static function getDDS(&$app)
         {
@@ -1759,7 +1765,7 @@ namespace PHPPE {
 /**
  * Set default path for templater. Used by Core::run() after appliction class determined
  *
- * @param path
+ * @param string    path
  */
         public static function setPath(&$p)
         {
@@ -1769,8 +1775,8 @@ namespace PHPPE {
 /**
  * Register an object in templater.
  *
- * @param name
- * @param instance reference
+ * @param string    name
+ * @param mixed     instance reference
  */
         public static function assign($n, &$o)
         {
@@ -1780,7 +1786,7 @@ namespace PHPPE {
 /**
  * Register a new stylesheet.
  *
- * @param name of the stylesheet
+ * @param string    name of the stylesheet
  */
         public static function css($c = '')
         {
@@ -1805,9 +1811,9 @@ namespace PHPPE {
 /**
  * Register a new javascript library.
  *
- * @param name of the js library
- * @param if it needs to be initialized, the code to do that
- * @param priority (0=jQuery, 1-9=frameworks, 10-=libraries)
+ * @param string    name of the js library
+ * @param string    if it needs to be initialized, the code to do that
+ * @param integer   priority (0=jQuery, 1-9=frameworks, 10-=libraries)
  */
         public static function jslib($l = '', $i = '', $p = 10)
         {
@@ -1838,9 +1844,9 @@ namespace PHPPE {
 /**
  * Register a new javascript function.
  *
- * @param name of the js function with arguments
- * @param code
- * @param if code should be appended to existing code, true. Replace otherwise
+ * @param string    name of the js function with arguments
+ * @param string    code
+ * @param boolean   if code should be appended to existing code, true. Replace otherwise
  */
         public static function js($f = '', $c = '', $a = 0)
         {
@@ -1861,8 +1867,8 @@ namespace PHPPE {
 /**
  * Register a new menu item or submenu in PHPPE panel.
  *
- * @param title of the link
- * @param url or array of title=>url
+ * @param string        title of the link
+ * @param string/array  url or array of title=>url
  */
         public static function menu($t = '', $l = '')
         {
@@ -1878,9 +1884,9 @@ namespace PHPPE {
 /**
  * Load view from cache. Called by Core::run()
  *
- * @param cache key
+ * @param string    cache key
  *
- * @return cached content or null
+ * @return string   cached content or null
  */
         public static function fromCache($N)
         {
@@ -1903,10 +1909,10 @@ namespace PHPPE {
  * Generate the main part of the view (that is, without html header and footer).
  * Called by Core::run() once.
  *
- * @param template to use
- * @param cache key
+ * @param string    template to use
+ * @param string    cache key
  *
- * @return generated content
+ * @return string   generated content
  */
         public static function generate($template, $N = '')
         {
@@ -1961,9 +1967,9 @@ namespace PHPPE {
 /**
  * Load, parse and evaluate a template. Called several times
  *
- * @param name of the template
+ * @param string    name of the template
  *
- * @return parsed output string
+ * @return string   parsed output
  */
         public static function template($n)
         {
@@ -1986,9 +1992,9 @@ namespace PHPPE {
 /**
  * Get value of a templater expression.
  *
- * @param expression
+ * @param string    expression
  *
- * @return value
+ * @return mixed    value
  */
         public static function getval($x)
         {
@@ -2107,8 +2113,6 @@ namespace PHPPE {
 
 /**
  * Return and increase try button counter.
- *
- * @param current button
  */
         public static function tc()
         {
@@ -2118,11 +2122,11 @@ namespace PHPPE {
 /**
  * Format an error message.
  *
- * @param weight (see log())
- * @param module
- * @param message
+ * @param string    weight (see log())
+ * @param string    module
+ * @param string    message
  *
- * @return formated message
+ * @return string   formated message
  */
         public static function e($w, $m, $c="")
         {
@@ -2404,7 +2408,7 @@ namespace PHPPE {
  * Note that this generates what's outside of body tag. Use frame template
  * for menus, navbars, footer line etc.
  *
- * @param pre-generated main part
+ * @param string    pre-generated main part
  */
         public static function output(&$txt, $ap="")
         {
@@ -2679,17 +2683,17 @@ namespace PHPPE {
 /**
  * Picture manipulation.
  *
- * @param original image file
- * @param new image file
- * @param maximum width
- * @param maximum height
- * @param crop image
- * @param use lossless compression (png), defaults to jpeg
- * @param watermark image, must be a semi-transparent png
- * @param maximum file size for output. Will reduce quality to fit
- * @param minimum quality (1-10)
+ * @param string    original image file
+ * @param string    new image file
+ * @param integer   maximum width
+ * @param integer   maximum height
+ * @param boolean   crop image
+ * @param boolean   use lossless compression (png), defaults to jpeg
+ * @param string    watermark image, must be a semi-transparent png
+ * @param integer   maximum file size for output. Will reduce quality to fit
+ * @param integer   minimum quality (1-10)
  *
- * @return bool true or false, success
+ * @return boolean  true or false, success
  */
         public static function picture($o, $n, $w, $h, $c = 0, $l = 1, $W = '', $s = 8192, $m = 5)
         {
@@ -2793,9 +2797,9 @@ namespace PHPPE {
 /**
  * Load a raw template.
  *
- * @param name of the template
+ * @param string    name of the template
  *
- * @return template string, cached if available
+ * @return string   template string, cached if available
  */
         public static function get($n)
         {
@@ -2858,7 +2862,7 @@ namespace PHPPE {
 /**
  * Return the base directory for the extension calling.
  *
- * @return path
+ * @return string   path
  */
         private static function dir()
         {
@@ -2873,9 +2877,9 @@ namespace PHPPE {
 /**
  * Return a timestamp.
  *
- * @param timestamp or date
+ * @param string    timestamp or date
  *
- * @return timestamp
+ * @return integer  timestamp
  */
         private static function ts($v)
         {
@@ -2906,9 +2910,9 @@ namespace PHPPE {
 /**
  * Recursive directory delete
  *
- * @param directory
+ * @param string    directory
  *
- * @return success boolean
+ * @return boolean  true on success
  */
         public static function rmdir($dir)
         {
@@ -2926,10 +2930,10 @@ namespace PHPPE {
 /**
  * Archive extractor (file can be pkzip,gz,bz2,tar,cpio,pax)
  *
- * @param archive file
- * @param filename to get or [class,method] for callback on every file
+ * @param string        archive file
+ * @param string/array  filename to get or [class,method] for callback on every file
  *
- * @return content of the file in archive
+ * @return string       content of the file in archive
  */
         public static function untar($file, $fn = '')
         {
@@ -3035,11 +3039,11 @@ namespace PHPPE {
 /**
  * Execute a shell command on remote server
  *
- * @param command
- * @param input string
- * @param command to generate input
+ * @param string    command
+ * @param string    input string
+ * @param string    command to generate input string
  *
- * @return command output
+ * @return string   command output
  */
         public static function ssh($cmd, $input="", $precmd="")
         {
@@ -3077,8 +3081,8 @@ namespace PHPPE {
 /**
  * Copy files to a remote server over a secure channel
  *
- * @param array of filenames
- * @param destination directory on remote server
+ * @param string/array  source files
+ * @param string        destination directory on remote server
  */
         public static function copy($files, $dest = '')
         {
@@ -3142,10 +3146,10 @@ class ClassMap extends Extension
 /**
  * Check if a class or method exists.
  *
- * @param classname
- * @param methodname optional
+ * @param string    classname
+ * @param string    methodname optional
  *
- * @return true if it's exists or at least loadable
+ * @return boolean  true if it's exists or at least loadable
  */
     public static function has($c, $m="")
     {
@@ -3160,7 +3164,7 @@ class ClassMap extends Extension
 /**
  * Generate classmap cache for autoloading.
  *
- * @return new map
+ * @return array    new map
  */
     public function generate()
     {
@@ -3323,7 +3327,7 @@ class ClassMap extends Extension
  *  step 4: autoload classes
  *  step 5: determine bootstrap type.
  *
- * @param true if called as a library
+ * @param boolean   true if called as a library
  *
  * @return \PHPPE\Core instance
  */
@@ -3741,8 +3745,8 @@ class ClassMap extends Extension
 /**
  * execute a PHPPE application.
  *
- * @param application name, if not specified, url routing will choose
- * @param action name, if not specified, default action routing will apply
+ * @param string    application name, if not specified, url routing will choose
+ * @param string    action name, if not specified, default action routing will apply
  */
         public function run($app = '', $ac = '')
         {
@@ -3889,18 +3893,18 @@ class ClassMap extends Extension
 /**
  * List all registered libraries (services).
  * @usage lib()
- * @return array of library instances
+ * @return array    array of library instances
  *
  * Query a library instance
  * @usage lib(n)
- * @param name, optional
- * @return library instance or null
+ * @param string    name
+ * @return object   library instance or null
  *
  * Define a new library (service)
  * @usage lib(n,o,d)
- * @param name
- * @param object instance or class name
- * @param dependency, optional
+ * @param string            name
+ * @param string/object     object instance or class name
+ * @param string/array      dependency, optional
  */
         public static function lib($n = '', $o = null, $d = '')
         {
@@ -3936,7 +3940,7 @@ class ClassMap extends Extension
 /**
  * Checks if an extension or an Add-On is installed or not.
  *
- * @param name
+ * @param string    name
  *
  * @return bool true or false
  */
@@ -3953,7 +3957,7 @@ class ClassMap extends Extension
 /**
  * Load a new language dictionary into memory.
  *
- * @param class name (extension name)
+ * @param string    class name (extension name)
  */
         public static function lang($c = '')
         {
@@ -3981,9 +3985,9 @@ class ClassMap extends Extension
 /**
  * Log a message.
  *
- * @param weight, Debug | Info | Audit | Warning | Error | Critical
- * @param message in English (don't translate it for compatibility)
- * @param module name, guessed if not given
+ * @param string    weight, Debug | Info | Audit | Warning | Error | Critical
+ * @param string    message in English (don't translate it for compatibility)
+ * @param string    extension name, guessed if not given
  */
         public static function log($w, $m, $n = null)
         {
@@ -4050,9 +4054,9 @@ class ClassMap extends Extension
 /**
  * Return button number when user tries to save a form.
  *
- * @param form name
+ * @param string    form name
  * 
- * @return integer button number
+ * @return integer  button number
  */
         public static function isTry($f = '')
         {
@@ -4064,11 +4068,11 @@ class ClassMap extends Extension
 /**
  * Query all error messages.
  * @usage Core::error()
- * @return array of messages groupped by fields
+ * @return array    array of messages groupped by fields
  * 
  * Add an error message to output
- * @param message
- * @param if message is related to a field, it's name
+ * @param string    message
+ * @param string    if message is related to a field, it's name
  */
         public static function error($m = '', $f = '')
         {
@@ -4088,9 +4092,9 @@ class ClassMap extends Extension
 /**
  * Check for errors.
  *
- * @param if interested in errors for a specific field, it's name
+ * @param string    if interested in errors for a specific field, it's name
  *
- * @return bool true or false
+ * @return boolean  true if there's an error
  */
         public static function isError($f = '')
         {
@@ -4101,10 +4105,10 @@ class ClassMap extends Extension
 /**
  * Trigger an event.
  * 
- * @param event name
- * @param context
+ * @param string    event name
+ * @param array     context
  *
- * @return modified context or null if not modified
+ * @return array    modified context or null if not modified
  */
         public static function event($e, $c = [])
         {
@@ -4126,11 +4130,11 @@ class ClassMap extends Extension
  *
  * @usage call it *BEFORE* req2obj or req2arr
  *
- * @param field name
- * @param validator name (will use \PHPPE\AddOn\(validator)::validate)
- * @param is value required
- * @param arguments
- * @param attributes
+ * @param string    field name
+ * @param string    validator name (will use \PHPPE\AddOn\(validator)::validate)
+ * @param boolean   is value required
+ * @param array     arguments
+ * @param array     attributes
  */
         public static function validate($f, $v, $r = 0, $a = [], $t = [])
         {
@@ -4142,10 +4146,10 @@ class ClassMap extends Extension
 /**
  * Render user request to object. Validates user input and returns an stdClass.
  *
- * @param form prefix (request name)
- * @param validator data (if given, overrides templater's validator list)
+ * @param string    form prefix (request name)
+ * @param array     validator data (if given, overrides templater's validator list)
  *
- * @return form fields in stdClass
+ * @return stdClass form fields
  */
         public static function req2obj($p, $V = [])
         {
@@ -4155,10 +4159,10 @@ class ClassMap extends Extension
 /**
  * Render user request to array. Validates user input and returns an array.
  *
- * @param form prefix (request name)
- * @param validator data (if given, overrides templater's validator list)
+ * @param string    form prefix (request name)
+ * @param array     validator data (if given, overrides templater's validator list)
  *
- * @return form fields in array
+ * @return array    form fields
  */
         public static function req2arr($p, $V = [], $a = 1)
         {
@@ -4219,11 +4223,11 @@ class ClassMap extends Extension
 /**
  * Convert a an object (associative array or stdClass) to string attributes.
  *
- * @param object
- * @param skip list (array or comma spearated values in string)
- * @param separator (defaults to space)
+ * @param object        object
+ * @param string/array  skip list (array or comma spearated values in string)
+ * @param string        separator (defaults to space)
  *
- * @return string for xml attributes or sql queries
+ * @return string       xml attributes or sql query expression
  */
         public static function obj2str($o, $s = '', $c = ' ')
         {
@@ -4255,10 +4259,10 @@ class ClassMap extends Extension
 /**
  * Convert a templater expression into an array by splitting at separator.
  *
- * @param input string
- * @param separator (defaults to comma)
+ * @param string    input string
+ * @param string    separator (defaults to comma)
  *
- * @return array
+ * @return array    parts
  */
         public static function val2arr($s, $c = ',')
         {
@@ -4283,11 +4287,11 @@ class ClassMap extends Extension
  * Flat a recursive array (sub-levels in "_") into simple one level array
  * this is useful if you want to use an option list on trees.
  *
- * @param input tree array
- * @param prefix to use in names
- * @param suffix to use in names (if given, prefix and suffix only appended on nesting)
+ * @param array     input tree array
+ * @param string    prefix to use in names
+ * @param string    suffix to use in names (if given, prefix and suffix only appended on nesting)
  *
- * @return flat array
+ * @return array    flat array
  */
         public static function tre2arr($t, $p = '  ', $s = '', $P = '', $S = '', &$d = null)
         {
@@ -4337,7 +4341,7 @@ class ClassMap extends Extension
 /**
  * Create a benchmark point
  *
- * @param name
+ * @param string    name
  */
         public static function bm($name)
         {
@@ -4350,6 +4354,8 @@ class ClassMap extends Extension
 /*** private helper functions for Core classes ***/
 /**
  * Return constructor started time
+ *
+ * @return float    timestamp
  */
         public static function started()
         {
@@ -4359,9 +4365,9 @@ class ClassMap extends Extension
 /**
  * Check url against given filters.
  *
- * @param filters or @ACEs
+ * @param string/array  filters or @ACEs
  *
- * @return bool
+ * @return boolean      true if access granted
  */
         public static function cf($c)
         {
@@ -4390,9 +4396,9 @@ class ClassMap extends Extension
 /**
  * Convert human readble php ini value to bytes.
  *
- * @param php ini variable name (value of units)
+ * @param string    php ini variable name (value of units)
  *
- * @return in bytes
+ * @return integer  in bytes
  */
         private static function toBytes($i)
         {
@@ -4428,7 +4434,7 @@ namespace PHPPE\Cache {
 /**
  * Constructor.
  *
- * @param url (constant "apc")
+ * @param string    url (constant "apc")
  */
         public function __construct($c = '')
         {
@@ -4477,7 +4483,7 @@ namespace PHPPE\Cache {
  /**
   * Constructor.
   *
-  * @param url (constant "files")
+  * @param string   url (constant "files")
   */
         public function __construct($c = '')
         {
@@ -5014,23 +5020,22 @@ namespace {
  *
  * @usage L('Someting']), L('extensions_installtxt')
  *
- * @param string or code
+ * @param string    text or code
  *
- * @return translated text
+ * @return string   translated text
  */
     function L($s)
     {
-        //translate a string
         return isset(\PHPPE\Core::$l[$s]) ? \PHPPE\Core::$l[$s] : strtr($s, ['_' => ' ']);
     }
 
 /**
- * Returns permanent link with absolute path.
+ * Returns permanent link with canonical, absolute path.
  *
- * @param application
- * @param action
+ * @param string    application
+ * @param string    action
  *
- * @return url
+ * @return string   url
  */
     function url($m = null, $p = null)
     {

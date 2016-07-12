@@ -21,12 +21,12 @@
  *
  * @author bzt
  * @date 1 Jan 2016
- * @brief PHPPE Users
+ * @brief PHPPE Users, included in Pack
  */
 
 namespace PHPPE;
 
-//inherited from \PHPPE\Model and \PHPPE\User
+//inherited from \PHPPE\User which in turn inherited from \PHPPE\Model
 class Users extends \PHPPE\User
 {
     //properties
@@ -39,6 +39,14 @@ class Users extends \PHPPE\User
     //database table name for model methods
     protected static $_table = 'users';
 
+    /**
+     * Authenticate with username and password and create user object
+     *
+     * @param string    username
+     * @param string    password
+     *
+     * @return boolean  true on success
+     */
     public function login($name, $pass)
     {
         $rec = \PHPPE\DS::fetch("id,pass", static::$_table, "name=? AND active!='0'", "", "", [$name]);
@@ -49,6 +57,9 @@ class Users extends \PHPPE\User
         return true;
     }
 
+    /**
+     * Logout user
+     */
     public function logout()
     {
         \PHPPE\DS::exec("UPDATE ".static::$_table." SET logoutd=CURRENT_TIMESTAMP WHERE id=?", [$this->id]);

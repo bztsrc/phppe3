@@ -22,6 +22,8 @@
  * @author bzt
  * @date 1 Jan 2016
  * @brief Email message object, included in Pack
+ * This class is not as flexible as it's competition, but smart
+ * enough to work in 99% of usecases.
  */
 
 namespace PHPPE;
@@ -57,8 +59,8 @@ class Email extends Extension
     /**
      * constructor. You can pass a previosly dumped object to it.
      *
-     * @param object data dumped by get()
-     * @param string hostname
+     * @param string    object data dumped by get()
+     * @param string    hostname
      */
     public function __construct($msg = '')
     {
@@ -109,7 +111,7 @@ class Email extends Extension
     /**
      * you can call this to get email in a form that can be stored in database.
      *
-     * @return dumped email object
+     * @return string   dumped email object
      */
     public function get()
     {
@@ -197,8 +199,11 @@ class Email extends Extension
 
         return $this;
     }
+
     /**
      * construct mime email and send it out.
+     *
+     * @param string    transport backend
      */
     public function send($via = '')
     {
@@ -233,7 +238,7 @@ class Email extends Extension
         //! message type
         $isHtml = preg_match('/<html/i', $this->message);
 
-        //! *** handle backends that does not require mime message ***
+        //! *** handle transport backends that does not require mime message ***
         if ($this->via == 'db') {
             //! mail queue in database
             if (empty(DS::db())) {
@@ -385,8 +390,9 @@ class Email extends Extension
             }
             $message .= '--'.$boundary."--\n";
         }
-        //! flat headers and remove trailer from message
+        //! flat headers
         $header = '';
+        //! redirect message to a specific address (for testing)
         if (!empty(self::$forge)) {
             // @codeCoverageIgnoreStart
             $headers['To'] = self::$forge;
@@ -403,13 +409,13 @@ class Email extends Extension
         //if email directory exists, save the full mime message as well for debug
         @file_put_contents('phppe/log/email/'.$id, 'Backend: '.$this->via.' '.self::$user.':'.self::$pass.'@'.self::$host.':'.self::$port."\r\n\r\n".$header."\r\n".$message);
 
-        //! *** handle backends ***
+        //! *** handle transport backends ***
         switch ($this->via) {
-            //! only save message in file, do not send for real
+            //! only log and possibly save message in file, do not send for real. Nothing left to do
             case 'log': break;
             //! return constructed mime message
             case 'mime': return $header."\r\n".$message; break;
-            //! use php mail()
+            //! use php's mail()
             case 'mail': {
                 $to = $headers['To'];
                 $subj = $headers['Subject'];
@@ -438,7 +444,7 @@ class Email extends Extension
                     return false;
                 }
             } break;
-            //! this is how real programmers do it, let's speak smtp directrly!
+            //! this is how real programmers do it, let's speak smtp directly!
             default: {
                 //open socket
                 $s = @fsockopen(self::$host, self::$port, $en, $es, 5);
@@ -453,7 +459,7 @@ class Email extends Extension
 
                     return false;
                 }
-                //we silently assume we got 8BITMIME here, it's a safe assumption
+                //we silently assume we got 8BITMIME here, it's a safe assumption as of 2016
                 while ($l[3] == '-') {
                     $l = fgets($s, 1024);
                 }
@@ -464,7 +470,7 @@ class Email extends Extension
                     $l = fgets($s, 1024);
                 }
                 //tell who are sending
-                fputs($s, 'MAIL FROM:'.array_keys($this->header['From'])[0]."\r\n");
+                fputs($s, 'MAIL FROM: <'.array_keys($this->header['From'])[0].">\r\n");
                 $l = fgets($s, 1024);
                 if (substr($l, 0, 3) != '250') {
                     PPHPE3::log('E', 'from error: '.trim($l), 'email');
@@ -474,7 +480,7 @@ class Email extends Extension
                 //to whom
                 $addresses = array_merge(array_keys($this->header['To']), array_keys($this->header['Cc']), array_keys($this->header['Bcc']));
                 foreach ($addresses as $a) {
-                    fputs($s, 'RCPT TO:'.$a."\r\n");
+                    fputs($s, 'RCPT TO: <'.$a.">\r\n");
                     $l = fgets($s, 1024);
                     if (substr($l, 0, 3) != '250') {
                         Core::log('E', 'recipient error: '.trim($l), 'email');
@@ -508,8 +514,8 @@ class Email extends Extension
     /**
      * validate and shape an email address.
      *
-     * @param email addres (in either "name <account@domain>", "account@domain", "name <account@[ip address]>" or "account@[ip address]" format
-     * @param type header type to add address to
+     * @param string    email address (in either "name <account@domain>", "account@domain", "name <account@[ip address]>" or "account@[ip address]" format
+     * @param string    header type to add address to (To, Cc, Bcc)
      */
     private function address($email, $type = 'To')
     {
@@ -538,6 +544,9 @@ class Email extends Extension
         throw new EmailException(L('Bad email address').': '.$email);
     }
 
+    /**
+     * Cron job to read mails from queue and send them out
+     */
     public function cronMinute($item)
     {
         //! get real mailer backend ($core->mailer points to db queue backend)

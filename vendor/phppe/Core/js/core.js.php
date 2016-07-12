@@ -33,11 +33,15 @@ $d=array_unique(array_merge(
   ));
 //make sure it's not empty otherwise json_encode() will report JS syntax error
 $lang = ["lang"=>$_SESSION['pe_l']];
-foreach($d as $f) {$la=array(); $la=include($f);if( is_array( $la ) )$lang += $la; }
+foreach ($d as $f) {$la=array(); $la=include($f);if( is_array( $la ) )$lang += $la; }
 //force cache
 PHPPE::$core->nocache = false;
 header( "Pragma: cache" );
 header( "Cache-Control: cache,public,max-age=86400" );
+
+//turn off animations
+if (!empty(Core::$core->noanim))
+    echo("if (typeof jQuery!='undefined') jQuery.fx.off = true;");
 ?>
 /*
  *  PHP Portal Engine v3.0.0
