@@ -22,7 +22,7 @@
  * @date 1 Jan 2016
  * @brief PHPPE Core JavaScript support
  */
-use PHPPE\Core as PHPPE;
+use PHPPE\Core as Core;
 
 //! fallback to english if a specific language translation not found
 $d=array_unique(array_merge(
@@ -35,7 +35,7 @@ $d=array_unique(array_merge(
 $lang = ["lang"=>$_SESSION['pe_l']];
 foreach ($d as $f) {$la=array(); $la=include($f);if( is_array( $la ) )$lang += $la; }
 //force cache
-PHPPE::$core->nocache = false;
+Core::$core->nocache = false;
 header( "Pragma: cache" );
 header( "Cache-Control: cache,public,max-age=86400" );
 
@@ -180,7 +180,7 @@ function pe_p(i,trg,to) {
         o.style.top=(rt.top+evt.target.offsetHeight)+'px';
     }
     if(pe_t!=null)clearTimeout(pe_t);
-    if(<?=empty(PHPPE::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
+    if(<?=empty(Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
         if(pe_c&&pe_c!=i)document.getElementById(pe_c).style.visibility='hidden';
         pe_t=pe_c=null;
         if(o){
