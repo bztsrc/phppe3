@@ -3497,7 +3497,7 @@ class ClassMap extends Extension
 
             //! PHP ClassMap autoload
             $this->libs['ClassMap'] = new ClassMap();
-            //! register built-in modules
+            //! register built-in modules (middleware classes)
             $this->libs['DS'] = new DS($this->db);
             $this->libs['Client'] = new Client();
             $cls = '\\PHPPE\\User';
