@@ -1317,7 +1317,7 @@ namespace PHPPE {
                     // @codeCoverageIgnoreStart
                     $d = '\\Memcache';
                     if (!class_exists($d)) {
-                        \PHPPE\Core::log('C', L('no php-memcache'), 'cache');
+                        \PHPPE\Core::log('C', L("no php-memcache"), 'cache');
                     }
                     //! unix file: "unix:/tmp/fifo", "host" or "host:port" otherwise
                     if ($m[0] == 'unix') {
@@ -3356,7 +3356,11 @@ class ClassMap extends Extension
             ini_set('file_uploads', 1);
             ini_set('upload_tmp_dir', dirname(__DIR__).'/.tmp');
             ini_set('uploadprogress.file.filename_template', dirname(__DIR__).'/.tmp/upd_%s.txt');
-            mb_internal_encoding('utf-8');
+            if(!function_exists('mb_internal_encoding')) {
+                self::log('W', L("no php-mbstring"));
+            } else {
+                mb_internal_encoding('utf-8');
+            }
             //! self check
             //! this will be updated by the Developer extension's
             //! Repository::compress() when called with mkrepo or deploy
@@ -4441,7 +4445,7 @@ namespace PHPPE\Cache {
             ini_set('apc.enabled', 1);
             if (!function_exists('apc_fetch') && !function_exists('apcu_fetch')) {
             // @codeCoverageIgnoreStart
-                \PHPPE\Core::log('C', L('no php-apc'), 'cache');
+                \PHPPE\Core::log('C', L("no php-apc"), 'cache');
             }
             // @codeCoverageIgnoreEnd
         }
