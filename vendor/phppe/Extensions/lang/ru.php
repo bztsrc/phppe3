@@ -43,5 +43,6 @@ return array(
 	"Games"=>"Игры",
 	"Banners"=>"Баннеры",
 	"Hardware"=>"аппаратный",
+	"User Input"=>"Пользовательский ввод",
 );
 ?>

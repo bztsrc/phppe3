@@ -2434,8 +2434,11 @@ namespace PHPPE {
                     "<base href='$d'/><meta charset='utf-8'/>\n<meta name='Generator' content='PHPPE".VERSION."'/>\n";
                     //! meta tags
                     foreach (array_merge(self::$hdr['meta'], !empty(self::$o['app']->meta) ? self::$o['app']->meta : []) as $k => $m) {
-                        if ($k && $m) {
-                            echo "<meta name='$k' content='".htmlspecialchars($m)."'/>\n";
+                        if (!is_array($m)) {
+                            $m=[$m,"name"];
+                        }
+                        if ($k && !empty($m[0]) && !empty($m[1])) {
+                            echo "<meta ".$m[1]."='$k' content='".htmlspecialchars($m[0])."'/>\n";
                         }
                     }
                     //! favicon

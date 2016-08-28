@@ -43,5 +43,6 @@ return array(
 	"Games"=>"游戏",
 	"Banners"=>"横幅",
 	"Hardware"=>"硬件",
+	"User Input"=>"用户输入",
 );
 ?>

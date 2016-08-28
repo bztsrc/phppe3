@@ -43,5 +43,6 @@ return array(
 	"Games"=>"Játékok",
 	"Banners"=>"Reklámok",
 	"Hardware"=>"Vezérlés",
+	"User Input"=>"Beviteli mező"
 );
 ?>

@@ -80,6 +80,7 @@ function extensions_search(str,installed)
 			}
 		}
 		t+="</div><br style='clear:both;'>";
+		t+="<small class='desc'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br>";
         try {
 					var j,k,l;
 					for(j=0;j<extensions_installed.length;j++) {
@@ -88,9 +89,9 @@ function extensions_search(str,installed)
 						if(idx>-1) extensions_pkgs[i].depends.splice(idx,1);
 					}
 					if(extensions_pkgs[i].depends.length>0)
-						t+="<small"+(extensions_pkgs[i].installed?" style='color:red;'":"")+">"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small><br>";
+						t+="<small class='desc' style='color:"+(extensions_pkgs[i].installed?"red":"#808080")+";'>"+L(extensions_pkgs[i].installed?"Failed dependency":"Also installs")+": "+extensions_pkgs[i].depends.join(", ")+"</small><br>";
         } catch(e) {}
-		t+="<small class='desc' style='color:#808080;'>"+(extensions_pkgs[i].desc?extensions_pkgs[i].desc.replace(/\b(http[^\'\"\ \t\r\n\;\,!\<\>]+)/,"<a href='$1' target='_new'>$1</a>"):'<?=L("No description")?>')+"<br><small>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div></div>";
+        t+="<small style='color:#808080;'>"+extensions_pkgs[i].time+"   "+extensions_pkgs[i].sha1+"</small></small></div></div></div>";
 	}
 	if(t=="") t="<br style='clear:both;'><i><?=L("No match found.")?></i>";
 	document.getElementById('pkgs').innerHTML=t;

@@ -43,5 +43,6 @@ return array(
 	"Games"=>"Juegos",
 	"Banners"=>"Banderas",
 	"Hardware"=>"Controlador",
+	"User Input"=>"Entrada del usuario",
 );
 ?>

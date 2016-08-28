@@ -43,5 +43,6 @@ return array(
 	"Games"=>"משחקים",
 	"Banners"=>"פרסומות",
 	"Hardware"=>"בקר חומרה",
+	"User Input"=>"קלט משתמש",
 );
 ?>
