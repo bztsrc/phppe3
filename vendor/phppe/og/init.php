@@ -25,4 +25,4 @@
 namespace PHPPE;
 
 //! return your service class here
-return new OpenGraph;
+return new og;

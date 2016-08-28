@@ -1,22 +1,32 @@
 <?php
 /**
- * @file vendor/phppe/og/libs/og.php
+ * @file vendor/phppe/og/libs/OpenGraph.php
  * @author bzt
  * @date 28 Aug 2016
  * @brief
  */
 
+namespace PHPPE;
 use PHPPE\Core as Core;
 use PHPPE\View as View;
-use PHPPE\Http as Http;
-ude PHPPE\DB as DB;
+use PHPPE\Registry as Registry;
 
-class og extends PHPPE\Extension
+class og
 {
+    public $fields;
+
+	public function init($config)
+	{
+        $this->fields = $config;
+	}
+
 	public function ctrl($app, $method)
 	{
-	    $appObj = Core::getval("app");
-	    
-	    print_r($appObj);die("a");
+	    $appObj = View::getval("app");
+        foreach ($this->fields as $fld=>$var) {
+            if (empty($var)) $var = $fld;
+	        $appObj->meta[$fld] = [!empty($appObj->$var)?$appObj->$var:Registry::get($fld), "property"];
+	    }
+	    $appObj->meta["og:url"] = [url(), "property"];
 	}
 }
