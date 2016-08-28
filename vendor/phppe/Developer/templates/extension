@@ -10,9 +10,10 @@
 		"composer":{},
 		"config":{},
 		"init":{},
-		"scheme":{"table":"@extension@"},
+		"scheme":{"table":"@extension@model"},
 		"lang":{"language":"en"},
-		"model":{"class":"@EXTENSION@"},
+		"lib":{"class":"@EXTENSION@"},
+		"model":{"class":"@EXTENSION@Model"},
 		"controller":{"name":"@EXTENSION@"},
 		"view":{"name":"@EXTENSION@"},
 		"test":{"class":"@EXTENSION@"}

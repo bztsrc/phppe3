@@ -17,16 +17,21 @@ class @NAME@ extends \PHPPE\AddOn
 		Core::addon("@name@", "@Name@ widget", "", "*");
 	}
 
-	function show(  )
+	function show()
 	{
 		return htmlspecialchars($this->value);
 	}
 
-	function edit(  )
+	function edit()
 	{
 		View::jslib("@name@.js", "@name@_init('".$this->fld."');");
 		View::css("@name@.css");
 		return "<div id='".$this->fld.":container'>".
 			"<input type='text' name='".$this->fld."' value=\"".htmlspecialchars($this->value)."\"></div>";
+	}
+
+	static function validate ( $name, &$value, $required, $arguments, $attributes )
+	{
+		return [true, "Success"];
 	}
 }

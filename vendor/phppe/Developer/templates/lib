@@ -18,4 +18,42 @@ class @CLASS@
 	public function __construct()
 	{
 	}
+
+	public init($config)
+	{
+	}
+
+	public function diag()
+	{
+	}
+
+	public function route($app, $method)
+	{
+	}
+
+	public function ctrl($app, $method)
+	{
+	}
+
+	public function view($html)
+	{
+		return $html;
+	}
+
+	public function stat()
+	{
+	}
+
+	public function cronMinute($item)
+	{
+	}
+
+	public function cronQuoterly($item)
+	{
+	}
+
+	public function cronHourly($item)
+	{
+	}
+
 }
