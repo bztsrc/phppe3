@@ -37,7 +37,7 @@ class Repository
     static $repoBase="https://bztsrc.github.io/phppe3/";
 	//static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
 	//! valid extension categories
-	static $categories=["Connections","Content","Security","Business","Sales","Office","Games","Banners","Hardware"];
+	static $categories=["Connections","Content","Security","Business","Sales","Office","Games","Banners","Hardware","User Input"];
 
 /**
  * Compress source to deployment format
