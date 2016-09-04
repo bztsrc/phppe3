@@ -146,7 +146,7 @@ function extensions_conf(obj,i)
 				case "boolean":
 				case "notboolean":
 					var bv=(cfg[p]!=null?(Math.floor(cfg[p])==1||cfg[p]=="true"?"true":"false"):(Math.floor(a[0])==1||a[0]=="true"?"true":"false"));
-					if(boolean_open) {
+					if(typeof boolean_open == 'function') {
 						t+="<span dir='ltr'>"+boolean_open(p,bv,m[2],a)+"</span>";
 					} else {
 						var t1="<option value=''>"+(a[2]!=null?a[2]:L('No'))+"</option>";
