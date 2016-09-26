@@ -153,12 +153,7 @@ function getpos(obj){var o=obj.getBoundingClientRect();return {x:o.left,y:o.top,
  *   Multilanguage support
  */
 var LANG=<?=json_encode($lang)?>;
-function L(t){
-if(t==null||t==undefined){
-  var stack = new Error().stack;
-  console.log( stack );
-}
-return LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:(t!=null?t.replace(/_/g,' '):'');}
+function L(t){return LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:(t!=null?t.replace(/_/g,' '):'');}
 
 /*
  *   JS Cookie support
@@ -167,9 +162,23 @@ function cookie_get(name) {var index=document.cookie.indexOf(name + "=");if(inde
 function cookie_set(name,value,nDays,path) {var today=new Date();var expire=new Date();if(nDays==null||nDays<1)nDays=1;expire.setTime(today.getTime()+3600000*24*nDays);document.cookie=name+"="+escape(value)+";path="+(path!=null?path:"/")+";expires="+expire.toGMTString();}
 
 /*
+ *   JS local storage support
+ */
+function store_get(name) {return (typeof(localStorage)!=="undefined"?localStorage.getItem(name):null);}
+function store_set(name,value) {return (typeof(localStorage)!=="undefined"?(value!=null?localStorage.setItem(name,value):localStorage.removeItem(name)):null);}
+
+/*
+ * PHPPE Core
+ */
+var 
+	pe_t=null, //timer
+	pe_c=null, //current item
+	pe_to=2,   //time out
+	pe_ot=0,   //offset top
+	pe_anim=<?=empty(Core::$core->noanim)?'false':'true'?>;
+/*
  *   PE Panel
  */
-var pe_t=null,pe_c=null,pe_to=2;
 function pe_p(i,trg,to) {
     var evt = window.event || (arguments.callee.caller!=null && arguments.callee.caller.arguments[0]);
     var o=i!=null&&i!=''?document.getElementById(i):null;
@@ -180,7 +189,7 @@ function pe_p(i,trg,to) {
         o.style.top=(rt.top+evt.target.offsetHeight)+'px';
     }
     if(pe_t!=null)clearTimeout(pe_t);
-    if(<?=empty(Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
+    if(pe_anim || typeof jQuery=='undefined'){
         if(pe_c&&pe_c!=i)document.getElementById(pe_c).style.visibility='hidden';
         pe_t=pe_c=null;
         if(o){
@@ -210,32 +219,38 @@ function pe_p(i,trg,to) {
 function pe_w() {if(pe_t!=null)clearTimeout(pe_t);pe_t=setTimeout(function(){pe_p('');},pe_to*1000);return false;}
 
 /*
+ * Plugin support
+ */
+var pe={};
+
+/*
  *   Popup menu support
  *    popups: <div id='mypopup'>menu</div>
- *    triggers: onmouseover='popup_open(this,"mypopup",10,10);'
+ *    triggers: onmouseover='pe.popup.open(this,"mypopup",10,10);'
  */
+pe.popup = {
 /*PUBLIC*/
-var popup_timeout=1000;
+  timeout:1000,
 
 /*PRIVATE*/
-var popup_tmr=null;
-var popup_currentobj;
-var popup_current='';
-var popup_dontclose=false;
+  tmr:null,
+  currentobj:null,
+  current:'',
+  dontclose:false,
 
 /*PUBLIC METHODS*/
-function popup_open(triggerobj,id,deltax,deltay,abs)
+open: function(triggerobj,id,deltax,deltay,abs)
 {
 	var obj,oldobj=triggerobj,i,t;
         var curleft = 0;
         var curtop = 0;
-	if(popup_tmr!=null) clearTimeout(popup_tmr);
-	if(popup_current!='') obj=document.getElementById(popup_current);
+	if(pe.popup.tmr!=null) clearTimeout(pe.popup.tmr);
+	if(pe.popup.current!='') obj=document.getElementById(pe.popup.current);
 	if(obj!=null) obj.style.display='none';
 	obj=document.getElementById(id);
 	if(obj!=null) {
 		obj.style.zIndex=Math.round(triggerobj.style.zIndex+10);
-		popup_currentobj=t=triggerobj;
+		pe.popup.currentobj=t=triggerobj;
 		obj.style.display='block';
 		triggerobj=oldobj;
 		if(deltay!=null) {
@@ -253,71 +268,77 @@ function popup_open(triggerobj,id,deltax,deltay,abs)
 			obj.style.top=y+'px';
 			obj.style.left=x+'px';
 		}
-		obj.onmouseover=popup_over;
-		obj.onmouseout=popup_out;
-		oldobj.onmouseout=popup_out;
-		popup_current=id;
-		popup_dontclose=true;
-		popup_tmr=setTimeout('popup_close();',popup_timeout);
+		obj.onmouseover=pe.popup.over;
+		obj.onmouseout=pe.popup.out;
+		oldobj.onmouseout=pe.popup.out;
+		pe.popup.current=id;
+		pe.popup.dontclose=true;
+		pe.popup.tmr=setTimeout('pe.popup.close();',pe.popup.timeout);
 	}
-}
+},
 
 /*PRIVATE METHODS*/
-function popup_over(){popup_dontclose=true;};
-function popup_out(){popup_dontclose=false;if(popup_tmr==null)popup_tmr=setTimeout('popup_close();',popup_timeout);};
-function popup_close(){var obj,i;if(popup_dontclose) popup_tmr=setTimeout('popup_close();',popup_timeout);else {obj=document.getElementById(popup_current);if(obj!=null)obj.style.display='none';popup_current=0;popup_currentobj=null;popup_tmr=null;}}
+  over: function(){pe.popup.dontclose=true;},
+  out: function(){pe.popup.dontclose=false;if(pe.popup.tmr==null)pe.popup.tmr=setTimeout('pe.popup.close();',pe.popup.timeout);},
+  close: function(){var obj,i;if(pe.popup.dontclose) pe.popup.tmr=setTimeout('pe.popup.close();',pe.popup.timeout);else {obj=document.getElementById(pe.popup.current);if(obj!=null)obj.style.display='none';pe.popup.current=0;pe.popup.currentobj=null;pe.popup.tmr=null;}}
+};
 
 /*
  *   JS Drag'n'drop support (legacy HTML4)
  *     Dragable items:
- *       onmousedown='return dnd_drag(event,<what>[,<icon>[,endcallback]]);'
- *       onmousedown='return dnd_drag(event,this.id,this);'
+ *       onmousedown='return pe.dnd.drag(event,<what>[,<icon>[,endcallback]]);'
+ *       onmousedown='return pe.dnd.drag(event,this.id,this);'
  *     Drop areas:
- *       onmouseup='return dnd_drop(event,myfunc[,context]);'
+ *       onmouseup='return pe.dnd.drop(event,myfunc[,context]);'
  *       and implement myfunc(what,context,event){} callback for each drop area
  */
+pe.dnd = {
 /*PRIVATE VARS*/
-var dnd_dragged=null,dnd_icon=null,dnd_start=null,dnd_endhooks=Array();
+  dragged:null,
+  icon:null,
+  start:null,
+  endhooks:[],
 
 /*PUBLIC METHODS*/
-function dnd_drag(evt,id,icon,size,endhook){var ti=new Date();
-  if(endhook!=null && typeof window[endhook]=='function' && dnd_endhooks.indexOf(endhook)==-1) dnd_endhooks.push(endhook);
+drag: function(evt,id,icon,size,endhook){var ti=new Date();
+  if(endhook!=null && typeof window[endhook]=='function' && pe.dnd.endhooks.indexOf(endhook)==-1) pe.dnd.endhooks.push(endhook);
   var w=0,h=16;
-  if(dnd_start==null) dnd_init();
+  if(pe.dnd.start==null) pe.dnd.init();
   if(size!=null&&size>16&&size < 256) h=size;
-  dnd_icon=(icon!=null?icon:evt.target).cloneNode(true);
-  //w=Math.floor((dnd_icon.width?dnd_icon.width:dnd_icon.offsetWidth)*h/((dnd_icon.height?dnd_icon.height:dnd_icon.offsetHeight)+0.00001));
+  pe.dnd.icon=(icon!=null?icon:evt.target).cloneNode(true);
+  //w=Math.floor((pe.dnd.icon.width?pe.dnd.icon.width:pe.dnd.icon.offsetWidth)*h/((pe.dnd.icon.height?pe.dnd.icon.height:pe.dnd.icon.offsetHeight)+0.00001));
   //if(w < h) w=h;
-  dnd_icon.setAttribute('style','position:absolute;z-index:999;left:0px;top:0px;margin:0px;opacity:0.8;');
+  pe.dnd.icon.setAttribute('style','position:absolute;z-index:999;left:0px;top:0px;margin:0px;opacity:0.8;');
   //width:'+w+'px;height:'+h+'px;');
-  document.body.appendChild(dnd_icon);
-  dnd_dragged=id;
-  dnd_start=ti.getTime();
-  dnd_display(evt);
+  document.body.appendChild(pe.dnd.icon);
+  pe.dnd.dragged=id;
+  pe.dnd.start=ti.getTime();
+  pe.dnd.display(evt);
   return false;
-}
-function dnd_drop(evt,callback,ctx){
+},
+drop: function(evt,callback,ctx){
 if(!evt)evt=window.event;
 var ti=new Date();
-if(dnd_dragged!=null&&callback!=null&&ti.getTime()-dnd_start>200)
-  if(typeof callback=='function')callback(dnd_dragged,ctx,evt);
-  else if(typeof window[callback]=='function')window[callback](dnd_dragged,ctx,evt);
-if(dnd_icon!=null) { try{document.body.removeChild(dnd_icon);}catch(e){} dnd_icon=null; }
-dnd_dragged=null;return false;}
-function dnd_init(){
-  dnd_start=1;
+if(pe.dnd.dragged!=null&&callback!=null&&ti.getTime()-pe.dnd.start>200)
+  if(typeof callback=='function')callback(pe.dnd.dragged,ctx,evt);
+  else if(typeof window[callback]=='function')window[callback](pe.dnd.dragged,ctx,evt);
+if(pe.dnd.icon!=null) { try{document.body.removeChild(pe.dnd.icon);}catch(e){} pe.dnd.icon=null; }
+pe.dnd.dragged=null;return false;},
+
+init: function(){
+  pe.dnd.start=1;
   if ( window.addEventListener )
-    window.addEventListener( "mousemove", dnd_display, false );
+    window.addEventListener( "mousemove", pe.dnd.display, false );
   else if ( window.attachEvent )
-    window.attachEvent( "onmousemove", dnd_display );
+    window.attachEvent( "onmousemove", pe.dnd.display );
   if ( window.addEventListener )
-    window.addEventListener( "mouseup", dnd_cancel, false );
+    window.addEventListener( "mouseup", pe.dnd.cancel, false );
   else if ( window.attachEvent )
-    window.attachEvent( "onmouseup", dnd_cancel );
-}
+    window.attachEvent( "onmouseup", pe.dnd.cancel );
+},
 
 /*PRIVATE METHODS*/
-function dnd_display(e){if(dnd_dragged!=null){
+display: function(e){if(pe.dnd.dragged!=null){
 if(e!=null){
   if(e.pageX){
     ml=e.pageX;mt=e.pageY;
@@ -325,6 +346,6 @@ if(e!=null){
     ml=(event.clientX + document.body.scrollLeft);mt=(event.clientY+document.body.scrollTop);
   }
 }
-dnd_icon.style.left=Math.floor(ml+10)+'px';dnd_icon.style.top=Math.floor(mt+10)+'px';}}
-function dnd_cancel(e){dnd_dragged=null;dnd_drop();var h;for(h in dnd_endhooks) { if(typeof window[dnd_endhooks[h]]=='function') window[dnd_endhooks[h]](e);}}
-
+pe.dnd.icon.style.left=Math.floor(ml+10)+'px';pe.dnd.icon.style.top=Math.floor(mt+10)+'px';}},
+cancel:function(e){pe.dnd.dragged=null;pe.dnd.drop();var h;for(h in pe.dnd.endhooks) { if(typeof window[pe.dnd.endhooks[h]]=='function') window[pe.dnd.endhooks[h]](e);}}
+};

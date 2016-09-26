@@ -91,7 +91,7 @@ class Extensions {
 	private static function formatValue($v) {
 		return ($v=="true"||$v=="false"||$v=="null"||
 			$v=="0"||intval($v)!=0||
-			@$v[0]=="["||@$v[0]=="{")? $v : "\"".addslashes($v)."\"";
+			@$v[0]=="["||@$v[0]=="{")? $v : "\'".addslashes($v)."\'";
 	}
 
 
@@ -167,8 +167,13 @@ class Extensions {
 		{
 			Core::log('D',"getPkgs cache miss, reading repositories","extensions");
 			$p=array();
-            //! built-in official repository name
-			$list = [ "https://bztsrc.github.io/phppe3/" ];
+            //! built-in official repositories
+			$list = [
+                //! Community provided Open Source extensions
+                "https://bztsrc.github.io/phppe3/",
+                //! Commertial extensions
+//                "https://phppe.org/phppe3/"
+            ];
             //! add user provided repositories
 			if(!empty(Core::$core->repos)) $list=array_merge(Core::$core->repos,$list);
 //fallback to local repo for testing. REMOVE IT!!!

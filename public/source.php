@@ -550,28 +550,27 @@ namespace PHPPE {
             }
             //! handle hardwired admin login and logout before Users class get's a chance
             if (Core::$core->app == 'login') {
-                //! if already logged in redirect to home
+                //! if already logged in redirect to home page
                 if (Core::$user->id) {
                     Http::redirect('/');
                 }
                 //! superuser's name
                 $A = 'admin';
                 if (Core::isTry() && !empty($_REQUEST['id'])) {
-                    $o = 0;
                     //don't accept password in GET parameter
                     if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) &&
                         password_verify($_POST['pass'], Core::$core->masterpasswd)) {
                         $_SESSION['pe_u']->id = -1;
                         $_SESSION['pe_u']->name = $A;
-                        $o = 1;
-                    } elseif(method_exists(Core::$user, 'login')) {
-                        $o = Core::$user->login($_REQUEST['id'],$_POST['pass']);
+                    } else {
+                        //! *** LOGIN Event ***
+                        Core::event("login", [$_REQUEST['id'],$_POST['pass']]);
                     }
-                    if($o) {
+                    if(!empty($_SESSION['pe_u']->id)) {
                         Core::log('A', 'Login '.$_SESSION['pe_u']->name, 'users');
                         Http::redirect();
                     } else {
-                        Core::error(L('Bad username or password'));
+                        Core::error(L('Bad username or password'), 'id');
                     }
                 }
             } elseif (Core::$core->app == 'logout') {
@@ -579,8 +578,9 @@ namespace PHPPE {
                 if ($i) {
                     Core::log('A', 'Logout '.Core::$user->name, 'users');
                     //! hook Users class' method for non-admin user logouts
-                    if ($i != -1 && method_exists(Core::$user, 'logout')) {
-                        Core::$user->logout();
+                    if ($i != -1) {
+                        //! *** LOGOUT Event ***
+                        Core::event("logout");
                     }
                 }
                 session_destroy();
@@ -952,7 +952,7 @@ namespace PHPPE {
         }
 
 /**
- * Diag event. Look for sql updates.
+ * Diag event handler. Look for sql updates.
  */
         public function diag()
         {
@@ -966,8 +966,8 @@ namespace PHPPE {
             foreach (['', '.'.$d->name] as $s) {
                 $D += array_fill_keys(@glob('vendor/phppe/*/sql/upd_*'.$s.'.sql',GLOB_NOSORT), 0);
             }
-            if (count($D)) {
-                echo "DIAG-I: db update\n";
+            if (!empty($D)) {
+                echo "DIAG-I: db update (".count($D).")\n";
             }
             foreach ($D as $f => $v) {
                 //! get sql commands from file
@@ -2578,7 +2578,7 @@ namespace PHPPE {
                         $c = !empty($_SESSION['pe_c']);
                         $O .= "<span onclick='return pe_p(\"pe_l\");'>".
                             (file_exists('vendor/phppe/Core/'.$f) ? "<img src='$f' height='10' alt='$k' title='$k'>" : $k).'</span>'.
-                            "<div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof users_profile==\"function\")users_profile(this);else alert(\"".L('Install PHPPE Pack')."\");'>".L('Profile').'</li>'.
+                            "<div id='pe_u'$H><ul><li onclick='pe_p(\"\");if(typeof(users.profile)==\"function\")users.profile(this);else alert(\"".L('Install PHPPE Pack')."\");'>".L('Profile').'</li>'.
                             (Core::$user->has('conf') ? "<li><a href='".url().'?conf='.(1 - $c)."'>".($c ? L('Lock') : L('Unlock')).'</a></li>' : '').
                             "<li><a href='".url('logout')."'>".L('Logout').'</a></li></ul></div>'.
                             "<span onclick='return pe_p(\"pe_u\");'>".(!empty(Core::$user->name) ? Core::$user->name : '#'.Core::$user->id).'</span></div></div>'.
@@ -2654,7 +2654,7 @@ namespace PHPPE {
                         $c['L(t)'] = "return t.replace(/_/g,' ');";
                         $c['pe_p(i)'] = "var o=i?${x}i):i;if(pe_t!=null)clearTimeout(pe_t);if(pe_c&&pe_c!=i)${x}pe_c)$y='hidden';pe_t=pe_c=null;if(o!=null&&o.style!=null){if(o$y=='visible')o$y='hidden';else{o$y='visible';pe_c=i;$a;}}return false;";
                         $c['pe_w()'] = "if(pe_t!=null)clearTimeout(pe_t);$a;return false;";
-                        $a = ',pe_t,pe_c';
+                        $a = ',pe_t,pe_c,pe_h=0';
                         // @codeCoverageIgnoreEnd
                     }
                     if (!empty($c)) {
@@ -2662,11 +2662,11 @@ namespace PHPPE {
                         $O .= $d.">\nvar pe_i=0,pe_ot=".($P ? 31 : 0)."$a;\n";
                         foreach ($c as $fu => $co) {
                             //! make sure init only gets called once
-                            $O .= "function $fu {".($fu=="init()"?"if(pe_i)return;pe_i=1;":"").$co."}\n";
+                            $O .= "function $fu {".($fu=="init()"?"if(pe_i)return;pe_i=1;".(Core::$core->runlevel>1?"console.log('PE Plugins',pe);":""):"").$co."}\n";
                         }
                         //! add event listeners to call init() on page load
                         if(!empty(self::$hdr['js']['init()'])) {
-                            $O .= "document.addEventListener('DOMContentLoaded', init);window.addEventListener('load', init);setTimeout(init);";
+                            $O .= "document.addEventListener('DOMContentLoaded', init);window.addEventListener('load', init);setTimeout(init,100);";
                         }
                         $O .= $e;
                     }
@@ -3855,13 +3855,14 @@ class ClassMap extends Extension
                     //! *** CTRL Event (Controller action) ***
                     self::event('ctrl', [$app, $ac]);
                     //! call action method
+                    self::bm("action");
                     if (!method_exists($appObj, $ac)) {
                         $ac = 'action';
                     }
                     if (method_exists($appObj, $ac)) {
                         !empty($args) ? call_user_func_array([$appObj, $ac], $args) : $appObj->$ac($this->item);
                     }
-                    self::bm("action");
+                    self::bm("template");
                     $T = View::generate($this->template, $N);
                 }
             } else {

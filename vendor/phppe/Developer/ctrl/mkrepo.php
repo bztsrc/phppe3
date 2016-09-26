@@ -5,7 +5,7 @@
 namespace PHPPE\Ctrl;
 
 class MkRepoController {
-    static $cli="mkrepo";
+    static $cli="mkrepo [--tests]";
 
 	function __construct()
 	{
@@ -25,6 +25,9 @@ class MkRepoController {
 			echo("OK\n");
 			unset($d);
 		}
+
+        //! *** MKREPO Event ***
+        \PHPPE\Core::event("mkrepo");
 
 		//! create repository
 		\PHPPE\Repository::make();

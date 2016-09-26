@@ -21,11 +21,11 @@
  * @date 1 Jan 2016
  * @brief Set list selection
  */
+pe.setsel={
+    id:null,
 
-var setsel_id=null;
-
-function setsel_drag(evt,id) {
-    setsel_id=id;
+drag:function(evt,id) {
+    pe.setsel.id=id;
     if(evt.target.nextSibling!=null && evt.target.tagName==evt.target.nextSibling.tagName && typeof jQuery == 'function') {
         evt.target.nextSibling.style.marginTop=evt.target.offsetHeight+'px';
         evt.target.nextSibling.setAttribute('id','setsel_animate');
@@ -39,12 +39,12 @@ function setsel_drag(evt,id) {
         t[i].setAttribute('style','display:none;');
         }
     }
-    return dnd_drag(evt,id,evt.target,16,"setsel_dragend");
-}
+    return pe.dnd.drag(evt,id,evt.target,16,"pe.setsel.dragend");
+},
 
-function setsel_droparea(evt) {
-    if(setsel_id==null||dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className.indexOf("setsel_item")==-1) return;
-    var i,n=null,l=document.getElementById(setsel_id+':inlist'),o=l.getElementsByTagName('*'),p=l.getBoundingClientRect();
+droparea:function(evt) {
+    if(pe.setsel.id==null||pe.dnd.dragged==null||pe.dnd.icon==null||pe.dnd.icon.tagName!="DIV"||pe.dnd.icon.className.indexOf("setsel_item")==-1) return;
+    var i,n=null,l=document.getElementById(pe.setsel.id+':inlist'),o=l.getElementsByTagName('*'),p=l.getBoundingClientRect();
     for(i=0;i<o.length;i++) if(o[i].className.indexOf('setsel_item')>-1){
         var r=o[i].getBoundingClientRect();
         if((evt.target==o[i]||evt.clientY<p.top+o[i].offsetTop-o[i].offsetHeight) && n==null) { n=o[i]; }
@@ -53,59 +53,59 @@ function setsel_droparea(evt) {
     if(n!=null&&evt.target.className.indexOf("setsel_item")>-1){
         n.style.marginTop='12px';
     }
-}
+},
 
-function setsel_add(evt) {
-    var id=setsel_id;
-    if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className.indexOf("setsel_item")==-1) return;
-    dnd_icon.setAttribute('style','');
+add:function(evt) {
+    var id=pe.setsel.id;
+    if(pe.dnd.dragged==null||pe.dnd.icon==null||pe.dnd.icon.tagName!="DIV"||pe.dnd.icon.className.indexOf("setsel_item")==-1) return;
+    pe.dnd.icon.setAttribute('style','');
     var i,n=null,o=document.getElementById(id+':inlist').getElementsByTagName('*');
     for(i=0;i<o.length;i++) {
         var mt=Math.round(o[i].style.marginTop.replace('px',''));
         o[i].style.marginTop='0px';
-        if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id'))
+        if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==pe.dnd.icon.getAttribute('data-id'))
             o[i].parentNode.removeChild(o[i]);
         else {
             if(mt>0 && n==null) n=o[i];
         }
     }
-    if(n!=null)
-        document.getElementById(id+':inlist').insertBefore(dnd_icon,n);
+    if(n!=null && document.getElementById(id+':inlist').querySelector("img[alt='"+n.getAttribute("alt")+"']")==null)
+        document.getElementById(id+':inlist').insertBefore(pe.dnd.icon,n);
     else
-        document.getElementById(id+':inlist').appendChild(dnd_icon);
+        document.getElementById(id+':inlist').appendChild(pe.dnd.icon);
     o=document.getElementById(id+':all').getElementsByTagName('*');
     for(i=0;i<o.length;i++) {
-        if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')) {
+        if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==pe.dnd.icon.getAttribute('data-id')) {
             o[i].setAttribute('data-inlist',1);
             break;
         }
     }
-    setsel_setvalue(id);
-}
+    pe.setsel.setvalue(id);
+},
 
-function setsel_remove(evt) {
-    var id=setsel_id;
-    setsel_id=null;
-    if(dnd_dragged==null||dnd_icon==null||dnd_icon.tagName!="DIV"||dnd_icon.className.indexOf("setsel_item")==-1) return;
+remove:function(evt) {
+    var id=pe.setsel.id;
+    pe.setsel.id=null;
+    if(pe.dnd.dragged==null||pe.dnd.icon==null||pe.dnd.icon.tagName!="DIV"||pe.dnd.icon.className.indexOf("setsel_item")==-1) return;
     var i,o=document.getElementById(id+':inlist').getElementsByTagName('*');
     for(i=0;i<o.length;i++) {
-        if(o[i].style.display=='none'||(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')))
+        if(o[i].style.display=='none'||(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==pe.dnd.icon.getAttribute('data-id')))
             o[i].parentNode.removeChild(o[i]);
     }
     o=document.getElementById(id+':all').getElementsByTagName('*');
     for(i=0;i<o.length;i++) {
-        if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==dnd_icon.getAttribute('data-id')) {
+        if(o[i].getAttribute('data-id')!=null && o[i].getAttribute('data-id')==pe.dnd.icon.getAttribute('data-id')) {
             o[i].removeAttribute('data-inlist');
             o[i].style.display='block';
             break;
         }
     }
-    setsel_setvalue(id);
-}
+    pe.setsel.setvalue(id);
+},
 
-function setsel_dragend(evt) {
-    var id=setsel_id;
-    setsel_id=null;
+dragend:function(evt) {
+    var id=pe.setsel.id;
+    pe.setsel.id=null;
     if(id==null||id=='') return;
     var inl=document.getElementById(id+':inlist');
     if(inl!=null){
@@ -125,18 +125,18 @@ function setsel_dragend(evt) {
             }
         }
     }
-}
+},
 
-function setsel_setvalue(id) {
+setvalue:function(id) {
         var v="",i,w=0,o=document.getElementById(id+':inlist').getElementsByTagName('*');
         for(i=0;i<o.length;i++)
             if(o[i].getAttribute('data-id')!=null)
                 v+=(v?',':'')+o[i].getAttribute('data-id');
         if(v==null) v='';
         document.getElementById(id).value=v;
-}
+},
 
-function setsel_select(evt,id)
+select:function(evt,id)
 {
     var v=evt.target.getAttribute("data-id");
     var i,t=evt.target.parentNode;
@@ -155,16 +155,17 @@ function setsel_select(evt,id)
         t[i].setAttribute('class',cls);
     }
     document.getElementById(id).value=v;
-}
+},
 
-function setsel_search(id) {
+search:function(id) {
     var flt=document.getElementById(id+':filters').getElementsByTagName("SELECT");
     var srch=document.getElementById(id+':filters').getElementsByTagName("INPUT");
-    setsel_searchreal(id,document.getElementById(id+':all').getElementsByTagName("*"),srch[srch.length-1],flt);
+    pe.setsel.searchreal(id,document.getElementById(id+':all').getElementsByTagName("*"),srch[srch.length-1],flt);
     if(document.getElementById(id+':inlist'))
-        setsel_searchreal(id,document.getElementById(id+':inlist').getElementsByTagName("*"),srch[srch.length-1],flt);
-}
-function setsel_searchreal(id,par,srch,flt) {
+        pe.setsel.searchreal(id,document.getElementById(id+':inlist').getElementsByTagName("*"),srch[srch.length-1],flt);
+},
+
+searchreal:function(id,par,srch,flt) {
     var i,j;
     for(i=0;i<par.length;i++) {
         if(par[i].className==null||par[i].className.indexOf('setsel_item')==-1) continue;
@@ -192,3 +193,4 @@ function setsel_searchreal(id,par,srch,flt) {
             par[i].style.display=par[i].getAttribute('data-inlist')?'none':'block';
     }
 }
+};

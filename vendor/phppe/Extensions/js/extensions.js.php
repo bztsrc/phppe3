@@ -344,17 +344,17 @@ function extensions_init()
             "</div>"+
         "</div>"+
         "<div class='row'>"+
-            "<div class='col-xs-3'>"+
-                "<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"\";extensions_search();'><?=L("All")?> <small dir='ltr'>("+extensions_pkgs.length+")</small></button>"+
+            "<div class='col-sm-3'>"+
+                "<button style='margin:5px;line-height:20px;width:95%;' onclick='document.getElementById(\"search\").value=\"\";extensions_search();'><?=L("All")?> <small dir='ltr'>("+extensions_pkgs.length+")</small></button>"+
             "</div>"+
-            "<div class='col-xs-3'>"+
-                "<button style='margin:5px;line-height:20px;width:99%;' onclick='document.getElementById(\"search\").value=\"<?=L("installed")?>\";extensions_search();'><?=L("Installed")?> <small dir='ltr'>("+(extensions_installed.length-1)+")</small></button>"+
+            "<div class='col-sm-3'>"+
+                "<button style='margin:5px;line-height:20px;width:95%;' onclick='document.getElementById(\"search\").value=\"<?=L("installed")?>\";extensions_search();'><?=L("Installed")?> <small dir='ltr'>("+(extensions_installed.length-1)+")</small></button>"+
             "</div>"+
-            "<div class='col-xs-3'>"+
-                "<button id='upbtn' style='margin:5px;line-height:20px;width:99%;"+(cnt>0?"color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"' onclick='document.getElementById(\"search\").value=\"<?=L("upgrade")?>\";extensions_search();'><?=L("Upgrade")?> <small dir='ltr'>("+cnt+")</small></button>"+
+            "<div class='col-sm-3'>"+
+                "<button id='upbtn' style='margin:5px;line-height:20px;width:95%;"+(cnt>0?"color:green;background:#B0F0B0 linear-gradient(to bottom,rgba(0,0,0,0.5) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"' onclick='document.getElementById(\"search\").value=\"<?=L("upgrade")?>\";extensions_search();'><?=L("Upgrade")?> <small dir='ltr'>("+cnt+")</small></button>"+
             "</div>"+
-            "<div class='col-xs-3'>"+
-                "<button style='margin:5px;line-height:20px;width:99%;' onclick='extensions_cmd(this,\"bootstrap\",-1);'><?=L("Diagnostics")?></button>"+
+            "<div class='col-sm-3'>"+
+                "<button style='margin:5px;line-height:20px;width:95%;' onclick='extensions_cmd(this,\"bootstrap\",-1);'><?=L("Diagnostics")?></button>"+
             "</div>"+
         "</div>"+
         "<div class='row'>"+

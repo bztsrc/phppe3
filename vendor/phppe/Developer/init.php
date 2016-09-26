@@ -34,7 +34,7 @@ use PHPPE\Core as Core;
     L("Benchmarks")=>"benchmark"
 ]);
 
-//! this is needed for filter test cases
+//! this is needed for test cases
 \PHPPE\Http::route("tests/httptest", "Developer", "action_httpget", "get");
 \PHPPE\Http::route("tests/httptest", "Developer", "action_httppost", "post");
 
@@ -42,7 +42,7 @@ use PHPPE\Core as Core;
 \PHPPE\Http::route("tests", "Developer");
 //! these are CLI only
 \PHPPE\Http::route("mkrepo", "MkRepoController");
-\PHPPE\Http::route("deploy", "DeployController");
+\PHPPE\Http::route("minify", "MinifyController");
 \PHPPE\Http::route("create", "CreateController");
 \PHPPE\Http::route("passwd", "PasswdController");
 \PHPPE\Http::route("lang", "LangController");

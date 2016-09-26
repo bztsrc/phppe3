@@ -13,7 +13,7 @@ class setsel extends \PHPPE\AddOn {
 
     function edit()
     {
-        View::jslib( "setsel.js", "setsel_search('".addslashes($this->fld)."');");
+        View::jslib( "setsel.js", "pe.setsel.search('".addslashes($this->fld)."');");
         View::css("setsel.css");
         $out=[0=>"",1=>""];
         $a = $this->attrs;
@@ -75,7 +75,7 @@ class setsel extends \PHPPE\AddOn {
                 (!empty($a[2])&&$a[2]!="-"?" ".$a[2]:"")."'";
             if($title)
                 $blk.=" title='".htmlspecialchars($title)."'";
-            $blk.=" data-id='".htmlspecialchars($id)."' draggable='false' onmousedown='return setsel_".(empty($this->args[0])?"drag":"select")."(event,\"".$this->fld."\");':display>".$rep."</div>";
+            $blk.=" data-id='".htmlspecialchars($id)."' draggable='false' onmousedown='return pe.setsel.".(empty($this->args[0])?"drag":"select")."(event,\"".$this->fld."\");':display>".$rep."</div>";
             if(isset($i[$id]))
                 $b[$i[$id]]=str_replace(":display","",$blk);
             $blk=str_replace(":display",(empty($this->args[0])&&isset($i[$id])?" data-inlist='1' style='display:none;'":""),$blk);
@@ -89,7 +89,7 @@ class setsel extends \PHPPE\AddOn {
         else
             $out[1].="<div class='setsel_item".
                 (!empty($this->args[0])&&empty($b)?" setsel_itemactive":"").
-                (!empty($a[2])&&$a[2]!="-"?" ".$a[2]:"")."' data-id='' onmousedown='return setsel_select(event,\"".$this->fld."\");' style='text-align:center;font-style:italic;'>&nbsp;*&nbsp;".L("none")."&nbsp;*</div>";
+                (!empty($a[2])&&$a[2]!="-"?" ".$a[2]:"")."' data-id='' onmousedown='return pe.setsel.select(event,\"".$this->fld."\");' style='text-align:center;font-style:italic;'>&nbsp;*&nbsp;".L("none")."&nbsp;*</div>";
         if(isset($flt['lang'])) {
             unset($flt['lang']);
             foreach($_SESSION['pe_ls'] as $l=>$v)
@@ -97,7 +97,7 @@ class setsel extends \PHPPE\AddOn {
         }
         $flthtml=!empty($a[3])?$a[3]:"";
         foreach($filters as $f=>$v) if($f) {
-            $flthtml.="<select class='setsel_input' name='".$f."' onchange='setsel_search(\"".$this->fld."\");' style='margin-right:5px;'><option value=''>*</option>";
+            $flthtml.="<select class='setsel_input' name='".$f."' onchange='pe.setsel.search(\"".$this->fld."\");' style='margin-right:5px;'><option value=''>*</option>";
             if(is_array($flt[$f])) foreach($flt[$f] as $F=>$V)
                 if(!empty($F) && !empty($V))
                     $flthtml.="<option value=\"".htmlspecialchars($F)."\"".(@$_REQUEST['setsel_'.$f]==$F?" selected":"").">".L($V)."</option>";
@@ -106,12 +106,12 @@ class setsel extends \PHPPE\AddOn {
         $out[0]=implode("",$b);
         return "<div class='setsel'><input type='hidden' id='".$this->fld."' name='".$this->fld."' value='".htmlspecialchars(implode(",", $val))."'>".
         "<div id='".$this->fld.":filters' class='setsel_filters'>".(!empty($this->args[4])?"<span class='setsel_title' style='float:left;line-height:22px !important;'>".$this->args[4]."</span>":"").$flthtml.
-        "<input name='search' class='setsel_input' type='text' placeholder='".L("Search")."' onchange='setsel_search(\"".$this->fld."\");' onkeyup='setsel_search(\"".$this->fld."\");'>".
+        "<input name='search' class='setsel_input' type='text' placeholder='".L("Search")."' onchange='pe.setsel.search(\"".$this->fld."\");' onkeyup='pe.setsel.search(\"".$this->fld."\");'>".
         "<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".
         (empty($this->args[0])?
-        "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='setsel_droparea(event);' onmouseup=\"dnd_drop(event,'setsel_add');\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;padding-bottom:64px;box-sizing:border-box;overflow:auto;'>".$out[0]."</div>"
+        "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='pe.setsel.droparea(event);' onmouseup=\"pe.dnd.drop(event,pe.setsel.add);\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;padding-bottom:64px;box-sizing:border-box;overflow:auto;'>".$out[0]."</div>"
         :"").
-        "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"dnd_drop(event,'setsel_remove');\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;".(!empty($this->args[0])?"width:100% !important;":"")."box-sizing:border-box;overflow:auto;'>".$out[1]."</div></div>";
+        "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"pe.dnd.drop(event,pe.setsel.remove);\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;".(!empty($this->args[0])?"width:100% !important;":"")."box-sizing:border-box;overflow:auto;'>".$out[1]."</div></div>";
     }
 }
 

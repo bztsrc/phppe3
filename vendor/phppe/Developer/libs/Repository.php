@@ -41,7 +41,7 @@ class Repository
 
 /**
  * Compress source to deployment format
- * @usage php public/index.php deploy
+ * @usage php public/index.php minify
  */
 	static function compress()
 	{
@@ -214,7 +214,7 @@ class Repository
 		$json="{\n\t\"packages\": {\n";$f=1;
 		foreach($packages as $p=>$m){
 			//failsafe
-			if(empty($m['name'])||empty($m['version'])) continue;
+			if(empty($m['name'])||empty($m['version'])||(!empty($m['keywords'][0])&&$m['keywords'][0]=="Business")) continue;
 			//name, version and details
 		    $json.=($f?"":",\n")."\t\t\"".$m['name']."\": {\n\t\t  \"".$m['version']."\": {\n";$f=0;
 		    self::dumppkg($p,$m,$json);
@@ -225,6 +225,19 @@ class Repository
 		echo("Saving packages info: ");
 		if(!file_put_contents("packages.json",$json))
 			die("unable to write packages.json");
+		$json="{\n\t\"packages\": {\n";$f=1;
+		foreach($packages as $p=>$m){
+			//failsafe
+			if(empty($m['name'])||empty($m['version'])||(!empty($m['keywords'][0])&&$m['keywords'][0]!="Business")) continue;
+			//name, version and details
+		    $json.=($f?"":",\n")."\t\t\"".$m['name']."\": {\n\t\t  \"".$m['version']."\": {\n";$f=0;
+		    self::dumppkg($p,$m,$json);
+		    $json.="\n\t\t  }\n\t\t}";
+		}
+		$json.="\n\t}\n}\n";
+		//! save packages info to packages.json
+		if($f==0)
+            file_put_contents("packages.business.json",$json);
 		die("OK\n");
 	}
 

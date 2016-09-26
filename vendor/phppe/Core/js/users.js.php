@@ -8,10 +8,12 @@
  *
  */
 
+var users = {
 /*PRIVATE VARS*/
 
 /*PUBLIC METHODS*/
-function users_profile()
+profile: function()
 {
 	alert("user profile");
 }
+};
