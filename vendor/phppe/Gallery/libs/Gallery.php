@@ -152,7 +152,7 @@ class Gallery
         $list = self::getImages();
         echo(\PHPPE\View::_t("<!form imglist>")."<input type='file' name='imglist_upload' onchange='this.form.submit();' style='display:none;'>".
         "<input type='button' value='".L("Upload")."' onclick=\"this.previousSibling.click();\"></form>".
-        "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='wyswyg_search(this,this.nextSibling);'>");
+        "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='pe.wyswyg.search(this,this.nextSibling);'>");
         echo("<div class='wyswyg_gallery wyswyg_scroll'>\n");
         foreach($list as $img) {
             echo("<img src='gallery/1/".$img['id']."'>\n");

@@ -8,7 +8,7 @@
  *
  */
 
-var users = {
+pe.users = {
 /*PRIVATE VARS*/
 
 /*PUBLIC METHODS*/

@@ -1417,6 +1417,29 @@ namespace PHPPE {
         }
 
 /**
+ * Clear cache.
+ *
+ */
+        public static function invalidate()
+        {
+            if (!empty(self::$mc) && method_exists(self::$mc,"invalidate")) {
+                return self::$mc->invalidate();
+            } else {
+                // fallback
+                $c = Core::$core->cache;
+                if (preg_match("/^([^:]+):([0-9]+)$/",$c,$m)) {
+                    $f = fsockopen($m[1], $m[2], $n, $e, 1);
+                } else {
+                    $f = fopen($c,"wb");
+                }
+                fwrite($f,"flush_all\n");
+                fclose($f);
+            }
+
+            return;
+        }
+
+/**
  * Initialize event.
  * 
  * @param array     configuration array
@@ -4482,6 +4505,16 @@ namespace PHPPE\Cache {
             // @codeCoverageIgnoreEnd
             return $s($key, $compress && function_exists('gzdeflate') ? gzdeflate(json_encode($value)) : $value, $ttl);
         }
+        public function invalidate()
+        {
+            // @codeCoverageIgnoreStart
+            if (function_exists('apcu_clear_cache')) {
+                apcu_clear_cache();
+            } else if (function_exists('apc_clear_cache')) {
+                apc_clear_cache("user");
+            }
+            // @codeCoverageIgnoreEnd
+        }
     }
 
     //! Plain file cache support
@@ -4535,6 +4568,10 @@ namespace PHPPE\Cache {
             $v = json_encode($value);
 
             return file_put_contents($this->fn($key), $compress && function_exists('gzdeflate') ? gzdeflate($v) : $v, LOCK_EX) > 0 ? true : false;
+        }
+        public function invalidate()
+        {
+            Tools::rmdir('.tmp/cache');
         }
         public function cronMinute($args)
         {

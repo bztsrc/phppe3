@@ -36,6 +36,7 @@ class Repository
 	//! This can be overridden from command line
     static $repoBase="https://bztsrc.github.io/phppe3/";
 	//static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
+    static $bnsBase="https://phppe.org/business/";
 	//! valid extension categories
 	static $categories=["Connections","Content","Security","Business","Sales","Office","Games","Banners","Hardware","User Input"];
 
@@ -141,7 +142,8 @@ class Repository
 			//! ***** tarball *****
 			$dir=dirname($json);
 			$ext=basename($dir);
-			$tarball="../../../phppe3_".strtolower($ext).".tgz";
+            $bns=preg_match("/\"Business\"/",file_get_contents($json));
+			$tarball="../../../".($bns?\PHPPE\Core::$client->user:"phppe3")."_".strtolower($ext).".tgz";
 			echo("  ".$ext.": ");
 			//! create tarball if not exists or older than extension's files
 			chdir($dir);
@@ -190,7 +192,7 @@ class Repository
 			if($m['name']=="phppe/Developer") $packages[$m['name']]['prio']=99996; else
 			// validate fields
 			$packages[$m['name']]['prio']=!empty($m["prio"])&&$m["prio"]>0&&$m["prio"]<99900?$m["prio"]+0:0;
-			$packages[$m['name']]['dist']=['type'=>"tar",'url'=>self::$repoBase.basename($tarball)];
+			$packages[$m['name']]['dist']=['type'=>"tar",'url'=>($bns?self::$bnsBase:self::$repoBase).basename($tarball)];
 			$packages[$m['name']]['description']=!empty($m["description_en"])?$m["description_en"]:(!empty($m["description"])?$m["description"]:"");
 			$packages[$m['name']]['keywords']=!empty($m["keywords"])?$m["keywords"]:[];
 			$packages[$m['name']]['maintainer']=!empty($m["maintainer"])?$m["maintainer"]:["name"=>"Anonymous"];
@@ -228,7 +230,7 @@ class Repository
 		$json="{\n\t\"packages\": {\n";$f=1;
 		foreach($packages as $p=>$m){
 			//failsafe
-			if(empty($m['name'])||empty($m['version'])||(!empty($m['keywords'][0])&&$m['keywords'][0]!="Business")) continue;
+			if(empty($m['name'])||empty($m['version'])||empty($m['keywords'][0])||$m['keywords'][0]!="Business") continue;
 			//name, version and details
 		    $json.=($f?"":",\n")."\t\t\"".$m['name']."\": {\n\t\t  \"".$m['version']."\": {\n";$f=0;
 		    self::dumppkg($p,$m,$json);

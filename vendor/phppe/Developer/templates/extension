@@ -13,9 +13,10 @@
 		"scheme":{"table":"@extension@model"},
 		"lang":{"language":"en"},
 		"lib":{"class":"@EXTENSION@"},
-		"model":{"class":"@EXTENSION@Model"},
-		"controller":{"name":"@EXTENSION@"},
+		"modellib":{"class":"@EXTENSION@Model"},
+		"action":{"name":"action"},
 		"view":{"name":"@EXTENSION@"},
-		"test":{"class":"@EXTENSION@"}
+		"test":{"class":"@EXTENSION@"},
+		"phpunit":{}
 	}
 }

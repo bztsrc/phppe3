@@ -93,7 +93,7 @@ class CMS
             //! save page url for cms/param action handler
             $_SESSION['cms_url'] = str_replace("/action", "", Core::$core->url);
             //! load javascript library
-            View::jslib("cms.js", "cms_init(".
+            View::jslib("cms.js", "pe.cms.init(".
                 intval(@$_SESSION['cms_scroll'][0]).",".
                 intval(@$_SESSION['cms_scroll'][1]).
                 ");",9);
@@ -133,7 +133,7 @@ class CMS
         
         //! return icon
         return "<img style='position:absolute;z-index:997;cursor:pointer;opacity:0.7;' ".
-            "onclick='cms_edit(this,\"".$idx."\",".
+            "onclick='pe.cms.edit(this,\"".$idx."\",".
                 (is_array(@$addon->adjust)?json_encode($addon->adjust):intval(@$addon->adjust)).",".
                 intval(@$addon->minWidth).",".intval(@$addon->minHeight).",".
                 intval(!empty($sizes[1])?$sizes[1]:@$addon->forceWidth).",".
@@ -154,7 +154,7 @@ class CMS
                 $idx=sha1($name."_");
                 $_SESSION['cms_param'][$idx] = $addon;
                 return "<img style='cursor:pointer;' ".
-                "onclick='cms_edit(this,\"".$idx."\",".
+                "onclick='pe.cms.edit(this,\"".$idx."\",".
                     intval(@$addon->adjust).",".intval(@$addon->minWidth).",".intval(@$addon->minHeight).",".
                     intval(@$addon->forceWidth).",".
                     intval(@$addon->forceHeight).",".
@@ -185,7 +185,7 @@ class CMS
                     $ret .= self::statIcon("pagehist");
                 //! page delete
                 $ret .= "<img style='cursor:pointer;' ".
-                "onclick='cms_pagedel(\"".addslashes(Core::$core->url)."\");' ".
+                "onclick='pe.cms.pagedel(\"".addslashes(Core::$core->url)."\");' ".
                 "src='images/cms/pagedel.png' ".
                 "alt='[PAGEDEL]' ".
                 "title='".htmlspecialchars(L('pagedel'))."'>";

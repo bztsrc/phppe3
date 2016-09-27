@@ -19,7 +19,7 @@ class @CLASS@
 	{
 	}
 
-	public init($config)
+	public function init($config)
 	{
 	}
 

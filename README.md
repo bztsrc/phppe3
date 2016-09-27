@@ -9,32 +9,34 @@ It's not bloated, and with simplicity cames stability and high performance.
 Features
 --------
 This 80k bytes of PHP code will give you:
-- Stand alone environment, optional dependencies only. Single file deployment.
+- Single file deployment.
+- Stand alone environment, optional dependencies only.
 - [PHP Composer](https://getcomposer.org/) compatibilty
 - [PHPUnit](https://phpunit.de) compatibility with [100% code coverage](http://bztsrc.github.io/phppe3/coverage)
 - [Bootstrap](https://getbootstrap.com/) compatibilty
 - Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
+- Scalable cluster architecture to face huge loads
 - Very low footprint, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
 - Highly modular, easy to expand structure with Class autoloader
 - Self consistency check and diagnostics (even fix!)
 - Environment auto-detection (like base url, browser's language, timezone and screen size)
-- Clever, regular expression capable and filterable, standard URL to class::method routing mechanism
-- PDO driven Database abstraction layer with transparent on demand scheme installation
-- Convient and easy to use controller and ORM model interface
+- Clever, regular expression capable and filterable, class::method routing mechanism
+- PDO driven database layer with transparent on demand scheme installation
+- Convient and easy to use ORM model interface
 - Fast and safe templater system for views
-- Powerful caching with integrated [memcached](http://memcached.org/), APC/APCu and file cache support
+- Powerful caching with integrated [memcached](http://memcached.org/), APC/APCu and compressed file support
 - Automatic form data validation and security checks
 - Access control lists
-- Multilanguage support
-- Logging to files as well as to syslog
+- Audit logging to files or syslog
 - Monitoring support (nagios can get performance and status info easily from it's output)
 - Thumbnail generation and image manipulation support (with libGD)
+- BiDi multilanguage support
 - Built-in Content Server for CMS support
 - Uses View layer to detect Models (flexibility you've never seen)
 
-Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (another ~80KiB) to save the day and give you an easy start.
+Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (another ~80KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.
 
-For full CMS capability you'll also need the Content Editor with [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (28KiB), because PHPPE Core on it's own only serves contents.
+For full CMS capability you'll also need the Content Editor in [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (28KiB), because PHPPE Core on it's own only serves contents.
 
 Requirements
 ------------
@@ -43,7 +45,7 @@ Requirements
 - SSH terminal access (use ssh or PuTTY)
 - Apache or nginx with php-fpm on server side
 - Any HTML5 compatible browser on client side
-- No more than 768KiB free space if you install the full basic environment (with Pack, CMS, Extensions and Developer)
+- No more than 768KiB free space if you install all basic plugins (Pack, CMS, Extensions and Developer)
 
 Installation with Packagist
 ---------------------------
@@ -66,7 +68,7 @@ For detailed instructions and alternatives see [documentation](http://bztsrc.git
     $ mkdir public
     ```
 
-2. Download the framework Core (networkless alternative: copy it from the [documentation](http://bztsrc.github.io/phppe3/index.html#downloads) and paste it into this command: `cat >public/index.php`)
+2. Download the framework Core
 
     ``` sh
     $ curl https://raw.githubusercontent.com/bztsrc/phppe3/master/public/index.php >public/index.php
@@ -93,7 +95,7 @@ For detailed instructions and alternatives see [documentation](http://bztsrc.git
 Content Management
 ------------------
 
-This single file also serves as a Content Server. You can install the CMS Content Editor as an extension with
+The Core serves as content provider and can't modify contents on it's own. For that, install the Content Editor extension with
 
     $ composer require "phppe/CMS"
 
@@ -101,7 +103,7 @@ or
 
     $ curl https://bztsrc.github.io/phppe3/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
-In a scalable, multi-server environment one Content Editor can feed several Content Servers. See [documentation](http://bztsrc.github.io/phppe3/index.html#contents) for more details on load balancing.
+In a scalable environment only one dedicated Content Editor required. See [documentation](http://bztsrc.github.io/phppe3/index.html#contents) for more details on load balancing.
 
 Extensions
 ----------

@@ -1,17 +1,18 @@
 {
-    "desc_en": "creates the main PHPUnit configuration",
-    "file": "phpunit.xml"
+    "desc_en": "creates xml configuration for PHPUnit",
+    "args": [ "extension" ],
+    "file": "vendor/phppe/@EXTENSION@Dev/phpunit.xml"
 }
 <phpunit bootstrap="public/source.php">
  <testsuites>
   <testsuite>
-   <directory>vendor/phppe/Developer/tests</directory>
+   <directory>vendor/phppe/@EXTENSION@Dev/tests</directory>
   </testsuite>
  </testsuites>
  <filter>
   <whitelist processUncoveredFilesFromWhitelist="true">
    <file>public/source.php</file>
-   <directory>vendor/phppe/Core/libs</directory>
+   <directory>vendor/phppe/@EXTENSION@/libs</directory>
   </whitelist>
  </filter>
  <logging>

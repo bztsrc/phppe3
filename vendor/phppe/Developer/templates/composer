@@ -38,7 +38,7 @@
 	},
 
 	"require-dev": {
-		"phppe/@EXTENSION@Test": "*"
+		"phppe/@EXTENSION@Dev": "*"
 	},
 
 	"maintainer": { "name": "@@USERNAME" }

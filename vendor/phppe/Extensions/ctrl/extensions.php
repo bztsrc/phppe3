@@ -66,7 +66,7 @@ class Extensions extends \PHPPE\Extensions {
 	function action($item)
 	{
 		Core::$core->template="";
-		\PHPPE\View::js("init()", "extensions_init();", true);
+		\PHPPE\View::js("init()", "pe.extensions.init();", true);
 	}
 }
 ?>

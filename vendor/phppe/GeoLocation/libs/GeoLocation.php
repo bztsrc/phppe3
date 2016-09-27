@@ -53,13 +53,13 @@ class GeoLocation extends Extension
 			}
 
 			//! query location
-			//! 1-server side
+			//! 1-server side (common)
 			if(function_exists("geoip_record_by_name")) {
 				if(empty($_SESSION['pe_geo']))
 					$_SESSION['pe_geo']=geoip_record_by_name(Core::$client->ip);
 			}
 			//! 2-client side
-			if($cfg['type']==2 && empty($_SESSION['pe_geoclient']))
+			if($cfg['type']==2)
 				\PHPPE\View::js("init()","if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pe_geo,pe_geo);",true);
 			//! 3-client tracking
 			elseif($cfg['type']==3)

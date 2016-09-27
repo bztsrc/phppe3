@@ -65,7 +65,7 @@ if(isset($_REQUEST['impform'])){
             $err=L("Upload HTML only!");
         }
     }
-    die("<html><head><meta charset='utf-8'/></head><body>".($choose?"<div>".$choose."</div><script type='text/javascript'>parent.window['wyswyg_importdone'](\"".$_REQUEST['impform']."\");</script>":
+    die("<html><head><meta charset='utf-8'/></head><body>".($choose?"<div>".$choose."</div><script type='text/javascript'>parent.pe.wyswyg.importdone(\"".$_REQUEST['impform']."\");</script>":
         \PHPPE\View::_t("<!form>").
         "<input type='hidden' name='impform' value='".$_REQUEST['impform']."'>".
         "<input type='file' name='upload' onchange='this.form.submit();' id='".$_REQUEST['impform'].":import'>".
@@ -83,9 +83,9 @@ foreach($libs as $l)
         $toolbar = array_merge($toolbar, $l->wyswyg_toolbar);
 header("Pragma:no-cache");
 ?>
-
+pe.wyswyg = {
 <?php if($bs) {?>
-var wyswyg_classes = {
+    classes: {
     "toggle": "glyphicon glyphicon-eye",
     "import": "glyphicon glyphicon-upload",
     "font": "glyphicon glyphicon-font",
@@ -112,11 +112,11 @@ var wyswyg_classes = {
     "attachment": "glyphicon glyphicon-paperclip",
     "undo": "glyphicon glyphicon-step-backward",
     "redo": "glyphicon glyphicon-step-forward",
-};
+    },
 <?php } ?>
-var wyswyg_sel=null;
+    sel:null,
 
-function wyswyg_init()
+init: function()
 {
     var i, allinstance=document.querySelectorAll("TEXTAREA.wyswyg");
     var icons = {
@@ -132,11 +132,11 @@ function wyswyg_init()
         icons['hooks'].concat(plugins[i].getAttribute('data-wyswyg-toolbar').split(","));
     }
     for(i=0;i<allinstance.length;i++) {
-        wyswyg_open(allinstance[i], icons);
+        pe.wyswyg.open(allinstance[i], icons);
     }
-}
+},
 
-function wyswyg_open(source, icons)
+open: function(source, icons)
 {
     var id = source.id;
     //! get configuration
@@ -162,8 +162,8 @@ function wyswyg_open(source, icons)
         edit.setAttribute('id', id+':edit');
         edit.setAttribute('class', 'input wyswyg');
         edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;background:#fff;color:#000;display:none;overflow:auto;');
-        if(typeof window.parent['cms_getitem'] == 'function') {
-            var style=null, item=window.parent['cms_getitem']();
+        if(function_exists('pe.cms.getitem')) {
+            var style=null, item=eval('pe.cms.getitem()');
             if(item!=null) {
                 style=window.getComputedStyle(item, null);
                 edit.setAttribute('class', 'input wyswyg '+item.className);
@@ -182,13 +182,13 @@ function wyswyg_open(source, icons)
             }
         }
         //! selection hooks
-        edit.setAttribute('data-wyswyg-select-a', 'wyswyg_link');
-        edit.setAttribute('data-wyswyg-select-img', 'wyswyg_image');
+        edit.setAttribute('data-wyswyg-select-a', pe.wyswyg.link);
+        edit.setAttribute('data-wyswyg-select-img', pe.wyswyg.image);
         //! set up event handlers and design mode
-        edit.setAttribute('onmouseup','wyswyg_event(event,"'+id+'","select-@TAG");');
-        edit.setAttribute('onkeyup','wyswyg_setvalue("'+id+'");');
-        edit.setAttribute('onmouseout','wyswyg_setvalue("'+id+'");');
-        edit.setAttribute("ondrop",'wyswyg_drop(event,"'+id+'");');
+        edit.setAttribute('onmouseup','pe.wyswyg.event(event,"'+id+'","select-@TAG");');
+        edit.setAttribute('onkeyup','pe.wyswyg.setvalue("'+id+'");');
+        edit.setAttribute('onmouseout','pe.wyswyg.setvalue("'+id+'");');
+        edit.setAttribute("ondrop",'pe.wyswyg.drop(event,"'+id+'");');
         edit.setAttribute("contentEditable",true);
         edit.setAttribute("designMode","on");
         source.parentNode.insertBefore(edit,source);
@@ -196,14 +196,14 @@ function wyswyg_open(source, icons)
         //! html toggle button
         var toggle = document.createElement('BUTTON');
         toggle.setAttribute('title',L('Toggle HTML/Source'));
-        toggle.setAttribute('onclick','event.preventDefault();wyswyg_togglesrc(this, true);');
+        toggle.setAttribute('onclick','event.preventDefault();pe.wyswyg.togglesrc(this, true);');
         tb.appendChild(toggle);
 
         //! import button
         var imp = document.createElement('BUTTON');
         imp.setAttribute('title',L('wyswyg import'));
-        imp.setAttribute('class', <?=($bs?"wyswyg_classes['import']":"'wyswyg_icon wyswyg_icon-import'")?>);
-        imp.setAttribute('onclick','event.preventDefault();wyswyg_import(event, "'+id+'");');
+        imp.setAttribute('class', <?=($bs?"pe.wyswyg.classes['import']":"'wyswyg_icon wyswyg_icon-import'")?>);
+        imp.setAttribute('onclick','event.preventDefault();pe.wyswyg.import(event, "'+id+'");');
         tb.appendChild(imp);
 
         //! add iconbar
@@ -222,7 +222,7 @@ function wyswyg_open(source, icons)
                 if(i.substr(0,12)=='wyswyg_style') {
                     var tag=i.substr(12);
                     if(tag=='') tag='<span>';
-                    txt+=tag.replace('>'," onclick='event.preventDefault();pe_p();' onmouseover='event.preventDefault();wyswyg_setfont(event,\""+i.substr(12)+"\",\""+id+"\");'>")+LANG[i]+tag.replace('<','</');
+                    txt+=tag.replace('>'," onclick='event.preventDefault();pe_p();' onmouseover='event.preventDefault();pe.wyswyg.setfont(event,\""+i.substr(12)+"\",\""+id+"\");'>")+LANG[i]+tag.replace('<','</');
                 }
         }
 //"
@@ -242,12 +242,12 @@ function wyswyg_open(source, icons)
                         name=i;
                         ext=",'"+icons[menu][i]+"'";
                     }
-                    if(typeof window['wyswyg_'+func] == 'function') {
+                    if(function_exists('pe.wyswyg.'+func)) {
                         var mi = document.createElement('BUTTON');
                         mi.setAttribute('class',
-                        <?=$bs?"wyswyg_classes[name]!=null?wyswyg_classes[name]:":""?>'wyswyg_icon wyswyg_icon-'+name);
+                        <?=$bs?"pe.wyswyg.classes[name]!=null?pe.wyswyg.classes[name]:":""?>'wyswyg_icon wyswyg_icon-'+name);
                         mi.setAttribute('title',L('wyswyg_'+name));
-                        mi.setAttribute('onclick','event.preventDefault();wyswyg_'+func+'(event,\"'+id+'\"'+ext+');wyswyg_setvalue(\"'+id+'\");');
+                        mi.setAttribute('onclick','event.preventDefault();pe.wyswyg.'+func+'(event,\"'+id+'\"'+ext+');pe.wyswyg.setvalue(\"'+id+'\");');
                         ms.appendChild(mi);
                     }
                 }
@@ -262,7 +262,7 @@ function wyswyg_open(source, icons)
         link.setAttribute('class','sub');
         link.setAttribute('style','width:300px;position:fixed;z-index:2000;display:none;');
         link.setAttribute('value','');
-        link.setAttribute('onkeyup','wyswyg_setlink(event,this,\"'+id+'\");');
+        link.setAttribute('onkeyup','pe.wyswyg.setlink(event,this,\"'+id+'\");');
         link.setAttribute('onblur',"this.style.display='none';");
         tb.appendChild(link);
 
@@ -283,24 +283,24 @@ function wyswyg_open(source, icons)
         tb.appendChild(popup);
 
         //! switch to html mode
-        wyswyg_togglesrc(toggle);
+        pe.wyswyg.togglesrc(toggle);
     }
-}
+},
 
-function wyswyg_drop(evt,id)
+drop: function(evt,id)
 {
     setTimeout(function(){
         var source=document.getElementById(id);
         var h,hooks=source.getAttribute('data-drophook');
         if(hooks!=null) hooks=hooks.split(',');
         for(h in hooks) {
-            if(typeof window[hooks[h]]=='function')
-                window[hooks[h]](evt,id);
+            if(function_exists(hooks[h]))
+                eval(hooks[h]+"(evt,id)");
         }
     },50);
-}
+},
 
-function wyswyg_togglesrc(toggle,focus)
+togglesrc: function(toggle,focus)
 {
     var edit = toggle.parentNode.nextSibling;
     var source = edit.nextSibling;
@@ -326,9 +326,9 @@ function wyswyg_togglesrc(toggle,focus)
         if(focus!=null)
             edit.focus();
      }
-}
+},
 
-function wyswyg_setvalue(id)
+setvalue:function(id)
 {
     var source = document.getElementById(id);
     var edit = source.previousSibling;
@@ -341,9 +341,9 @@ function wyswyg_setvalue(id)
         if(t.charAt(t.length-1)!='>') t=t+'>';
         source.value=source.value.replace(txt[i],t).replace("&lt;"+txt[i].substring(1,txt[i].length),t);}
     }
-}
+},
 
-function wyswyg_selected(evt, type)
+selected:function(evt, type)
 {
         var sel=null, obj=null, txt=null, html=null;
         //function to get current selection
@@ -374,54 +374,58 @@ function wyswyg_selected(evt, type)
         if(type=="txt") return txt; else
         if(type=="html") return html; else
         return obj;
-}
+},
 
-function wyswyg_exec(id,cmd,val)
+exec:function(id,cmd,val)
 {
 //    var div=document.getElementById(id+':edit');
 //    if(div)div.focus();
     try { return document.execCommand(cmd,false,val); }
     catch(e) { alert(e); return null; }
-}
-function wyswyg_import(evt,id) {document.getElementById(id+':impframe').contentWindow.document.getElementsByTagName('INPUT')[4].click();}
-function wyswyg_importdone(id){
+},
+
+import:function(evt,id) {document.getElementById(id+':impframe').contentWindow.document.getElementsByTagName('INPUT')[4].click();},
+
+importdone:function(id){
 var choose=choose=document.getElementById(id+':impframe').contentWindow.document.getElementsByTagName('DIV')[0].innerHTML;
 document.getElementById(id+':impframe').src='js/wyswyg.js?impform='+id;
 document.getElementById(id+':edit').innerHTML=choose;
-wyswyg_setvalue(id);
-}
+pe.wyswyg.setvalue(id);
+},
 
-function wyswyg_bold(evt,id) {wyswyg_exec(id,"bold","");}
-function wyswyg_italic(evt,id) {wyswyg_exec(id,"italic","");}
-function wyswyg_underline(evt,id) {wyswyg_exec(id,"underline","");}
-function wyswyg_strikethrough(evt,id) {wyswyg_exec(id,"strikethrough","");}
-function wyswyg_superscript(evt,id) {wyswyg_exec(id,"superscript","");}
-function wyswyg_subscript(evt,id) {wyswyg_exec(id,"subscript","");}
-function wyswyg_left(evt,id) {wyswyg_exec(id,"justifyleft","");}
-function wyswyg_center(evt,id) {wyswyg_exec(id,"justifycenter","");}
-function wyswyg_justify(evt,id) {wyswyg_exec(id,"justifyfull","");}
-function wyswyg_right(evt,id) {wyswyg_exec(id,"justifyright","");}
-function wyswyg_indent(evt,id) {wyswyg_exec(id,"indent","");}
-function wyswyg_outdent(evt,id) {wyswyg_exec(id,"outdent","");}
-function wyswyg_list(evt,id) {wyswyg_exec(id,"insertunorderedlist","");}
-function wyswyg_numbered(evt,id) {wyswyg_exec(id,"insertorderedlist","");}
-function wyswyg_undo(evt,id) {wyswyg_exec(id,"undo","");}
-function wyswyg_redo(evt,id) {wyswyg_exec(id,"redo","");}
-function wyswyg_unlink(evt,id) {wyswyg_exec(id,"unlink","");}
-function wyswyg_font(evt,id) {pe_p(id+"_style");}
-function wyswyg_setfont(evt,tag,id) {
+bold:function(evt,id) {pe.wyswyg.exec(id,"bold","");},
+italic:function(evt,id) {pe.wyswyg.exec(id,"italic","");},
+underline:function(evt,id) {pe.wyswyg.exec(id,"underline","");},
+strikethrough:function(evt,id) {pe.wyswyg.exec(id,"strikethrough","");},
+superscript:function(evt,id) {pe.wyswyg.exec(id,"superscript","");},
+subscript:function(evt,id) {pe.wyswyg.exec(id,"subscript","");},
+left:function(evt,id) {pe.wyswyg.exec(id,"justifyleft","");},
+center:function(evt,id) {pe.wyswyg.exec(id,"justifycenter","");},
+justify:function(evt,id) {pe.wyswyg.exec(id,"justifyfull","");},
+right:function(evt,id) {pe.wyswyg.exec(id,"justifyright","");},
+indent:function(evt,id) {pe.wyswyg.exec(id,"indent","");},
+outdent:function(evt,id) {pe.wyswyg.exec(id,"outdent","");},
+list:function(evt,id) {pe.wyswyg.exec(id,"insertunorderedlist","");},
+numbered:function(evt,id) {pe.wyswyg.exec(id,"insertorderedlist","");},
+undo:function(evt,id) {pe.wyswyg.exec(id,"undo","");},
+redo:function(evt,id) {pe.wyswyg.exec(id,"redo","");},
+unlink:function(evt,id) {pe.wyswyg.exec(id,"unlink","");},
+font:function(evt,id) {pe_p(id+"_style");},
+setfont:function(evt,tag,id) {
     if(tag!='' && tag!=null) {
-        wyswyg_exec(id,"formatblock",tag);
+        pe.wyswyg.exec(id,"formatblock",tag);
     } else {
         //! remove formating
-//        wyswyg_exec(id,"removeFormat");
-        wyswyg_exec(id,"formatblock","<p>");
+//        pe.wyswyg.exec(id,"removeFormat");
+        pe.wyswyg.exec(id,"formatblock","<p>");
     }
-}
-function wyswyg_link(evt,id) {
+},
+
+link:function(evt,id)
+{
     var link=document.getElementById(id+':link');
-    var sel=wyswyg_selected(evt,"sel");
-    var obj=wyswyg_selected(evt,"obj");
+    var sel=pe.wyswyg.selected(evt,"sel");
+    var obj=pe.wyswyg.selected(evt,"obj");
     //! if neither text selected nor an A tag
     if((sel.rangeCount<1 || sel.isCollapsed==true) && obj.tagName!='A')
         return;
@@ -429,7 +433,7 @@ function wyswyg_link(evt,id) {
     if(obj.tagName!='A') {
         var a=document.createElement('A');
         a.setAttribute('href', 'http<?=(Core::$core->sec?"s":"")?>://');
-        a.innerHTML=wyswyg_selected(evt,"txt");
+        a.innerHTML=pe.wyswyg.selected(evt,"txt");
         sel.getRangeAt(sel.rangeCount-1).surroundContents(a);
         obj=a;
     }
@@ -441,17 +445,19 @@ function wyswyg_link(evt,id) {
     link.style.top=(rt.top+obj.offsetHeight)+'px';
     link.style.display='block';
     //! save object for setlink()
-    wyswyg_sel=obj;
+    pe.wyswyg.sel=obj;
     link.selectionStart = link.selectionEnd = link.value.length;
     link.focus();
-}
-function wyswyg_setlink(evt,hrf,id){
-    if(!hrf||!hrf.value||hrf.value=='')wyswyg_exec(id,"unlink","");
-    if(wyswyg_sel&&wyswyg_sel.tagName=='A')wyswyg_sel.href=hrf.value;
-    else alert(hrf.value);
-}
+},
 
-function wyswyg_event(evt,id,name){
+setlink:function(evt,hrf,id){
+    if(!hrf||!hrf.value||hrf.value=='')pe.wyswyg.exec(id,"unlink","");
+    if(pe.wyswyg.sel&&pe.wyswyg.sel.tagName=='A')pe.wyswyg.sel.href=hrf.value;
+    else alert(hrf.value);
+},
+
+event:function(evt,id,name)
+{
     //! get plugins for subscribed for an event
     var ret=[],hookname='data-wyswyg-'+name;
     if(evt!=null && evt.target!=null){
@@ -463,13 +469,13 @@ function wyswyg_event(evt,id,name){
     for(i=0;i<plugins.length;i++) {
         var hooks=plugins[i].getAttribute(hookname).split(",");
         for(var h in hooks)
-            if(typeof window[hooks[h]] == 'function')
-                ret.concat(window[hooks[h]](evt,id));
+            if(function_exists(hooks[h]))
+                ret.concat(eval(hooks[h]+"(evt,id)"));
     }
     return ret;
-}
+},
 
-function wyswyg_popup(evt, id, url)
+popup:function(evt, id, url)
 {
     var popup=document.getElementById(id+'_popup');
     popup.innerHTML='';
@@ -480,9 +486,9 @@ function wyswyg_popup(evt, id, url)
         popup.innerHTML=r.responseText;
     } else
         popup.innerHTML=L("Unable to load AJAX hook");
-}
+},
 
-function wyswyg_search(inp,div)
+search:function(inp,div)
 {
     pe_w();
     var r=new RegExp(inp.value,'i');
@@ -499,3 +505,4 @@ function wyswyg_search(inp,div)
         }
     }
 }
+};

@@ -1,7 +1,7 @@
 {
 	"desc_en": "test case for a class",
 	"args": [ "extension", "class" ],
-	"file": "vendor/phppe/@EXTENSION@Test/tests/@CLASS@Test.php"
+	"file": "vendor/phppe/@EXTENSION@Dev/tests/@CLASS@Test.php"
 }
 <?php
 @@BRIEF

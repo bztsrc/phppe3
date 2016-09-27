@@ -40,7 +40,7 @@ class CMSParam
         $this->adjust=intval(@$_REQUEST['adjust']);
 
         //! save current scroll position to session so that on next
-        //! page load cms_init will use it
+        //! page load pe.cms.init() will use it
         if(isset($_REQUEST['scrx']))
             $_SESSION['cms_scroll'] = [$_REQUEST['scrx'], $_REQUEST['scry']];
 
@@ -91,7 +91,7 @@ class CMSParam
                 if (!Core::isError()) {
                     //! release the page lock
                     $page->release();
-                    die("<html><script>window.parent.cms_close(true);</script></html>");
+                    die("<html><script>parent.pe.cms.close(true);</script></html>");
                 }
             }
             //! copy the form data. normally you don't need to do that

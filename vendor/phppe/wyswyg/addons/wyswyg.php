@@ -20,7 +20,7 @@ class wyswyg extends \PHPPE\AddOn
 
     function edit(  )
     {
-        View::jslib("wyswyg.js", "wyswyg_init();",8);
+        View::jslib("wyswyg.js", "pe.wyswyg.init();",8);
         View::css("wyswyg.css");
         if(empty($this->args[0]))
             $this->args[0]=$this->adjust;

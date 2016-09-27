@@ -29,7 +29,7 @@ class cmsdds extends \PHPPE\AddOn
             $r.="<tr><td width='1' style='min-width:100px;border:1px solid #202020;padding:2px;background:rgba(160,160,160,0.5);'>".$k."</td>";
             foreach($m as $idx=>$val)
                 $r.="<td width='*' style='padding:0px;'><input style='width:95%;margin-left:0px;' class='input form-control' name='".$this->fld."[".$k."][".$idx."]' value=\"".htmlspecialchars(!empty($val)?$val:'')."\"></td>";
-            $r.="<td><nobr><img src='images/cms/pagedel.png' onclick='cms_cleardds(this);' style='cursor:pointer;padding-right:5px;'><img src='images/cms/pageadd.png' onclick='cms_clonedds(this);' style='cursor:pointer;'></nobr></td></tr>";
+            $r.="<td><nobr><img src='images/cms/pagedel.png' onclick='cms_cleardds(this);' style='cursor:pointer;padding:2px;'><img src='images/cms/pageadd.png' onclick='cms_clonedds(this);' style='cursor:pointer;padding:2px;'></nobr></td></tr>";
         }
         $r.="<tr><td width='1' style='padding-right:3px;'><input style='min-width:100px;' class='input form-control' name='".$this->fld."[_][name]' value=''></td>";
         for($m=0;$m<5;$m++)

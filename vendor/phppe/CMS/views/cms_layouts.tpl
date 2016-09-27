@@ -1,7 +1,7 @@
 <!if empty(core.item)>
 <div class='mosaicbox'><h1><!=L("Layouts")></h1>
 <span style='display:block;padding:5px;'>
-<nobr><input id='search' type='text' style='width:30%;height:20px;' onkeyup='return cms_tablesearch(this,"results");'><input type='button' class='button' style='font-size:28px;padding-top:0px;line-height:24px;vertical-align:middle;width:8%;' onclick='cms_tablesearch(this.previousSibling,"results");' value='⌕'></nobr>
+<nobr><input id='search' type='text' style='width:30%;height:20px;' onkeyup='return pe.cms.tablesearch(this,"results");'><input type='button' class='button' style='font-size:28px;padding-top:0px;line-height:24px;vertical-align:middle;width:8%;' onclick='cms_tablesearch(this.previousSibling,"results");' value='⌕'></nobr>
 </span>
 <table id="results" class="cmstable">
 	<tr>

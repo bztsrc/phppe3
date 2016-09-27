@@ -81,7 +81,6 @@ class Templates
 			}
 		else
 			$metas[$template]=$meta;
-
 		//! create directories (only for top template)
 		if(!empty($meta['dirs']))
 			foreach($meta['dirs'] as $dir)
@@ -93,7 +92,7 @@ class Templates
 			//! get default variables
 			if(!empty($meta['package'][$tpl]))
 				foreach($meta['package'][$tpl] as $k=>$v)
-					self::loadVars($vars,$k,!empty($vars[$v])?$vars[$v]:$v);
+					self::loadVars($vars,$k,!empty($vars[$v])?$vars[$v]:strtr($v,$vars));
 			//! get name of the file
 			$file = strtr(!empty($m['file'])?$m['file']:$m['append'],$vars);
 	

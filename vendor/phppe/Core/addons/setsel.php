@@ -108,10 +108,11 @@ class setsel extends \PHPPE\AddOn {
         "<div id='".$this->fld.":filters' class='setsel_filters'>".(!empty($this->args[4])?"<span class='setsel_title' style='float:left;line-height:22px !important;'>".$this->args[4]."</span>":"").$flthtml.
         "<input name='search' class='setsel_input' type='text' placeholder='".L("Search")."' onchange='pe.setsel.search(\"".$this->fld."\");' onkeyup='pe.setsel.search(\"".$this->fld."\");'>".
         "<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".
+        "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"pe.dnd.drop(event,pe.setsel.remove);\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;".(!empty($this->args[0])?"width:100% !important;":"")."box-sizing:border-box;overflow:auto;'>".$out[1]."</div>".
         (empty($this->args[0])?
         "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseover='pe.setsel.droparea(event);' onmouseup=\"pe.dnd.drop(event,pe.setsel.add);\" id='".$this->fld.":inlist' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;padding-bottom:64px;box-sizing:border-box;overflow:auto;'>".$out[0]."</div>"
         :"").
-        "<div class='".$this->css." ".(!empty($a[1])&&$a[1]!="-"?$a[1]:"")." setsel_box' onmouseup=\"pe.dnd.drop(event,pe.setsel.remove);\" id='".$this->fld.":all' style='height:".intval(!empty($this->args[1])?$this->args[1]:128)."px;".(!empty($this->args[0])?"width:100% !important;":"")."box-sizing:border-box;overflow:auto;'>".$out[1]."</div></div>";
+        "</div>";
     }
 }
 
