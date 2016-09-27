@@ -172,17 +172,17 @@ class Extensions {
                 //! Community provided Open Source extensions
                 "https://bztsrc.github.io/phppe3/",
                 //! Commertial extensions
-//                "https://phppe.org/phppe3/"
+                "https://phppe.org/business/"
             ];
             //! add user provided repositories
 			if(!empty(Core::$core->repos)) $list=array_merge(Core::$core->repos,$list);
 //fallback to local repo for testing. REMOVE IT!!!
-$list=["data/.."];
+$list=["data/..","/var/www/phppe/packages.business.json"];
 			foreach($list as $r)
 			{
                 //! request packages.json from repository
 				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json";
-				$d2=file_get_contents($url);
+				$d2=file_get_contents(file_exists($r)?$r:$url);
 				if(empty($d2))
 					$d2=\PHPPE\Http::get($url);
 				Core::log('D',"Adding repo: ".$url." (".strlen($d2)." bytes)","extensions");

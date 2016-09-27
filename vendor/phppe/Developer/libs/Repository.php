@@ -202,6 +202,8 @@ class Repository
 			$packages[$m['name']]['sha1']=sha1(file_get_contents(basename($tarball)));
 			if(!empty($preview))
 				$packages[$m['name']]['preview']=base64_encode($preview);
+            if($bns && empty($packages[$m['name']]['price']))
+                $packages[$m['name']]['price']=1;
 
 			echo("OK\n");
 		}
