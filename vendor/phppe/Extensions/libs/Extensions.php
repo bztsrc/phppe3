@@ -182,7 +182,7 @@ $list=["data/..","/var/www/phppe/packages.business.json"];
 			{
                 //! request packages.json from repository
 				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json";
-				$d2=file_get_contents(file_exists($r)?$r:$url);
+				$d2=file_get_contents(!file_exists($url)?$r:$url);
 				if(empty($d2))
 					$d2=\PHPPE\Http::get($url);
 				Core::log('D',"Adding repo: ".$url." (".strlen($d2)." bytes)","extensions");

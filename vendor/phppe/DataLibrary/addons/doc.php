@@ -17,7 +17,7 @@ class doc extends \PHPPE\AddOn\setsel
 		$this->args[0]=1;
 		$this->args[1]=0;
 		$this->args[2]='';//'lang,tid:template';
-		$this->args[3]="<img src='images/datalibrary/%type%.png' style='pointer-events:none;float:left;padding-right:3px;'>%name%<br><small style='pointer-events:none;'>%size% bytes</small><br style='clear:both;'>";
+		$this->args[3]="<img src='images/datalibrary/%type%.png' style='pointer-events:none;float:left;padding-right:3px;'>%name%<br><small style='pointer-events:none;'>%hsize%bytes</small><br style='clear:both;'>";
 		$this->args[4]=L("Select Document");
         $this->args[5]="id";
 		$this->attrs[0]=\PHPPE\DataLibrary::getDocuments();

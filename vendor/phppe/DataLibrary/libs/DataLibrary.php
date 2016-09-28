@@ -74,10 +74,12 @@ class DataLibrary
             $type= "other";
             foreach($types as $k=>$v)
                 if(in_array($ext,$v)) {$type=$k;break;}
+			$s=filesize("data/download/".$f);
             $docs[] = [
                 "id"=>$f,
                 "name"=>$f,
-                "size"=>filesize("data/download/".$f),
+                "size"=>$s,
+                "hsize"=>$s>1024*1024*1024?sprintf("%.2f G",$s/1024/1024/1024):($s>1024*1024?sprintf("%.2f M",$s/1024/1024):($s>1024?sprintf("%.2f K",$s/1024):$s." ")),
                 "ext"=>$ext,
                 "type"=>$type,
             ];

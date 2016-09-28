@@ -79,8 +79,7 @@ class Templates
 			{
 				$metas[$p]=self::getMeta($p);
 			}
-		else
-			$metas[$template]=$meta;
+		$metas[$template]=$meta;
 		//! create directories (only for top template)
 		if(!empty($meta['dirs']))
 			foreach($meta['dirs'] as $dir)
@@ -179,9 +178,9 @@ class Templates
 	static function getMeta($template)
 	{
 		$meta = @self::readTemplates($template)[$template];
-		if(empty($meta) ||
+		if(empty($meta) || is_string($meta) ||
 			(empty($meta['file']) && empty($meta['append']) && empty($meta['package'])))
-			die(L("Unable to read meta")." (".$template.")\n".json_last_error_msg());
+			die(L("Unable to read meta")." (".$template.")\n".(is_string($meta)?$meta."\n":"").json_last_error_msg());
 
 		return $meta;
 	}

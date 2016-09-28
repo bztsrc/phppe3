@@ -30,18 +30,18 @@ var resptable = {
   init: function() {
     resptable.detect();
     if ( window.addEventListener )
-      window.addEventListener( "resize", resptable.recalc, false );
+      window.addEventListener( "resize", pe.resptable.recalc, false );
     else if ( window.attachEvent )
-      window.attachEvent( "onresize", resptable.recalc );
+      window.attachEvent( "onresize", pe.resptable.recalc );
     else
       window["onresize"]=resptable.recalc;
     if ( window.addEventListener )
-      window.addEventListener( "scroll", resptable.recalc, false );
+      window.addEventListener( "scroll", pe.resptable.recalc, false );
     else if ( window.attachEvent )
-      window.attachEvent( "onscroll", resptable.recalc );
+      window.attachEvent( "onscroll", pe.resptable.recalc );
     else
-      window["onscroll"]=resptable.recalc;
-    setTimeout('resptable.recalc();',100);
+      window["onscroll"]=pe.resptable.recalc;
+    setTimeout('pe.resptable.recalc();',100);
   },
 
 /* PRIVATE METHODS */
@@ -77,11 +77,11 @@ var resptable = {
     prevspan.setAttribute('id','resptable'+l+'_prev');
     prevspan.className="resptable_button_inactive";
     prevspan.innerHTML=ts[i].getAttribute('data-prev')?ts[i].getAttribute('data-prev'):'◀';
-    prevspan.setAttribute('onclick','resptable.prev('+l+');');
+    prevspan.setAttribute('onclick','pe.resptable.prev('+l+');');
     nextspan.setAttribute('id','resptable'+l+'_next');
     nextspan.className="resptable_button_inactive";
     nextspan.innerHTML=ts[i].getAttribute('data-next')?ts[i].getAttribute('data-next'):'▶';
-    nextspan.setAttribute('onclick','resptable.next('+l+');');
+    nextspan.setAttribute('onclick','pe.resptable.next('+l+');');
     pagerdiv.appendChild(prevspan);
     pagerdiv.appendChild(nextspan);
     ts[i].parentNode.insertBefore(pagerdiv, ts[i]);
@@ -91,35 +91,35 @@ var resptable = {
     ts[i].setAttribute('data-o',0);
     ts[i].setAttribute('data-x',ox);
     ts[i].setAttribute('data-y',oy);
-    ts[i].setAttribute('ontouchstart','resptable.touchstart(event);');
-//    ts[i].setAttribute('onmousedown','resptable.touchstart(event);');
-    ts[i].setAttribute('ontouchend','resptable.touchend(event,'+i+');');
-//    ts[i].setAttribute('onmouseup','resptable.touchend(event,'+i+');');
-    ts[i].setAttribute('ontouchcancel','resptable.touchcancel(event);');
+    ts[i].setAttribute('ontouchstart','pe.resptable.touchstart(event);');
+//    ts[i].setAttribute('onmousedown','pe.resptable.touchstart(event);');
+    ts[i].setAttribute('ontouchend','pe.resptable.touchend(event,'+i+');');
+//    ts[i].setAttribute('onmouseup','pe.resptable.touchend(event,'+i+');');
+    ts[i].setAttribute('ontouchcancel','pe.resptable.touchcancel(event);');
     }
-    for(i=0;i<resptable.instances.length;i++) {
-      var ts=resptable.instances,j,tblhdr=document.createElement('TABLE');
+    for(i=0;i<pe.resptable.instances.length;i++) {
+      var ts=pe.resptable.instances,j,tblhdr=document.createElement('TABLE');
       var pagerdiv=document.getElementById('resptable'+i+'_pager');
       tblhdr.setAttribute('id','resptable'+i+'_hdr');
-      tblhdr.className=resptable_instances[i].className;
+      tblhdr.className=pe.resptable.instances[i].className;
       tblhdr.setAttribute('style','position:relative;');
       tblhdr.appendChild(ts[i].rows[0].cloneNode(true));
       ts[i].rows[1].cells[0].className=ts[i].rows[0].cells[0].className;
       ts[i].rows[0].style.display='none';
 //      ts[i].style='margin-top:-'+ts[i].rows[0].offsetHeight+'px;';
       pagerdiv.appendChild(tblhdr);
-      if(resptable_instances[i].getAttribute('data-nomenu')==null){
+      if(pe.resptable.instances[i].getAttribute('data-nomenu')==null){
         var was=0,k=tblhdr.getElementsByTagName('th')[0];
         var popup=document.createElement('div');
         popup.setAttribute('id','resptable'+i+'_popup');
         popup.setAttribute('style','position:absolute;display:block;background:#fff;visibility:hidden;box-shadow:2px 2px 2px #000;padding:3px;text-align:left;')
-        for(j=0;j<resptable.instances[i].rows.length;j++) {
-          if(resptable.instances[i].rows[j]!=null && resptable.instances[i].rows[j].cells[0].getAttribute('colspan')!=null) {
+        for(j=0;j<pe.resptable.instances[i].rows.length;j++) {
+          if(pe.resptable.instances[i].rows[j]!=null && pe.resptable.instances[i].rows[j].cells[0].getAttribute('colspan')!=null) {
             var d=document.createElement('div');
-            resptable.instances[i].rows[j].cells[0].setAttribute('id','resptable'+i+'_menu'+j);
-            d.innerHTML=resptable.instances[i].rows[j].cells[0].innerHTML;
-            d.setAttribute('style',resptable.instances[i].rows[j].cells[0].getAttribute('style')+';cursor:pointer;');
-            d.setAttribute('onclick','resptable.scrollto("resptable'+i+'_menu'+j+'",'+Math.floor(resptable.instances[i].getAttribute('data-y'))+');document.getElementById("resptable'+i+'_popup").style.visibility="hidden";');
+            pe.resptable.instances[i].rows[j].cells[0].setAttribute('id','resptable'+i+'_menu'+j);
+            d.innerHTML=pe.resptable.instances[i].rows[j].cells[0].innerHTML;
+            d.setAttribute('style'pe.,resptable.instances[i].rows[j].cells[0].getAttribute('style')+';cursor:pointer;');
+            d.setAttribute('onclick','pe.resptable.scrollto("resptable'+i+'_menu'+j+'",'+Math.floor(pe.resptable.instances[i].getAttribute('data-y'))+');document.getElementById("resptable'+i+'_popup").style.visibility="hidden";');
             popup.appendChild(d);
             was=1;
           }
@@ -130,22 +130,22 @@ var resptable = {
           k.setAttribute('onclick','document.getElementById("resptable'+i+'_popup").style.visibility=document.getElementById("resptable'+i+'_popup").style.visibility=="visible"?"hidden":"visible";')
         }
       }
-      resptable.setwidth(resptable.instances[i]);
+      pe.resptable.setwidth(resptable.instances[i]);
     }
   },
 
   prev: function(i)
   {
-    var tbl=resptable.instances[i];
+    var tbl=pe.resptable.instances[i];
     if(tbl.getAttribute('data-o')>0) tbl.setAttribute('data-o',Math.floor(tbl.getAttribute('data-o'))-1);
-    resptable.setwidth(tbl);
+    pe.resptable.setwidth(tbl);
   },
 
   next: function(i)
   {
-    var tbl=resptable.instances[i];
+    var tbl=pe.resptable.instances[i];
     if(tbl.getAttribute('data-o')<tbl.getAttribute('data-h')) tbl.setAttribute('data-o',Math.floor(tbl.getAttribute('data-o'))+1);
-    resptable.setwidth(tbl);
+    pe.resptable.setwidth(tbl);
   },
 
   setwidth: function(tbl)
@@ -223,36 +223,36 @@ var resptable = {
   recalc: function(evt)
   {
     var i;
-    for(i=0;i<resptable.instances.length;i++)
-    resptable.setwidth(resptable.instances[i]);
+    for(i=0;i<pe.resptable.instances.length;i++)
+    pe.resptable.setwidth(resptable.instances[i]);
   },
 
   touchstart: function(evt)
   {
-    resptable.touchx=evt.changedTouches[0].pageX?evt.changedTouches[0].pageX:evt.pageX;
-    resptable.touchy=evt.changedTouches[0].pageY?evt.changedTouches[0].pageY:evt.pageY;
+    pe.resptable.touchx=evt.changedTouches[0].pageX?evt.changedTouches[0].pageX:evt.pageX;
+    pe.resptable.touchy=evt.changedTouches[0].pageY?evt.changedTouches[0].pageY:evt.pageY;
     return true;
   },
 
   touchend: function(evt,i)
   {
     var x=(evt.changedTouches[0].pageX?evt.changedTouches[0].pageX:evt.pageX),y=(evt.changedTouches[0].pageY?evt.changedTouches[0].pageY:evt.pageY);
-    var a=resptable.touchx-x;
-    var b=resptable.touchy-y;
-    if(resptable.touchx!=-1 && (a>0?a:-a) > (b>0?b:-b)) {
-      if(resptable.touchx-x<-50)
-        resptable.prev(i);
-      else if(resptable.touchx-x>50)
-        resptable.next(i);
+    var a=pe.resptable.touchx-x;
+    var b=pe.resptable.touchy-y;
+    if(pe.resptable.touchx!=-1 && (a>0?a:-a) > (b>0?b:-b)) {
+      if(pe.resptable.touchx-x<-50)
+        pe.resptable.prev(i);
+      else if(pe.resptable.touchx-x>50)
+        pe.resptable.next(i);
     }
-    resptable.touchcancel(evt);
+    pe.resptable.touchcancel(evt);
     return true;
   },
 
   touchcancel: function(evt)
   {
-    resptable.touchx=-1;
-    resptable.touchy=-1;
+    pe.resptable.touchx=-1;
+    pe.resptable.touchy=-1;
     return true;
   }
 };

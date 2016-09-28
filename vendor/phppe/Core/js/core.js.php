@@ -286,7 +286,7 @@ pe.store = {
 
 /*
  *   Popup menu support
- *    popups: <div id='mypopup'>menu</div>
+ *    popups: <div id='mypopup' class='popup'>menu</div>
  *    triggers: onmouseover='pe.popup.open(this,"mypopup",10,10);'
  */
 pe.popup = {
@@ -364,6 +364,16 @@ pe.popup = {
       pe.popup.currentobj=null;
       pe.popup.tmr=null;
     }
+  },
+
+  init: function()
+  {
+    var i,c,items=document.querySelectorAll("[data-popup]");
+    for(i=0;i<items.length;i++) {
+      c='return pe.popup.open(this,'+items[i].getAttribute('data-drag')+',10,10);';
+      items[i].setAttribute('onmouseover',c);
+      items[i].setAttribute('ontouchstart',c);
+    }
   }
 };
 
@@ -409,7 +419,7 @@ pe.dnd = {
     var ti=new Date();
     if(pe.dnd.dragged!=null&&callback!=null&&ti.getTime()-pe.dnd.start>200)
       if(typeof callback=='function')callback(pe.dnd.dragged,ctx,evt);
-      else if(typeof window[callback]=='function')window[callback](pe.dnd.dragged,ctx,evt);
+      else if(function_exists(callback))eval(callback+"(pe.dnd.dragged,ctx,evt)");
     if(pe.dnd.icon!=null) { try{document.body.removeChild(pe.dnd.icon);}catch(e){} pe.dnd.icon=null; }
     pe.dnd.dragged=null;return false;
   },
@@ -425,6 +435,18 @@ pe.dnd = {
       window.addEventListener( "mouseup", pe.dnd.cancel, false );
     else if ( window.attachEvent )
       window.attachEvent( "onmouseup", pe.dnd.cancel );
+    var i,c,items=document.querySelectorAll("[data-drag]");
+    for(i=0;i<items.length;i++) {
+      c='return pe.dnd.drag(event,'+items[i].getAttribute('data-drag')+');';
+      items[i].setAttribute('onmousedown',c);
+      items[i].setAttribute('ontouchstart',c);
+    }
+    items=document.querySelectorAll("[data-drop]");
+    for(i=0;i<items.length;i++) {
+      c='return pe.dnd.drop(event,'+items[i].getAttribute('data-drop')+');';
+      items[i].setAttribute('onmouseup',c);
+      items[i].setAttribute('ontouchend',c);
+    }
   },
   
 /*PRIVATE METHODS*/
@@ -449,8 +471,8 @@ pe.dnd = {
     pe.dnd.dragged=null;
     pe.dnd.drop();
     for(h in pe.dnd.endhooks) {
-      if(typeof window[pe.dnd.endhooks[h]]=='function')
-        window[pe.dnd.endhooks[h]](e);
+      if(function_exists(pe.dnd.endhooks[h]))
+        eval(pe.dnd.endhooks[h]+"(e)");
     }
   }
 };

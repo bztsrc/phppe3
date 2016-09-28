@@ -68,7 +68,7 @@ pe.extensions = {
                 if(s>1024) { u="K"; s=Math.round(s/1024); }
                 t+="<small dir='ltr' class='details' style='font-style:italic;'>"+this.pkgs[i].id+" ("+s+" "+u+"b, "+L(this.pkgs[i].license)+", "+this.pkgs[i].maintainer+")</small><br>";
                 if(Math.floor(this.pkgs[i].price)!=0)
-                t+="<button class='btn btn-warning glyphicon glyphicon-shopping-cart' onclick='"+(this.pkgs[i].homepage? "window.open(\""+this.pkgs[i].homepage : "alert(\"<?=L("No webshop url given")?>" )+"\");' ></button>&nbsp;&nbsp;&nbsp;";
+                t+="<button class='btn btn-warning glyphicon glyphicon-shopping-cart' onclick='window.open(\""+(this.pkgs[i].homepage? this.pkgs[i].homepage : "https://phppe.org/"+this.pkgs[i].id.split("/")[1] )+"\");' ></button>&nbsp;&nbsp;&nbsp;";
                 if(!this.pkgs[i].installed) {
                     t+="<button onclick='pe.extensions.cmd(this,\"install\","+i+");' class='btn btn-default glyphicon glyphicon-arrow-down' title='<?=L("Install")?>' style='"+(Math.floor(this.pkgs[i].price)!=0?"background:#B0B0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"'><span></span></button>";
                 } else if(this.pkgs[i].installed<this.pkgs[i].version) t+="<button onclick='pe.extensions.cmd(this,\"install\","+i+");' class='btn btn-warning'><?=L("Upgrade to")?> "+this.pkgs[i].version+"</button>";

@@ -2,6 +2,7 @@
 return [
 "TOC"=>"TOC",
 "wyswyg_import"=>"Import HTML",
+"wyswyg_font"=>"Font Style",
 "wyswyg_style"=>"Normal",
 "wyswyg_style<h2>"=>"Heading 1",
 "wyswyg_style<h3>"=>"Heading 2",
@@ -24,6 +25,7 @@ return [
 "wyswyg_image"=>"Insert image",
 "wyswyg_video"=>"Insert video",
 "wyswyg_table"=>"Insert table",
+"wyswyg_attachment"=>"Insert document",
 "wyswyg_undo"=>"Undo",
 "wyswyg_redo"=>"Redo",
 "wyswyg_zoom"=>"Enable/Disable zoom",

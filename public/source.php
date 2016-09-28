@@ -672,14 +672,14 @@ namespace PHPPE {
             //on cli this will most probably report an error
             //as usually cli action handlers have already echoed output by now
             if ($c && empty(Core::$core->nocache)) {
-                header('Pragma:cache');
-                header('Cache-Control:cache,public,max-age='.Core::$core->cachettl);
-                header('Connection:close');
+                @header('Pragma:cache');
+                @header('Cache-Control:cache,public,max-age='.Core::$core->cachettl);
+                @header('Connection:close');
             } else {
-                header('Pragma:no-cache');
-                header('Cache-Control:no-cache,no-store,private,must-revalidate,max-age=0');
+                @header('Pragma:no-cache');
+                @header('Cache-Control:no-cache,no-store,private,must-revalidate,max-age=0');
             }
-            header("Content-Type:$m;charset=utf-8");
+            @header("Content-Type:$m;charset=utf-8");
         }
 
 /**
@@ -3830,6 +3830,7 @@ class ClassMap extends Extension
                         $app,] as $a) {
                     if (ClassMap::has($a)) {
                         $appCls = $a;
+                        if($a[0]=="\\") $a=substr($a,1);
                         //! add it's path
                         $p = dirname(ClassMap::$map[strtolower($a)]);
                         if(basename($p)=="ctrl"||basename($p)=="libs")

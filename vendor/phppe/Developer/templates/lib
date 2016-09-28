@@ -4,7 +4,7 @@
 	"file": "vendor/phppe/@EXTENSION@/libs/@CLASS@.php"
 }
 <?php
-@@BRIEF
+@@LICENSE
 
 namespace PHPPE;
 use PHPPE\Core as Core;

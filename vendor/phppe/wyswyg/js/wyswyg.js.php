@@ -201,7 +201,7 @@ open: function(source, icons)
 
         //! import button
         var imp = document.createElement('BUTTON');
-        imp.setAttribute('title',L('wyswyg import'));
+        imp.setAttribute('title',L('wyswyg_import'));
         imp.setAttribute('class', <?=($bs?"pe.wyswyg.classes['import']":"'wyswyg_icon wyswyg_icon-import'")?>);
         imp.setAttribute('onclick','event.preventDefault();pe.wyswyg.import(event, "'+id+'");');
         tb.appendChild(imp);

@@ -2,6 +2,7 @@
 return [
 "TOC"=>"TJGY",
 "wyswyg_import"=>"Importálás",
+"wyswyg_font"=>"Stílus",
 "wyswyg_style"=>"Normál",
 "wyswyg_style<h2>"=>"Fejezet",
 "wyswyg_style<h3>"=>"Alfejezet 1",
@@ -24,6 +25,7 @@ return [
 "wyswyg_image"=>"Kép beszúrása",
 "wyswyg_video"=>"Videó beillesztése",
 "wyswyg_table"=>"Táblázat beszúrása",
+"wyswyg_attachment"=>"Dokumentum beszúrása",
 "wyswyg_undo"=>"Vissza",
 "wyswyg_redo"=>"Mégis",
 "wyswyg_zoom"=>"Nagyítás Be/Ki",

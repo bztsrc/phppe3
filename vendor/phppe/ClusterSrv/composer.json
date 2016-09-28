@@ -1,11 +1,6 @@
 {
-	"desc_en": "create composer.json package information",
-	"args": [ "extension", "category" ],
-	"file": "vendor/phppe/@EXTENSION@/composer.json"
-}
-{
-	"name": "phppe/@EXTENSION@",
-	"name_en": "@Extension@",
+	"name": "phppe/ClusterSrv",
+	"name_en": "Cluster Server",
 	"name_hu": "",
 	"name_ru": "",
 	"name_de": "",
@@ -15,7 +10,7 @@
 	"name_he": "",
 	"name_ar": "",
 
-	"description": "English description for @Extension@",
+	"description": "English description for ClusterSrv",
 	"description_hu": "",
 	"description_ru": "",
 	"description_de": "",
@@ -25,7 +20,7 @@
 	"description_he": "",
 	"description_ar": "",
 
-	"keywords": [ "@Category@" ],
+	"keywords": [ "Content" ],
 
 	"version": "0.0.1",
 	"version_normalized": "0.0.1.0",
@@ -37,9 +32,5 @@
 		"phppe/Core": "3.*"
 	},
 
-	"require-dev": {
-		"phppe/@EXTENSION@Dev": "*"
-	},
-
-	"maintainer": { "name": "@@USERNAME" }
+	"maintainer": { "name": "bzt" }
 }

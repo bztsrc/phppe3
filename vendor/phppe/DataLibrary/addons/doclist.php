@@ -17,7 +17,7 @@ class doclist extends \PHPPE\AddOn\setsel
 		$this->args[0]=0;
 		$this->args[1]=0;
 		$this->args[2]='';//'lang,tid:template';
-		$this->args[3]="<img src='images/datalibrary/%type%.png' style='float:left;padding-right:3px;'>%name%<br><small>%size% bytes</small><br style='clear:both;'>";
+		$this->args[3]="<img src='images/datalibrary/%type%.png' style='float:left;padding-right:3px;'>%name%<br><small>%hsize%bytes</small><br style='clear:both;'>";
 		$this->args[4]=L("Edit Document List");
         $this->args[5]="id";
 		$this->attrs[0]=\PHPPE\DataLibrary::getDocuments();
