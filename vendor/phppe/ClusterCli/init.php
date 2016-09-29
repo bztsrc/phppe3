@@ -26,6 +26,7 @@ namespace PHPPE;
 
 //! add your routes here
 \PHPPE\Http::route("cluster/client", "\\PHPPE\\Ctrl\\ClusterCli", "client");
+\PHPPE\Http::route("cluster/bindcfg", "\\PHPPE\\Ctrl\\ClusterCli", "bindcfg");
 
 //! return your service class here
 return new ClusterCli;

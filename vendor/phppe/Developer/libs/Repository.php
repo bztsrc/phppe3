@@ -46,10 +46,10 @@ class Repository
  */
 	static function compress()
 	{
-		echo("Compressing index.php: ");
+		echo(chr(27)."[96mCompressing index.php: ".chr(27)."[0m");
 		$data=file_get_contents(self::$sourceFile);
 		if(empty($data))
-			die("unable to read ".self::$sourceFile."\n");
+			die(chr(27)."[91munable to read ".self::$sourceFile.chr(27)."[0m\n");
 		//! uncomment self check
 		$data=str_replace('//$c=__FILE__;if(filesize','$c=__FILE__;if(filesize',$data);
         //! remove benchmarking code
@@ -63,7 +63,7 @@ class Repository
 		$out=substr($data,0,$i)."\n".\PHPPE\Assets::minify($code,"php");
 		$l=strlen($out);
 		if($l>99999)
-			die("file too big, ".$l." bytes\n");
+			die(chr(27)."[91mfile too big, ".$l." bytes".chr(27)."[0m\n");
 		//! replace file size
 		$out=str_replace("c)!=99999||'","c)!=".sprintf("%5d",$l)."||'",$out);
 		//! calculate new checksum
@@ -72,8 +72,8 @@ class Repository
 		$old=@filesize(self::$deployFile);
 		//! write out deployment file
 		if(!file_put_contents(self::$deployFile,$out))
-			die("unable to write ".self::$deployFile."\n");
-		echo($chksum." ".strlen($out)." (".(strlen($out)>$old?"+":"").(strlen($out)-$old).") OK\n");
+			die(chr(27)."[91munable to write ".self::$deployFile.chr(27)."[0m\n");
+		echo($chksum." ".strlen($out).chr(27)."[9".(strlen($out)>$old?"1":"4")."m (".(strlen($out)>$old?"+":"").(strlen($out)-$old).") ".chr(27)."[92mOK".chr(27)."[0m\n");
 	}
 
 /**
@@ -82,7 +82,7 @@ class Repository
     static function updateDoc()
     {
         if(file_exists(self::$docFile)) {
-            echo("Updating documentation: ");
+            echo(chr(27)."[96mUpdating documentation: ".chr(27)."[0m");
             //! get data
             $doc = file_get_contents(self::$docFile);
             $dep = file_get_contents(self::$deployFile);
@@ -100,8 +100,8 @@ class Repository
                         "<small data-ver>v".$ver[1]."</small>", $doc)));
             //! write out
             if(!file_put_contents(self::$docFile, $doc))
-                die("unable to write ".self::$docFile);
-            echo("OK\n");
+                die(chr(27)."[91munable to write ".self::$docFile.chr(27)."[0m\n");
+            echo(chr(27)."[92mOK".chr(27)."[0m\n");
         }
     }
 
@@ -117,6 +117,11 @@ class Repository
 		if(substr(self::$repoBase,-1)!="/")
 			self::$repoBase.="/";
 
+        //! invalidate cache
+        $files=glob(".tmp/.pkgs_*");
+        foreach($files as $file) {
+            @unlink($file);
+        }
 		//! if source changed, regenerate deployment file
 		if(file_exists(self::$sourceFile) &&
 			filemtime(self::$sourceFile) > filemtime(self::$deployFile)) {
@@ -131,9 +136,9 @@ class Repository
 			$tar="tar";
 
 		//! get packages
-		echo("Scanning for packages: ");
+		echo(chr(27)."[96mScanning for packages:".chr(27)."[0m ");
 		$jsons = glob("vendor/phppe/*/composer.json");
-		echo(count($jsons)." found\n");
+		echo(chr(27)."[92m".count($jsons).chr(27)."[0m found\n");
 		$packages=[];
 
 		//! for each composer.json, we do
@@ -144,7 +149,7 @@ class Repository
 			$ext=basename($dir);
             $bns=preg_match("/\"Business\"/",file_get_contents($json));
 			$tarball="../../../".($bns?\PHPPE\Core::$client->user:"phppe3")."_".strtolower($ext).".tgz";
-			echo("  ".$ext.": ");
+			echo("  ".sprintf("%-20s",$ext.": "));
 			//! create tarball if not exists or older than extension's files
 			chdir($dir);
 			if(!file_exists($tarball) || trim(exec("find . -cnewer ".$tarball." |grep -v /log/ 2>/dev/null"))!="")
@@ -160,9 +165,9 @@ class Repository
 				if(!empty($sql))
 					foreach($sql as $s)
 						unlink(substr($s,0,strlen($s)-5));
-				echo("tgz ");
+				echo(chr(27)."[92mtgz  ".chr(27)."[0m");
 			} else
-				echo("skip ");
+				echo(chr(27)."[90mskip ".chr(27)."[0m");
 			//! read preview image
 			if(file_exists("preview"))
 				$preview=file_get_contents("preview");
@@ -181,7 +186,7 @@ class Repository
 				empty($m['license'])||
 				(!empty($m['keywords'][0])&&!in_array($m['keywords'][0],self::$categories)))
 			{
-				echo("bad json!\n");
+				echo(chr(27)."[91mbad json! ".chr(27)."[93m".json_last_error_msg().chr(27)."[0m\n");
 				continue;
 			}
 			$packages[$m['name']]=$m;
@@ -205,7 +210,7 @@ class Repository
             if($bns && empty($packages[$m['name']]['price']))
                 $packages[$m['name']]['price']=1;
 
-			echo("OK\n");
+            echo(chr(27)."[92mOK".chr(27)."[0m\n");
 		}
 
 		//! sort packages
@@ -226,7 +231,7 @@ class Repository
 		}
 		$json.="\n\t}\n}\n";
 		//! save packages info to packages.json
-		echo("Saving packages info: ");
+		echo(chr(27)."[96mSaving packages info:".chr(27)."[0m ");
 		if(!file_put_contents("packages.json",$json))
 			die("unable to write packages.json");
 		$json="{\n\t\"packages\": {\n";$f=1;
@@ -242,7 +247,7 @@ class Repository
 		//! save packages info to packages.json
 		if($f==0)
             file_put_contents("packages.business.json",$json);
-		die("OK\n");
+        echo(chr(27)."[92mOK".chr(27)."[0m\n");
 	}
 
 /**

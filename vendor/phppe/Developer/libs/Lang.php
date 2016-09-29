@@ -32,8 +32,8 @@ class Lang
  */
 	static function getUsage()
 	{
-		echo(L("Usage").":\n  php public/index.php ".\PHPPE\Core::$core->app." <Extension> [language [--write]]\n\n".
-			L("If language not given, detects strings in code, otherwise merges language array. With --write it will store the dictionary.")."\n\n");
+		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".\PHPPE\Core::$core->app." <Extension> [language [--write]]\n\n".
+			chr(27)."[96m".L("If language not given, detects strings in code, otherwise merges language array. With --write it will store the dictionary.").chr(27)."[0m\n\n");
 	}
 
 
@@ -66,10 +66,14 @@ class Lang
                 $D += array_fill_keys(glob('vendor/phppe/'.$extension.'/'.$v), 0);
         }
         //! small hack for the Core
-        if ($extension=="Core")
+        if ($extension=="Core") {
             $D["public/index.php"]=0;
+            $K=[];
+        } else {
+            $K = include_once("vendor/phppe/Core/lang/".$lang.".php");
+        }
 
-        echo("Files: ".count($D)."\n");
+        echo(chr(27)."[96mFiles:".chr(27)."[92m ".count($D).chr(27)."[0m\n");
 
         //! iterate on list
         foreach ($D as $fn => $v) {
@@ -82,7 +86,8 @@ class Lang
                 if ($d[$i] == "\n")
                     $line++;
                //! skip over string literals
-                if (($d[$i] == "'" || $d[$i] == '"')) {
+/*
+                if (($d[$i] == "'" || $d[$i] == '"') && $d[$i-1]!='\\') {
                     $s = $d[$i];
                     $j = $i;
                     $i++;
@@ -97,6 +102,7 @@ class Lang
                     $i++;
                     continue;
                 }
+*/
                  //! don't take comments into account
                 if ($d[$i] == '/' && $d[$i + 1] == '*') {
                     $s = $i;
@@ -108,15 +114,17 @@ class Lang
                     }
                     continue;
                 }
+
                 //! check for calls
                 $e="";
                 if (!preg_match("/[a-z0-9_\$]/i",@$d[$i-1]) && substr($d,$i,2)=="L(") {
-                    $i+=2; while($i<$l && ($d[$i]==' '||$d[$i]=="\t"||$d[$i]=="\n")) {
+                    $i+=2; while($i<$l && ($d[$i]==' '||$d[$i]=="\t"||$d[$i]=="\n"||$d[$i]==')')) {
                         if ($d[$i] == "\n")
                             $line++;
                         $i++;
                     }
                     if($d[$i]=="'" || $d[$i]=='"') { $e=$d[$i]; $i++; }
+if($e)echo(substr($d,$i,20)."\n");
                 }
                 if (substr($d,$i,4)=="<!L ") { $e=">"; $i+=4; }
                 //! second argument to addon() will be translated as well
@@ -146,13 +154,16 @@ class Lang
                             $line++;
                         $i++;
                     }
-                    //! avoid notice when appending filenames and line numbers
-                    if (!isset($L[substr($d,$k,$i-$k)]) || !empty($lang))
-                        $L[substr($d,$k,$i-$k)] = "";
-                    //! add words or file and line if language not given
-                    $L[substr($d,$k,$i-$k)] .= empty($lang)?
-                        (empty($L[substr($d,$k,$i-$k)])?"":", ").$fn.":".$line :
-                        substr($d,$k,$i-$k);
+                    $g=substr($d,$k,$i-$k);
+                    if(empty($K[$g])){
+                        //! avoid notice when appending filenames and line numbers
+                        if (!isset($L[$g]) || !empty($lang))
+                            $L[$g] = "";
+                        //! add words or file and line if language not given
+                        $L[$g] .= empty($lang)?
+                            (empty($L[$g])?"":", ").$fn.":".$line :
+                            $g;
+                    }
                     if ($d[$i] == "\n")
                         $line++;
                 }
@@ -186,7 +197,7 @@ class Lang
             //! if last argument given, save the results
             if ($write=="--write") {
                 file_put_contents($dict, $out, LOCK_EX);
-                echo("Modified (".count($l)."): ".$dict."\n");
+                echo(chr(27)."[96mModified (".count($l)."):".chr(27)."[92m ".$dict.chr(27)."[0m\n");
             } else
                 echo($out);
         }

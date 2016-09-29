@@ -45,9 +45,9 @@ class Developer {
 	function action($item)
 	{
 		if(\PHPPE\Core::$core->output!="html") {
-			printf("%-20s%-9s%-9s%-21s%s\n------------------- -------- -------- -------------------- ----------\n",L("Test boundle"),L("Avg.time"),L("#Tests"),L("Last run"),L("Result"));
+			printf(chr(27)."[96m%-20s%-9s%-9s%-21s%s\n------------------- -------- -------- -------------------- ----------".chr(27)."[0m\n",L("Test boundle"),L("Avg.time"),L("#Tests"),L("Last run"),L("Result"));
 			foreach($this->testCases as $t)
-				printf("%-20s%0.4fs  %3d /%3d %s  %s\n",$t['name'],$t['avg'],$t['executed'],$t['asserts'],date("Y-m-d H:i:s",$t['time']),$t['ret']);
+				printf("%-20s".chr(27)."[90m%0.4fs  %3d /%3d %s  ".chr(27)."[%sm%s".chr(27)."[0m\n",$t['name'],$t['avg'],$t['executed'],$t['asserts'],date("Y-m-d H:i:s",$t['time']),$t['ret']=="OK"?"92":($t['ret']=="None"?"96":"91"),$t['ret']);
 			die();
 		}
 		\PHPPE\View::js("runtest(t)", "document.getElementById('testsdiv').style.display='none';document.getElementById('loadingdiv').style.display='block';document.location.href='".url()."run/'+t;");

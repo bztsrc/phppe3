@@ -1,24 +1,16 @@
 {
 	"name": "phppe/og",
 	"name_en": "Open Graph",
-	"name_hu": "",
-	"name_ru": "",
-	"name_de": "",
-	"name_es": "",
-	"name_fr": "",
-	"name_ch": "",
-	"name_he": "",
-	"name_ar": "",
 
 	"description": "Implements the Open Graph protocol for webpages",
-	"description_hu": "",
-	"description_ru": "",
-	"description_de": "",
-	"description_es": "",
-	"description_fr": "",
-	"description_ch": "",
-	"description_he": "",
-	"description_ar": "",
+	"description_hu": "Open Graph protokol támogatás a honlapokhoz.",
+	"description_ru": "Реализует протокол Open Graph для веб-страниц.",
+	"description_de": "Implementiert die Open Graph Protokoll für Web-Seiten.",
+	"description_es": "Implementa el protocolo Open Graph para páginas web.",
+	"description_fr": "Mettre en œuvre le protocole Open Graph pour les pages Web.",
+	"description_ch": "实现了网页的打开图协议。",
+	"description_he": "מיישם את הפרוטוקול של Open Graph עבור דפי אינטרנט.",
+	"description_ar": "تطبق بروتوكول المفتوحة الرسم البياني لصفحات الويب.",
 
 	"keywords": [ "Connections" ],
 
@@ -32,5 +24,6 @@
 		"phppe/Core": "3.*"
 	},
 
+    "homepage": "http://opengraphprotocol.org/",
 	"maintainer": { "name": "bzt" }
 }

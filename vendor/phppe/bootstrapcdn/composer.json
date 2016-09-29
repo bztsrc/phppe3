@@ -3,6 +3,14 @@
 	"name_en": "Bootstrap CDN",
 
 	"description": "Bootstrap environment loaded from CDN",
+	"description_hu": "Bootstrap környezet CDN-ről betöltve.",
+    "description_ru": "Bootstrap среда загружена из CDN.",
+    "description_de": "Bootstrap-Umgebung von CDN geladen.",
+    "description_es": "Bootstrap ambiente cargado de CDN.",
+    "description_fr": "Environnement Bootstrap chargé de CDN.",
+    "description_ch": "从CDN加载引导环境。",
+    "description_he": "סביבת Bootstrap נטען מ CDN.",
+    "description_ar": "بيئة التمهيد تحميل من كندي.",
 
 	"version": "3.3.6",
 	"version_normalized": "3.3.6.0",
@@ -10,5 +18,6 @@
 	"type": "library",
 	"license": "MIT",
 
+    "homepage": "http://getbootstrap.com/",
 	"maintainer": { "name": "bzt" }
 }

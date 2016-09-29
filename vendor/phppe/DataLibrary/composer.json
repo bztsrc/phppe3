@@ -12,6 +12,15 @@
 
 	"description": "Adds attachments support.",
 	"description_hu": "Csatolmányok kezelését teszi lehetővé.",
+    "description_ru": "Добавлена поддержка вложений.",
+    "description_de": "Fügt Anhänge Unterstützung.",
+    "description_es": "Añade soporte archivos adjuntos.",
+    "description_fr": "Ajoute le support des pièces jointes.",
+    "description_ch": "添加附件的支持。",
+    "description_he": "מוסיף תמיכה מצורפת.",
+    "description_ar": "يضيف دعم المرفقات.",
+
+	"keywords": [ "Content" ],
 
 	"version": "0.0.1",
 	"version_normalized": "0.0.1.0",

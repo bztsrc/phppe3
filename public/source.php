@@ -1991,12 +1991,17 @@ namespace PHPPE {
  * Load, parse and evaluate a template. Called several times
  *
  * @param string    name of the template
+ * @param array     view variables (see assign)
  *
  * @return string   parsed output
  */
-        public static function template($n)
+        public static function template($n,$v=null)
         {
-           //! set http response header as well for special templates
+            //! merge extra parameters
+            if (is_array($v)&&!empty($v)) {
+                self::$o = array_merge(self::$o,$v);
+            }
+            //! set http response header as well for special templates
             if ($n == '403' || $n == '404') {
                 @header("HTTP/1.1 $n ".($n == '403' ? 'Access Denied' : 'Not Found'));
             }
@@ -3570,12 +3575,12 @@ class ClassMap extends Extension
                     die(VERSION."\n");
                 }
                 if (empty($_SERVER['argv'][1]) || in_array('--help', $_SERVER['argv'])) {
-                    $c = 'php '.$_SERVER['argv'][0];
-                    echo('PHP Portal Engine '.VERSION.", LGPL 2016 bzt\n\n $c --help\n $c --version\n $c --diag [--gid=x]\n $c [application [action [item]]] [--dump]\n");
+                    $c = chr(27)."[90mphp ".$_SERVER['argv'][0].chr(27)."[0m";
+                    echo(chr(27).'[96mPHP Portal Engine '.VERSION.", LGPL 2016 bzt".chr(27)."[0m\n  $c --help\n  $c --version\n  $c --diag [--gid=x]\n  $c [application [action [item]]] [--dump]\n");
                     foreach(ClassMap::$map as $C=>$v)
                         if(!empty($C::$cli))
                             foreach(is_array($C::$cli)?$C::$cli:[$C::$cli] as $d)
-                                echo(" $c $d\n");
+                                echo("  $c $d\n");
                     die("\n");
                 }
                 // @codeCoverageIgnoreEnd

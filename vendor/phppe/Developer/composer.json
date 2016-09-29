@@ -10,8 +10,8 @@
 	"name_he": "מפתחים",
 	"name_ar": "مبرمج",
 
-	"description": "Source and tests for PHPPE framework developers.",
-	"description_hu": "Forrás és tesztkörnyezet a PHPPE keretrendszerhez.",
+	"description": "Source and tests for PHPPE framework developers, and useful tools.",
+	"description_hu": "Forrás és tesztkörnyezet a PHPPE keretrendszerhez, valamint hasznos segédeszközök.",
 	"description_ru": "Источник и тесты для PHPPE разработчиков инфраструктуры.",
 	"description_de": "Quelle und Tests für PHPPE-Framework-Entwickler.",
 	"description_es": "Fuente y pruebas para desarrolladores PHPPE Framework.",
@@ -30,5 +30,6 @@
 		"phppe/Core": "3.*"
 	},
 
+    "homepage": "http://bztsrc.github.io/phppe3/index.html#developer",
 	"maintainer": { "name": "bzt" }
 }

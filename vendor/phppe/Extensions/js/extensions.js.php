@@ -54,13 +54,15 @@ pe.extensions = {
                 cat=this.pkgs[i].category;
                 t+="<br style='clear:both;'><b>"+L(cat)+"</b></a><br style='clear:both;'>"
             }
+            if(Math.floor(this.pkgs[i].price)!=0)
+                this.pkgs[i].homepage=(this.pkgs[i].homepage? this.pkgs[i].homepage : "https://phppe.org/"+this.pkgs[i].id.split("/")[1] );
             t+=
             "<div class='col-lg-4'>"+
-                "<div class='extension well well-sm' dir='ltr'>"+
+                "<div class='extension well well-sm' dir='ltr'>"+(this.pkgs[i].homepage?"<a href='"+this.pkgs[i].homepage+"' target='_new'>":"")+
                 "<img class='preview' title='"+this.pkgs[i].url+"' src='data:image/png;base64,"+(this.pkgs[i].preview?this.pkgs[i].preview:'iVBORw0KGgoAAAANSUhEUgAAAIAAAAB5CAMAAADGfdkoAAAAUVBMVEUAAADDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8OOFo/iAAAAGnRSTlMA+Mgje5u258wWvleUTwtvrUQspPCGYTne1lzKNFwAAAPaSURBVGje7ZrJlqsgEEALBAdUBFHU+v8PfadHTToRRAlvkbvJok8nF6kJEoiC1MzkVKim6yEBVuDKYCZ4LR3BO5ZXKkwFPkBJeBEdPmZ4USyM+JSXbEOHzyEZRGfCPShEp8RdGESmxn2G2Kkg0EEH8ZASMnSRQxx6JophWCi6KKLsQU/RmxiZ2OAB+FTBxeR4kLK71EFhALyKXnpflY8VwUCEjNv73AyXJMSC4ZAeTtPjGYoqbvNxI4IXbhnrWhmUA+fbczUWPwvILJ4kO/7xOa6QAU9iDn8+QwdxHkE9svani8hM112TL+vq40eBLklBzWh1v0kcmU0ta/KyiJ8I/WbXZ2HGrt2KQDXVncBQ+rByR2aqmq1IcGxYj8DbK6ezUOO0zqNRgkC73+REX27AifXayBbD4Oda7rqMOp6A8komFm8LSq+KyuMFYeH1LgbDqE9k4cr0WY/atUJfORZN6EZvK7TuGkWL60qxRQ+KJW+6m1ZRacu4cHqwgCzcL4zbAv27MTPBJ1TgICy8Z8GZ1dnGo9dNYBUAgcEUHx1LZ3KdYEOurWY8y7Dk3eOCwiCgF4YPfyZoGpnwGqa/Nb2Qh88eM+eUBA8ey97hUEqPLGRfiWV5edyiBTncrv/m8+0wiLF9FJNs+P2PaZvenZoPzt/93vFcfT9ixfS9hextk8+fNaPqb+NTM7X4ZsLtyEIsbLn948I7Lf8eB1vQAxb5WN8aZvWoiqMTwyhd5Wag3P7pU/QnFPOxre70hHvwUd+Lp1Z63vXM+SYs7vN4UUxvLdrCdSfEqDKcaXmw3syq09WTkkAW3v1aVMtuEpwr+SW3k3wynBHa1F8Gw6kDkHXGsRifSs6t4wBBJLiQeIp6f3wtwU1+/qBfdWYJv4ho8RTqp3k93KcRPCB4Crn3KC14YE5Gwd5KJvBAX3Xpx4/NnivDyT14Hk0zuFnNT991ZI7jR/w9KBzTd6w96Ne2eQe78uunxfDHGP0bBPyO/rrbd1JDTGaP6Toqo8+NjmVumg/GzQtv2kv2oAVool4LL26B0vvLGIrfveHrrUvwgLkLvkA3FP4KGAoeZOcF1tIr8PvM8aVDr/gNRu05uFBjlCGojFJm+HgxuWc57EIF3DTgQ+UUmJcsCMzBC+ESKCgE4StgnQJlXAGZWgBEaoE6tYBMLQAqtUCbWkCSxAJgUgvo1AIwpBJwj4ZtVIEVmloAeGoBqGq+JBNYJRpKEgmsEu0oSEKBVSKZwHo1LwZEm0BgRepxSiSw8hZ4C7wF3gJvgbfAW+At8Bb4HwRoYoEZSRCXCdSqpAGURsMT/gG5cUM2oGYBXgAAAABJRU5ErkJggg==')+
-                "' style='"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"padding-left:16px;":"")+"float:left;width:96px !important;' alt='"+this.pkgs[i].id+"'>"+
+                "' style='"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?"padding-left:16px;":"")+"float:left;width:96px !important;' alt='"+this.pkgs[i].id+"'>"+(this.pkgs[i].homepage?"</a>":"")+
                 "<div style='padding-left:100px;'"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?" dir='rtl'":"")+">"+
-                this.pkgs[i].name+" "+this.pkgs[i].version+
+                (this.pkgs[i].homepage?"<a href='"+this.pkgs[i].homepage+"' target='_new'>":"")+this.pkgs[i].name+" "+this.pkgs[i].version+(this.pkgs[i].homepage?"</a>":"")+
                 (this.pkgs[i].installed?" <span class='installed' style='color:green;'>(<?=L("installed")?> "+this.pkgs[i].installed+")</span>":"")+"<br>";
             if( this.pkgs[i].url != undefined ) {
                 var u="",s=this.pkgs[i].size;
@@ -68,7 +70,7 @@ pe.extensions = {
                 if(s>1024) { u="K"; s=Math.round(s/1024); }
                 t+="<small dir='ltr' class='details' style='font-style:italic;'>"+this.pkgs[i].id+" ("+s+" "+u+"b, "+L(this.pkgs[i].license)+", "+this.pkgs[i].maintainer+")</small><br>";
                 if(Math.floor(this.pkgs[i].price)!=0)
-                t+="<button class='btn btn-warning glyphicon glyphicon-shopping-cart' onclick='window.open(\""+(this.pkgs[i].homepage? this.pkgs[i].homepage : "https://phppe.org/"+this.pkgs[i].id.split("/")[1] )+"\");' ></button>&nbsp;&nbsp;&nbsp;";
+                t+="<button class='btn btn-warning glyphicon glyphicon-shopping-cart' title='<?=L("Buy")?>' onclick='window.open(\""+this.pkgs[i].homepage+"\");' ></button>&nbsp;&nbsp;&nbsp;";
                 if(!this.pkgs[i].installed) {
                     t+="<button onclick='pe.extensions.cmd(this,\"install\","+i+");' class='btn btn-default glyphicon glyphicon-arrow-down' title='<?=L("Install")?>' style='"+(Math.floor(this.pkgs[i].price)!=0?"background:#B0B0F0 linear-gradient(to bottom,rgba(0,0,0,0.2) 1%,rgba(255,255,255,0) 89%,rgba(255,255,255,0.2) 10%);":"")+"'><span></span></button>";
                 } else if(this.pkgs[i].installed<this.pkgs[i].version) t+="<button onclick='pe.extensions.cmd(this,\"install\","+i+");' class='btn btn-warning'><?=L("Upgrade to")?> "+this.pkgs[i].version+"</button>";

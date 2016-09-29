@@ -176,13 +176,14 @@ class Extensions {
             ];
             //! add user provided repositories
 			if(!empty(Core::$core->repos)) $list=array_merge(Core::$core->repos,$list);
-//fallback to local repo for testing. REMOVE IT!!!
-$list=["data/..","/var/www/phppe/packages.business.json"];
+			if(Core::isInst("Developer")) {
+				$list=["data/..","data/../packages.business.json"];
+			}
 			foreach($list as $r)
 			{
                 //! request packages.json from repository
 				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json";
-				$d2=file_get_contents(!file_exists($url)?$r:$url);
+				$d2=file_get_contents(file_exists($r)&&!is_dir($r)?$r:$url);
 				if(empty($d2))
 					$d2=\PHPPE\Http::get($url);
 				Core::log('D',"Adding repo: ".$url." (".strlen($d2)." bytes)","extensions");
@@ -211,6 +212,8 @@ $list=["data/..","/var/www/phppe/packages.business.json"];
 						$p[$pkg]['category']=!empty($ver[$v[0]]['keywords_'.Core::$client->lang][0])?$ver[$v[0]]['keywords_'.Core::$client->lang][0]:(!empty($ver[$v[0]]['keywords_en'][0])?$ver[$v[0]]['keywords_en']:(!empty($ver[$v[0]]['keywords'][0])?$ver[$v[0]]['keywords'][0]:""));
 						$p[$pkg]['maintainer']=$ver[$v[0]]['maintainer']['name'];
 						$p[$pkg]['url']=$ver[$v[0]]['dist']['url'];
+						$p[$pkg]['price']=@$ver[$v[0]]['price'];
+						$p[$pkg]['homepage']=@$ver[$v[0]]['homepage'];
 						$p[$pkg]['depends']=!empty($ver[$v[0]]['require'])?array_diff(array_keys($ver[$v[0]]['require']),["php"]):[];
 						foreach(array("version","license","time","size","sha1","price","preview") as $f)
 							@$p[$pkg][$f]=$ver[$v[0]][$f];
@@ -391,7 +394,7 @@ $list=["data/..","/var/www/phppe/packages.business.json"];
 				session_destroy();
 				unset($_SESSION);
 			}
-			return "PHPPE-I: ".sprintf(L("Uninstalled %d of %s"), $c+0, $url)."\n\n".implode("\n", $r);
+			return "PHPPE-I: ".sprintf(L("Uninstalled %d files of %s"), $c+0, $url)."\n\n".implode("\n", $r);
 		}
 	}
 

@@ -1,24 +1,24 @@
 {
 	"name": "phppe/spectrum",
 	"name_en": "Spectrum ColorPicker",
-	"name_hu": "",
-	"name_ru": "",
-	"name_de": "",
-	"name_es": "",
-	"name_fr": "",
-	"name_ch": "",
-	"name_he": "",
-	"name_ar": "",
+	"name_hu": "Spectrum Színválasztó",
+	"name_ru": "Spectrum пипетка",
+	"name_de": "Spectrum Farbwähler",
+	"name_es": "Spectrum Selector de Color",
+	"name_fr": "Spectrum Pipette à Couleurs",
+	"name_ch": "Spectrum 选色器",
+	"name_he": "בורר הצבעים Spectrum",
+	"name_ar": "Spectrum منتقي الألوان",
 
-	"description": "Color picker polyfill for color inputs",
-	"description_hu": "",
-	"description_ru": "",
-	"description_de": "",
-	"description_es": "",
-	"description_fr": "",
-	"description_ch": "",
-	"description_he": "",
-	"description_ar": "",
+	"description": "Color picker polyfill for color inputs.",
+	"description_hu": "Felhasználóbarát színválasztó color típusú mezőkre.",
+	"description_ru": "Выбор цвета polyfill для цветных входов.",
+	"description_de": "Farbwähler polyfill für Farbeingaben.",
+	"description_es": "Polyfill selector de color para las entradas de color.",
+	"description_fr": "Couleur polyfill picker pour les entrées de couleurs.",
+	"description_ch": "拾色器填充工具的色彩输入。",
+	"description_he": "polyfill בורר צבע לתשומות צבע.",
+	"description_ar": "اللون polyfill منقار المدخلات اللون.",
 
 	"keywords": [ "User Input" ],
 
@@ -28,5 +28,6 @@
 	"type": "library",
 	"license": "MIT",
 
+    "homepage": "http://bgrins.github.io/spectrum/",
 	"maintainer": { "name": "Brian Grinstead" }
 }

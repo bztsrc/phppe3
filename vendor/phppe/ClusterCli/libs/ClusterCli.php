@@ -32,8 +32,10 @@ class ClusterCli extends \PHPPE\Model
 	public $id;
 	public $name;
 	protected static $_table="cluster";
+	public $_subdomains;
 	public $_loadbalancer;
 	public $_keepalive=9;
+	static $_cmd="vendor/bin/cluster_loadbalancer.sh";
 
 	public function __construct()
 	{
@@ -41,6 +43,10 @@ class ClusterCli extends \PHPPE\Model
 
 	public function init($config)
 	{
+		if(!empty($config['subdomains'])) {
+			$s=$config['subdomains'];
+			$this->_subdomains=is_array($s)?$s:str_getcsv($s,",");
+		}
 		if(!empty($config['ip'])) {
 			$this->id=$config['ip'];
 		} elseif(!empty($config['interface'])) {
@@ -62,12 +68,31 @@ class ClusterCli extends \PHPPE\Model
 
 	public function route($app,$action)
 	{
-		if($app=="index"&&$action=="action") {
+		// keepalive on new sessions and every minute afterwards
+		if(empty($_SESSION['pe_lt']) || $_SESSION['pe_lt']+60<Core::$core->now) {
+			$_SESSION['pe_lt']=Core::$core->now;
 			$d=@file_get_contents("/proc/loadavg");
 			$l=!empty($d)?explode(" ",$d)[0]:"1.0";
 			// queried signal
 			DS::exec("UPDATE ".self::$_table." SET viewd=CURRENT_TIMESTAMP,load=? WHERE id=?",[$l, $this->id]);
 		}
+	}
+
+	public function diag()
+	{
+	}
+
+	public function bindcfg()
+	{
+			$nodes=DS::query("*",self::$_table,"","","type, created");
+			// generate bind config
+			$sd = $this->_subdomains;
+			if(!is_array($sd)||empty($sd)) {
+				$sd=["www"];
+			}
+			View::assign("nodes",$nodes);
+			View::assign("subdomains",$sd);
+			return preg_replace("|<br[\ \/]*>[\n]?|i","\n",View::template("bind"));
 	}
 
 	public function cronMinute($item)

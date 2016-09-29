@@ -11,7 +11,7 @@
 	"name_ar": "محرر المحتوى",
 
 	"description": "Content Editor for Content Servers to create a full Content Management System.",
-	"description_hu": "Tartalomszerkesztő a Tartalom kiszolgálókhoz, hogy együtt egy teljes Tartalom Szerkesztő Rendszert alkossanak.",
+	"description_hu": "Tartalomszerkesztő a Tartalom kiszolgálókhoz, hogy egy teljes Tartalom Szerkesztő Rendszert adjanak.",
 	"description_ru": "Содержимое редактор контента серверов, чтобы создать полный системы управления контентом.",
 	"description_de": "Inhalts-Editor für Inhalts-Server, um eine vollständige Content Management System erstellen.",
 	"description_es": "Editor de contenidos para servidores de contenido para crear un sistema de gestión de contenido completo.",
@@ -41,8 +41,10 @@
 	"require": {
 		"phppe/Core": "3.*",
 		"phppe/Gallery": "*",
+		"phppe/DataLibrary": "*",
 		"phppe/wyswyg": "*"
 	},
 
+    "homepage": "http://bztsrc.github.io/phppe3/index.html#contents",
 	"maintainer": { "name": "bzt" }
 }

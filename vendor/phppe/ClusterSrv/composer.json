@@ -1,29 +1,29 @@
 {
 	"name": "phppe/ClusterSrv",
 	"name_en": "Cluster Server",
-	"name_hu": "",
-	"name_ru": "",
-	"name_de": "",
-	"name_es": "",
-	"name_fr": "",
-	"name_ch": "",
-	"name_he": "",
-	"name_ar": "",
+	"name_hu": "Kluszter Vezérlő",
+	"name_ru": "кластера серверов",
+	"name_de": "Cluster-Server",
+	"name_es": "Servidor de Clúster",
+	"name_fr": "Cluster Server",
+	"name_ch": "集群服务器",
+	"name_he": "שרת אשכול",
+	"name_ar": "ملقم الكتلة",
 
-	"description": "English description for ClusterSrv",
-	"description_hu": "",
-	"description_ru": "",
-	"description_de": "",
-	"description_es": "",
-	"description_fr": "",
-	"description_ch": "",
-	"description_he": "",
-	"description_ar": "",
+	"description": "Client manager. Usually installed with Content Editor.",
+	"description_hu": "Kliens vezérlő. Általában a Tartalomszerkesztő mellé telepítik.",
+	"description_ru": "Менеджер клиентов. Обычно устанавливается с редактор контент.",
+	"description_de": "Kundenmanager. Meist mit Inhals Editor installiert.",
+	"description_es": "Gerente de clientes. Por lo general se instala con el Editor de contenido.",
+	"description_fr": "Gestionnaire de clientèle. Habituellement installé avec l'éditeur de contenu.",
+	"description_ch": "客户经理。通常与内容编辑器安装。",
+	"description_he": "מנהל לקוח. בדרך כלל מותקן עם עורך תוכן.",
+	"description_ar": "مدير العملاء. تثبيت عادة مع محرر المحتوى.",
 
-	"keywords": [ "Content" ],
+	"keywords": [ "" ],
 
-	"version": "0.0.1",
-	"version_normalized": "0.0.1.0",
+	"version": "3.0.0",
+	"version_normalized": "3.0.0.0",
 
 	"type": "library",
 	"license": "LGPL-3.0+",
@@ -32,5 +32,6 @@
 		"phppe/Core": "3.*"
 	},
 
+    "homepage": "http://bztsrc.github.io/phppe3/index.html#cluster",
 	"maintainer": { "name": "bzt" }
 }

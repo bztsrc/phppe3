@@ -13,7 +13,7 @@ use PHPPE\DS as DS;
 
 class ClusterCli extends \PHPPE\ClusterCli
 {
-	static $cli="cluster client";
+	static $cli="cluster [client|bindcfg]";
 
 /**
  * Action handler
@@ -37,11 +37,25 @@ class ClusterCli extends \PHPPE\ClusterCli
 		} elseif ($cmd=="restart"){
 			exec("sudo restart");
 		} elseif ($cmd=="reload" && $node->_loadbalancer){
-			//FIXME: generate bind config
-
-			$s="vendor/bin/cluster_loadbalancer.sh";
-			if (file_exists($s))
-				exec(". ".$s." ".$cmd);
+			// generate bind config
+			$bind=Core::lib("ClusterCli")->bindcfg();
+			// call the shell hook and pass the config to it's stdin
+			if (!empty($bind) && file_exists(static::$_cmd)) {
+				$p=popen(". ".static::$_cmd." ".$cmd,"w");
+				if($p){
+					pwrite($p,$bind);
+					pclose($p);
+				}
+            }
 		}
+	}
+
+/**
+ * Query the bind configuration
+ */
+	function bindcfg($item=null)
+	{
+		header("Content-type:text/plain");
+		die(Core::lib("ClusterCli")->bindcfg()."\n");
 	}
 }

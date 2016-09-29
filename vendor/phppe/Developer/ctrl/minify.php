@@ -11,7 +11,7 @@ class MinifyController {
 	{
 		//! check if executed from CLI
 		if(\PHPPE\Core::$client->ip!="CLI")
-			die(L("Run from command line")."\n");
+			\PHPPE\Http::redirect("403");
 
 		//! convert source to deployment format
 		\PHPPE\Repository::compress();

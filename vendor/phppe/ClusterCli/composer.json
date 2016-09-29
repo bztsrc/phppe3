@@ -1,29 +1,29 @@
 {
 	"name": "phppe/ClusterCli",
 	"name_en": "Cluster Client",
-	"name_hu": "",
-	"name_ru": "",
-	"name_de": "",
-	"name_es": "",
-	"name_fr": "",
-	"name_ch": "",
-	"name_he": "",
-	"name_ar": "",
+	"name_hu": "Kluszter Kliens",
+	"name_ru": "кластера клиент",
+	"name_de": "Cluster-Client",
+	"name_es": "Cliente de Clúster",
+	"name_fr": "Cluster Client",
+	"name_ch": "群集客户机",
+	"name_he": "לקוח אשכול",
+	"name_ar": "العميل الكتلة",
 
-	"description": "English description for ClusterCli",
-	"description_hu": "",
-	"description_ru": "",
-	"description_de": "",
-	"description_es": "",
-	"description_fr": "",
-	"description_ch": "",
-	"description_he": "",
-	"description_ar": "",
+	"description": "Installed on Content Servers, workers and loadbalancers.",
+	"description_hu": "Vezérelt szerverekre: tartalom kiszolgálókra és terheléselosztókra.",
+	"description_ru": "Установленные на серверах содержимого, рабочих и балансировки нагрузки.",
+	"description_de": "Installiert auf Content Server, Arbeiter und Loadbalancer.",
+	"description_es": "Instalado en servidores de contenido, los trabajadores y los equilibradores de carga.",
+	"description_fr": "Installé sur les serveurs de contenu, les travailleurs et les équilibreurs de charge.",
+	"description_ch": "安装在内容服务器，工人和负载平衡器。",
+	"description_he": "מותקן על שרתי תוכן, עבד מאזני עומסים.",
+	"description_ar": "المثبتة على خوادم المحتوى والعمال وموازنات الحمل.",
 
-	"keywords": [ "Content" ],
+	"keywords": [ "" ],
 
-	"version": "0.0.1",
-	"version_normalized": "0.0.1.0",
+	"version": "3.0.0",
+	"version_normalized": "3.0.0.0",
 
 	"type": "library",
 	"license": "LGPL-3.0+",
@@ -32,5 +32,6 @@
 		"phppe/Core": "3.*"
 	},
 
+    "homepage": "http://bztsrc.github.io/phppe3/index.html#cluster",
 	"maintainer": { "name": "bzt" }
 }

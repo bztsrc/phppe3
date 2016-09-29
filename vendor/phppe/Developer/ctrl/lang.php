@@ -12,7 +12,7 @@ class LangController {
 	{
 		//! check if executed from CLI
 		if(\PHPPE\Core::$client->ip!="CLI")
-			die(L("Run from command line")."\n");
+			\PHPPE\Http::redirect("403");
 
 		if(empty($_SERVER['argv'][2]))
 			die(\PHPPE\Lang::getUsage());

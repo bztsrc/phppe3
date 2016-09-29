@@ -32,11 +32,11 @@ class Templates
  */
 	static function getUsage()
 	{
-		echo(L("Usage").":\n  php public/index.php ".\PHPPE\Core::$core->app." <template> [arg1 [arg2 [...]]]\n\n".
-			L("Template can be one of").":\n");
+		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".\PHPPE\Core::$core->app.chr(27)."[92m <template>".chr(27)."[0m [arg1 [arg2 [...]]]\n\n".
+			chr(27)."[96m".L("Template can be one of").":".chr(27)."[0m\n");
 
 		foreach(self::readTemplates() as $name=>$meta)
-			echo("  ".sprintf("%-20s",$name).(!empty($meta["desc_".\PHPPE\Core::$client->lang])?
+			echo("  ".chr(27)."[92m".sprintf("%-20s",$name).chr(27)."[0m".(!empty($meta["desc_".\PHPPE\Core::$client->lang])?
 				$meta["desc_".\PHPPE\Core::$client->lang]:
 				$meta["desc_en"])."\n");
 	}
@@ -93,8 +93,10 @@ class Templates
 				foreach($meta['package'][$tpl] as $k=>$v)
 					self::loadVars($vars,$k,!empty($vars[$v])?$vars[$v]:strtr($v,$vars));
 			//! get name of the file
-			$file = strtr(!empty($m['file'])?$m['file']:$m['append'],$vars);
-	
+			$file = strtr(!empty($m['file'])?$m['file']:(!empty($m['append'])?$m['append']:""),$vars);
+			if(empty($file)) {
+				continue;
+			}
 			//! add license and brief strings
 			$vars["@@LICENSE"]="/**
  *  PHP Portal Engine v3.0.0

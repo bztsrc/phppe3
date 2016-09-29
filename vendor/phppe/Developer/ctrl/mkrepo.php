@@ -11,7 +11,7 @@ class MkRepoController {
 	{
 		//! check if executed from CLI
 		if(\PHPPE\Core::$client->ip!="CLI")
-			die(L("Run from command line")."\n");
+			\PHPPE\Http::redirect("403");
 
 		//! run tests
 		if(in_array("--tests",$_SERVER['argv']))

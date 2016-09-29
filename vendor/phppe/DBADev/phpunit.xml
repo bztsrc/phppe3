@@ -1,0 +1,16 @@
+<phpunit bootstrap="public/source.php">
+ <testsuites>
+  <testsuite>
+   <directory>vendor/phppe/DBADev/tests</directory>
+  </testsuite>
+ </testsuites>
+ <filter>
+  <whitelist processUncoveredFilesFromWhitelist="true">
+   <file>public/source.php</file>
+   <directory>vendor/phppe/DBA/libs</directory>
+  </whitelist>
+ </filter>
+ <logging>
+  <log type="coverage-html" target="public/coverage"/>
+ </logging>
+</phpunit>

@@ -11,12 +11,12 @@ class PasswdController {
 	{
 		//! check if executed from CLI
 		if(\PHPPE\Core::$client->ip!="CLI")
-			die(L("Run from command line")."\n");
+			\PHPPE\Http::redirect("403");
 
 		if(!empty($_SERVER['argv'][2]))
 			$passwd = $_SERVER['argv'][2];
         else {
-            echo("Password? ");
+            echo(chr(27)."[96mPassword? ".chr(27)."[0m");
             system('stty -echo');
             $passwd = rtrim(fgets(STDIN));
             system('stty echo');
