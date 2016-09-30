@@ -2505,22 +2505,27 @@ files. If source changed, it re-generates tarballs and saves <samp>packages.json
 Now all you have to do is copy the latter along with the tarballs onto a webserver, specify the url in your production server's <a onclick='tab_switch("configuration");'>configuration</a> and your deployment system is good to go!</p>
 <pre>
 $ php public/index.php mkrepo
-Scanning for packages: 15 found
-  CMS: skip OK
-  CookieAlert: skip OK
-  Core: skip OK
-  DataLibrary: skip OK
-  Developer: skip OK
-  EplosCMS: skip OK
-  Extensions: skip OK
-  GPIO: skip OK
-  Gallery: skip OK
-  GeoLocation: skip OK
-  YouTube: skip OK
-  bootstrap: skip OK
-  bootstrapcdn: skip OK
-  spectrum: skip OK
-  wyswyg: skip OK
+Scanning for packages: 20 found
+  CMS:                tgz  OK
+  ClusterCli:         tgz  OK
+  ClusterSrv:         skip OK
+  CookieAlert:        skip OK
+  Core:               tgz  OK
+  DBA:                skip OK
+  DataLibrary:        skip OK
+  Developer:          tgz  OK
+  EplosCMS:           skip OK
+  Extensions:         tgz  OK
+  GPIO:               tgz  OK
+  Gallery:            skip OK
+  GeoLocation:        skip OK
+  POS:                skip OK
+  YouTube:            skip OK
+  bootstrap:          skip OK
+  bootstrapcdn:       skip OK
+  og:                 skip OK
+  spectrum:           skip OK
+  wyswyg:             skip OK
 Saving packages info: OK
 </pre>
 <div class='alert alert-info'>This tool also calls minify utility if <samp>public/source.php</samp> exists and is newer than <samp>public/index.php</samp>. It's because I personaly use this command to create the full PHPPE repository.</div>
