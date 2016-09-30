@@ -185,14 +185,14 @@ var
 /*
  *   PE Panel
  */
-function pe_p(i,trg,to)
+function pe_p(i,trg,to,dx)
 {
     var evt = window.event || (arguments.callee.caller!=null && arguments.callee.caller.arguments[0]);
     var o=i!=null&&i!=''?document.getElementById(i):null;
     if(trg==null && evt && evt.target) trg=evt.target;
     if(trg && o) {
         var rt = trg.getBoundingClientRect();
-        o.style.left=rt.left+'px';
+        o.style.left=(rt.left+(dx==null?0:dx))+'px';
         o.style.top=(rt.top+evt.target.offsetHeight)+'px';
     }
     if(pe_t!=null)clearTimeout(pe_t);

@@ -32,7 +32,6 @@ class ClusterCli extends \PHPPE\Model
 	public $id;
 	public $name;
 	protected static $_table="cluster";
-	public $_subdomains;
 	public $_loadbalancer;
 	public $_keepalive=9;
 	static $_cmd="vendor/bin/cluster_lb.sh";
@@ -43,10 +42,6 @@ class ClusterCli extends \PHPPE\Model
 
 	public function init($config)
 	{
-		if(!empty($config['subdomains'])) {
-			$s=$config['subdomains'];
-			$this->_subdomains=is_array($s)?$s:str_getcsv($s,",");
-		}
 		if(!empty($config['ip'])) {
 			$this->id=$config['ip'];
 		} elseif(!empty($config['interface'])) {
@@ -63,7 +58,7 @@ class ClusterCli extends \PHPPE\Model
 			$this->_keepalive=intval($config['keepalive']);
 		}
 		if(!empty($config['loadbalancer']))
-			$this->_loadbalancer=$config['loadbalancer'];
+			$this->_loadbalancer=is_array($config['loadbalancer'])?$config['loadbalancer']:str_getcsv($config['loadbalancer'],",");
 	}
 
 	public function route($app,$action)
@@ -90,7 +85,7 @@ class ClusterCli extends \PHPPE\Model
 	{
 			$nodes=DS::query("*",self::$_table,"","","type, created");
 			// generate bind config
-			$sd = $this->_subdomains;
+			$sd = $this->_loadbalancer;
 			if(!is_array($sd)||empty($sd)) {
 				$sd=["www"];
 			}

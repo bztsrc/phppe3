@@ -58,10 +58,15 @@ class ClusterSrv extends \PHPPE\Model
 		}
 		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
 		$this->_master= strtolower(trim($this->id)) == strtolower(trim($master));
+
+		View::jslib("cluster.js","pe.cluster.init()");
 	}
 
 	public function stat()
 	{
+		return
+			"<div id='pe_cl' class='sub' style='display:none;'></div>".
+			"<img src='images/cloud.png' alt='Cluster' onclick='return pe.popup.open(this,\"pe_cl\",1,16);' onmouseover='return pe.popup.open(this,\"pe_cl\",1,16);'>";
 	}
 
 	public function diag()
