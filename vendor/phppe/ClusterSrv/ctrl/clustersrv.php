@@ -104,7 +104,7 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function action($item)
 	{
 		$lib=Core::lib("ClusterSrv");
-		$nodes=DS::query("*",self::$_table,"","","type,id");
+		$nodes=DS::query("*",self::$_table,"","","type,load DESC,id");
 		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
 
 		//! check if executed from CLI

@@ -20,8 +20,9 @@ pe.cluster = {
             if(r.status==200) {
                 s=JSON.parse(r.responseText);
                 pe.cluster.statusbox.nextSibling.setAttribute('src','images/cloud-'+s.status+'.png');
-                pe.cluster.statusbox.nextSibling.setAttribute('title',L(s.status)+' '+s.loadavg);
-                t='<table><tr><td colspan="4" style="background:#C0C0C0;"><b>'+L("Management")+'</b></td></tr>';
+                t='<table><tr><td colspan="3" style="color:'+(s.loadavg<0.1?'rgb(0,187,187)':(s.loadavg>0.5?'rgb(187,187,0)':'rgb(0,147,0)'))+';padding:2px;"><meter style="width:100%;" value="'+s.loadavg+'" optimum=\"0.01\" low=\"0.5\" high=\"0.75\"></meter></td>';
+                t+='<td style="color:'+(s.loadavg<0.1?'rgb(0,187,187)':(s.loadavg>0.5?'rgb(187,187,0)':'rgb(0,147,0)'))+';padding:2px;" align="right">'+s.loadavg+'</td></tr>';
+                t+='<tr><td colspan="4" style="background:#C0C0C0;"><b>'+L("Management")+'</b></td></tr>';
                 var f=1;
                 for(i=0;i<s.nodes.length;i++){
                     if(f && s.nodes[i].type=='worker') { f=0;

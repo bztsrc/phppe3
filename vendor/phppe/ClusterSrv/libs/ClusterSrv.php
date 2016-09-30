@@ -65,8 +65,8 @@ class ClusterSrv extends \PHPPE\Model
 	public function stat()
 	{
 		return
-			"<div id='pe_cl' class='sub' style='display:none;'></div>".
-			"<img src='images/cloud.png' alt='Cluster' onclick='return pe.popup.open(this,\"pe_cl\",1,16);' onmouseover='return pe.popup.open(this,\"pe_cl\",1,16);'>";
+			"<div id='pe_cl' class='sub' style='display:none;' onmouseover='return pe_w();'></div>".
+			"<img src='images/cloud.png' alt='Cluster' onclick='return pe_p(\"pe_cl\",null,null,-200);' onmouseover='return pe_p(\"pe_cl\",null,null,-200);'>";
 	}
 
 	public function diag()
