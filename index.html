@@ -3562,6 +3562,7 @@ what Registry is for. Without a datasource, it will use local files to store cha
 <tr><td><a onclick='tab_switch("offset");'>offset()</a></td><td>Number of records to skip at begining</td></tr>
 <tr><td><a onclick='tab_switch("sql");'>sql(), __toString()</a></td><td>Return SQL sentence string</td></tr>
 <tr><td><a onclick='tab_switch("execute");'>execute()</a></td><td>Execute the query/statement on current datasource</td></tr>
+<tr><td><a onclick='tab_switch("with");'>with()</a></td><td>Execute the query/statement with a value set</td></tr>
 </table>
 <h3>Exceptions</h3>
 <p>Throws <code>DBException</code>.</p>
@@ -5941,25 +5942,31 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <pre>
 <span class='comment'>public</span> <span class='function'>fields</span>( <span class='comment'>string/array</span> <span class='variable'>$fields</span> );
 </pre>
-<p>Add fields to a sentance.</p>
+<p>Add fields to a sentance. If you have field names in array keys, you'll need <a onclick='tab_switch("with");'>with()</a>.</p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
-<tr><td>string/fields <span>$fields</span></td><td>Comma separated list or array of fields to add. Their values should be passed as arguments with execute()</td></tr>
+<tr><td>string/fields <span>$fields</span></td><td>Comma separated list or array of fields to add. Their values should be passed as arguments with <a onclick='tab_switch("execute");'>execute()</a>.</td></tr>
 </table>
 <h3>Return value</h3>
 <table class='table table-bordered table-striped parameter'>
 <tr><td>DB</td><td>SQL sentance object</td></tr>
 </table>
 <h3>Examples</h3>
-<p><pre class='lineno'>1<br>2<br>3</pre>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
 <pre class='php'>
 <span class='variable'>$result</span> = <span class='function'>DB::update</span>(<span class='stringconst'>"forum_topic"</span>, <span class='stringconst'>"f"</span>)
     -><span class='function'>fields</span>( [<span class='stringconst'>"f.id"</span>, <span class='stringconst'>"f.title"</span>])
     -><span class='function'>execute</span>([    <span class='number'>3</span>,  <span class='stringconst'>"New title"</span>]);
+<span class='comment'>// note the with() method</span>
+<span class='variable'>$result</span> = <span class='function'>DB::update</span>(<span class='stringconst'>"forum_topic"</span>, <span class='stringconst'>"f"</span>)-><span class='function'>with</span>(
+            [  <span class='stringconst'>"f.id"</span> => <span class='number'>3</span>,
+               <span class='stringconst'>"f.title"</span> => <span class='stringconst'>"New title"</span>  ]);
 </pre></p>
 <h3>See also</h3>
 <ul>
     <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a></li>
+    <li><a onclick='tab_switch("with");'>(PHPPE\DB)->with()</a></li>
+    <li><a onclick='tab_switch("execute");'>(PHPPE\DB)->execute()</a></li>
     <li><a onclick='tab_switch("groupby");'>(PHPPE\DB)->groupBy()</a></li>
     <li><a onclick='tab_switch("orderby");'>(PHPPE\DB)->orderBy()</a></li>
 </ul>
@@ -6186,10 +6193,10 @@ echo ( <span class='function'>DB::delete</span>(<span class='stringconst'>"forum
 <pre>
 <span class='comment'>public</span> <span class='function'>execute</span>( <span class='comment'>array</span> <span class='optional'>$arguments</span>, <span class='comment'>int</span> <span class='optional'>$selector</span> );
 </pre>
-<p><a onclick='tab_switch("exec");'>Execute</a> the SQL sentance on a datasource.</p>
+<p><a onclick='tab_switch("exec");'>Execute</a> the SQL sentance on a datasource. If you have a key value array, you'll need <a onclick='tab_switch("with");'>with()</a></p>
 <h3>Parameters</h3>
 <table class='table table-bordered table-striped parameter'>
-<tr><td class='optional'>array <span>$arguments</span></td><td>Values for the placeholders</td></tr>
+<tr><td class='optional'>array <span>$arguments</span></td><td>Values for the placeholders. Field names passed with <a onclick='tab_switch("fields");'>fields()</a>.</td></tr>
 <tr><td class='optional'>string <span>$selector</span></td><td>Execute on a specific <a onclick='tab_switch("ds");'>datasource</a> rather than the current one</td></tr>
 </table>
 <h3>Return value</h3>
@@ -6207,6 +6214,49 @@ echo ( <span class='function'>DB::delete</span>(<span class='stringconst'>"forum
 <h3>See also</h3>
 <ul>
     <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a></li>
+    <li><a onclick='tab_switch("with");'>(PHPPE\DB)->with()</a></li>
+    <li><a onclick='tab_switch("fields");'>(PHPPE\DB)->fields()</a></li>
+    <li><a onclick='tab_switch("db");'>PHPPE\DS::db()</a></li>
+    <li><a onclick='tab_switch("ds");'>PHPPE\DS::ds()</a></li>
+    <li><a onclick='tab_switch("exec");'>PHPPE\DS::exec()</a></li>
+</ul>
+</div>
+
+<div id='with' class='tab'>
+<h1>(PHPPE\DB)->with()<sup><small>PHPPE Pack</small></sup></h1>
+<h2>Synopsis</h2>
+<pre>
+<span class='comment'>public</span> <span class='function'>with</span>( <span class='comment'>array</span> <span class='optional'>$values</span>, <span class='comment'>int</span> <span class='optional'>$selector</span> );
+</pre>
+<p><a onclick='tab_switch("exec");'>Execute</a> the SQL sentance on a datasource with given values. The with() method basicaly is the same as calling <a onclick='tab_switch("fields");'>fields()</a> and <a onclick='tab_switch("execute");'>execute()</a>.</p>
+<h3>Parameters</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td class='optional'>array <span>$values</span></td><td>Field names in array keys</td></tr>
+<tr><td class='optional'>string <span>$selector</span></td><td>Execute on a specific <a onclick='tab_switch("ds");'>datasource</a> rather than the current one</td></tr>
+</table>
+<h3>Return value</h3>
+<table class='table table-bordered table-striped parameter'>
+<tr><td>array</td><td>If the sentance was a SELECT query, the result set</td></tr>
+<tr><td>int</td><td>Otherwise the number of affected rows</td></tr>
+</table>
+<h3>Examples</h3>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
+<pre class='php'>
+<span class='variable'>$result</span> = <span class='function'>DB::update</span>(<span class='stringconst'>"forum_topic"</span>, <span class='stringconst'>"f"</span>)-><span class='function'>with</span>(
+            [  <span class='stringconst'>"f.id"</span> => <span class='number'>3</span>,
+               <span class='stringconst'>"f.title"</span> => <span class='stringconst'>"New title"</span>  ]);
+<span class='comment'>// note the fields() method</span>
+<span class='variable'>$result</span> = <span class='function'>DB::update</span>(<span class='stringconst'>"forum_topic"</span>, <span class='stringconst'>"f"</span>)
+    -><span class='function'>fields</span>( [<span class='stringconst'>"f.id"</span>, <span class='stringconst'>"f.title"</span>])
+    -><span class='function'>execute</span>([    <span class='number'>3</span>,  <span class='stringconst'>"New title"</span>]);
+</pre></p>
+
+
+<h3>See also</h3>
+<ul>
+    <li><a onclick='tab_switch("phppe_db");'>PHPPE\DB</a></li>
+    <li><a onclick='tab_switch("fields");'>(PHPPE\DB)->fields()</a></li>
+    <li><a onclick='tab_switch("execute");'>(PHPPE\DB)->execute()</a></li>
     <li><a onclick='tab_switch("db");'>PHPPE\DS::db()</a></li>
     <li><a onclick='tab_switch("ds");'>PHPPE\DS::ds()</a></li>
     <li><a onclick='tab_switch("exec");'>PHPPE\DS::exec()</a></li>
