@@ -20,8 +20,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		die("cluster status    - prints the current status\n".
 			"cluster server    - checks server (called from cron)\n".
 			"cluster takeover  - force this server to became master.\n".
-			"cluster refresh   - flush application node's cache.\n".
-			"cluster client    - checks application server.\n"
+			"cluster refresh   - flush worker cache.\n".
+			"cluster client    - checks worker server (called from cron).\n"
 		);
 	}
 
@@ -31,14 +31,14 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		DS::exec("UPDATE ".self::$_table." SET type='slave',viewd=CURRENT_TIMESTAMP WHERE type='master'");
 		DS::exec("UPDATE ".self::$_table." SET type='master',modifyd=CURRENT_TIMESTAMP WHERE id=?", [$node->id]);
 		$node->resources("start");
-		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='loadbalancer'");
+		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='lb'");
 	}
 
 	function refresh($item=null)
 	{
 		$node=Core::lib("ClusterSrv");
-		DS::exec("UPDATE ".self::$_table." SET cmd='invalidate' WHERE type='application'");
-		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='loadbalancer'");
+		DS::exec("UPDATE ".self::$_table." SET cmd='invalidate' WHERE type='worker'");
+		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='lb'");
 		if($node->_master)
 			$node->resources("reload");
 	}
@@ -65,13 +65,13 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 			DS::exec("DELETE FROM ".self::$_table." WHERE modifyd<CURRENT_TIMESTAMP-900");
 			DS::exec("UPDATE ".self::$_table." SET cmd='restart' WHERE modifyd<CURRENT_TIMESTAMP-120");
 
-			//! stop unused application nodes
-			DS::exec("UPDATE ".self::$_table." SET cmd='shutdown' WHERE viewd<CURRENT_TIMESTAMP-900 AND load<0.05");
+			//! stop unused worker nodes
+			DS::exec("UPDATE ".self::$_table." SET cmd='shutdown' WHERE type='worker' AND viewd<CURRENT_TIMESTAMP-900 AND load<0.05");
 
-			//! if there are overloaded application nodes, start new nodes
-			$overloaded=DS::field("id",self::$_table,"load>1.0 AND modifyd>CURRENT_TIMESTAMP-120");
+			//! if there are overloaded worker nodes, start new nodes
+			$overloaded=DS::field("id",self::$_table,"type='worker' AND load>1.0 AND modifyd>CURRENT_TIMESTAMP-120");
 			if(!empty($overloaded))
-				$node->resources("application");
+				$node->resources("worker");
 		} else {
 			/* Slave */
 			$node->resources("stop");
@@ -92,8 +92,12 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function action($item)
 	{
 		$lib=Core::lib("ClusterSrv");
-		$nodes=DS::fetch("*",self::$_table,"","","type DESC,id");
-print_r($nodes);
-echo("status info srv ".$this->id."\n");
+		$nodes=DS::query("*",self::$_table,"","","created,id");
+		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
+		echo(chr(27)."[96mId              Type        Load  Last seen            Last viewed          Name\n--------------  ---------  -----  -------------------  -------------------  -----------------------------".chr(27)."[0m\n");
+		foreach($nodes as $node) {
+			echo(sprintf("%-16s%-8s%8s",$node['id'],$node['type'],$node['load'])."  ".$node['modifyd']."  ".$node['viewd']."  ".$node['name']."\n");
+		}
+        echo("\n".chr(27)."[96mThis server is: ".chr(27)."[0m".$lib->id." ".chr(27)."[".(strtolower(trim($this->id)) == strtolower(trim($master))?"91mMASTER":"92mSLAVE").chr(27)."[0m\n");
 	}
 }

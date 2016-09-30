@@ -8,24 +8,24 @@ $ORIGIN example.com.
 			      5m ; expire
 			      5m ; nxdomain ttl
 			     )
-       IN  NS     ns1.example.com. ; in the domain
-       IN  NS     ns2.example.com. ; external to domain
-       IN  MX  10 mail.another.com. ; external mail provider
+        IN  NS     ns1.example.com. ; in the domain
+        IN  NS     ns2.example.com. ; external to domain
+        IN  MX  10 mail.another.com. ; external mail provider
 ; server host definitions<br>
 <!foreach nodes>
-<!if type=='loadbalancer'>
-ns1    IN A      <!=id>  ; dns load balancer<br>
+<!if type=='lb'>
+ns1     IN  A      <!=id>    ; dns load balancer<br>
 <!/if>
 <!if type=='master'>
-mgmt   IN  CNAME  mgmt<!=IDX><br>
-mgmt<!=IDX>  IN  A      <!=id>  ; current master<br>
+admin   IN  CNAME  admin<!=IDX><br>
+admin<!=IDX>  IN  A      <!=id>    ; current master<br>
 <!/if>
 <!if type=='slave'>
-mgmt<!=IDX>   IN A      <!=id>  ; standby slave<br>
+admin<!=IDX>  IN  A      <!=id>    ; standby slave<br>
 <!/if>
 <!if type=='worker'>
 <!foreach subdomains>
-<!=VALUE>    IN A    <!=parent.id><br>
+<!=VALUE>     IN  A      <!=parent.id>    ; worker #<!=parent.IDX><br>
 <!/foreach>
 <!/if>
 <!/foreach>

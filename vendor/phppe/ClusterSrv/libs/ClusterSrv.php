@@ -75,6 +75,19 @@ class ClusterSrv extends \PHPPE\Model
 			if(!empty($res))
 				echo("DIAG-E: cluster: ".count($res)." ".$k." node(s): ".implode(", ",array_column($res,"id"))."\n");
 		}
+		foreach([
+			"check"=>"#!/bin/sh\n\n# Check if this server still has all the master resources\n",
+			"start"=>"#!/bin/sh\n\n# Grab all resources for master (eg. OpenVPN tunnels)\n",
+			"stop"=>"#!/bin/sh\n\n# Release all resources (eg. OpenVPN tunnels)\n",
+			"reload"=>"#!/bin/sh\n\n# reload all resources and clear caches\n",
+			"worker"=>"#!/bin/sh\n\n# Use cURL WebAPI to start a new worker instance\n"
+		] as $f=>$d){
+			$fn="vendor/bin/cluster_".$f.".sh";
+			if(!file_exists($fn)) {
+				file_put_contents($fn,$d);
+				chmod($fn,0750);
+			}
+		}
 	}
 
 	public function resources($cmd)

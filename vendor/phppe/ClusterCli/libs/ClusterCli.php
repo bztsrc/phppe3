@@ -35,7 +35,7 @@ class ClusterCli extends \PHPPE\Model
 	public $_subdomains;
 	public $_loadbalancer;
 	public $_keepalive=9;
-	static $_cmd="vendor/bin/cluster_loadbalancer.sh";
+	static $_cmd="vendor/bin/cluster_lb.sh";
 
 	public function __construct()
 	{
@@ -80,6 +80,10 @@ class ClusterCli extends \PHPPE\Model
 
 	public function diag()
 	{
+	    if(!file_exists(self::$_cmd)) {
+            file_put_contents(self::$_cmd,"#!/bin/sh\n\n# This script get a bind configuration file on stdin.\n# Save it and reload dns server.\n");
+            chmod(self::$_cmd,0750);
+	    }
 	}
 
 	public function bindcfg()
