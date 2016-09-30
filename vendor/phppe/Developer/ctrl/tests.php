@@ -35,9 +35,7 @@ class Developer {
         $ret = \PHPPE\Testing::doTests($this->testCases, $item);
 
 		if($ret===null) {
-		    \PHPPE\Core::$core->template="404";
-		    \PHPPE\Core::$core->app=$item;
-		    return;
+            die(sprintf(L("Test %s not found"),$item)."\n");
 		} else
             die;
 	}

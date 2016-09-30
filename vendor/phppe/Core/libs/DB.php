@@ -439,6 +439,21 @@ class DB extends Extension
     }
 
     /**
+     * Execute a query with a specific field set.
+     *
+     * @param array             values
+     * @param integer           data source selector
+     *
+     * @return DB               instance
+     */
+    public function with($values, $ds = -1)
+    {
+        return      !is_array($values) || empty($values)
+        ? $this->execute(null, $ds)         : $this->fields(array_keys($values))
+                                              ->execute(array_values($values), $ds);
+    }
+
+    /**
      * Execute a query and return number of affected rows (commands) or data set (select query).
      *
      * @param array             arguments array, values for placeholders
@@ -459,7 +474,14 @@ class DB extends Extension
             throw new DBException(L('Placeholder(s) in SQL without argument').': '.$sql);
         }
         //! execute the query with PHPPE Core
-        $ret = DS::exec($sql, $arguments);
+        try {
+            $ret = DS::exec($sql, $arguments);
+            // @codeCoverageIgnoreStart
+        } catch(\Exception $e) {
+            throw new DBException(L($e->getMessage()).': '.$sql);
+            // @codeCoverageIgnoreEnd
+        }
+
         //! restore data source if changed
         if ($ds != -1) {
             DS::ds($old_ds);

@@ -4152,7 +4152,7 @@ class ClassMap extends Extension
             foreach (self::$core->libs as $k => $v) {
                 if (method_exists($v, $e)) {
                     $d = call_user_func_array([$v, $e], is_array($c) ? $c : [$c]);
-                    if ($d != null) {
+                    if (!empty($d) && is_array($d)) {
                         $c = $d;
                     }
                 }
@@ -4511,16 +4511,16 @@ namespace PHPPE\Cache {
             // @codeCoverageIgnoreEnd
             return $s($key, $compress && function_exists('gzdeflate') ? gzdeflate(json_encode($value)) : $value, $ttl);
         }
+        // @codeCoverageIgnoreStart
         public function invalidate()
         {
-            // @codeCoverageIgnoreStart
             if (function_exists('apcu_clear_cache')) {
                 apcu_clear_cache();
             } else if (function_exists('apc_clear_cache')) {
                 apc_clear_cache("user");
             }
-            // @codeCoverageIgnoreEnd
         }
+        // @codeCoverageIgnoreEnd
     }
 
     //! Plain file cache support
@@ -4577,7 +4577,7 @@ namespace PHPPE\Cache {
         }
         public function invalidate()
         {
-            Tools::rmdir('.tmp/cache');
+            \PHPPE\Tools::rmdir('.tmp/cache');
         }
         public function cronMinute($args)
         {

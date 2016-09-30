@@ -175,7 +175,7 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
         \PHPPE\Core::$user->id=-1;
         $app = new \PHPPE\Content;
         \PHPPE\View::assign("app",$app);
-		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!cms test1 test>'),"cms_edit"),"cms tag #3");
+		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!cms test1 test>'),"cms.edit"),"cms tag #3");
         \PHPPE\Core::$user->id=$u;
 
 		$this->assertEquals("show3",\PHPPE\View::_t('<!var test3 test>'), "Addon init");

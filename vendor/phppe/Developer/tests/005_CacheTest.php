@@ -2,6 +2,18 @@
 class CacheTest extends PHPUnit_Framework_TestCase
 {
 	//! driver specific tests
+	public function testMemcache()
+	{
+		\PHPPE\Cache::$mc=null;
+		$mem = new \PHPPE\Cache("127.0.0.1:11211");
+		if(empty(\PHPPE\Cache::$mc)) {
+			$this->markTestSkipped();
+		}
+		$this->assertNotNull(\PHPPE\Cache::$mc,"Memcached connection");
+		\PHPPE\Cache::$mc->set("key2","value",false,1);
+		$this->assertEquals("value",\PHPPE\Cache::$mc->get("key2"),"Memcached set/get");
+	}
+
 	public function testAPC()
 	{
 		$apc = new \PHPPE\Cache\APC("apc");
@@ -19,15 +31,9 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		sleep(1.01);
 		$files->cronMinute("");
 		$this->assertNull($files->get("key2"),"Files ttl");
-	}
-
-	public function testMemcache()
-	{
-		\PHPPE\Cache::$mc=null;
-		$mem = new \PHPPE\Cache("127.0.0.1:11211");
-		$this->assertNotNull(\PHPPE\Cache::$mc,"Memcached connection");
-		\PHPPE\Cache::$mc->set("key2","value",false,1);
-		$this->assertEquals("value",\PHPPE\Cache::$mc->get("key2"),"Memcached set/get");
+		$files->set("key2","value",false,1);
+		$files->invalidate();
+		$this->assertNull($files->get("key2"),"Files invalidate");
 	}
 
 	public function testNoServer()
@@ -60,6 +66,12 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		if(empty($mc) || empty(\PHPPE\Core::$core->cache))
 			$mem = new \PHPPE\Cache("127.0.0.1:11211");
 		\PHPPE\Core::$core->nocache=false;
+		if(empty(\PHPPE\Cache::$mc)) {
+			$mem = new \PHPPE\Cache("files");
+		}
+		if(empty(\PHPPE\Cache::$mc)) {
+			$this->markTestSkipped();
+		}
 
 		$this->assertNotEmpty(\PHPPE\Cache::$mc,"Cache initialized");
 
@@ -75,20 +87,20 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$tn = 't_' . sha1(\PHPPE\Core::$core->base."_cachetest");
 		\PHPPE\Cache::set($tn,"",1);
 
-		$txt = \PHPPE\View::template("cachetest");
+		$txt = \PHPPE\View::template("cachetest",["var"=>"value"]);
 		$this->assertNotEmpty(\PHPPE\Cache::get($tn),"Template caching $tn");
 
-		$url=url("tests","http")."cachetest";
-
         $sha = \PHPPE\Core::$core->base . "tests/http/cachetest/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
-
 		$N = 'p_' . sha1($sha);
 		\PHPPE\Cache::set($N,"",1);
-		$this->assertEmpty(\PHPPE\View::fromCache($N),"Page cache #1");
+		$this->assertEmpty(\PHPPE\View::fromCache($N),"Page cache #1 ".$N);
+
+		$url=url("tests","http")."cachetest";
+		if(trim(@file_get_contents($url))=='') $url=str_replace("public/","",$url);
+
 		file_get_contents($url); //make sure the output gets to the cache
 		$d1 = file_get_contents($url); //this must be served from cache
-
-		$this->assertNotEmpty(\PHPPE\View::fromCache($N),"Page cache #2\nCache not configured in config.php or memcached not running");
+		$this->assertNotEmpty(\PHPPE\View::fromCache($N),"Page cache #2 (Configure cache '127.0.0.1:11211' in config.php if fails)");
 
 		$d2 = file_get_contents($url."?skipcache=1"); //trigger nocache flag set in constructor
 

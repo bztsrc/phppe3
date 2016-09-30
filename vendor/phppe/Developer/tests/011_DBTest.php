@@ -137,11 +137,6 @@ class DBTest extends PHPUnit_Framework_TestCase
 			\PHPPE\DB::insert("users")->fields('id,name'),
 			"insert");
 
-		$this->assertEquals(
-			"INSERT INTO users (id,name) VALUES (?,?)",
-			\PHPPE\DB::insert("users")->fields('id,name'),
-			"insert");
-
 		$wasExc=false;
 		try {
 			\PHPPE\DB::select("users")->join("SIMPLE","user_posts","id=id");
@@ -194,6 +189,23 @@ class DBTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEmpty(
 			\PHPPE\DB::select("users")->execute(),
 			"execute");
+
+		\PHPPE\DB::truncate("users")->execute();
+
+		$wasExc=false;
+		try {
+			\PHPPE\DB::insert("users")->with('');
+		}catch(\Exception $e){ $wasExc=true; }
+		$this->assertTrue($wasExc,"no fields exception");
+
+		$this->assertEquals(
+			1,
+			\PHPPE\DB::insert("users")->with([
+				'id'=>123,
+				'name'=>'newcomer',
+				'email'=>'no@where.ltd'
+			]),
+			"insert with with");
 
 		$wasExc=false;
 		try {

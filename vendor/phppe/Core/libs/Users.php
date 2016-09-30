@@ -45,7 +45,7 @@ class Users extends \PHPPE\User
      * @param string    username
      * @param string    password
      *
-     * @return boolean  true on success
+     * @return Users    object on success, null otherwise
      */
     public function login($name, $pass)
     {
@@ -61,7 +61,7 @@ class Users extends \PHPPE\User
         $_SESSION['pe_u']=new self($rec['id']);
         // housekeeping
         \PHPPE\DS::exec("UPDATE ".static::$_table." SET logind=CURRENT_TIMESTAMP WHERE id=?", [$rec['id']]);
-        return;
+        return $_SESSION['pe_u'];
     }
 
     /**
