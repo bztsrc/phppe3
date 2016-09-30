@@ -121,17 +121,17 @@ function phppe_archive(){window.open("data:text/plain;base64,PD9waHAKLyoKICogIFB
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>Get Started</a>
     <ol>
+    <li><a onclick='tab_switch("goals");'>Design and goals</a></li>
     <li><a onclick='tab_switch("install");'>Installation</a></li>
     <li><a onclick='tab_switch("usage");'>Usage</a></li>
-    <li><a onclick='tab_switch("configuration");'>Configuration</a></li>
-    <li><a onclick='tab_switch("security");'>Security</a></li>
-    <li><a onclick='tab_switch("monitoring");'>Monitoring</a></li>
     <li><a onclick='tab_switch("cron");'>Background jobs</a></li>
     <li><a onclick='tab_switch("webserver");'>Webserver config</a></li>
+    <li><a onclick='tab_switch("monitoring");'>Monitoring</a></li>
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>General Topics</a>
     <ol style='display:none;'>
-    <li><a onclick='tab_switch("goals");'>Design and goals</a></li>
+    <li><a onclick='tab_switch("security");'>Security</a></li>
+    <li><a onclick='tab_switch("configuration");'>Configuration</a></li>
     <li><a onclick='tab_switch("directory");'>Directory structure</a></li>
     <li><a onclick='tab_switch("running");'>Running overview</a></li>
     <li><a onclick='tab_switch("routing");'>URL Routing</a></li>
@@ -140,7 +140,6 @@ function phppe_archive(){window.open("data:text/plain;base64,PD9waHAKLyoKICogIFB
     <li><a onclick='tab_switch("controllers");'>Controllers</a></li>
     <li><a onclick='tab_switch("views");'>Views</a></li>
     <li><a onclick='tab_switch("cache");'>Cache Management</a></li>
-    <li><a onclick='tab_switch("cluster");'>Cluster</a></li>
     <li><a onclick='tab_switch("services");'>Services</a></li>
     <li><a onclick='tab_switch("sitebuilds");'>Sitebuilds</a></li>
     <li><a onclick='tab_switch("assets");'>Assets</a></li>
@@ -151,6 +150,7 @@ function phppe_archive(){window.open("data:text/plain;base64,PD9waHAKLyoKICogIFB
     <li><a onclick='tab_switch("coding");'>Coding standards</a></li>
     <li><a onclick='tab_switch("developer");'>Developing</a></li>
     <li><a onclick='tab_switch("benchmark");'>Benchmarks</a></li>
+    <li><a onclick='tab_switch("cluster");'>Clustering</a></li>
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>Tutorials</a>
     <ol style='display:none;'>
@@ -1454,6 +1454,111 @@ PHPPE Core ships APC(u) and Files cache extensions. If you decide to use local f
 <div id='cluster' class='tab' rel='loadbalance'>
 <h1>Clustering</h1>
 <p>On workers, install Core and ClusterCli. On the management server, Core, CMS, ClusterSrv.</p>
+<div class='alert alert-warning'>You have to set up <a onclick='tab_switch("cron");'>background jobs</a> properly in order to get Cluster working.</div>
+<h2>Installation</h2>
+<h3>Management nodes</h3>
+<pre>
+$ composer require phppe/ClusterSrv
+</pre>
+<h4>Setup</h4>
+<p>The cron minute will supervise if ClusterSrv is running. You can also trigger it from command line:
+<pre>
+$ php public/index.php cluster server
+</pre>
+</p>
+<h4>Query status</h4>
+<p>That's simple as
+<pre>
+$ php public/index.php cluster
+Id              Type        Load  Last seen            Last viewed          Name
+--------------  ---------  -----  -------------------  -------------------  -----------------------------
+10.0.0.1        master         0  2016-09-28 02:06:20  2016-09-30 01:04:42  admin1.localdomain
+10.0.0.2        slave          0  2016-09-28 02:06:20  2016-09-30 01:04:42  admin2.localdomain
+10.0.0.3        lb             0  2016-09-28 02:06:20  2016-09-30 01:04:42  ns1.localdomain
+10.0.0.4        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker4.localdomain
+10.0.0.5        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker5.localdomain
+10.0.0.6        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker6.localdomain
+
+This server is: 10.0.0.1 MASTER
+
+$ php public/source.php cluster help
+cluster status    - prints the current status
+cluster server    - checks management server (called from cron)
+cluster takeover  - force this management server to became master.
+cluster refresh   - flush worker cache.
+cluster client    - checks worker server (called from cron).
+</pre></p>
+<h3>Load balancer</h3>
+<pre>
+$ composer require phppe/ClusterCli
+</pre>
+<h4>Setup</h4>
+<p>The cron minute will supervise if ClusterCli is running. You can also trigger it from command line:
+<pre>
+$ php public/index.php cluster client
+</pre>
+</p>
+<p>Tell ClusterCli that you want it to work as a load balancer by setting the configuration in</p>
+<samp>vendor/phppe/ClusterCli/config.php:</samp>
+<p><pre class='lineno'>1<br></pre>
+<pre class='php'>
+  <span class='stringconst'>'loadbalancer'</span> => [ <span class='stringconst'>'www'</span>, <span class='stringconst'>'cdn'</span> ],
+</pre></p>
+<p>Create a shell script under <code>vendor/bin/cluster_lb.sh</code>. That will receive a bind configuration file on it's stdin, and has to save it and restart a bind server of your choosing. The format can be modified in <code>vendor/phppe/ClusterCli/views/bind.tpl</code>.</p>
+<h4>Query status</h4>
+<p><pre>
+$ php public/source.php cluster bindcfg
+; GENERATED FILE, do not edit!
+$TTL	1d ; 1 day ttl
+$ORIGIN example.com.
+@  1D  IN  SOA ns1.example.com. hostmaster.example.com. (
+			      2016093003 ; serial (unique to every hour)
+			      5m ; refresh
+			      15 ; retry
+			      5m ; expire
+			      5m ; nxdomain ttl
+			     )
+        IN  NS     ns1.example.com. ; in the domain
+        IN  NS     ns2.example.com. ; external to domain
+        IN  MX  10 mail.another.com. ; external mail provider
+; server host definitions
+ns1     IN  A      127.0.0.3    ; dns load balancer
+admin   IN  CNAME  admin2
+admin2  IN  A      127.0.0.1    ; current master
+admin3  IN  A      127.0.0.2    ; standby slave
+www     IN  A      127.0.0.4    ; worker #4
+www     IN  A      127.0.0.5    ; worker #5
+www     IN  A      127.0.0.6    ; worker #6
+</pre></p>
+<h3>Worker</h3>
+<pre>
+$ composer require phppe/ClusterCli
+</pre>
+<h4>Setup</h4>
+<p>The cron minute will supervise if ClusterCli is running. You can also trigger it from command line:
+<pre>
+$ php public/index.php cluster client
+</pre>
+That's all.
+</p>
+<h2>Automatic scaling</h2>
+<p>ClusterSrv will monitor for worker loads and will tell them to stop down or start a new if required. For that to happen, we'll have to do things first:</p>
+<h3>On workers</h3>
+<p>Make sure <code>sudo</code> is allowed for the following commands: <code>poweroff</code>, <code>restart</code>.</p>
+<p>Make sure (openbase_dir) script is allowed to open and read <samp>/proc/loadavg</samp>.</p>
+<h3>On management node</h3>
+<p>Create a shell script <samp>vendor/bin/cluster_worker.sh</samp>, that should communicate with your VPS provider's API to start a new worker vm instance.</p>
+<h2>High Availability</h2>
+<p>You can start more load balancers, but change the name in <samp>bind.tpl</samp> for each.</p>
+<p>As for management, ClusterSrv implements fail-over. That means that you can start more instances, but only one can be master at any given time. There may be a need to change master manually, for that run this command on one of the slave servers:<pre>
+$ php public/index.php cluster takeover
+</pre>
+</p>
+<h2>Content Distribution</h2>
+<p><a onclick='tab_switch("contents:2");'>Contents</a> are stored in the quorum database server. Workers cache the resulting html for subsequent use. That cache can be cleared with:<pre>
+$ php public/index.php cluster refresh
+</pre>
+</p>
 </div>
 
 <div id='services' class='tab' rel='library'>
@@ -1577,7 +1682,7 @@ websrv1  websrv2 ... websrvN   <span style='color:green;'>|</span>       <span s
 </div></div>
 <p>In scalable set up the webmaster (who is responsible for the contents) uses the <samp>cmssrv</samp> with Content Editor installed to manage the webpage. This should be done through a secure <span style='color:green;'>https</span> channel protected by a firewall, so that nobody else could modify the contents.
 The Content Editor stores the changes to the database that resides on <samp>dbsrv</samp> over a <span style='color:brown;'>sql</span> connection. In the cheapest scenario database server and Content Editor can be installed on the same machine (although not recommended due to security considerations. Database server should not be accessible from outside).</p>
-<p>Visitors are accessing the site on <span style='color:green;'>http(s)</span> protocol targeting a <samp>load balancer</samp>. The <samp>load balancer</samp> forwards the <span style='color:green;'>http(s)</span> request to one of the <samp>websrv</samp> instances that run <a onclick='tab_switch("webserver");'>Apache or nginx</a>. The cheapest and simpliest solution is to use DNS load balancing, where the domain name resolves to several A records, each pointing to one of the <samp>websrv</samp> ip's. More professional load balancers can terminate ssl and forward plain <span style='color:green'>http</span> to save resources, and may also monitor the current load on <samp>websrv</samp> instances to route to the least loaded one.</p>
+<p>Visitors are accessing the site on <span style='color:green;'>http(s)</span> protocol targeting a <samp>load balancer</samp>. The <samp>load balancer</samp> forwards the <span style='color:green;'>http(s)</span> request to one of the <samp>websrv</samp> instances that run <a onclick='tab_switch("webserver");'>Apache or nginx</a>. The cheapest and simpliest solution is to use <a onclick='tab_switch("cluster:5");'>DNS load balancing</a>, where the domain name resolves to several A records, each pointing to one of the <samp>websrv</samp> ip's. More professional load balancers can terminate ssl and forward plain <span style='color:green'>http</span> to save resources, and may also monitor the current load on <samp>websrv</samp> instances to route to the least loaded one.</p>
 <p>All the <samp>websrv</samp> instances have the same document root and run PHPPE Core to act as a Content Server that in turn loads the content from <samp>dbsrv</samp> via <span style='color:brown;'>sql</span> connection. To speed up things ever more, Content Servers can <a onclick='tab_switch("cache");'>cache the contents</a> as well.</p>
 <div class='alert alert-warning'><b>NOTE:</b> Don't forget that in this scenario you'll have to configure php to store session info in database instead of files, otherwise strange things will happen!</div>
 <div class='alert alert-warning'><b>NOTE:</b> Also you should set up syslog on webservers to proxy the messages to a central syslog server.</div>
@@ -2572,23 +2677,23 @@ Also, action uses default action route.</p>
 </pre></p>
 <h3>As a PHPPE Extension</h3>
 <p>Assuming we want to serve the page in an arbitrary PHPPE Extension.</p>
-<samp>vendor/phppe/MyExtension/views/myview.tpl:</samp>
+<samp>vendor/phppe/MyExtension/views/myView.tpl:</samp>
 <pre>
 &lt;h1>Hello World!&lt;/h1>
 </pre>
 <p>This time we'll set a routing rule for that, because the url does not align with file and class naming.
 It has to be done in the extension's initialization code.</p>
-<samp>vendor/phppe/MyModule/init.php:</samp>
+<samp>vendor/phppe/MyExtension/init.php:</samp>
 <p><pre class='lineno'>1<br></pre>
 <pre class='php'>
-<span class='function'>PHPPE\Http::route</span>(<span class='stringconst'>"helloworld"</span>, <span class='stringconst'>"MyModule"</span>, <span class='stringconst'>"myAction"</span>);
+<span class='function'>PHPPE\Http::route</span>(<span class='stringconst'>"helloworld"</span>, <span class='stringconst'>"MyExtension"</span>, <span class='stringconst'>"myAction"</span>);
 </pre></p>
 <p>Here's the controller, that sets the template's name for the view. No default action route here, we've specified the action method with route.</p>
-<samp>vendor/phppe/MyModule/ctrl/MyModule.php:</samp>
+<samp>vendor/phppe/MyExtension/ctrl/MyExtension.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7</pre>
 <pre class='php'>
 <span class='keyword'>namespace</span> PHPPE\Ctrl;
-<span class='keyword'>class</span> MyModule {
+<span class='keyword'>class</span> MyExtension {
 	<span class='keyword'>function</span> <span class='function'>myAction</span>(<span class='variable'>$item</span>)
 	{
 		<span class='variable'>PHPPE\Core::$core->template</span> = <span class='stringconst'>"myView"</span>;
@@ -5820,7 +5925,7 @@ if (<span class='variable'>Core::$user-></span><span class='function'>login</spa
 <p><pre class='lineno'>1<br>2<br>3</pre>
 <pre class='php'>
 <span class='variable'>$result</span> = <span class='function'>DB::select</span>(<span class='stringconst'>"forum_posts"</span>, <span class='stringconst'>"fp"</span>)
-    -><span class='function'>table</span>( <span class='stringconst'>"LEFT"</span>, <span class='stringconst'>"forum_topic"</span>, <span class='stringconst'>"fp.topicId=ft.id"</span>, <span class='stringconst'>"ft"</span>)
+    -><span class='function'>join</span>( <span class='stringconst'>"LEFT"</span>, <span class='stringconst'>"forum_topic"</span>, <span class='stringconst'>"fp.topicId=ft.id"</span>, <span class='stringconst'>"ft"</span>)
     -><span class='function'>execute</span>();
 </pre></p>
 <h3>See also</h3>
