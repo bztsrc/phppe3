@@ -59,25 +59,26 @@ class Lang
             'addons/*.php', 'addons/*/*.php', 'addons/*/*/*.php', 'addons/*/*/*/*.php',
             'ctrl/*.php', 'ctrl/*/*.php', 'ctrl/*/*/*.php', 'ctrl/*/*/*/*.php',
             'libs/*.php', 'libs/*/*.php', 'libs/*/*/*.php', 'libs/*/*/*/*.php', 'libs/*/*/*/*/*.php', 'libs/*/*/*/*/*/*.php',
+            'tests/*.php', 'tests/*/*.php', 'tests/*/*/*.php', 'tests/*/*/*/*.php',
             'js/*.js', 'js/*/*.js', 'js/*/*/*.js',
             'js/*.php', 'js/*/*.php', 'js/*/*/*.php',
             'views/*.tpl'
             ] as $v) {
                 $D += array_fill_keys(glob('vendor/phppe/'.$extension.'/'.$v), 0);
         }
+        $composer=json_decode(@file_get_contents("vendor/phppe/".$extension."/composer.json"), true);
         //! small hack for the Core
         $K=[];
         if ($extension=="Core") {
             //! for Core, also look up phrases in the main file
-            $D["public/index.php"]=0;
+            $D[file_exists("public/source.php")?"public/source.php":"public/index.php"]=0;
         } else {
             //! don't collect phrases that are specified in a required extension
-            $comp=json_decode(file_get_contents("vendor/phppe/".$extension."/composer.json"), true);
             //! assume Core is always loaded
-            $comp["require"]["phppe/Core"]=1;
+            $composer["require"]["phppe/Core"]=1;
             echo(chr(27)."[96m".L("Include").": ");
-            foreach($comp["require"] as $k=>$v) {
-                $a = include("vendor/".$k."/lang/".(!empty($lang)?$lang:"en").".php");
+            foreach($composer["require"] as $k=>$v) {
+                $a = @include("vendor/".$k."/lang/".(!empty($lang)?$lang:"en").".php");
                 if(is_array($a)) {
                     $K = array_merge($K,$a);
                     echo(chr(27)."[92m");
@@ -86,10 +87,10 @@ class Lang
                 }
                 echo($k." ");
             }
-            echo("\r\n".chr(27)."[96m".L("Excluded phrases").": ".chr(27)."[92m".count($K).chr(27)."[0m\r\n");
+            echo("\r\n");
         }
 
-        echo(chr(27)."[96m".L("Files").":".chr(27)."[92m ".count($D).chr(27)."[0m\r\n");
+        echo(chr(27)."[96m".L("Files").":".chr(27)."[92m ".count($D).chr(27)."[0m\r\n".L("Reading")."...\r");
 
         //! iterate on list
         foreach ($D as $fn => $v) {
@@ -118,7 +119,6 @@ class Lang
                     $i++;
                     continue;
                 }
-*/
                  //! don't take comments into account
                 if ($d[$i] == '/' && $d[$i + 1] == '*') {
                     $s = $i;
@@ -130,6 +130,7 @@ class Lang
                     }
                     continue;
                 }
+*/
 
                 //! check for calls
                 $e="";
@@ -170,7 +171,7 @@ class Lang
                         $i++;
                     }
                     $g=substr($d,$k,$i-$k);
-                    if(empty($K[$g])){
+                    if($d[$i+1]!="+" && $d[$i+1]!="."){
                         //! avoid notice when appending filenames and line numbers
                         if (!isset($L[$g]) || !empty($lang))
                             $L[$g] = "";
@@ -185,19 +186,34 @@ class Lang
                 $i++;
             }
         }
+        
+        $dups=array_flip(array_intersect(array_keys($L), array_keys($K)));
+        echo(chr(27)."[96m".L("Phrases").": ".chr(27)."[92m ".count($L).chr(27)." ".chr(27)."[0m (".count($dups)." / ".count($K).")".chr(27)."[0m\r\n");
 
         //! without language, dump the results
         if (empty($lang)) {
-            echo(chr(27)."[96m".L("Phrases found").":".chr(27)."[92m ".count($L).chr(27)."[0m\n");
             foreach($L as $k=>$v) {
-                echo(chr(27)."[92m  ".(strlen($k)<40?sprintf("%-".$m."s",$k):substr($k,0,80)."\r\n   ").chr(27)."[0m ".$v."\r\n");
+                echo((!isset($K[$k])?chr(27)."[92m":"")."  ".(strlen($k)<40?sprintf("%-40s",$k):substr($k,0,80)."\r\n   ").chr(27)."[0m ".$v."\r\n");
             }
         } else {
             //! merge with language dictionary
             $dict="vendor/phppe/".$extension."/lang/".$lang.".php";
-            $extra=[];
+            $extra=[]; $l=[];
+            //! add extension name and description
+            $a=(!empty($lang)?$lang:"en");
+            $b=explode("/",$composer['name'])[1];
+            $l[$b]=!empty($composer['name_'.$a])?$composer['name_'.$a]:(!empty($composer['name_en'])?$composer['name_en']:$composer['name']);
+            $l['_'.$b]=!empty($composer['description_'.$a])?$composer['description_'.$a]:$composer['description'];
+
             //! require() would miss a few translations
-            $was = $l = eval(strtr(@file_get_contents($dict), [ "//-"=>"", "<"."?php"=>"" ] ));
+            $was2 = eval(strtr(@file_get_contents($dict), [ "//-"=>"", "<"."?php"=>"" ] ));
+            if(!is_array($was2)) {
+                $was=$was2=[];
+            }
+            foreach($was2 as $k=>$v)
+                $was[stripslashes($k)]=stripslashes($v);
+            unset($was2);
+            $l=array_merge($l,$was);
             //! if found, merge. Otherwise use the new one
             if (is_array($l)) {
                 $extra=array_flip(array_diff(array_keys($l), array_keys($L)));
@@ -206,12 +222,17 @@ class Lang
                         $l[$k] = $v;
             } else
                 $l = $L;
+            unset($extra['rtl']);
+            unset($extra[$b]);
+            unset($extra['_'.$b]);
             //! generate php output
             $out="<"."?php\nreturn [\n";
             foreach($l as $k=>$v) {
+                if(isset($K[$k]))
+                    continue;
                 if(empty($write))
                     $out.=(isset($extra[$k])?chr(27)."[91m":(!isset($was[$k])?chr(27)."[92m":""));
-                $out.=(isset($extra[$k])&&$write!="--write-all"?"//-":"")."\t\"".addslashes($k)."\" => \"".addslashes($v)."\",\n";
+                $out.=((isset($extra[$k])&&$write!="--write-all")||isset($K[$k])?"//-":"")."\t\"".addslashes($k)."\" => \"".addslashes($v)."\",\n";
                 if(empty($write))
                     $out.=chr(27)."[0m";
             }

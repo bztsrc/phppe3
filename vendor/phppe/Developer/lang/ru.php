@@ -16,7 +16,7 @@ return array(
 "Routing"=>"",
 "Cache"=>"",
 "Convert"=>"",
-"Datasource"=>"",
+"DataSource"=>"",
 "Templater"=>"",
 );
 ?>

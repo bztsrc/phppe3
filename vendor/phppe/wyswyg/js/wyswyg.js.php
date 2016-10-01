@@ -62,7 +62,7 @@ if(isset($_REQUEST['impform'])){
             preg_match_all("|<body[^>]*>(.*?)<\/body|ims",$d,$b,PREG_SET_ORDER);
             $choose=!empty($b[0][1])?$b[0][1]:$d;
         } else {
-            $err=L("Upload HTML only!");
+            $err=L("wyswyg_htmlonly");
         }
     }
     die("<html><head><meta charset='utf-8'/></head><body>".($choose?"<div>".$choose."</div><script type='text/javascript'>parent.pe.wyswyg.importdone(\"".$_REQUEST['impform']."\");</script>":
@@ -87,34 +87,36 @@ pe.wyswyg = {
 <?php if($bs) {?>
     classes: {
     "toggle": "glyphicon glyphicon-eye",
-    "import": "glyphicon glyphicon-upload",
-    "font": "glyphicon glyphicon-font",
-    "bold": "glyphicon glyphicon-bold",
-    "italic": "glyphicon glyphicon-italic",
-    "underline": "glyphicon glyphicon-text-color",
-    "strikethrough": "glyphicon glyphicon-gbp",
-    "superscript": "glyphicon glyphicon-superscript",
-    "subscript": "glyphicon glyphicon-subscript",
-    "outdent": "glyphicon glyphicon-indent-right",
-    "indent": "glyphicon glyphicon-indent-left",
-    "left": "glyphicon glyphicon-align-left",
-    "center": "glyphicon glyphicon-align-center",
-    "right": "glyphicon glyphicon-align-right",
-    "justify": "glyphicon glyphicon-align-justify",
-    "unordered": "glyphicon glyphicon-list",
-    "ordered": "glyphicon glyphicon-list-alt",
-    "link": "glyphicon glyphicon-globe",
-    "unlink": "glyphicon glyphicon-erase",
-    "table": "glyphicon glyphicon-th",
-    "content": "glyphicon glyphicon-file",
-    "image": "glyphicon glyphicon-picture",
-    "video": "glyphicon glyphicon-film",
-    "attachment": "glyphicon glyphicon-paperclip",
-    "undo": "glyphicon glyphicon-step-backward",
-    "redo": "glyphicon glyphicon-step-forward",
+    "import": "glyphicon glyphicon-open",
+    "font": "glyphicon glyphicon-font",             //L("wyswyg_font") L("wyswyg_style") L("wyswyg_style<h2>") L("wyswyg_style<h3>") L("wyswyg_style<h4>") L("wyswyg_style<h5>") L("wyswyg_style<pre>")
+    "bold": "glyphicon glyphicon-bold",             //L("wyswyg_bold")
+    "italic": "glyphicon glyphicon-italic",         //L("wyswyg_italic")
+    "underline": "glyphicon glyphicon-text-color",  //L("wyswyg_underline")
+    "strikethrough": "glyphicon glyphicon-gbp",     //L("wyswyg_strikethrough")
+    "superscript": "glyphicon glyphicon-superscript",//L("wyswyg_superscript")
+    "subscript": "glyphicon glyphicon-subscript",   //L("wyswyg_subscript")
+    "outdent": "glyphicon glyphicon-indent-right",  //L("wyswyg_outdent")
+    "indent": "glyphicon glyphicon-indent-left",    //L("wyswyg_indent")
+    "left": "glyphicon glyphicon-align-left",       //L("wyswyg_left")
+    "center": "glyphicon glyphicon-align-center",   //L("wyswyg_center")
+    "right": "glyphicon glyphicon-align-right",     //L("wyswyg_right")
+    "justify": "glyphicon glyphicon-align-justify", //L("wyswyg_justify")
+    "unordered": "glyphicon glyphicon-list",        //L("wyswyg_unordered")
+    "ordered": "glyphicon glyphicon-list-alt",      //L("wyswyg_ordered")
+    "link": "glyphicon glyphicon-link",             //L("wyswyg_link")
+    "unlink": "glyphicon glyphicon-erase",          //L("wyswyg_unlink")
+    "table": "glyphicon glyphicon-th",              //L("wyswyg_table")
+    "content": "glyphicon glyphicon-file",          //L("wyswyg_content")
+    "zoom": "glyphicon glyphicon-fullscreen",       //L("wyswyg_zoom")
+    "image": "glyphicon glyphicon-picture",         //L("wyswyg_image")
+    "video": "glyphicon glyphicon-film",            //L("wyswyg_video")
+    "attachment": "glyphicon glyphicon-paperclip",  //L("wyswyg_attachment")
+    "undo": "glyphicon glyphicon-step-backward",    //L("wyswyg_undo")
+    "redo": "glyphicon glyphicon-step-forward",     //L("wyswyg_redo")
     },
 <?php } ?>
     sel:null,
+    selImg:null,
 
 init: function()
 {
@@ -122,7 +124,7 @@ init: function()
     var icons = {
         "style": [ "font", "bold", "italic", "underline", "strikethrough", "superscript", "subscript" ],
         "align": [ "outdent", "indent", "left", "center", "justify", "right" ],
-        "insert": [ "unordered", "ordered", "link", "unlink", "table" ],
+        "insert": [ "unordered", "ordered", "link", "unlink",/* "table",*/ "zoom" ],
         "hooks": <?=json_encode($toolbar)?>,
         "undo": [ "undo", "redo" ]
     };
@@ -182,8 +184,8 @@ open: function(source, icons)
             }
         }
         //! selection hooks
-        edit.setAttribute('data-wyswyg-select-a', pe.wyswyg.link);
-        edit.setAttribute('data-wyswyg-select-img', pe.wyswyg.image);
+        edit.setAttribute('data-wyswyg-select-a', "pe.wyswyg.link");
+        edit.setAttribute('data-wyswyg-select-img', "pe.wyswyg.image");
         //! set up event handlers and design mode
         edit.setAttribute('onmouseup','pe.wyswyg.event(event,"'+id+'","select-@TAG");');
         edit.setAttribute('onkeyup','pe.wyswyg.setvalue("'+id+'");');
@@ -195,7 +197,7 @@ open: function(source, icons)
 
         //! html toggle button
         var toggle = document.createElement('BUTTON');
-        toggle.setAttribute('title',L('Toggle HTML/Source'));
+        toggle.setAttribute('title',L('wyswyg_source'));
         toggle.setAttribute('onclick','event.preventDefault();pe.wyswyg.togglesrc(this, true);');
         tb.appendChild(toggle);
 
@@ -244,6 +246,7 @@ open: function(source, icons)
                     }
                     if(function_exists('pe.wyswyg.'+func)) {
                         var mi = document.createElement('BUTTON');
+                        mi.setAttribute('id',id+':'+menu+'_'+func);
                         mi.setAttribute('class',
                         <?=$bs?"pe.wyswyg.classes[name]!=null?pe.wyswyg.classes[name]:":""?>'wyswyg_icon wyswyg_icon-'+name);
                         mi.setAttribute('title',L('wyswyg_'+name));
@@ -281,6 +284,8 @@ open: function(source, icons)
         popup.setAttribute('ondragleave','pe_p();');
         popup.setAttribute('style','position:fixed;display:none;visibility:visible;');
         tb.appendChild(popup);
+
+        pe.wyswyg.event(null,id,'init');
 
         //! switch to html mode
         pe.wyswyg.togglesrc(toggle);
@@ -358,9 +363,9 @@ selected:function(evt, type)
                 }
         } else {
                 sel=window.getSelection();
-                if (sel.anchorNode.childNodes)
+                if (sel && sel.anchorNode && sel.anchorNode.childNodes)
                     obj=sel.anchorNode.childNodes[ sel.anchorOffset ];
-                if (sel.rangeCount) {
+                if (sel && sel.rangeCount) {
                     txt=sel.getRangeAt(sel.rangeCount - 1).cloneRange();
                     var container = document.createElement("div");
                     for (var i = 0, l = sel.rangeCount; i < l; ++i) {
@@ -410,6 +415,19 @@ numbered:function(evt,id) {pe.wyswyg.exec(id,"insertorderedlist","");},
 undo:function(evt,id) {pe.wyswyg.exec(id,"undo","");},
 redo:function(evt,id) {pe.wyswyg.exec(id,"redo","");},
 unlink:function(evt,id) {pe.wyswyg.exec(id,"unlink","");},
+table:function(evt,id) {pe.wyswyg.exec(id,"table","");},
+image:function(evt,id) {
+    pe.wyswyg.selImg=evt.target;
+    document.getElementById(id+':insert_zoom').style.display='inline-block';
+},
+zoom:function(evt,id) {
+    obj=pe.wyswyg.selImg;
+    if(obj==null||obj.tagName!="IMG")return;
+    if(obj.getAttribute('data-zoom')==null)
+        obj.setAttribute('data-zoom',function_exists("pe.zoom.src")?pe.zoom.src(obj.src):obj.src);
+    else
+        obj.removeAttribute('data-zoom');
+},
 font:function(evt,id) {pe_p(id+"_style");},
 setfont:function(evt,tag,id) {
     if(tag!='' && tag!=null) {
@@ -460,6 +478,9 @@ event:function(evt,id,name)
 {
     //! get plugins for subscribed for an event
     var ret=[],hookname='data-wyswyg-'+name;
+    var obj=pe.wyswyg.selected("obj");
+    pe.wyswyg.selImg=null;
+    document.getElementById(id+':insert_zoom').style.display='none';
     if(evt!=null && evt.target!=null){
         hookname=hookname.replace('@TAG',evt.target.tagName.toLowerCase());
         if(evt.target.id==id+':edit')
@@ -485,7 +506,7 @@ popup:function(evt, id, url)
     if(r.status==200) {
         popup.innerHTML=r.responseText;
     } else
-        popup.innerHTML=L("Unable to load AJAX hook");
+        popup.innerHTML=L("wyswyg_nohook");
 },
 
 search:function(inp,div)

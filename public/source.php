@@ -2984,7 +2984,7 @@ namespace PHPPE {
                     $close = 'bzclose';
                     $open = 'bzopen';
                 } else {
-                    throw new \Exception(L('Unable to open ').': '.$file);
+                    throw new \Exception(L('Unable to open').': '.$file);
                 }
             }
             //! read archive
@@ -2993,7 +2993,7 @@ namespace PHPPE {
             if ($data[0] == 'P' && $data[1] == 'K') {
                 $zip = zip_open($file);
                 if (!$zip) {
-                    throw new \Exception(L('Unable to open ').': '.$file);
+                    throw new \Exception(L('Unable to open').': '.$file);
                 }
                 while ($zip_entry = zip_read($zip)) {
                     $zname = zip_entry_name($zip_entry);
@@ -4648,6 +4648,7 @@ namespace PHPPE\AddOn {
 /**
  * hidden field element.
  */
+ //L("Hidden value")
     class hidden extends \PHPPE\AddOn
     {
         public $conf = "*obj.field";
@@ -4661,6 +4662,7 @@ namespace PHPPE\AddOn {
 /**
  * javascript button element.
  */
+ //L("Button")
     class button extends \PHPPE\AddOn
     {
         public $conf = "*label onclickjs [cssclass]";
@@ -4681,6 +4683,7 @@ namespace PHPPE\AddOn {
 /**
  * form submit button element.
  */
+ //L("Update")
     class update extends \PHPPE\AddOn
     {
         public $conf = "*[label [onclickjs [cssclass]]]";
@@ -4697,6 +4700,7 @@ namespace PHPPE\AddOn {
 /**
  * text field element.
  */
+ //L("Text")
     class text extends \PHPPE\AddOn
     {
         public $conf = "*([maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue [pattern]]]]]";
@@ -4746,6 +4750,7 @@ namespace PHPPE\AddOn {
 /**
  * password field element.
  */
+ //L("Password")
     class pass extends \PHPPE\AddOn
     {
         public $conf = "*([maxlen]) obj.field [cssclass [placeholder]]";
@@ -4783,6 +4788,7 @@ namespace PHPPE\AddOn {
 /**
  * number element. Note you have to specify both min and max values
  */
+ //L("Decimal number")
     class num extends \PHPPE\AddOn
     {
         public $conf = "*([min,max]) obj.field [cssclass]";
@@ -4828,6 +4834,7 @@ namespace PHPPE\AddOn {
 /**
  * option list element.
  */
+ //L("Option list")
     class select extends \PHPPE\AddOn
     {
         public $conf = "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]";
@@ -4878,6 +4885,7 @@ namespace PHPPE\AddOn {
 /**
  * checkbox element.
  */
+ //L("Checkbox")
     class check extends \PHPPE\AddOn
     {
         public $conf = "*(truevalue) obj.field [label [cssclass]]";
@@ -4911,6 +4919,7 @@ namespace PHPPE\AddOn {
 /**
  * radiobutton elements.
  */
+ //L("Radiobutton")
     class radio extends \PHPPE\AddOn
     {
         public $conf = "*(value) obj.field [label [cssclass]]";
@@ -4938,6 +4947,7 @@ namespace PHPPE\AddOn {
 /**
  * phone number field element.
  */
+//L("Phone")
     class phone extends \PHPPE\AddOn
     {
         public $conf = "*([maxlen]) obj.field [onchangejs [cssclass]]";
@@ -4966,6 +4976,7 @@ namespace PHPPE\AddOn {
 /**
  * email address field element.
  */
+//L("Email")
     class email extends \PHPPE\AddOn
     {
         public $conf = "*([maxlen]) obj.field [onchangejs [cssclass]]";
@@ -5001,6 +5012,7 @@ namespace PHPPE\AddOn {
 /**
  * file upload input box.
  */
+//L("File")
     class file extends \PHPPE\AddOn
     {
         public $conf = "*obj.field [onchangejs [cssclass]]";
@@ -5033,6 +5045,7 @@ namespace PHPPE\AddOn {
 /**
  * colorpicker element.
  */
+ //L("Color picker")
     class color extends \PHPPE\AddOn
     {
         public $conf = "*obj.field [onchangejs [cssclass]]";
@@ -5052,6 +5065,7 @@ namespace PHPPE\AddOn {
 /**
  * field label.
  */
+//L("Label")
     class label extends \PHPPE\AddOn
     {
         public $conf = "*obj.field [cssclass]";
@@ -5074,8 +5088,6 @@ namespace {
 /*** I18N ***/
 /**
  * Translate a string or code to user's language.
- *
- * @usage L('Someting']), L('extensions_installtxt')
  *
  * @param string    text or code
  *
@@ -5101,3 +5113,6 @@ namespace {
     }
 
 }
+/* to make lang utility happy
+L("sure") 
+*/

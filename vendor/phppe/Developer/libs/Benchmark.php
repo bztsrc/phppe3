@@ -42,6 +42,8 @@ class Benchmark
  */
     static function stats()
     {
+        setlocale(LC_ALL, 'C');
+
         //! get data
         $samples = @file(static::$file);
         if(empty($samples))

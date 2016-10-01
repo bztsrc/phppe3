@@ -1,6 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
+//L("Email")
 class EmailTest extends PHPUnit_Framework_TestCase
 {
 	public function testEmail()

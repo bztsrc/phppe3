@@ -26,3 +26,8 @@ namespace PHPPE;
 
 \PHPPE\View::menu( L("Extensions") ."@install", "extensions" );
 return new Extensions;
+
+/* make lang utility happy
+L("Also installs") L("Failed dependency") L("Proprietary") L("Framework") L("Connections") L("Themes") L("Content")
+L("Security") L("Business") L("Sales") L("Office") L("Games") L("Banners") L("Hardware") L("User Input")
+*/

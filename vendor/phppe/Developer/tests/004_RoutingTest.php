@@ -1,4 +1,5 @@
 <?php
+//L("Routing")
 class RoutingTest extends PHPUnit_Framework_TestCase
 {
 	public function testRoute()

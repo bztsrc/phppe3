@@ -523,7 +523,7 @@ class Email extends Extension
         if (preg_match("/(.*?)?[\<]?(([^\<]+)\@((\[?)[a-zA-Z0-9\-\.\:\_]+([a-zA-Z]+|[0-9]{1,3})(\]?)))[\>]?$/", $email, $m)) {
             //! only localhost allowed not to contain dot
             if (strpos($m[4], '.') === false && $m[4] != 'localhost') {
-                throw new EmailException(L('Bad email address').': '.$email);
+                throw new EmailException(L('invalid email address').': '.$email);
             }
             //! remove if it's already exists in headers to avoid duplications
             foreach (['To', 'Cc', 'Bcc'] as $rcpt) {
@@ -541,7 +541,7 @@ class Email extends Extension
 
             return true;
         }
-        throw new EmailException(L('Bad email address').': '.$email);
+        throw new EmailException(L('invalid email address').': '.$email);
     }
 
     /**
@@ -552,7 +552,7 @@ class Email extends Extension
         //! get real mailer backend ($core->mailer points to db queue backend)
         // @codeCoverageIgnoreStart
         if (empty(Core::$core->realmailer)) {
-            Core::log('C', 'Real mailer backend not configured!');
+            Core::log('C', L('Real mailer backend not configured!'));
         }
         // @codeCoverageIgnoreEnd
 
@@ -568,7 +568,7 @@ class Email extends Extension
                 }
                 DS::exec('DELETE FROM email_queue WHERE id=?;', [$row['id']]);
             } catch (\Exception $e) {
-                Core::log('E', 'Unable to send #'.$row['id'].' from queue: '.$e->getMessage());
+                Core::log('E', sprintf(L('Unable to send #%s from queue'),$row['id']).': '.$e->getMessage());
             }
                     // @codeCoverageIgnoreEnd
             sleep(1);

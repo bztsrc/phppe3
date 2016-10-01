@@ -1,4 +1,5 @@
 <?php
+//L("Picture")
 class PictureTest extends PHPUnit_Framework_TestCase
 {
 	public function testPicture()

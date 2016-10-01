@@ -26,6 +26,7 @@
 
 namespace PHPPE;
 
+//L("Registry")
 class Registry extends Extension
 {
     /**

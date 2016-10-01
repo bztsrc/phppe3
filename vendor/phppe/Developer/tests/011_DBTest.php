@@ -1,6 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
+//L("DB")
 class DBTest extends PHPUnit_Framework_TestCase
 {
 	public function testDB()

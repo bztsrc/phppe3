@@ -1,6 +1,8 @@
 <?php
 use PHPPE\Core as Core;
 
+//L("System")
+
 class SystemTest extends PHPUnit_Framework_TestCase
 {
 	public function testEvent()

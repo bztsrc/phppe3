@@ -21,6 +21,7 @@
  * @date 1 Jan 2016
  * @brief responsive tables
  */
+//L("Responsive tables")
 pe.resptable = {
   instances:[],
   touchx:-1,

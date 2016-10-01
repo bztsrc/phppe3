@@ -43,8 +43,14 @@ TEXTAREA.wyswyg {
 .wyswyg_icon-video {	background-position:-552px 0px; }
 .wyswyg_icon-attachment {background-position:-576px 0px; }
 .wyswyg_icon-table {	background-position:-600px 0px; }
+.wyswyg_icon-zoom {	background-position:-48px 0px; }
 .wyswyg_icon-undo {	background-position:-624px 0px; }
 .wyswyg_icon-redo {	background-position:-648px 0px; }
+
+.wyswyg IMG[data-zoom] {
+    padding: 2px !important;
+    background: blue !important;
+}
 
 .glyphicon-text-underline:before{content:"\e104"}
 .glyphicon-text-strike:before{content:"\e105"}

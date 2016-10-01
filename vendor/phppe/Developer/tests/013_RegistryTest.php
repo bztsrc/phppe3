@@ -1,6 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
+//L("Registry")
 class RegistryTest extends PHPUnit_Framework_TestCase
 {
 	public function testRegistry()

@@ -727,11 +727,11 @@ Default values for built-ins and phrases
 Actions
 <!L Save><!L Delete><!L Update><!L Upload><!L Help><!L Yes><!L No>
 Selections
-<!L Any><!L empty><!L all><!L none><!L other><!L true><!L false>
+<!L Any><!L Empty><!L All><!L None><!L Other><!L true><!L false>
 Numbers
 <!L zero><!L one><!L two><!L three><!L four><!L five><!L six><!L seven><!L eight><!L nine><!L ten><!L eleven><!L twelve>
 Validations
-<!L failed to upload file.><!L not a valid password! [a-zA-Z0-9]*6><!L not enough!><!L too much!><!L invalid phone number><!L invalid email address><!L bad date>
+<!L Bad arguments> <!L failed to upload file.><!L not a valid password! [a-zA-Z0-9]*6><!L not enough!><!L too much!><!L invalid phone number><!L invalid email address><!L bad date>
 -->
 <br><br>
 </div>

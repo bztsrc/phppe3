@@ -1,6 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
+//L("Users")
 class UsersTest extends PHPUnit_Framework_TestCase
 {
 	public function testUsers()

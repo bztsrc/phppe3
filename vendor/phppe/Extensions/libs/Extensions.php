@@ -140,7 +140,7 @@ class Extensions {
 		}
 		//! fallback to local, but without remote it's read only
 		else {
-			$t="{ \"name\": \"".\PHPPE\View::e("",L("configure remote access in Extensions"),"")."\" }";
+			$t="{ \"name\": \"".\PHPPE\View::e("",L("configure remote access"),"")."\" }";
 			$d=glob("vendor/phppe/*"."/composer.json");
             if(file_exists("vendor/phppe/composer.json"))
                 $d[]="vendor/phppe/composer.json";

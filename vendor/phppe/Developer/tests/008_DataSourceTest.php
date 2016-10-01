@@ -1,4 +1,5 @@
 <?php
+//L("DataSource")
 class DataSourceTest extends PHPUnit_Framework_TestCase
 {
 	public function testDataSource()

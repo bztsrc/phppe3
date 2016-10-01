@@ -8,7 +8,6 @@
     vertical-align:top;
 }
 #msbox input, textarea {
-    color:#808080;
     width:99%;
     background: rgba(32,32,32,0.95);
     margin-left:2px;
@@ -29,4 +28,16 @@
     height:24px;
     background:rgb(95, 95, 95);
     border:#808080 outset 1px;
+}
+input::-webkit-input-placeholder {
+    color:    #606060;
+}
+input:-moz-placeholder {
+   color:    #606060;
+}
+input::-moz-placeholder {
+   color:    #606060;
+}
+input:-ms-input-placeholder {
+   color:    #606060;
 }

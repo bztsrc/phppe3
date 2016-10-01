@@ -1,6 +1,7 @@
 <?php
 use PHPPE\Core as Core;
 
+//L("AddOn")
 class AddonTest extends PHPUnit_Framework_TestCase
 {
 	public function testBuiltInAddons()
