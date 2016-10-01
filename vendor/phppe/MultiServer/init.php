@@ -3,7 +3,7 @@
  *  PHP Portal Engine v3.0.0
  *  https://github.com/bztsrc/phppe3/
  *
- *  Copyright LGPL 2016 bzt
+ *  Copyright LGPL 2016
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -17,14 +17,16 @@
  *
  *   <http://www.gnu.org/licenses/>
  *
- * @file vendor/phppe/Core/init.php
+ * @file vendor/phppe/MultiServer/init.php
  * @author bzt
- * @date 1 Jan 2016
- * @brief PHPPE Core
+ * @date 22 May 2016
+ * @brief
  */
+namespace PHPPE;
 
-//! add JavaScript library to output with highest priority
-\PHPPE\View::jslib("jquery.min.js","",0);
-foreach(["toc", "boolean", "resptable"] as $m) {
-    \PHPPE\View::jslib($m.".js","pe.".$m.".init();");
-}
+\PHPPE\Http::route("ms/add","MultiServer","addAction");
+\PHPPE\Http::route("ms/remove","MultiServer","removeAction");
+\PHPPE\Http::route("ms/set","MultiServer","setAction");
+
+//! return your service class here
+return new MultiServer;

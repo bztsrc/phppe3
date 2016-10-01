@@ -32,8 +32,8 @@ class Lang
  */
 	static function getUsage()
 	{
-		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".\PHPPE\Core::$core->app." <Extension> [language [--write]]\n\n".
-			chr(27)."[96m".L("If language not given, detects strings in code, otherwise merges language array. With --write it will store the dictionary.").chr(27)."[0m\n\n");
+		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".\PHPPE\Core::$core->app." <Extension> [language [--write|--write-all]]\n\n".
+			chr(27)."[96m".L("If language not given, detects strings in code, otherwise merges language array. With --write it will store the dictionary. If you specify --write-all, then unused phrases won't be prefixed.").chr(27)."[0m\n\n");
 	}
 
 
@@ -66,14 +66,30 @@ class Lang
                 $D += array_fill_keys(glob('vendor/phppe/'.$extension.'/'.$v), 0);
         }
         //! small hack for the Core
+        $K=[];
         if ($extension=="Core") {
+            //! for Core, also look up phrases in the main file
             $D["public/index.php"]=0;
-            $K=[];
         } else {
-            $K = include_once("vendor/phppe/Core/lang/".$lang.".php");
+            //! don't collect phrases that are specified in a required extension
+            $comp=json_decode(file_get_contents("vendor/phppe/".$extension."/composer.json"), true);
+            //! assume Core is always loaded
+            $comp["require"]["phppe/Core"]=1;
+            echo(chr(27)."[96m".L("Include").": ");
+            foreach($comp["require"] as $k=>$v) {
+                $a = include("vendor/".$k."/lang/".(!empty($lang)?$lang:"en").".php");
+                if(is_array($a)) {
+                    $K = array_merge($K,$a);
+                    echo(chr(27)."[92m");
+                } else {
+                    echo(chr(27)."[91m-");
+                }
+                echo($k." ");
+            }
+            echo("\r\n".chr(27)."[96m".L("Excluded phrases").": ".chr(27)."[92m".count($K).chr(27)."[0m\r\n");
         }
 
-        echo(chr(27)."[96mFiles:".chr(27)."[92m ".count($D).chr(27)."[0m\n");
+        echo(chr(27)."[96m".L("Files").":".chr(27)."[92m ".count($D).chr(27)."[0m\r\n");
 
         //! iterate on list
         foreach ($D as $fn => $v) {
@@ -124,7 +140,6 @@ class Lang
                         $i++;
                     }
                     if($d[$i]=="'" || $d[$i]=='"') { $e=$d[$i]; $i++; }
-if($e)echo(substr($d,$i,20)."\n");
                 }
                 if (substr($d,$i,4)=="<!L ") { $e=">"; $i+=4; }
                 //! second argument to addon() will be translated as well
@@ -173,31 +188,38 @@ if($e)echo(substr($d,$i,20)."\n");
 
         //! without language, dump the results
         if (empty($lang)) {
-            print_r($L);
+            echo(chr(27)."[96m".L("Phrases found").":".chr(27)."[92m ".count($L).chr(27)."[0m\n");
+            foreach($L as $k=>$v) {
+                echo(chr(27)."[92m  ".(strlen($k)<40?sprintf("%-".$m."s",$k):substr($k,0,80)."\r\n   ").chr(27)."[0m ".$v."\r\n");
+            }
         } else {
             //! merge with language dictionary
             $dict="vendor/phppe/".$extension."/lang/".$lang.".php";
             $extra=[];
             //! require() would miss a few translations
-            $l = eval(strtr(@file_get_contents($dict), [ "//-"=>"", "<"."?php"=>"" ] ));
+            $was = $l = eval(strtr(@file_get_contents($dict), [ "//-"=>"", "<"."?php"=>"" ] ));
             //! if found, merge. Otherwise use the new one
             if (is_array($l)) {
                 $extra=array_flip(array_diff(array_keys($l), array_keys($L)));
                 foreach ($L as $k=>$v)
-                    if (empty($l[$k]))
+                    if (!isset($l[$k]))
                         $l[$k] = $v;
             } else
                 $l = $L;
             //! generate php output
             $out="<"."?php\nreturn [\n";
             foreach($l as $k=>$v) {
-                $out.=(!empty($extra[$k])?"//-":"")."\t\"".addslashes($k)."\" => \"".addslashes($v)."\",\n";
+                if(empty($write))
+                    $out.=(isset($extra[$k])?chr(27)."[91m":(!isset($was[$k])?chr(27)."[92m":""));
+                $out.=(isset($extra[$k])&&$write!="--write-all"?"//-":"")."\t\"".addslashes($k)."\" => \"".addslashes($v)."\",\n";
+                if(empty($write))
+                    $out.=chr(27)."[0m";
             }
             $out.="];\n";
             //! if last argument given, save the results
-            if ($write=="--write") {
+            if ($write=="--write"||$write=="--write-all") {
                 file_put_contents($dict, $out, LOCK_EX);
-                echo(chr(27)."[96mModified (".count($l)."):".chr(27)."[92m ".$dict.chr(27)."[0m\n");
+                echo(chr(27)."[96mModified (".chr(27)."[92m".count($l).chr(27)."[96m): ".chr(27)."[0m".$dict."\n");
             } else
                 echo($out);
         }

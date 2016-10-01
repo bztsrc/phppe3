@@ -29,7 +29,8 @@
 	"license": "LGPL-3.0+",
 
 	"require": {
-		"phppe/Core": "3.*"
+		"phppe/Core": "3.*",
+		"phppe/MultiServer": "*"
 	},
 
     "homepage": "http://bztsrc.github.io/phppe3/index.html#cluster",

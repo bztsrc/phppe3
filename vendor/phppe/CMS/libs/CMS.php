@@ -99,7 +99,7 @@ class CMS
                 ");",9);
             $_SESSION['cms_scroll']=[];
         } else
-            View::jslib("cms.js",9);
+            View::jslib("cms.js","",9);
     }
 
 

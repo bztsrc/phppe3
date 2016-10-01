@@ -1,0 +1,32 @@
+{
+	"name": "phppe/MultiServer",
+	"name_en": "MultiServer",
+	"name_hu": "TöbbSzerver",
+	"name_ru": "",
+	"name_de": "",
+	"name_es": "",
+	"name_fr": "",
+	"name_ch": "",
+	"name_he": "",
+	"name_ar": "",
+
+	"description": "Allows to manage multiple servers at once.",
+	"description_hu": "Egyszerre több szerver kezelését teszi lehetővé.",
+    "description_ru": "",
+    "description_de": "",
+    "description_es": "",
+    "description_fr": "",
+    "description_ch": "",
+    "description_he": "",
+    "description_ar": "",
+
+	"keywords": [ "Connections" ],
+
+	"version": "1.0.0",
+	"version_normalized": "1.0.0.0",
+
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"maintainer": { "name": "bzt" }
+}

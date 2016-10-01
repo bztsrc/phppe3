@@ -149,8 +149,8 @@ pe.extensions = {
                     case "boolean":
                     case "notboolean":
                         var bv=(cfg[p]!=null?(Math.floor(cfg[p])==1||cfg[p]=="true"?"true":"false"):(Math.floor(a[0])==1||a[0]=="true"?"true":"false"));
-                        if(typeof boolean_open == 'function') {
-                            t+="<span dir='ltr'>"+boolean_open(p,bv,m[2],a)+"</span>";
+                        if(function_exists("pe.boolean.open")) {
+                            t+="<span dir='ltr'>"+pe.boolean.open(p,bv,m[2],a)+"</span>";
                         } else {
                             var t1="<option value=''>"+(a[2]!=null?a[2]:L('No'))+"</option>";
                             var t2="<option value='"+(a[0]!=null?a[0]:'true')+"'>"+(a[1]!=null?a[1]:L('Yes'))+"</option>";
@@ -170,7 +170,11 @@ pe.extensions = {
                         break;
                     case "string":
                     default:
-                        t+="<input type='text' name='"+p+"' style='width:98%;' value='"+(cfg[p]!=null?cfg[p]:(m[1]?m[3]:""))+"' placeholder='"+m[3]+"'>";
+                        if(function_exists("pe."+m[2]+".open")) {
+                            t+="<span dir='ltr'>"+eval("pe."+m[2]+".open(p,(cfg[p]!=null?cfg[p]:(m[1]?m[3]:'')),m[3])")+"</span>";
+                        } else {
+                            t+="<input type='text' name='"+p+"' style='width:98%;' value='"+(cfg[p]!=null?cfg[p]:(m[1]?m[3]:""))+"' placeholder='"+m[3]+"'>";
+                        }
                         break;
                 };
                 t+="</td></tr>\n";

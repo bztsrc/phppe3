@@ -41,6 +41,9 @@ class Extensions {
 			else
 				Core::log("W","Unable to load global remote configuration from vendor/phppe/Extensions/config.php");
 		}
+        if( empty(Core::$user->data['remote']['path']) ) {
+            Core::$user->data['remote']=['identity'=>'','user'=>'','host'=>'localhost','path'=>'/var/www/'];
+        }
 	}
 
 /**
@@ -138,7 +141,9 @@ class Extensions {
 		//! fallback to local, but without remote it's read only
 		else {
 			$t="{ \"name\": \"".\PHPPE\View::e("",L("configure remote access in Extensions"),"")."\" }";
-			$d=glob("vendor/phppe/*"."/composer.json"); $d[]="vendor/phppe/composer.json";
+			$d=glob("vendor/phppe/*"."/composer.json");
+            if(file_exists("vendor/phppe/composer.json"))
+                $d[]="vendor/phppe/composer.json";
 			foreach($d as $v) {
 				$j=json_decode(file_get_contents($v),true);
 				if(!empty($j['name']) && !empty($j['version']))
@@ -416,9 +421,9 @@ class Extensions {
 
 		try {
             //! get config.php of Extension
-			$r=\PHPPE\Tools::ssh(
-				"cat ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php")
-			);
+            $r=\PHPPE\Tools::ssh(
+                "cat ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php")
+            );
 		} catch(\Exception $e) {
 			return "PHPPE-E: ".$e->getMessage();
 		}
@@ -454,10 +459,10 @@ class Extensions {
 
 		try {
             //! save new config.php
-			$r = \PHPPE\Tools::ssh(
-				"cat \>".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php"),
-				$conf
-			);
+            $r = \PHPPE\Tools::ssh(
+                "cat \>".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php"),
+                $conf
+            );
 		} catch(\Exception $e) {
 			return "PHPPE-E: ".$e->getMessage();
 		}

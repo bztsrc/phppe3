@@ -7,5 +7,6 @@
  */
 
 return [
-    "key" => "value",
+    "deploy" => [ "admin"=>["data"],"lb"=>["data"],"worker"=>["data","vendor"] ],
+    "skeleton" => "/var/www/phppe"
 ];

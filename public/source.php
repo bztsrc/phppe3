@@ -2164,7 +2164,7 @@ namespace PHPPE {
 
             return !empty(Core::$core->output) && Core::$core->output == 'html' ?
                 "<span style='background:#F00000;color:#FEA0A0;padding:3px;'>".($w ? "$w-" : '').($c ? "$c:&nbsp;" : '').htmlspecialchars($m).'</span>' :
-                "$c-$w: ".strtr($m, ["\r" => '', "\n" => '\\n'])."\n";
+                ($w=='E'||$w=='C'?chr(27)."[91;05m":"")."$c-$w: ".strtr($m, ["\r" => '', "\n" => '\\n']).chr(27)."[0m\n";
         }
 
 /**
@@ -2415,7 +2415,7 @@ namespace PHPPE {
                                     break;
                                 }
                                 else
-                                    $w .= self::e('W', $f, 'UNKADDON');
+                                    $w .= !$G||$J?self::e('W', $f, 'UNKADDON'):"";
                             }
                             break;
                         default : $w = self::e('W', $t, 'UNKTAG');
@@ -3088,16 +3088,22 @@ namespace PHPPE {
             $idfile = tempnam('.tmp', '.id_');
             file_put_contents($idfile, trim(Core::$user->data['remote']['identity'])."\n", LOCK_EX);
             chmod($idfile, 0400);
-            $ssh = ($precmd?$precmd."|":"").
+            //! a special case
+            if ($cmd=="rsync"){
+                $ssh = "rsync -an -e \'ssh -i ".escapeshellarg($idfile)."\' --include-from=/dev/stdin ".
+                    escapeshellarg(Core::$user->data['remote']['user']."@".Core::$user->data['remote']['host'].":".$precmd);
+            } else {
+                $ssh = ($precmd?$precmd."|":"").
                 "ssh -i ".escapeshellarg($idfile)." -l ".escapeshellarg(Core::$user->data['remote']['user']).
                 (!empty(Core::$user->data['remote']['port'])&&Core::$user->data['remote']['port']>0?" -p ".intval(Core::$user->data['remote']['port']):"")." ".escapeshellarg(Core::$user->data['remote']['host']).
                 " sh -c \\\" ".$cmd." \\\" 2>&1";
+            }
             Core::log('D', $ssh, "remote");
             $d=[0=>["pipe", "r"], 1=>["pipe", "w"]];
             $pr=proc_open($ssh, $d, $p);
             if($pr!==false && is_array($p)) {
                 if( !empty($input) )
-                    fwrite($p[0],$input);
+                    fwrite($p[0],is_array($input)?implode("\n",$input):$input);
                 fclose($p[0]);
                 $r=trim(stream_get_contents($p[1]));
                 fclose($p[1]);

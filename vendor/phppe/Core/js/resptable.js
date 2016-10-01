@@ -21,20 +21,21 @@
  * @date 1 Jan 2016
  * @brief responsive tables
  */
-var resptable = {
+pe.resptable = {
   instances:[],
   touchx:-1,
   touchy:-1,
 
 /* PUBLIC METHODS */
   init: function() {
-    resptable.detect();
+return;
+    pe.resptable.detect();
     if ( window.addEventListener )
       window.addEventListener( "resize", pe.resptable.recalc, false );
     else if ( window.attachEvent )
       window.attachEvent( "onresize", pe.resptable.recalc );
     else
-      window["onresize"]=resptable.recalc;
+      window["onresize"]=pe.resptable.recalc;
     if ( window.addEventListener )
       window.addEventListener( "scroll", pe.resptable.recalc, false );
     else if ( window.attachEvent )
@@ -118,7 +119,7 @@ var resptable = {
             var d=document.createElement('div');
             pe.resptable.instances[i].rows[j].cells[0].setAttribute('id','resptable'+i+'_menu'+j);
             d.innerHTML=pe.resptable.instances[i].rows[j].cells[0].innerHTML;
-            d.setAttribute('style'pe.,resptable.instances[i].rows[j].cells[0].getAttribute('style')+';cursor:pointer;');
+            d.setAttribute('style',pe.resptable.instances[i].rows[j].cells[0].getAttribute('style')+';cursor:pointer;');
             d.setAttribute('onclick','pe.resptable.scrollto("resptable'+i+'_menu'+j+'",'+Math.floor(pe.resptable.instances[i].getAttribute('data-y'))+');document.getElementById("resptable'+i+'_popup").style.visibility="hidden";');
             popup.appendChild(d);
             was=1;

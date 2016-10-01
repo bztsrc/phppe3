@@ -13,7 +13,7 @@ use PHPPE\DS as DS;
 
 class ClusterSrv extends \PHPPE\ClusterSrv
 {
-	static $cli="cluster [server|status|takeover|refresh|help]";
+	static $cli="cluster [server|status|takeover|flush|deploy|help]";
 
 	function help($item=null)
 	{
@@ -23,7 +23,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		die("cluster status    - prints the current status\n".
 			"cluster server    - checks management server (called from cron)\n".
 			"cluster takeover  - force this management server to became master.\n".
-			"cluster refresh   - flush worker cache.\n".
+			"cluster flush     - flush worker cache.\n".
+			"cluster deploy    - push code to workers.\n".
 			"cluster client    - checks worker server (called from cron).\n"
 		);
 	}
@@ -38,18 +39,6 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		DS::exec("UPDATE ".self::$_table." SET type='master',modifyd=CURRENT_TIMESTAMP WHERE id=?", [$node->id]);
 		$node->resources("start");
 		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='lb'");
-	}
-
-	function refresh($item=null)
-	{
-		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
-		$node=Core::lib("ClusterSrv");
-		DS::exec("UPDATE ".self::$_table." SET cmd='invalidate' WHERE type='worker'");
-		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='lb'");
-		if($node->_master)
-			$node->resources("reload");
 	}
 
 	function server($item=null)
@@ -98,6 +87,59 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		}
 	}
 
+	function flush($item=null)
+	{
+		header("Content-type:text/plain");
+		if (\PHPPE\Core::$client->ip!="CLI" && !\PHPPE\Core::$user->has("cluadm"))
+			\PHPPE\Http::redirect("403");
+		$node=Core::lib("ClusterSrv");
+		DS::exec("UPDATE ".self::$_table." SET cmd='invalidate' WHERE type='worker'");
+		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='lb'");
+		if($node->_master)
+			$node->resources("reload");
+		die("OK\r\n");
+	}
+
+	function deploy($item=null)
+	{
+		header("Content-type:text/plain");
+		if (\PHPPE\Core::$client->ip!="CLI" && !\PHPPE\Core::$user->has("cluadm"))
+			\PHPPE\Http::redirect("403");
+		if (!file_exists(".tmp/multiserver")) {
+			die("CLUSTER-E: ".L("multiserver not installed")."\n");
+		}
+
+		$node=Core::lib("ClusterSrv");
+		if (!$node->_master) {
+            die("CLUSTER-E: ".L("not master")."\n");
+		}
+		if (empty($node->_deploy)||empty($node->_skeleton)) {
+			die("CLUSTER-E: ".L("deploy not configured")."\n");
+		}
+		// deploy['role'] => [ directories to sync ]
+        
+		$nodes=DS::query("*",self::$_table,"","","type,load DESC,id");
+		$allOk=1;
+        foreach ($nodes as $n) {
+			$t=$n['type'];
+			if($t=="master"||$t=="slave") $t="admin";
+            echo($n['id']." ");
+			if(empty($node->_deploy[$t])) {
+				echo(L("no such role")." ".$t);
+				$allOk=0;
+			} else {
+				try {
+					parent::deploypush($node->_skeleton,$node->_deploy[$t],$n);
+					echo("OK");
+				} catch(\Exception $e) {
+					echo($e->getMessage());
+					$allOk=0;
+				}
+			}
+            echo("\r\n");
+        }
+		die(($allOk?"OK":"ERR")."\r\n");
+	}
 /**
  * Action handler
  */
@@ -111,7 +153,9 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		if(\PHPPE\Core::$client->ip!="CLI") {
 			header("Content-type:application/json");
 			$loadavg=0.0; $waspeek=0;
+			$minSync="";
 			if(!empty($nodes)){
+				$minSync=reset($nodes)['syncd'];
 				foreach($nodes as $k=>$node) {
 					unset($nodes[$k]["cmd"]);
 					$loadavg+=floatval($node['load']);
@@ -119,10 +163,26 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 						$waspeek=1;
 					if($node['load']>=0.75)
 						$waspeek=2;
+					if($node['syncd']<$minSync)
+						$minSync=$node['syncd'];
 				}
 				$loadavg/=count($nodes);
 			}
-			die(json_encode(["status"=>($loadavg<0.1?"idle":($loadavg>0.5||$waspeek?($loadavg>0.75||$waspeek==2?"error":"warn"):"ok")),"loadavg"=>$loadavg,"master"=>$master,"nodes"=>$nodes]));
+            date_default_timezone_set('UTC');
+			$minSync=strtotime($minSync);
+			$D=[]; $d=$lib->_skeleton; if(substr($d,-1)!="/") $d.="/";
+			foreach (['vendor/*', 'vendor/*/*', 'vendor/*/*/*', 'vendor/*/*/*/*', 'vendor/*/*/*/*/*'] as $v) {
+				$D += array_fill_keys(@glob($d.$v,GLOB_NOSORT), 0);
+            }
+			$newfiles=0;
+			foreach ($D as $d=>$v) {
+				$t=filemtime($d);
+				if($t!=0 && $t>$minSync) {
+					$newfiles=1;
+					break;
+				}
+			}
+			die(json_encode(["status"=>($loadavg<0.1?"idle":($loadavg>0.5||$waspeek?($loadavg>0.75||$waspeek==2?"error":"warn"):"ok")),"loadavg"=>$loadavg,"peek"=>$waspeek,"master"=>$master,"newfiles"=>$newfiles,"id"=>\PHPPE\Core::lib("ClusterSrv")->id,"nodes"=>$nodes]));
 		} else {
 			echo(chr(27)."[96mId              Type        Load  Last seen            Last viewed          Name\n--------------  ---------  -----  -------------------  -------------------  -----------------------------".chr(27)."[0m\n");
 			foreach($nodes as $node) {

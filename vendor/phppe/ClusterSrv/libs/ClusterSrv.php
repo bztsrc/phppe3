@@ -34,6 +34,8 @@ class ClusterSrv extends \PHPPE\Model
 	protected static $_table="cluster";
 	public $_master=0;
 	public $_keepalive=9;
+	public $_deploy;
+	public $_skeleton;
 
 	public function __construct()
 	{
@@ -56,17 +58,23 @@ class ClusterSrv extends \PHPPE\Model
 		if(!empty($config['keepalive']) && intval($config['keepalive'])>3) {
 			$this->_keepalive=intval($config['keepalive']);
 		}
+		if(!empty($config['deploy']) && is_array($config['deploy'])) {
+				$this->_deploy=$config['deploy'];
+		}
+		if(!empty($config['skeleton']) && is_dir($config['skeleton'])) {
+				$this->_skeleton=$config['skeleton'];
+		}
 		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
 		$this->_master= strtolower(trim($this->id)) == strtolower(trim($master));
 
-		View::jslib("cluster.js","pe.cluster.init()");
+		View::jslib("cluster.js","pe.cluster.init();");
 	}
 
 	public function stat()
 	{
 		return
 			"<div id='pe_cl' class='sub' style='display:none;' onmouseover='return pe_w();'></div>".
-			"<img src='images/cloud.png' alt='Cluster' onclick='return pe_p(\"pe_cl\",null,null,-200);' onmouseover='return pe_p(\"pe_cl\",null,null,-200);'>";
+			"<span class='glyphicon glyphicon-cloud' style='color:#808080;' onclick='pe.cluster.getstatus();return pe_p(\"pe_cl\",null,null,-200);'></span>";
 	}
 
 	public function diag()
@@ -93,6 +101,22 @@ class ClusterSrv extends \PHPPE\Model
 				chmod($fn,0750);
 			}
 		}
+	}
+
+    public function deploypush($rootdir, $dirs, $node)
+    {
+		static $servers;
+		if($servers==null)
+			$servers = json_decode(file_get_contents(".tmp/multiserver"), true);
+			if(!is_array($dirs)||empty($dirs)) {
+				throw new \Exception("bad input");
+			}
+			if(empty($servers[$node['id']]) && empty($servers[$node['name']])) {
+				throw new \Exception("no remote config");
+			}
+			$remote=empty($servers[$node['id']])?$servers[$node['name']]:$servers[$node['id']];
+			DS::exec("UPDATE ".self::$_table." SET syncd=CURRENT_TIMESTAMP WHERE id=?",[$node['id']]);
+			echo("deploy");
 	}
 
 	public function resources($cmd)

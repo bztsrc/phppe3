@@ -21,7 +21,7 @@ class Extensions extends \PHPPE\Extensions {
 
 		\PHPPE\View::css("extensions.css");
 		\PHPPE\View::jslib("sha256.js");
-		\PHPPE\View::jslib( "extensions.js" );
+		\PHPPE\View::jslib("extensions.js");
 
 	}
 

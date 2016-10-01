@@ -69,7 +69,12 @@ class ClusterCli extends \PHPPE\Model
 			$d=@file_get_contents("/proc/loadavg");
 			$l=!empty($d)?explode(" ",$d)[0]:"1.0";
 			// queried signal
-			DS::exec("UPDATE ".self::$_table." SET viewd=CURRENT_TIMESTAMP,load=? WHERE id=?",[$l, $this->id]);
+			try {
+				DS::exec("UPDATE ".self::$_table." SET viewd=CURRENT_TIMESTAMP,load=? WHERE id=?",[$l, $this->id]);
+			} catch (\Exception $e) {
+				if(\PHPPE\Core::$client->ip=="CLI")
+					echo(L("Unable to find cluster table on quorum database.")."\r\n");
+			}
 		}
 	}
 
@@ -83,7 +88,11 @@ class ClusterCli extends \PHPPE\Model
 
 	public function bindcfg()
 	{
-			$nodes=DS::query("*",self::$_table,"","","type, created");
+			try {
+				$nodes=DS::query("*",self::$_table,"","","type, created");
+			} catch (\Exception $e) {
+				$nodes=[];
+			}
 			// generate bind config
 			$sd = $this->_loadbalancer;
 			if(!is_array($sd)||empty($sd)) {

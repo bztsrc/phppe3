@@ -55,7 +55,7 @@ class ClusterCli extends \PHPPE\ClusterCli
  */
 	function bindcfg($item=null)
 	{
-		header("Content-type:text/plain");
+		@header("Content-type:text/plain");
 		die(Core::lib("ClusterCli")->bindcfg()."\n");
 	}
 }
