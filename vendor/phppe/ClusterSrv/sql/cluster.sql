@@ -9,5 +9,6 @@ CREATE TABLE `cluster` (
 	`modifyd` int(11),
 	`syncd` int(11),
 	`viewd` int(11),
+	`console` TEXT,
 	PRIMARY KEY (`id`)
 );

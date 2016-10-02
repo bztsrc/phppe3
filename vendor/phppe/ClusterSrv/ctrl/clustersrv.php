@@ -130,15 +130,15 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 			} else {
 				try {
 					parent::deploypush($node->_skeleton,$node->_deploy[$t],$n);
-					echo("OK");
+					echo(chr(27)."[92mOK".chr(27)."[0m");
 				} catch(\Exception $e) {
-					echo($e->getMessage());
+					echo(chr(27)."[91m".$e->getMessage().chr(27)."[0m");
 					$allOk=0;
 				}
 			}
             echo("\r\n");
         }
-		die(($allOk?"OK":"ERR")."\r\n");
+		die(($allOk?chr(27)."[92mOK":chr(27)."[91mERR").chr(27)."[0m\r\n");
 	}
 /**
  * Action handler

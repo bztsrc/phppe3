@@ -3098,7 +3098,7 @@ namespace PHPPE {
                 (!empty(Core::$user->data['remote']['port'])&&Core::$user->data['remote']['port']>0?" -p ".intval(Core::$user->data['remote']['port']):"")." ".escapeshellarg(Core::$user->data['remote']['host']).
                 " sh -c \\\" ".$cmd." \\\" 2>&1";
             }
-            Core::log('D', $ssh, "remote");
+            Core::log('A', $ssh, "remote");
             $d=[0=>["pipe", "r"], 1=>["pipe", "w"]];
             $pr=proc_open($ssh, $d, $p);
             if($pr!==false && is_array($p)) {
@@ -3116,7 +3116,8 @@ namespace PHPPE {
         }
 
 /**
- * Copy files to a remote server over a secure channel
+ * Copy files to a remote server over a secure channel.
+ * This one works even if ssh("rsync") fails but does a full copy.
  *
  * @param string/array  source files
  * @param string        destination directory on remote server
@@ -3137,11 +3138,62 @@ namespace PHPPE {
                 throw new \Exception(sprintf(L('failed to copy %d files to %s'), count($files), Core::$user->data['remote']['user'].'@'.Core::$user->data['remote']['host'].':'.Core::$user->data['remote']['path'].'/'.$dest)
                     .': '.explode("\n", $r)[0]);
             }
-
+    
             return $r;
         }
-    }
+
+/**
+ * Start a background job
+ *
+ * @param string        class
+ * @param string        method
+ * @param mixed         optional argument
+ * @param int           run interval in secs
+ */
+        public static function bg($class,$method,$arg=[],$interval=60)
+        {
+            $f=[".."=>"","/"=>""];
+            $class=strtr($class, $f);
+            $method=strtr($method, $f);
+            @mkdir(".tmp/bg");
+            $pidfile=".tmp/bg/".strtr($class[0]=="\\"?substr($class,1):$class,["\\"=>"_"])."_".$method.".pid";
+            $pid=@file_get_contents($pidfile);
+            // server supervisor
+            if(empty($pid) || !posix_kill($pid,SIGCONT)) {
+                // server service is not running!
+                if ($pid = pcntl_fork()) {
+                    file_put_contents($pidfile, $pid);
+                    return;     // Parent 
+                } if (posix_setsid() < 0) 
+                    return;
+                @ob_end_clean(); // Discard the output buffer and close 
+                set_time_limit(0);
+                fclose(STDIN);  // Close all of the standard 
+                fclose(STDOUT); // file descriptors as we 
+                fclose(STDERR); // are running as a daemon. 
+                $ctrl = new $class;
+                while(1){
+                    call_user_func_array([$ctrl, $method], is_array($arg)?$arg:[]);
+                    sleep($interval>1?$interval:1);
+                }
+            }
+        }
+/**
+ * Diag event handler. Cleans up pid files after dead jobs.
+ */
+        public function diag()
+        {
+            @mkdir(".tmp/bg");
+            $P=glob(".tmp/bg/*.pid");
+            if (!empty($P))
+                foreach($P as $p) {
+                    $v=@file_get_contents($p);
+                    if (empty($v) || !posix_kill($v,SIGCONT))
+                        @unlink($p);
+                }
+        }
     // @codeCoverageIgnoreEnd
+    }
 
 /**
  * ClassMap autoloader.

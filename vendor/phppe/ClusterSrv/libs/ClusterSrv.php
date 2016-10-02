@@ -25,6 +25,7 @@
 
 namespace PHPPE;
 use PHPPE\Core as Core;
+use PHPPE\Tools as Tools;
 use PHPPE\DS as DS;
 
 class ClusterSrv extends \PHPPE\Model
@@ -36,6 +37,7 @@ class ClusterSrv extends \PHPPE\Model
 	public $_keepalive=9;
 	public $_deploy;
 	public $_skeleton;
+	public $_rsync=false;
 
 	public function __construct()
 	{
@@ -63,6 +65,9 @@ class ClusterSrv extends \PHPPE\Model
 		}
 		if(!empty($config['skeleton']) && is_dir($config['skeleton'])) {
 				$this->_skeleton=$config['skeleton'];
+		}
+		if(!empty($config['skeleton']) && is_dir($config['skeleton'])) {
+				$this->_rsync=true;
 		}
 		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
 		$this->_master= strtolower(trim($this->id)) == strtolower(trim($master));
@@ -107,6 +112,7 @@ class ClusterSrv extends \PHPPE\Model
     {
 		static $servers;
 		if($servers==null)
+			//! get server configurations (ssh identity)
 			$servers = json_decode(file_get_contents(".tmp/multiserver"), true);
 			if(!is_array($dirs)||empty($dirs)) {
 				throw new \Exception("bad input");
@@ -115,8 +121,39 @@ class ClusterSrv extends \PHPPE\Model
 				throw new \Exception("no remote config");
 			}
 			$remote=empty($servers[$node['id']])?$servers[$node['name']]:$servers[$node['id']];
-			DS::exec("UPDATE ".self::$_table." SET syncd=CURRENT_TIMESTAMP WHERE id=?",[$node['id']]);
-			echo("deploy");
+			//! mark node as syncing
+			DS::exec("UPDATE ".self::$_table." SET console='Syncing...',syncd=CURRENT_TIMESTAMP WHERE id=?",[$node['id']]);
+			//! start a background job
+			Tools::bg("\PHPPE\Ctrl\ClusterSrv", "deployworker", [
+				'id'=>$node['id'],
+				'rootdir'=>$rootdir,
+				'dirs'=>$dirs,
+				'remote'=>empty($servers[$node['id']])?$servers[$node['name']]:$servers[$node['id']],
+				'rsync'=>Core::lib("ClusterSrv")->_rsync,
+			], $this->_keepalive>1?$this->_keepalive:1);
+	}
+
+	function deployworker($arg)
+	{
+			$id=$arg['id'];
+			$rootdir=$arg['rootdir'];
+			$dirs=$arg['dirs'];
+			$remote=$arg['remote'];
+			//! call rsync
+			$files=[];
+			if(substr($rootdir,-1)!="/") $rootdir.="/";
+			foreach($dirs as $d)
+				$files[$rootdir.$d]=1;
+			Core::$user->data['remote']=$remote;
+			$files=array_keys($files);
+			$path=!empty($remote['path'])?$remote['path']:"/var/www/";
+			if(!empty($arg['rsync'])) {
+				$ret=Tools::ssh("rsync",$files,$path);
+			} else {
+				$ret=Tools::copy($files,$path);
+			}
+			//! update status
+			DS::exec("UPDATE ".self::$_table." SET console=?,syncd=CURRENT_TIMESTAMP WHERE id=?",[$id]);
 	}
 
 	public function resources($cmd)
@@ -129,24 +166,7 @@ class ClusterSrv extends \PHPPE\Model
 	public function cronMinute($item)
 	{
 		// server supervisor
-		exec("pgrep 'cluster server'", $pids);
-		if(empty($pids)) {
-			// server is not running!
-			if ($pid = pcntl_fork()) 
-				return;     // Parent 
-			ob_end_clean(); // Discard the output buffer and close 
-			fclose(STDIN);  // Close all of the standard 
-			fclose(STDOUT); // file descriptors as we 
-			fclose(STDERR); // are running as a daemon. 
-			if (posix_setsid() < 0) 
-				return;
-			setproctitle("php public/index.php cluster server");
-			while(1){
-				$ctrl = new \PHPPE\Ctrl\ClusterSrv;
-				$ctrl->server();
-				sleep($this->_keepalive);
-			}
-		}
+		Tools::bg("\PHPPE\Ctrl\ClusterSrv", "server", null, $this->_keepalive>1?$this->_keepalive:1);
 	}
 
 }

@@ -105,25 +105,8 @@ class ClusterCli extends \PHPPE\Model
 
 	public function cronMinute($item)
 	{
-		// server supervisor
-		exec("pgrep 'cluster client'", $pids);
-		if(empty($pids)) {
-			// server is not running!
-			if ($pid = pcntl_fork()) 
-				return;     // Parent 
-			ob_end_clean(); // Discard the output buffer and close 
-			fclose(STDIN);  // Close all of the standard 
-			fclose(STDOUT); // file descriptors as we 
-			fclose(STDERR); // are running as a daemon. 
-			if (posix_setsid() < 0) 
-				return;
-			setproctitle("php public/index.php cluster client");
-			while(1){
-				$ctrl = new \PHPPE\Ctrl\ClusterCli;
-				$ctrl->client();
-				sleep($this->_keepalive);
-			}
-		}
+		// client supervisor
+		Tools::bg("\PHPPE\Ctrl\ClusterCli", "client", null, $this->_keepalive>1?$this->_keepalive:1);
 	}
 
 }
