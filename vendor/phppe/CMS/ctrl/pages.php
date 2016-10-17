@@ -28,8 +28,7 @@ class CMSPages
         $pages = \PHPPE\Page::getPages(intval(@$_REQUEST['order']));
         foreach ($pages as $p)
             $this->pages[
-                empty($_REQUEST['order'])?
-                    (empty($p['template'])?ucfirst($p['tid']):$p['template'])
-                :0][] = $p;
+                empty($_REQUEST['order'])?0:(empty($p['template'])?$p['tid']:$p['template'])
+                ][] = $p;
     }
 }

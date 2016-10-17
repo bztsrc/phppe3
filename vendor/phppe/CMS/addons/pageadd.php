@@ -5,6 +5,7 @@
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;
 
+// L("pageadd")
 class pageadd extends \PHPPE\AddOn\pageinfo
 {
     function edit()

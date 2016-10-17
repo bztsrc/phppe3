@@ -5,6 +5,7 @@
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;
 
+// L("pagelist")
 class pagelist extends \PHPPE\AddOn\setsel
 {
     public $heightClass = "setsel_boxw";

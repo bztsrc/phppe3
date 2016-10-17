@@ -1,11 +1,21 @@
 <?php
-/**
- * @file vendor/phppe/ClusterSrv/lang/en.php
- * @author bzt
- * @date 27 Sep 2016
- * @brief
- */
-
 return [
-    "key" => "value",
+	"ClusterSrv" => "Cluster Server",
+	"_ClusterSrv" => "Client manager. Usually installed with Content Editor.",
+	"multiserver not installed" => "MultiServer not installed",
+	"not master" => "not master",
+	"deploy not configured" => "deploy not configured",
+	"no such role" => "no such role",
+	"bad input" => "bad input",
+	"no remote config" => "no remote config",
+	"Flush" => "Flush",
+	"Deploy" => "Deploy",
+	"Load average" => "Load average",
+	"Management" => "Management",
+	"Workers" => "Workers",
+	"slave" => "slave",
+	"master" => "master",
+	"lb" => "loadbalancer",
+	"worker" => "worker",
+	"booting" => "booting",
 ];

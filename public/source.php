@@ -3774,7 +3774,7 @@ class ClassMap extends Extension
                 $x = in_array(substr($d, 0, 4), ['.tmp', 'data']);
                 if (is_file($d)) {
                     $P = fileperms($d) & 0777;
-                    $p = $x ? ($d==ClassMap::$file ? 0664 : 0660) : 0640;
+                    $p = $x ? ($d==ClassMap::$file ? 0664 : 0660) : (substr($d,0,10)=="vendor/bin"?$C:0640);
                 } else {
                     if ($x) {
                         $p = $W;
@@ -3979,7 +3979,7 @@ class ClassMap extends Extension
             session_write_close();
 /*! BENCHMARK START */
             if(isset($_REQUEST['benchmark']))
-                @file_put_contents(".tmp/benchmarks",json_encode([url()=>Core::$bm])."\n",FILE_APPEND | LOCK_EX);
+                @file_put_contents(".tmp/benchmarks",json_encode([url()." ".sha1(implode(",",array_keys(Core::$bm)))=>Core::$bm])."\n",FILE_APPEND | LOCK_EX);
 /*! BENCHMARK END */
         }
         // @codeCoverageIgnoreEnd
@@ -4442,7 +4442,7 @@ class ClassMap extends Extension
         {
 /*! BENCHMARK START */
             $d=microtime(1)-self::$started;
-            self::$bm[$name]=[sprintf("%.6f",$d-end(self::$bm)[1]),sprintf("%.6f",$d)];
+            self::$bm[$name]=[round($d-end(self::$bm)[1],6),round($d,6)];
 /*! BENCHMARK END */
         }
 
@@ -5111,6 +5111,29 @@ namespace PHPPE\AddOn {
             $t = $this;
             $a = $t->attrs;
             return '<input'.@View::v($t, $a[1], $a[0], $t->args)." type='color' value=\"".htmlspecialchars(empty($t->value)?"#000000":trim($t->value)).'">';
+        }
+    }
+
+/**
+ * number element. Note you have to specify both min and max values
+ */
+ //L("Time")
+    class time extends \PHPPE\AddOn
+    {
+        public $conf = "*obj.field [cssclass]";
+
+        public function show()
+        {
+            return htmlspecialchars($this->value);
+        }
+        public function edit()
+        {
+            return '<input'.@View::v($this, $this->attrs[1], $this->attrs[0])." type='datetime-local' value=\"".htmlspecialchars(trim($this->value)).'">';
+        }
+        public static function validate($n, &$v, $a, $t)
+        {
+            $v = strtotime($v);
+            return[$v!=0, 'not a valid date time!'];
         }
     }
 

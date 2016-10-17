@@ -15,7 +15,7 @@ pe.multiserver = {
             msbox.setAttribute('id', 'msbox');
             msbox.setAttribute('style', 'position:fixed;display:table-cell;top:30%;left:30%;width:40%;height:280px;z-index:2002;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;');
             msbox.setAttribute('scrolling', 'no');
-            msbox.innerHTML="<h3>"+L("Add new server")+"</h3><label>"+L("Name")+"<br><input type='text' class='input' name='ms_id'></label>"+
+            msbox.innerHTML="<h3>"+L("Add New Server")+"</h3><label>"+L("Name")+"<br><input type='text' class='input' name='ms_id'></label>"+
             "<label>"+L("Username")+"<br><input type='text' class='input' name='ms_user'></label>"+
             "<label>"+L("Host")+"<br><input type='text' class='input' name='ms_host' placeholder='localhost'></label>"+
             "<label>"+L("Port")+"<br><input type='number' class='input' value='22' name='ms_port'></label>"+

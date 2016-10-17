@@ -20,7 +20,7 @@ return [
 	"wyswyg_ordered" => "Sorszámozott lista",
 	"wyswyg_link" => "Link",
 	"wyswyg_unlink" => "Link eltávolítása",
-	"wyswyg_content" => "Tartalomlink",
+	"wyswyg_content" => "Tartalom hivatkozás",
 	"wyswyg_image" => "Kép beszúrása",
 	"wyswyg_video" => "Videó beillesztése",
 	"wyswyg_table" => "Táblázat beszúrása",

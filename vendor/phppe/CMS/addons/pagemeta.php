@@ -5,16 +5,12 @@
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;
 
+// L("pagemeta")
 class pagemeta extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";
     public $headerHeight = 30;
     public $forceFull = 80;
-
-    function init()
-    {
-        $this->name = "meta";
-    }
 
     function load(&$app)
     {

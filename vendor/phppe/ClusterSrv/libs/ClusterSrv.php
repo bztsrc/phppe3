@@ -28,6 +28,7 @@ use PHPPE\Core as Core;
 use PHPPE\Tools as Tools;
 use PHPPE\DS as DS;
 
+// L("slave") L("master") L("lb") L("worker")
 class ClusterSrv extends \PHPPE\Model
 {
 	public $id;
@@ -115,10 +116,10 @@ class ClusterSrv extends \PHPPE\Model
 			//! get server configurations (ssh identity)
 			$servers = json_decode(file_get_contents(".tmp/multiserver"), true);
 			if(!is_array($dirs)||empty($dirs)) {
-				throw new \Exception("bad input");
+				throw new \Exception(L("bad input"));
 			}
 			if(empty($servers[$node['id']]) && empty($servers[$node['name']])) {
-				throw new \Exception("no remote config");
+				throw new \Exception(L("no remote config"));
 			}
 			$remote=empty($servers[$node['id']])?$servers[$node['name']]:$servers[$node['id']];
 			//! mark node as syncing

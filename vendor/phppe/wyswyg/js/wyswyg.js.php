@@ -444,6 +444,8 @@ link:function(evt,id)
     var link=document.getElementById(id+':link');
     var sel=pe.wyswyg.selected(evt,"sel");
     var obj=pe.wyswyg.selected(evt,"obj");
+    if(sel.rangeCount==1 && sel.isCollapsed==true && sel.anchorNode.tagName=='A')
+        obj=sel.anchorNode;
     //! if neither text selected nor an A tag
     if((sel.rangeCount<1 || sel.isCollapsed==true) && obj.tagName!='A')
         return;
@@ -496,6 +498,12 @@ event:function(evt,id,name)
     return ret;
 },
 
+prevent: function(evt)
+{
+    evt.preventDefault();
+    return false;
+},
+
 popup:function(evt, id, url)
 {
     var popup=document.getElementById(id+'_popup');
@@ -505,6 +513,10 @@ popup:function(evt, id, url)
     r.open('GET', url, false); r.send(null);
     if(r.status==200) {
         popup.innerHTML=r.responseText;
+        var i,a=popup.querySelectorAll('a');
+        for(i=0;i<a.length;i++){
+            a[i].addEventListener( "click", pe.wyswyg.prevent, false );
+        }
     } else
         popup.innerHTML=L("wyswyg_nohook");
 },

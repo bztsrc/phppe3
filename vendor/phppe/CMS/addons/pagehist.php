@@ -5,6 +5,7 @@
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;
 
+// L("pagehist")
 class pagehist extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";

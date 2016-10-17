@@ -37,9 +37,10 @@ pe.cluster = {
             var url='cluster';
             r.open('GET', url, true);
             r.onload = function(e) {
-            try {
-            if(r.status==200) {
+              if(r.status==200) {
                 s=JSON.parse(r.responseText);
+                if(pe.cluster.statusbox==null)
+                  return;
                 pe.cluster.statusbox.nextSibling.style.color=(s.status=='warn'?'#F0F060':(s.status=='error'?'#FF6060':'#60A060'));
                 t='<table><tr><td><li onclick="pe.cluster.open(\'flush\');" class="glyphicon glyphicon-refresh" style="padding:2px;" title="'+L("Flush")+'"></li>';
                 t+='<li onclick="pe.cluster.open(\'deploy\');" class="glyphicon glyphicon-share" style="'+(s.newfiles?'color:#d06060;':'')+'padding:2px;" title="'+L("Deploy")+'"></li></td><td colspan="2" style="padding:2px;" title="'+L("All")+'"><meter style="width:100%;" value="'+s.loadavg+'" optimum=\"0.01\" low=\"0.5\" high=\"0.75\"></meter></td>';
@@ -58,10 +59,7 @@ pe.cluster = {
                 }
                 t+='</table>';
                 pe.cluster.statusbox.innerHTML=t;
-            }else console.error('HTTP-E: '+r.status+' '+url);
-            } catch(e) {
-                console.error('HTTP-E: '+e);
-            }
+              }else console.error('HTTP-E: '+r.status+' '+url);
             };
             r.send(null);
         } else return;

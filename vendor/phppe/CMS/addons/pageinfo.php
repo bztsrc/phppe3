@@ -5,6 +5,7 @@
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;
 
+// L("pageinfo")
 class pageinfo extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";
@@ -24,12 +25,14 @@ class pageinfo extends \PHPPE\AddOn
         //! add current template if it's not there
         $page = \PHPPE\View::getval("page");
         if(empty($app->layouts[$page->template]))
-            $app->layouts[$page->template] = L(ucfirst($page->template));
+            $app->layouts[$page->template] = L($page->template)==$page->template?ucfirst($page->template):L($page->template);
         ksort($app->layouts);
     }
 
     function edit()
     {
+        $quickhelp=true;//!Core::lib("CMS")->expert;
+        \PHPPE\View::assign("quickhelp",$quickhelp);
         return \PHPPE\View::template("cms_pageinfo");
     }
 

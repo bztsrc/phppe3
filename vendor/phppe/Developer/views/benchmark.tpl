@@ -36,7 +36,7 @@
 <tr>
     <td align='right'><i><!L Total></i></td>
     <td align='right'><b><small><!=total></small></b></td>
-    <td><b><small>secs</small></b></td>
+    <td><b><small><!L secs></small></b></td>
 </tr>
 </table>
 </div>

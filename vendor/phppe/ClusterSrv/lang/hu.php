@@ -1,0 +1,21 @@
+<?php
+return [
+	"ClusterSrv" => "Kluszter Vezérlő",
+	"_ClusterSrv" => "Kliens vezérlő. Általában a Tartalomszerkesztő mellé telepítik.",
+	"multiserver not installed" => "a TöbbSzerver kiegészítő nincs telepítve",
+	"not master" => "nem vezérlő",
+	"deploy not configured" => "nincs beállítva terítés",
+	"no such role" => "nincs ilyen jogosultság",
+	"bad input" => "hibás paraméter",
+	"no remote config" => "nincs hozzáférés",
+	"Flush" => "Gyorsítótárak firssítése",
+	"Deploy" => "Új kód terítése",
+	"Load average" => "Terheltség",
+	"Management" => "Üzemeltetés",
+	"Workers" => "Kiszolgálók",
+	"slave" => "tartalék",
+	"master" => "vezérlő",
+	"lb" => "elosztó",
+	"worker" => "kiszolgáló",
+	"booting" => "indul",
+];

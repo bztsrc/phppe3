@@ -23,13 +23,13 @@ pe.cms = {
             //! create background div
             cmsbg = document.createElement('DIV');
             cmsbg.setAttribute('id', 'cmsbg');
-            cmsbg.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;visibility:hidden;');
+            cmsbg.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;visibility:hidden;backdrop-filter:blur(1px);');
             cmsbg.setAttribute('onclick', 'pe.cms.close();');
             document.body.appendChild(cmsbg);
             //! create editor box iframe
             cmsbox = document.createElement('IFRAME');
             cmsbox.setAttribute('id', 'cmsbox');
-            cmsbox.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:1px;height:1px;z-index:2002;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;');
+            cmsbox.setAttribute('style', 'position:fixed;display:table-cell;top:0px;left:0px;width:1px;height:1px;z-index:2002;background:rgba(64,64,64,0.9) !important;visibility:hidden;overflow:hidden;border:0px;opacity:0.9;box-shadow: 2px 2px 10px #404040;');
             cmsbox.setAttribute('scrolling', 'no');
             document.body.appendChild(cmsbox);
         }
@@ -111,7 +111,9 @@ pe.cms = {
             cmsbox.style.width=icon.offsetWidth+'px';
             cmsbox.style.height=icon.offsetHeight+'px';
             this.return={left:cmsbox.style.left,top:cmsbox.style.top,width:icon.offsetWidth+'px',height:icon.offsetHeight+'px'};
-            $('#cmsbox').animate({left:x,top:y,width:w,height:h+'px'},300);
+            cmsbg.style.opacity=0.0;
+            $(cmsbg).animate({opacity:0.4}, 200);
+            $(cmsbox).animate({left:x,top:y,width:w,height:h+'px'},300);
         }
         //! load form into editbox during animation
         var d=new Date();
@@ -128,6 +130,7 @@ pe.cms = {
         if(this.return==null || typeof jQuery=='undefined'){
             this.hideedit();
         } else {
+            $('#cmsbg').animate({opacity:0.0}, 200);
             $('#cmsbox').animate(this.return, 300, this.hideedit);
         }
     },
@@ -140,7 +143,7 @@ pe.cms = {
         document.getElementById('cmsbox').src='about:blank';
         //! release lock. We do it synchronously on purpose
         var r = new XMLHttpRequest();
-        r.open('GET', '<?=url("cms", "unlock")?>', false); r.send(null);
+        r.open('GET', '<?=url("cms", "unlock")?>', true); r.send(null);
         pe.cms.item=null;
         //! reload page if requested
         if(pe.cms.reload)

@@ -186,9 +186,9 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		} else {
 			echo(chr(27)."[96mId              Type        Load  Last seen            Last viewed          Name\n--------------  ---------  -----  -------------------  -------------------  -----------------------------".chr(27)."[0m\n");
 			foreach($nodes as $node) {
-				echo(sprintf("%-16s%-8s%8s",$node['id'],$node['type'],$node['load'])."  ".$node['modifyd']."  ".$node['viewd']."  ".$node['name']."\n");
+				echo(sprintf("%-16s%-8s%8s",$node['id'],$node['type'],$node['load'])."  ".(!empty($node['modifyd'])?$node['modifyd']:sprintf("%-19s",L("booting")))."  ".(!empty($node['viewd'])?$node['viewd']:"????-??-?? ??:??:??")."  ".$node['name']."\n");
 			}
-	        echo("\n".chr(27)."[96mThis server is: ".chr(27)."[0m".$lib->id." ".chr(27)."[".(strtolower(trim($this->id)) == strtolower(trim($master))?"91mMASTER":"92mSLAVE").chr(27)."[0m\n");
+	        echo("\n".chr(27)."[96mThis server is: ".chr(27)."[0m".$lib->id." ".chr(27)."[".(strtolower(trim($lib->id)) == strtolower(trim($master))?"91mMASTER":"92mSLAVE").chr(27)."[0m\n");
 		}
 	}
 }

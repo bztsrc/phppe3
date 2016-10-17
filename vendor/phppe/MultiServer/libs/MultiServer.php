@@ -61,7 +61,7 @@ class MultiServer extends Extension
                 }
             }
             if(!$was) {
-                $was=time();
+                $was=L("Default");
                 @self::add($was,$d['host'],$d['port'],$d['user'],$d['identity'],$d['path']);
                 $servers = self::load();
             }
@@ -70,7 +70,7 @@ class MultiServer extends Extension
         foreach($servers as $k=>$s){
             $t.="<li ".($k==$was?"style='background:#A0A0FF;' ":"")."title='".htmlspecialchars($s['user']."@".$s['host'].$s['path'])."'><span onclick='pe.multiserver.remove(\"".$k."\");' class='glyphicon glyphicon-trash'></span><span onclick='pe.multiserver.set(\"".$k."\");'>".$k."</span></li>";
         }
-        $t.="<li><span onclick='pe.multiserver.add();' class='glyphicon glyphicon-plus-sign'>".L("Add new server")."</span></li>";
+        $t.="<li onclick='pe.multiserver.add();'><span class='glyphicon glyphicon-plus-sign'></span>".L("Add New Server")."</li>";
         return "<div id='pe_ms' class='sub' style='display:none;' onmouseover='return pe_w();'><ul>".$t."</ul></div>".
                "<span class='glyphicon glyphicon-hdd' onclick='return pe_p(\"pe_ms\");'></span>";
     }

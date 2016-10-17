@@ -198,6 +198,7 @@ class Lang
         } else {
             //! merge with language dictionary
             $dict="vendor/phppe/".$extension."/lang/".$lang.".php";
+            @mkdir(dirname($dict));
             $extra=[]; $l=[];
             //! add extension name and description
             $a=(!empty($lang)?$lang:"en");
