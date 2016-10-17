@@ -950,8 +950,7 @@ $ <span class='keyword'>crontab -e</span>
 <div class='row'>
     <div class='col-md-6'>
 <h2>Apache example</h2>
-<pre><div style='overflow:auto;height:300px;'>
-&lt;VirtualHost *:80>
+<pre><div style='overflow:auto;height:300px;'>&lt;VirtualHost *:80>
     ServerName <i>mysite.tld</i>
     DocumentRoot "/var/www/<i>mysite</i>/public"
     &lt;Directory "/var/www/<i>mysite</i>/public">
@@ -973,54 +972,42 @@ $ <span class='keyword'>crontab -e</span>
 &lt;/VirtualHost></div></pre>
 </div><div class='col-md-6'>
 <h2>NGINX example</h2>
-<pre><div style='overflow:auto;height:300px;'>
-user www-data;
-<i>[...]</i>
-http {
-    <i>[...]</i>
-    server {
-	<i>[...]</i>
-	root  /var/www/<i>mysite</i>/public;
-	location / {
-	    index index.php;
-	    if (!-e $request_filename){
-		rewrite ^(.*)$ /index.php;
-	    }
-	}
-	location ~ /\.ht {
-	    deny all;
-	}
-	location ~ \.php$ {
-	    try_files $uri $uri/ =404;
+<pre><div style='overflow:auto;height:300px;'>user www-data;
+server {
+  listen 80 default_server;
+  root /var/www/<i>mysite</i>/public;
+  server_name <i>mysite</i>;
 
-	    ## for fastcgi daemon
-	    #fastcgi_pass  127.0.0.1:9000;
-	    ## for php-fpm
-	    #fastcgi_pass  unix:/var/run/php-fpm.sock;
-
-	    fastcgi_index  index.php;
-	    fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
-	    fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;
-	    fastcgi_param  QUERY_STRING       $query_string;
-	    fastcgi_param  REQUEST_METHOD     $request_method;
-	    fastcgi_param  REQUEST_URI        $request_uri;
-	    fastcgi_param  DOCUMENT_URI       $document_uri;
-	    fastcgi_param  DOCUMENT_ROOT      $document_root;
-	    fastcgi_param  SERVER_PROTOCOL    $server_protocol;
-	    fastcgi_param  HTTPS              $https if_not_empty;
-	    fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
-	    fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
-	    fastcgi_param  REMOTE_ADDR        $remote_addr;
-	    fastcgi_param  REMOTE_PORT        $remote_port;
-	    fastcgi_param  SERVER_ADDR        $server_addr;
-	    fastcgi_param  SERVER_PORT        $server_port;
-	    ## !!! important !!! use $host or else catch-all server names won't work!
-	    fastcgi_param  SERVER_NAME        $host;
-
-	    ## required if PHP was built with --enable-force-cgi-redirect
-	    #fastcgi_param  REDIRECT_STATUS    200;
-	}
+  location / {
+    try_files $uri $uri/ =404;
+    index index.php;
+    if (!-e $request_filename){
+      rewrite ^(.*)$ /index.php;
     }
+  }
+  location ~ \.php$ {
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+    fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;
+    fastcgi_param  QUERY_STRING       $query_string;
+    fastcgi_param  REQUEST_METHOD     $request_method;
+    fastcgi_param  REQUEST_URI        $request_uri;
+    fastcgi_param  DOCUMENT_URI       $document_uri;
+    fastcgi_param  DOCUMENT_ROOT      $document_root;
+    fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+    fastcgi_param  HTTPS              $https if_not_empty;
+    fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+    fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+    fastcgi_param  REMOTE_ADDR        $remote_addr;
+    fastcgi_param  REMOTE_PORT        $remote_port;
+    fastcgi_param  SERVER_ADDR        $server_addr;
+    fastcgi_param  SERVER_PORT        $server_port;
+    fastcgi_param  REDIRECT_STATUS    200;
+    ## !!! important !!! use $host for catch-all
+    fastcgi_param  SERVER_NAME        $host;
+
+    fastcgi_pass unix:/var/run/php-fpm.sock;
+  }
 }
 </div></pre>
 </div></div>
