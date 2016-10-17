@@ -4442,7 +4442,8 @@ class ClassMap extends Extension
         {
 /*! BENCHMARK START */
             $d=microtime(1)-self::$started;
-            self::$bm[$name]=[round($d-end(self::$bm)[1],6),round($d,6)];
+            setlocale(LC_NUMERIC,"C");
+            self::$bm[$name]=[sprintf("%.6f",$d-end(self::$bm)[1]),sprintf("%.6f",$d)];
 /*! BENCHMARK END */
         }
 
