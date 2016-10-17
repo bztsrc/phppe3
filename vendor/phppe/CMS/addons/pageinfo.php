@@ -31,7 +31,7 @@ class pageinfo extends \PHPPE\AddOn
 
     function edit()
     {
-        $quickhelp=true;//!Core::lib("CMS")->expert;
+        $quickhelp=!Core::lib("CMS")->expert;
         \PHPPE\View::assign("quickhelp",$quickhelp);
         return \PHPPE\View::template("cms_pageinfo");
     }

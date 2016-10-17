@@ -21,6 +21,8 @@ class pagedds extends \PHPPE\AddOn
 
     function edit()
     {
+        $quickhelp=!Core::lib("CMS")->expert;
+        \PHPPE\View::assign("quickhelp",$quickhelp);
         return \PHPPE\View::template("cms_pagedds");
     }
 

@@ -57,6 +57,7 @@ class CMSParam
         //! get the page we're editing
         //! if parameter name starts with "frame", load frame page instead
         $page = new \PHPPE\Page(substr($F->name,0,5)=="frame" ? "frame" : $_SESSION['cms_url']);
+		$F->value = $page->data[$_SESSION['cms_param'][$item]->name];
         //! if it's a new page, save it
         if (empty($page->name) && empty($page->template)) {
             $page->name = ucfirst($page->id);
@@ -81,11 +82,13 @@ class CMSParam
                 if (method_exists($F, "save")) {
                     //! if it's a special field with it's own save mechanism
                     $param['pageid'] = $page->id;
-                    $F->save($param);
+                    if(!$F->save($param))
+                        \PHPPE\Core::error(L("Unable to save page"));
                 } else {
                     //! otherwise standard page parameter
                     $page->setParameter($F->name, $param['value']);
-                    $page->save();
+                    if(!$page->save())
+                        \PHPPE\Core::error(L("Unable to save page"));
                 }
                 //! close the modal if save was successful
                 if (!Core::isError()) {
