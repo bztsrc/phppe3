@@ -25,6 +25,11 @@ class CMSPages
             Http::redirect();
         }
 
+        //! load languages
+        $this->langs['']="*";
+        foreach (!empty($_SESSION['pe_ls'])?$_SESSION['pe_ls']:['en'=>1] as $l=>$v)
+            $this->langs[$l]=$l." ".L($l);
+
         $pages = \PHPPE\Page::getPages(intval(@$_REQUEST['order']));
         foreach ($pages as $p)
             $this->pages[

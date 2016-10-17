@@ -162,9 +162,12 @@ pe.cms = {
     tablesearch:function(obj,id)
     {
         var r=new RegExp("("+obj.value+")","i");
-        var i,j,tbl=document.getElementById(id);
+        var i,j,tbl=document.getElementById(id),pl=document.getElementById('pagelang');
+        if(pl!=null&&pl.value!=null) pl=pl.value; else pl='';
         for(j=1;j<tbl.rows.length;j++){
             var ok=(tbl.rows[j].cells.length==1&&obj.value=='')||obj.value==''?1:0;
+            var l=tbl.rows[j].getAttribute('data-lang');
+            if(pl!=''&&l!=null&&pl!=l) ok=0;
             for(i=0;i<tbl.rows[j].cells.length;i++){
                 if(tbl.rows[j].cells[i].getAttribute('data-skipsearch')) continue;
                 tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent;
@@ -173,6 +176,7 @@ pe.cms = {
                     ok=1;
                 }
             }
+            if(pl!=''&&l!=null&&pl!=l) ok=0;
             tbl.rows[j].style.display=ok?'table-row':'none';
         }
     },

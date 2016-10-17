@@ -67,4 +67,5 @@ return [
 	"Page is locked!" => "Az oldalt egy másik felhasználó szerkeszti!",
 	"index" => "Főoldal",
 	"simple" => "Egyszerű",
+	"Unlock page" => "Einstand",
 ];

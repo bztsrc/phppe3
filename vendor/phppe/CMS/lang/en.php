@@ -65,4 +65,5 @@ return [
 	"pageinfo" => "Page Info",
 	"pagelist" => "Page List",
 	"pagemeta" => "Page Meta",
+	"Unlock page" => "Unlock page",
 ];
