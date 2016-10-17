@@ -126,14 +126,14 @@ function phppe_archive(){window.open("data:text/plain;base64,PD9waHAKLyoKICogIFB
     <li><a onclick='tab_switch("usage");'>Usage</a></li>
     <li><a onclick='tab_switch("cron");'>Background jobs</a></li>
     <li><a onclick='tab_switch("webserver");'>Webserver config</a></li>
-    <li><a onclick='tab_switch("monitoring");'>Monitoring</a></li>
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>General Topics</a>
     <ol style='display:none;'>
     <li><a onclick='tab_switch("security");'>Security</a></li>
     <li><a onclick='tab_switch("configuration");'>Configuration</a></li>
-    <li><a onclick='tab_switch("directory");'>Directory structure</a></li>
-    <li><a onclick='tab_switch("running");'>Running overview</a></li>
+    <li><a onclick='tab_switch("monitoring");'>Monitoring</a></li>
+    <li><a onclick='tab_switch("directory");'>Directory Structure</a></li>
+    <li><a onclick='tab_switch("running");'>Running Overview</a></li>
     <li><a onclick='tab_switch("routing");'>URL Routing</a></li>
     <li><a onclick='tab_switch("filters");'>URL Filters</a></li>
     <li><a onclick='tab_switch("models");'>Models</a></li>
@@ -147,10 +147,11 @@ function phppe_archive(){window.open("data:text/plain;base64,PD9waHAKLyoKICogIFB
     <li><a onclick='tab_switch("events");'>Events</a></li>
     <li><a onclick='tab_switch("extensions");'>Extensions</a></li>
     <li><a onclick='tab_switch("repository");'>Repositories</a></li>
-    <li><a onclick='tab_switch("coding");'>Coding standards</a></li>
+    <li><a onclick='tab_switch("coding");'>Coding Standards</a></li>
     <li><a onclick='tab_switch("developer");'>Developing</a></li>
     <li><a onclick='tab_switch("benchmark");'>Benchmarks</a></li>
     <li><a onclick='tab_switch("cluster");'>Clustering</a></li>
+    <li><a onclick='tab_switch("dba");'>Manage Database</a></li>
 </ol></li>
     <li><a class='header' onclick='toc_switch(this);'>Tutorials</a>
     <ol style='display:none;'>
@@ -468,7 +469,7 @@ An application is written once, but used many-many times, that should make the p
 </div>
 
 <div id='directory' class='tab' rel='documentroot,projectroot,data,vendor/bin'>
-<h1>Directory structure</h1>
+<h1>Directory Structure</h1>
 <p>PHPPE has a very comfortable build-up. The PHPPE Core, the application as well as all extensions share the same directory structure.</p>
 <h3>ProjectRoot</h3>
 <p>This is the working directory of PHPPE. When you specify any path within PHPPE, you'll have to use paths relative to this directory.  This saves you a lot of typing in your code and ease the migration across servers.</p>
@@ -1026,7 +1027,7 @@ http {
 </div>
 
 <div id='running' class='tab' rel='overflow'>
-<h1>Running overview</h1>
+<h1>Running Overview</h1>
 <h3>PHPPE\Core Constructor</h3>
 <p>The framework has two different running scheme. PHPPE\Core constructor controls which one of these should be called.
 The $islib boolean variable is set if the framework was included from another php file as a library.</p>
@@ -1465,7 +1466,7 @@ PHPPE Core ships APC(u) and Files cache extensions. If you decide to use local f
 
 <div id='cluster' class='tab' rel='loadbalance'>
 <h1>Clustering</h1>
-<p>On workers, install Core and ClusterCli. On the management server, Core, CMS, ClusterSrv.</p>
+<p>On workers, install Core and ClusterCli. On the management server, Core, ClusterSrv and <a onclick='tab_switch("contents");'>CMS</a>.</p>
 <div class='alert alert-warning'>You have to set up <a onclick='tab_switch("cron");'>background jobs</a> properly in order to get Cluster working.</div>
 <h2>Installation</h2>
 <h3>Management nodes</h3>
@@ -1482,24 +1483,25 @@ $ php public/index.php cluster server
 <p>That's simple as
 <pre>
 $ php public/index.php cluster
-Id              Type        Load  Last seen            Last viewed          Name
---------------  ---------  -----  -------------------  -------------------  -----------------------------
-10.0.0.1        master         0  2016-09-28 02:06:20  2016-09-30 01:04:42  admin1.localdomain
-10.0.0.2        slave          0  2016-09-28 02:06:20  2016-09-30 01:04:42  admin2.localdomain
-10.0.0.3        lb             0  2016-09-28 02:06:20  2016-09-30 01:04:42  ns1.localdomain
-10.0.0.4        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker4.localdomain
-10.0.0.5        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker5.localdomain
-10.0.0.6        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker6.localdomain
+This node is: 10.0.0.1 MASTER
+Cluster nodes:
+ Id              Type        Load  Last seen            Last viewed          Name
+ --------------  ---------  -----  -------------------  -------------------  -----------------------------
+*10.0.0.1        master         0  2016-09-28 02:06:20  2016-09-30 01:04:42  admin1.localdomain
+ 10.0.0.2        slave          0  2016-09-28 02:06:20  2016-09-30 01:04:42  admin2.localdomain
+ 10.0.0.3        lb             0  2016-09-28 02:06:20  2016-09-30 01:04:42  ns1.localdomain
+ 10.0.0.4        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker4.localdomain
+ 10.0.0.5        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker5.localdomain
+ 10.0.0.6        worker         0  2016-09-28 02:06:20  2016-09-30 01:04:42  worker6.localdomain
 
-This server is: 10.0.0.1 MASTER
-
-$ php public/source.php cluster help
+cluster help      - this help
 cluster status    - prints the current status
-cluster server    - checks management server (called from cron)
-cluster takeover  - force this management server to became master.
-cluster refresh   - flush worker cache.
-cluster deploy    - push code to workers.
-cluster client    - checks worker server (called from cron).
+cluster server    - checks management daemon (called from cron)
+cluster takeover  - force this management server to became master
+cluster flush     - flush worker cache
+cluster deploy    - push code to workers
+cluster client    - (!) checks worker daemon (called from cron)
+cluster bindcfg   - (!) generate bind configuration on lb worker
 </pre></p>
 <h3>Load balancer</h3>
 <pre>
@@ -1511,7 +1513,7 @@ $ composer require phppe/ClusterCli
 $ php public/index.php cluster client
 </pre>
 </p>
-<p>Tell ClusterCli that you want it to work as a load balancer by setting the configuration in</p>
+<p>Tell ClusterCli that you want it to work as a load balancer by setting the name(s) of the subdomain(s) in</p>
 <samp>vendor/phppe/ClusterCli/config.php:</samp>
 <p><pre class='lineno'>1<br></pre>
 <pre class='php'>
@@ -1520,6 +1522,10 @@ $ php public/index.php cluster client
 <p>Create a shell script under <code>vendor/bin/cluster_lb.sh</code>. That will receive a bind configuration file on it's stdin, and has to save it and restart a bind server of your choosing. The format can be modified in <code>vendor/phppe/ClusterCli/views/bind.tpl</code>.</p>
 <h4>Query status</h4>
 <p><pre>
+$ php public/index.php cluster
+This node is: 10.0.0.3 LOADBALANCER
+</pre>
+<pre>
 $ php public/source.php cluster bindcfg
 ; GENERATED FILE, do not edit!
 $TTL	1d ; 1 day ttl
@@ -1552,6 +1558,12 @@ $ composer require phppe/ClusterCli
 <pre>
 $ php public/index.php cluster client
 </pre>
+</p>
+<h4>Query status</h4>
+<p><pre>
+$ php public/index.php cluster
+This node is: 10.0.0.6 WORKER
+</pre>
 That's all.
 </p>
 <h2>Automatic scaling</h2>
@@ -1560,7 +1572,7 @@ That's all.
 <p>Make sure <code>sudo</code> is allowed for the following commands: <code>poweroff</code>, <code>restart</code>.</p>
 <p>Make sure (openbase_dir) script is allowed to open and read <samp>/proc/loadavg</samp>.</p>
 <h3>On management node</h3>
-<p>Create a shell script <samp>vendor/bin/cluster_worker.sh</samp>, that should communicate with your VPS provider's API to start a new worker vm instance.</p>
+<p>Create a shell script <code>vendor/bin/cluster_worker.sh</code>, that should communicate with your VPS provider's API to start a new worker vm instance.</p>
 <h2>High Availability</h2>
 <p>You can start more load balancers, but change the name in <samp>bind.tpl</samp> for each.</p>
 <p>As for management, ClusterSrv implements fail-over. That means that you can start more instances, but only one can be master at any given time. There may be a need to change master manually, for that run this command on one of the slave servers:<pre>
@@ -1572,6 +1584,18 @@ $ php public/index.php cluster takeover
 $ php public/index.php cluster refresh
 </pre>
 </p>
+<h2>Code Distribution</h2>
+<p>You can keep a master copy of your worker's document root on the management server. If you change that, you'll have to send it to the workers with:<pre>
+$ php public/index.php cluster deploy
+</pre>
+It's called push deployment, which is done by <code>rsync</code> over a secure channel. The reason why PHPPE prefers push over poll is performance and security: you can set up one-direction firewalls
+and if any of your workers get hacked, there's no way to the management zone from there. Also, if a worker get defaced, you can use this deploy command to restore to the original.
+</p>
+</div>
+
+<div id='dba' class='tab' rel='database'>
+<h1>DataBase Administrator<sup><small>DBA</small></sup></h1>
+<p>Provides a low level web interface to the database.</p>
 </div>
 
 <div id='services' class='tab' rel='library'>
@@ -2214,7 +2238,7 @@ This file is a standard PHP Composer json file, with additional elements:</p>
 </div>
 
 <div id='coding' class='tab' rel='standards,style,psr-2'>
-<h1>Coding standards</h1>
+<h1>Coding Standards</h1>
 <p>To be extremely small (80k is not a plenty of space for a PHP code you can take my word on that), the Core is compressed. With this only exception, all other PHP files must
 follow <a href='https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md' target='_new'>PSR-2 Coding Style</a>.
 Altering Core's code is only allowed via hooks and url forges, never through file manipulation.
