@@ -81,7 +81,7 @@ class ClusterCli extends \PHPPE\Model
 	public function diag()
 	{
 	    if(!file_exists(self::$_cmd)) {
-            file_put_contents(self::$_cmd,"#!/bin/sh\n\n# This script get a bind configuration file on stdin.\n# Save it and reload dns server.\n");
+            file_put_contents(self::$_cmd,"#!/bin/sh\n\n# This script get a bind configuration file on stdin.\n# Save it and reload dns server.\n# exec > /var/bind/myzones.cnf\n# systemctl reload bind\n");
             chmod(self::$_cmd,0750);
 	    }
 	}

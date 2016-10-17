@@ -20,12 +20,14 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		//! check if executed from CLI
 		if(\PHPPE\Core::$client->ip!="CLI")
 			\PHPPE\Http::redirect("403");
-		die("cluster status    - prints the current status\n".
-			"cluster server    - checks management server (called from cron)\n".
-			"cluster takeover  - force this management server to became master.\n".
-			"cluster flush     - flush worker cache.\n".
-			"cluster deploy    - push code to workers.\n".
-			"cluster client    - checks worker server (called from cron).\n"
+		die("cluster help      - this help\n".
+			"cluster status    - prints the current status\n".
+			"cluster server    - checks management daemon (called from cron)\n".
+			"cluster takeover  - force this management server to became master\n".
+			"cluster flush     - flush worker cache\n".
+			"cluster deploy    - push code to workers\n".
+			"cluster client    - (!) checks worker daemon (called from cron)\n".
+			"cluster bindcfg   - (!) generate bind configuration on lb worker\n"
 		);
 	}
 
@@ -145,6 +147,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
  */
 	function action($item)
 	{
+		setlocale(LC_NUMERIC,"C");
+
 		$lib=Core::lib("ClusterSrv");
 		$nodes=DS::query("*",self::$_table,"","","type,load DESC,id");
 		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
@@ -184,11 +188,14 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 			}
 			die(json_encode(["status"=>($loadavg<0.1?"idle":($loadavg>0.5||$waspeek?($loadavg>0.75||$waspeek==2?"error":"warn"):"ok")),"loadavg"=>$loadavg,"peek"=>$waspeek,"master"=>$master,"newfiles"=>$newfiles,"id"=>\PHPPE\Core::lib("ClusterSrv")->id,"nodes"=>$nodes]));
 		} else {
-			echo(chr(27)."[96mId              Type        Load  Last seen            Last viewed          Name\n--------------  ---------  -----  -------------------  -------------------  -----------------------------".chr(27)."[0m\n");
+	        echo(chr(27)."[96mThis node is: ".chr(27)."[0m".$lib->id." ".chr(27)."[".(strtolower(trim($lib->id)) == strtolower(trim($master))?"91mMASTER":"92mSLAVE").chr(27)."[0m\n".chr(27)."[96mCluster nodes:\n");
+			echo(chr(27)."[96m Id              Type        Load  Last seen            Last viewed          Name\n --------------  ---------  -----  -------------------  -------------------  -----------------------------".chr(27)."[0m\n");
 			foreach($nodes as $node) {
-				echo(sprintf("%-16s%-8s%8s",$node['id'],$node['type'],$node['load'])."  ".(!empty($node['modifyd'])?$node['modifyd']:sprintf("%-19s",L("booting")))."  ".(!empty($node['viewd'])?$node['viewd']:"????-??-?? ??:??:??")."  ".$node['name']."\n");
+				echo(sprintf("%s%-16s%-8s%8s",strtolower(trim($node['id'])) == strtolower(trim($master))?chr(27)."[93m*":" ",$node['id'],$node['type'],$node['load'])."  ".(!empty($node['modifyd'])?$node['modifyd']:sprintf("%-19s",L("booting")))."  ".(!empty($node['viewd'])?$node['viewd']:"????-??-?? ??:??:??")."  ".$node['name'].chr(27)."[0m\n");
 			}
-	        echo("\n".chr(27)."[96mThis server is: ".chr(27)."[0m".$lib->id." ".chr(27)."[".(strtolower(trim($lib->id)) == strtolower(trim($master))?"91mMASTER":"92mSLAVE").chr(27)."[0m\n");
+			echo("\n");
+			if(\PHPPE\Core::$core->action=="action")
+				$this->help();
 		}
 	}
 }

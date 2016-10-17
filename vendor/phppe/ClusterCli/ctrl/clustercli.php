@@ -58,4 +58,12 @@ class ClusterCli extends \PHPPE\ClusterCli
 		@header("Content-type:text/plain");
 		die(Core::lib("ClusterCli")->bindcfg()."\n");
 	}
+
+	function action($item=null)
+	{
+		if(\PHPPE\Core::$client->ip!="CLI")                            
+			\PHPPE\Http::redirect("403");
+		$node=Core::lib("ClusterCli");
+		echo(chr(27)."[96mThis node is: ".chr(27)."[0m".$node->id." ".(!empty($node->loadbalancer)?"LOADBALANCER":"WORKER")."\n");
+	}
 }

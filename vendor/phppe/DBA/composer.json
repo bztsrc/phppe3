@@ -34,5 +34,6 @@
 		"phppe/DBADev": "*"
 	},
 
+	"homepage": "http://bztsrc.github.io/phppe3/index.html#dba",
 	"maintainer": { "name": "bzt" }
 }

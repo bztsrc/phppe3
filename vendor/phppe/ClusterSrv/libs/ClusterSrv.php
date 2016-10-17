@@ -99,7 +99,7 @@ class ClusterSrv extends \PHPPE\Model
 			"start"=>"#!/bin/sh\n\n# Grab all resources for master (eg. OpenVPN tunnels)\n",
 			"stop"=>"#!/bin/sh\n\n# Release all resources (eg. OpenVPN tunnels)\n",
 			"reload"=>"#!/bin/sh\n\n# reload all resources and clear caches\n",
-			"worker"=>"#!/bin/sh\n\n# Use cURL WebAPI to start a new worker instance\n"
+			"worker"=>"#!/bin/sh\n\n# Use ISP command to start a new worker instance\n# aws ec2 run-instances --image-id...\n"
 		] as $f=>$d){
 			$fn="vendor/bin/cluster_".$f.".sh";
 			if(!file_exists($fn)) {

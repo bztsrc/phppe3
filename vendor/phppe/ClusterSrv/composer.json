@@ -33,6 +33,6 @@
 		"phppe/MultiServer": "*"
 	},
 
-    "homepage": "http://bztsrc.github.io/phppe3/index.html#cluster",
+	"homepage": "http://bztsrc.github.io/phppe3/index.html#cluster",
 	"maintainer": { "name": "bzt" }
 }
