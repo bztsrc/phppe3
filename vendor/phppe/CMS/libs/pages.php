@@ -154,6 +154,10 @@ class Page extends \PHPPE\Model
         //! check input
         if(empty($this->id))
             throw new \Exception(L('No page id'));
+        if(substr($name,0,4)=="app.")
+            $name=substr($name,4);
+        if(substr($name,0,6)=="frame.")
+            $name=substr($name,6);
         //! write audit log
         \PHPPE\Core::log('A',
             sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
@@ -238,10 +242,10 @@ class Page extends \PHPPE\Model
             throw new \Exception(L('No pagelist name'));
         if (is_string($pages))
             $pages = str_getcsv($pages, ',');
-        \PHPPE\DS::exec("DELETE FROM pages_list WHERE list_id=?",[$name]);
+        \PHPPE\DS::exec("DELETE FROM ".static::$_table."_list WHERE list_id=?",[$name]);
         foreach($pages as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
-                \PHPPE\DS::exec("INSERT INTO pages_list (list_id,page_id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
+                \PHPPE\DS::exec("INSERT INTO ".static::$_table."_list (list_id,page_id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
         return true;
     }
 
@@ -267,6 +271,15 @@ class Page extends \PHPPE\Model
         return $r;
     }
 
+/**
+ * Get number of pages for a given template
+ *
+ * @param string template
+ */
+    static function getNum($template)
+    {
+        return \PHPPE\DS::field("count(1)", static::$_table, "template=?", "id", "",[$template]);
+    }
 /**
  * Get complex list of pages with user data
  *

@@ -8,11 +8,11 @@
 
 return [
     "fb:app_id" => "fbAppId",
-    "og:title" => "ogTitle",
+    "og:title" => "name",
     "og:type" => "ogType",
     "og:site_name" => "ogSiteName",
     "og:image" => "ogImage",
     "og:audio" => "ogAudio",
     "og:video" => "ogVideo",
-    "og:description" => "ogDescription",
+    "og:description" => "description",
 ];

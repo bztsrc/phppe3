@@ -359,7 +359,7 @@ namespace PHPPE {
                 throw new \Exception('no _table');
             }
             //get the records from current datasource
-            return DS::query($f, static::$_table, !empty($w) ? $w : (!empty($s) ? 'id=?' : ''), '', $o, 0, 0, is_array($s) ? $s : [$s]);
+            return DS::query($f, static::$_table, !empty($w) ? $w : '', '', $o, 0, 0, is_array($s) ? $s : [$s]);
         }
 
 /**
@@ -1654,6 +1654,7 @@ namespace PHPPE {
                 $o = json_decode($data['data'], true);
                 if (is_array($o)) {
                     foreach ($o as $k => $v) {
+                        if(substr($k,0,4)=="app.") $k=substr($k,4);
                         $this->$k = $v;
                     }
                 }

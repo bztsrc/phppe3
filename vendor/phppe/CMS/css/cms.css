@@ -1,8 +1,5 @@
-.wyswyg_toolbar BUTTON {
-    color:#D0D0D0;
-    height:24px;
-    background:#808080;
-    border:outset 1px;
+.wyswyg_toolbar {
+    background:rgba(128,128,128,0.9);
 }
 .wyswyg_toolbar INPUT[type=button] {
     color:#D0D0D0;
@@ -90,3 +87,13 @@ TABLE.cmstable TR:hover{background:#E0E0FF;}
 .infobox INPUT.reqinput, .infobox TEXTAREA.reqinput, .infobox SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff }
 .infobox INPUT.errinput, .infobox TEXTAREA.errinput, .infobox SELECT.errinput { background: rgba(128,32,32,0.95) !important; color:#fff !important; }
 #pagelang { max-width:120px; display:inline-block; margin-right:4px;}
+#layout_data { min-height:400px; }
+#layout_edit .wyswyg_toolbar { z-index:500;position:fixed;top:31px;width:100%; }
+#layout_edit {border-top:solid 1px #808080;border-bottom:solid 1px #808080;}
+#layoutdiv BUTTON { height:20px; padding-top:0px; padding-bottom:0px;line-height:20px;}
+#layoutdiv .toolbar { z-index:501;position:fixed; top:30px; right:0px; }
+#layoutdiv .toolbar BUTTON { margin-right:20px; }
+#layout_fieldset { position:fixed; top:53px; background:rgba(128,128,128,0.9);color:rgba(51,51,51);width:100%;display:none;padding:5px;z-index:501;}
+#layout_fieldset INPUT, #layout_fieldset TExTAREA { background:rgba(128,128,128,0.9);color:#D0D0D0; }
+#layout_fieldset DIV { margin:5px; }
+#layout_name { margin-top:5px; }

@@ -187,6 +187,36 @@ pe.cms = {
             document.location.href='<?=url('cms','pages')?>?pagedel='+urlencode(url);
     },
     
+	fieldset:function(evt)
+	{
+		evt.preventDefault();
+		var d=document.getElementById('layout_fieldset');
+        if(<?=empty(\PHPPE\Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
+			d.style.visibility=d.style.display=='none'?'block':'none';
+		} else {
+			$(d).fadeToggle();
+		}
+	},
+
+	layoutdel:function(evt)
+	{
+		var np = document.getElementById('layout_numPages').value;
+		if(np==0 || confirm(L("There are %d page references to this layout. Are you sure?").replace("%d",np))) {
+			document.getElementById('layout_delete').value=1;
+			return true;
+		} else {
+			evt.preventDefault();
+			return false;
+		}
+	},
+
+	image:function(evt,id) {
+    	if(evt.target.className==null||evt.target.alt==null||evt.target.className!="wyswyg_icon")
+			return;
+    	pe.cms.tag=evt.target;
+		pe.wyswyg.popup(event,"layout_data",'cms/tag?item='+escape(evt.target.alt.replace(/\//g,"!2F!").replace(/\+/g,"!2B!")));
+	},
+
     //! called by wyswyg
     getitem:function()
     {

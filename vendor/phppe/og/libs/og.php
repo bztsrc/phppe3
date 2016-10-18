@@ -27,6 +27,8 @@ class og
             if (empty($var)) $var = $fld;
 	        $appObj->meta[$fld] = [!empty($appObj->$var)?$appObj->$var:Registry::get($fld), "property"];
 	    }
-	    $appObj->meta["og:url"] = [url(), "property"];
+		if(!empty($appObj->meta["description"]))
+			$appObj->meta["og:description"] = [$appObj->meta["description"], "property"];
+		$appObj->meta["og:url"] = [url(), "property"];
 	}
 }

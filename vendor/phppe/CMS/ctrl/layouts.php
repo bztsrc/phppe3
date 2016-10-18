@@ -18,5 +18,12 @@ class CMSLayouts
  */
 	function action($item)
 	{
+		if(empty($item)){
+			$this->layouts = \PHPPE\Views::find([],"sitebuild=''","name");
+			$this->sitebuilds = \PHPPE\Views::find([],"sitebuild!=''","name");
+		} else {
+			$this->layout = new \PHPPE\Views($item);
+			$this->numPages = \PHPPE\Page::getNum($item);
+		}
 	}
 }

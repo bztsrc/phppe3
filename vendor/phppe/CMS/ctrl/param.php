@@ -56,8 +56,7 @@ class CMSParam
 
         //! get the page we're editing
         //! if parameter name starts with "frame", load frame page instead
-        $page = new \PHPPE\Page(substr($F->name,0,5)=="frame" ? "frame" : $_SESSION['cms_url']);
-		$F->value = $page->data[$_SESSION['cms_param'][$item]->name];
+        $page = new \PHPPE\Page(substr($F->name,0,6)=="frame." ? "frame" : $_SESSION['cms_url']);
         //! if it's a new page, save it
         if (empty($page->name) && empty($page->template)) {
             $page->name = ucfirst($page->id);
@@ -68,6 +67,9 @@ class CMSParam
         $this->editable = $page->lock();
 
         \PHPPE\View::assign("page", $page);
+        $n = substr($F->name,0,6)=="frame." ? substr($F->name,6) : (substr($F->name,0,4)=="app." ? substr($F->name,4) : $F->name);
+        if(!empty($page->data[$n]))
+            $F->value=$page->data[$n];
         //! load extra data if any
         if (method_exists($F, 'load')) {
             $F->load($this);

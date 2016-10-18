@@ -1,6 +1,6 @@
 <?php
 /**
- * Addon to select JavaScripts for a page
+ * Addon to select JavaScripts for a layout
  */
 namespace PHPPE\AddOn;
 use \PHPPE\Core as Core;

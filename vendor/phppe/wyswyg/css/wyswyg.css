@@ -95,6 +95,9 @@ TEXTAREA.wyswyg {
     color:#D0D0D0;
     border:#808080 outset 1px !important;
 }
+.wyswyg_popup IMG, .wyswyg_popup A {
+	cursor:copy !important;
+}
 .wyswyg_scroll {
     width:200px;
     height:200px;
@@ -113,6 +116,10 @@ TEXTAREA.wyswyg {
 .wyswyg_docs A {
     display: block;
     padding: 2px;
+}
+
+.wyswyg_icon {
+	cursor: context-menu;
 }
 
 /*
