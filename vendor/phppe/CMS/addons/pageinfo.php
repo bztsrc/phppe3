@@ -9,7 +9,7 @@ use \PHPPE\Core as Core;
 class pageinfo extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";
-    public $forceFull = 80;
+    public $forceFull = 50;
 
     function load(&$app)
     {

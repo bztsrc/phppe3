@@ -10,7 +10,7 @@ class pagemeta extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";
     public $headerHeight = 30;
-    public $forceFull = 80;
+    public $forceFull = 50;
 
     function load(&$app)
     {

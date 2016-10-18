@@ -278,7 +278,7 @@ class Page extends \PHPPE\Model
  */
     static function getNum($template)
     {
-        return \PHPPE\DS::field("count(1)", static::$_table, "template=?", "id", "",[$template]);
+        return \PHPPE\DS::field("SUM(1)", static::$_table, "template=?", "", "",[$template]);
     }
 /**
  * Get complex list of pages with user data

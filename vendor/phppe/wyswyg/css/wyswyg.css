@@ -83,17 +83,13 @@ TEXTAREA.wyswyg {
     z-index:2000;
 }
 .wyswyg_popup INPUT {
-    background: rgba(32,32,32,0.95);
     margin:2px;
     height:24px;
-    color:#D0D0D0;
-    border:#808080 inset 1px !important;
+    border:#8F8F8F inset 1px !important;
 }
 .wyswyg_popup INPUT[type='button'] {
-    background:rgb(95, 95, 95);
     margin:2px;
-    color:#D0D0D0;
-    border:#808080 outset 1px !important;
+    border:#8F8F8F outset 1px !important;
 }
 .wyswyg_popup IMG, .wyswyg_popup A {
 	cursor:copy !important;
@@ -102,6 +98,7 @@ TEXTAREA.wyswyg {
     width:200px;
     height:200px;
     overflow: auto;
+    padding: 0px 5px 5px 5px;
 }
 .wyswyg_gallery IMG {
     height: 64px !important;

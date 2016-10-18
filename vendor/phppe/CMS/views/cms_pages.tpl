@@ -11,7 +11,7 @@
 		<th><!=L("Layout")></th>
 		<th></th>
 		<th>URL</th>
-		<th width='100%'><!=L("Title")></th>
+		<th width='50%'><!=L("Title")></th>
 		<th><!=L("Filters")></th>
 		<th><!=L("DDS")></th>
 		<th><nobr><!=L("Modified by")></nobr></th>

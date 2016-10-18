@@ -191,6 +191,7 @@ pe.cms = {
 	{
 		evt.preventDefault();
 		var d=document.getElementById('layout_fieldset');
+		pe_p();
         if(<?=empty(\PHPPE\Core::$core->noanim)?'false':'true'?> || typeof jQuery=='undefined'){
 			d.style.visibility=d.style.display=='none'?'block':'none';
 		} else {
@@ -214,7 +215,7 @@ pe.cms = {
     	if(evt.target.className==null||evt.target.alt==null||evt.target.className!="wyswyg_icon")
 			return;
     	pe.cms.tag=evt.target;
-		pe.wyswyg.popup(event,"layout_data",'cms/tag?item='+escape(evt.target.alt.replace(/\//g,"!2F!").replace(/\+/g,"!2B!")));
+		pe.wyswyg.popup(event,"layout_data",'cms/tag?item='+urlencode(evt.target.alt));
 	},
 
     //! called by wyswyg

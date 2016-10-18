@@ -31,6 +31,7 @@ return [
 	"help_sitebuilds" => "help_sitebuilds",
 	"Import sitebuild zip" => "Import sitebuild zip",
 	"help_sbimport" => "help_sbimport",
+	"layoutadd" => "Add New Layout",
 	"Layout info" => "Layout info",
 	"Imported" => "Imported",
 	"Style sheets" => "Style sheets",

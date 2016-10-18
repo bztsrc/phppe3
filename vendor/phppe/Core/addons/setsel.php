@@ -32,11 +32,11 @@ class setsel extends \PHPPE\AddOn {
             $val = $this->value;
         if(empty($val))
             $val = [];
-        $i=array_flip($val);
+        $i=@array_flip($val);
         $b=[];
         if(!empty($this->args[2])){
             if(!is_array($this->args[2]))
-            $f=array_flip(explode(",",$this->args[2]));
+            $f=@array_flip(explode(",",$this->args[2]));
             else
             $f=$this->args[2];
         } else $f=[];
@@ -104,7 +104,7 @@ class setsel extends \PHPPE\AddOn {
             $flthtml.="</select>";
         }
         $out[0]=implode("",$b);
-        return "<div class='setsel'><input type='hidden' id='".$this->fld."' name='".$this->fld."' value='".htmlspecialchars(implode(",", $val))."'>".
+        return "<div class='setsel'><input type='hidden' id='".$this->fld."' name='".$this->fld."' value='".htmlspecialchars(@implode(",", $val))."'>".
         "<div id='".$this->fld.":filters' class='setsel_filters'>".(!empty($this->args[4])?"<span class='setsel_title' style='float:left;line-height:22px !important;'>".$this->args[4]."</span>":"").$flthtml.
         "<input name='search' class='setsel_input' type='text' placeholder='".L("Search")."' onchange='pe.setsel.search(\"".$this->fld."\");' onkeyup='pe.setsel.search(\"".$this->fld."\");'>".
         "<span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span><br style='clear:both;'/></div>\n".

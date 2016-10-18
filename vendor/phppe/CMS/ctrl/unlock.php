@@ -18,6 +18,6 @@ class CMSUnlock
 	{
         //! called via AJAX, no output required
 	    \PHPPE\Page::unLock(\PHPPE\Core::$user->id);
-        die("OK");
+        die("<script>top.document.location.href='".url("cms/pages")."';</script>");
 	}
 }

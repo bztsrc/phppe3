@@ -331,15 +331,24 @@ namespace PHPPE {
         protected static $_table;
 
 /**
- * Default model constructor. Load object with data if id given
+ * Default model constructor. Load object with data if id given. Id can be
+ * a property value list (associative array or object) as well.
  *
- * @param integer   id
+ * @param integer/mixed   id/properties
  */
         function __construct($id="")
         {
             if(!empty($id)) {
-                $this->id = $id;
-                $this->load($id);
+                if(is_scalar($id)) {
+                    $this->id = $id;
+                    $this->load($id);
+                } else {
+                    foreach($this as $k=>$v) {
+                        if($k[0]=="_") continue;
+                        if(isset($id[$k])) $this->$k=$id[$k]; else
+                        if(isset($id->$k)) $this->$k=$id->$k;
+                    }
+                }
             }
         }
 
@@ -1700,10 +1709,10 @@ namespace PHPPE {
             try {
                 //! special page holds global page parameters and dds'
                 $F = DS::fetch('data,dds', 'pages', "id='frame'", '', 'id DESC,created DESC');
-                $E = json_decode($F['data'], true);
+                $E = $F?json_decode($F['data'], true):null;
                 View::assign('frame', $E);
                 //! load global dds
-                $D = json_decode($F['dds'], true);
+                $D = $F?json_decode($F['dds'], true):null;
                 if (is_array($D)) {
                     self::$dds += $D;
                 }
@@ -2691,7 +2700,7 @@ namespace PHPPE {
                         $O .= $d.">\nvar pe_i=0,pe_ot=".($P ? 31 : 0)."$a;\n";
                         foreach ($c as $fu => $co) {
                             //! make sure init only gets called once
-                            $O .= "function $fu {".($fu=="init()"?"if(pe_i)return;pe_i=1;".(Core::$core->runlevel>1?"console.log('PE Plugins',pe);":""):"").$co."}\n";
+                            $O .= "function $fu {".($fu=="init()"?"if(pe_i)return;pe_i=1;".(Core::$core->runlevel>2?"console.log('PE Plugins',pe);":""):"").$co."}\n";
                         }
                         //! add event listeners to call init() on page load
                         if(!empty(self::$hdr['js']['init()'])) {

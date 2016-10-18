@@ -37,6 +37,7 @@ return [
 	"help_sitebuilds" => "help_sitebuilds",
 	"Import sitebuild zip" => "Keret zip importálása",
 	"help_sbimport" => "help_sbimport",
+	"layoutadd" => "Új sablon hozzáadása",
 	"Layout info" => "Sablon infó",
 	"Imported" => "Importálva",
 	"Style sheets" => "Stíluslapok",

@@ -167,7 +167,7 @@ open: function(source, icons)
         var edit=document.createElement('div');
         edit.setAttribute('id', id+':edit');
         edit.setAttribute('class', 'input wyswyg');
-        edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;background:#fff;color:#000;display:none;overflow:auto;');
+        edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;background:rgba(255,255,255,0.8);color:#333;display:none;overflow:auto;');
         if(function_exists('pe.cms.getitem')) {
             var style=null, item=eval('pe.cms.getitem()');
             if(item!=null) {
@@ -290,7 +290,9 @@ open: function(source, icons)
         popup.setAttribute('id',id+'_popup');
         popup.setAttribute('class','wyswyg_popup');
         popup.setAttribute('onmousemove','pe_w();');
+        popup.setAttribute('onkeydown','pe_w();');
         popup.setAttribute('ondragleave','pe_p();');
+        popup.setAttribute('onclick','pe_p();');
         popup.setAttribute('style','position:fixed;display:none;visibility:visible;');
         tb.appendChild(popup);
 
@@ -318,6 +320,7 @@ togglesrc: function(toggle,focus,evt)
 {
     var edit = toggle.parentNode.nextSibling;
     var source = edit.nextSibling;
+	pe_p();
     //! check if it's in html mode
     if(edit.style.display=='block') {
         //! it is, switch to source mode
@@ -349,7 +352,7 @@ togglesrc: function(toggle,focus,evt)
         var t=tmp.split(' ');
         var url=(t[1]==null?t[0]:t[0]+' '+(t[1].match(/^[a-z]+=['"]/)?t[1].substring(t[1].indexOf('=')+2,t[1].length-1):t[1]))+(t[2]!=null?' '+t[2]+(t[1].substr(0,1)=='@'&&t[3]!=''?' '+t[3]:''):'');
 //+(t[0].substr(1,5)=='field'||t[0].substr(1,3)=='var'&&t[2]!=null&&t[2]?' '+t[2]:''));
-        output=output.replace(tags[i],"<img class='wyswyg_icon' "+(url.substr(0,7)!="!widget"?"height='14' width='"+(url.length*8)+"'":"")+" src='js/wyswyg.js?item="+urlencode("<"+url+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
+        output=output.replace(tags[i],"<img class='wyswyg_icon' src='js/wyswyg.js?item="+urlencode("<"+url+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
     }
 
         edit.innerHTML=output;
@@ -537,6 +540,7 @@ prevent: function(evt)
 popup:function(evt, id, url)
 {
     var popup=document.getElementById(id+'_popup');
+	popup.style.zIndex=503;
     popup.innerHTML='';
     pe_p(id+'_popup',null,5);
     var r = new XMLHttpRequest();
@@ -547,8 +551,16 @@ popup:function(evt, id, url)
         for(i=0;i<a.length;i++){
             a[i].addEventListener( "click", pe.wyswyg.prevent, false );
         }
+        a=popup.querySelector("input[type='text']");
+        if(a!=null)
+        	a.focus();
     } else
         popup.innerHTML=L("wyswyg_nohook");
+    var x=document.body.offsetWidth-popup.offsetWidth-5,y=document.body.offsetHeight-popup.offsetHeight-5;
+	if(x<parseInt(popup.style.left))
+		popup.style.left=x+'px';
+	if(y<parseInt(popup.style.top))
+		popup.style.top=y+'px';
 },
 
 search:function(inp,div)

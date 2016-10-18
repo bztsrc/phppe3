@@ -12,7 +12,7 @@
 #msbox h3 {
     text-shadow: #000 2px 2px 3px;
 }
-#msbox input, textarea {
+#msbox input, #msbox textarea {
     width:99%;
     background: rgba(32,32,32,0.95);
     margin-left:2px;

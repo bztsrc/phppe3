@@ -18,12 +18,29 @@ class CMSLayouts
  */
 	function action($item)
 	{
+		$name="layoutadd";
+		$_SESSION['cms_param'][sha1("layoutadd_")] = new \PHPPE\AddOn\layoutadd([],$name,$name);
 		if(empty($item)){
 			$this->layouts = \PHPPE\Views::find([],"sitebuild=''","name");
 			$this->sitebuilds = \PHPPE\Views::find([],"sitebuild!=''","name");
 		} else {
 			$this->layout = new \PHPPE\Views($item);
 			$this->numPages = \PHPPE\Page::getNum($item);
+			$layout=Core::req2arr("layout");
+			if(!empty($this->layout->sitebuild)) {
+				Core::$core->noframe=1;
+				$layout['sitebuild']=$layout['name'];
+			}
+			if(Core::isTry("layout")) {
+				if(!empty($layout['delete'])){
+					$this->layout->delete();
+				} else {
+					unset($layout['delete']);
+					$this->layout = new \PHPPE\Views($layout);
+					$this->layout->save();
+				}
+				Http::redirect("cms/layouts");
+			}
 		}
 	}
 }
