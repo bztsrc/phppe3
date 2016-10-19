@@ -27,6 +27,9 @@ class CMSArchive
 		Http::redirect($item);
 	}
 	if(isset($_REQUEST['revert'])) {
+		\PHPPE\Core::log('A',sprintf(L("Page %s reverted to %s by %s"),$item,$_REQUEST['created'],\PHPPE\Core::$user->name), "cmsaudit");
+		\PHPPE\DS::exec("UPDATE pages set created=CURRENT_TIMESTAMP,modifyd=CURRENT_TIMESTAMP,modifyid=? WHERE id=? AND (lang='' OR lang=?) AND created=?",
+			[Core::$user->id,$item,Core::$client->lang,$_REQUEST['created']]);
 		Http::redirect($item);
 	}
 
@@ -37,7 +40,7 @@ class CMSArchive
 
 	//! load archive version
 	$page = \PHPPE\DS::fetch( "*", "pages", "(id=? OR ? LIKE id||'/%') AND (lang='' OR lang=?) AND created=?", "", "id DESC,created DESC",[$item,$item,Core::$client->lang,$_REQUEST['created']]);
-	$this->title = L("ARCHIVE").": ".$page['name'];
+	$this->title = L("ARCHIVE")." ".$page['name'];
 	if(is_string($page['data'])) $page['data']=@json_decode($page['data'],true);
 	if(is_array($page['data'])) foreach($page['data'] as $k=>$v) {$this->$k=$v;}
 	foreach(["id","name","lang","filter","template","pubd","expd","dds","ownerid","created"] as $k) $this->$k=$page[$k];

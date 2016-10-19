@@ -196,8 +196,11 @@ class Page extends \PHPPE\Model
             if (!$new && !empty($params['pageid']) && $params['pageid'] != $params['id']) {
                 $rename=true;
                 \PHPPE\DS::exec("UPDATE ".static::$_table." SET id=? WHERE id=?", [ $params['id'], $params['pageid'] ] );
+                \PHPPE\Core::log('A',sprintf(L("Page %s renamed to %s by %s"),$params['pageid'],$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
             }
         }
+        //! write audit log
+        \PHPPE\Core::log('A',sprintf(L("Page %s modified by %s"),$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
         //! create page object
         $page = new self($params['id']);
         foreach ($params as $k=>$v)
@@ -221,6 +224,8 @@ class Page extends \PHPPE\Model
  */
     static function saveDDS($pageid, $dds)
     {
+        //! write audit log
+        \PHPPE\Core::log('A',sprintf(L("PageDDS for %s modified by %s"),$pageid,\PHPPE\Core::$user->name), "cmsaudit");
         //! load new dds if given
         if (!empty($dds['_']['name']) && !empty($dds['_'][0])) {
             $k = $dds['_']['name'];
@@ -253,6 +258,8 @@ class Page extends \PHPPE\Model
             throw new \Exception(L('No user id'));
         if (is_string($pages))
             $pages = str_getcsv($pages, ',');
+        //! write audit log
+        \PHPPE\Core::log('A',sprintf(L("Pagelist %s modified by %s"),$name,\PHPPE\Core::$user->name), "cmsaudit");
         \PHPPE\DS::exec("DELETE FROM ".static::$_table."_list WHERE list_id=?",[$name]);
         foreach($pages as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
@@ -276,6 +283,8 @@ class Page extends \PHPPE\Model
         $a = [ $pageid, \PHPPE\Core::$client->lang ];
         if(!empty($created))
          $a[]=$created;
+        //! write audit log
+        \PHPPE\Core::log('A',sprintf(L("Delete page %s (%s,%s) by %s"),$pageid,\PHPPE\Core::$client->lang,$created,\PHPPE\Core::$user->name), "cmsaudit");
         $r = \PHPPE\DS::exec(
             "DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?)".
             (!empty($created)?" AND created=?":""),
@@ -327,6 +336,8 @@ class Page extends \PHPPE\Model
             throw new \Exception(L('No user id'));
     	$pages = \PHPPE\DS::query("id,lang,max(created) as created",static::$_table,"publishid=0 AND ownerid=0 AND id IN ('".implode("','",$ids)."')","id,lang");
 		foreach($pages as $p) {
+        	//! write audit log
+        	\PHPPE\Core::log('A',sprintf(L("Publicate page %s (%s,%s) by %s"),$p['id'],$p['lang'],$p['created'],\PHPPE\Core::$user->name), "cmsaudit");
 			// mark newest as active
 			\PHPPE\DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE id=? AND lang=? AND created=?",[\PHPPE\Core::$user->id,$p['id'],$p['lang'],$p['created']]);
 			// purge old active records

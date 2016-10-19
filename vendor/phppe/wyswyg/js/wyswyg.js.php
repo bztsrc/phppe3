@@ -85,7 +85,7 @@ $libs = \PHPPE\Core::lib();
 foreach($libs as $l)
     if(!empty($l->wyswyg_toolbar))
         $toolbar = array_merge($toolbar, $l->wyswyg_toolbar);
-header("Pragma:no-cache");
+//header("Pragma:no-cache");
 ?>
 pe.wyswyg = {
 <?php if($bs) {?>

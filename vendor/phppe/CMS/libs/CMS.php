@@ -28,7 +28,7 @@ class CMS
 {
     public $expert=false;   //!< do not show help text for experienced users
     public $revert=false;   //!< do we have to keep history for reverting
-    public $purge=3;        //!< we have to purge history if bigger than this
+    public $purge=8;        //!< we have to purge history if bigger than this
     public $metas=[];       //!< meta tags we want to make editable
     public $wyswyg_toolbar = [ "content"=>"cms/content" ];
 
@@ -175,7 +175,7 @@ class CMS
             if (get_class($app)=="PHPPE\Content") {
                 //! unpiblished warning
                 if(!$app->publishid)
-                    $ret.="<a href='".url("cms/pages")."?publish'><span class='btn-danger' style='padding:0px 4px 0px 4px;'>".strtoupper(L("Unpublished"))."</span></a>";
+                    $ret.="<a href='".url("cms/pages")."?publish'><span class='btn-warning' style='padding:0px 4px 0px 4px;text-shadow:none;'>".L("UNPUBLISHED")."</span></a>";
                 //! page info
                 $ret .= self::statIcon("pageinfo");
                 //! page meta

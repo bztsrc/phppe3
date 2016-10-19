@@ -36,6 +36,7 @@ class CMSLayouts
 					$this->layout->delete();
 				} else {
 					unset($layout['delete']);
+					\PHPPE\Core::log('A',sprintf(L("Layout %s modified by %s"),$this->id,\PHPPE\Core::$user->name), "cmsaudit");
 					$this->layout = new \PHPPE\Views($layout);
 					$this->layout->save();
 				}

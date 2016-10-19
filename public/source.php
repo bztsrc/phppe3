@@ -3745,11 +3745,11 @@ class ClassMap extends Extension
                 //! update base extensions
                 @mkdir(".tmp");
                 $c=".tmp/archive";
-                foreach(["Core","Extensions","CMS","wyswyg"] as $r) {
+                foreach(["Core","Extensions"] as $r) {
                     self::$w=$r;
                     $C=file_get_contents($R."phppe3_".strtolower($r).".tgz");
                     if(!empty($C)){
-                        echo "DIAG-U: $r\n";
+                        echo "DIAG-U: vendor/phppe/$r\n";
                         file_put_contents($c,$C);
                         Tools::untar($c,function($n,$b){
                             if(substr($n,-1)!="/") {
@@ -3761,6 +3761,27 @@ class ClassMap extends Extension
                         });
                         @unlink($c);
                     }
+                }
+                //! create self reference in remote config
+                $c="vendor/phppe/Extensions/config.php";
+                if(!file_exists($c)) {
+                    echo "DIAG-U: $c\n";
+                    $r=getenv("HOME")."/.ssh/id_rsa";
+                    if(!file_exists($r)) {
+                        system("ssh-keygen -t rsa -f ".escapeshellarg($r));
+                        $d=@file_get_contents($r.".pub");
+                        @file_put_contents(dirname($r)."/authorized_keys",
+                            $d, FILE_APPEND);
+                        $d=@explode(" ",$d);
+                        @file_put_contents(dirname($r)."/known_hosts",
+                            "127.0.0.1 ".$d[0]." ".$d[1]."\n", FILE_APPEND);
+                    }
+                    file_put_contents($c,"<"."?ph"."p return [\n".
+                    "\t\"host\"=>\"localhost\",\n\t\"port\"=>22,\n".
+                    "\t\"user\"=>\"".getenv("USER")."\",\n".
+                    "\t\"path\"=>\"".dirname(__DIR__)."\",\n".
+                    "\t\"identity\"=>\"".@file_get_contents($r).
+                    "\"\n];\n");
                 }
             }
             //! helper function to create files

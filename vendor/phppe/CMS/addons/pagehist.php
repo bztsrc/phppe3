@@ -18,11 +18,6 @@ class pagehist extends \PHPPE\AddOn
             "pages a left join users b on a.modifyid=b.id left join users c on a.publishid=c.id",
             "a.id=? AND (a.lang='' OR a.lang=?)",
             "", "a.created DESC", 0, 0, [$_SESSION['cms_url'], \PHPPE\Core::$client->lang]);
-        foreach($app->versions as $k=>$v)
-            if(!empty($v['publishid'])) {
-                $app->versions[$k]['hdr']=1;
-                break;
-            }
     }
 
     function edit()
@@ -30,13 +25,6 @@ class pagehist extends \PHPPE\AddOn
         return \PHPPE\View::template("cms_pagehist");
     }
 
-    function save($params)
-    {
-echo("<pre>");
-print_r($params);
-die();
-        return \PHPPE\Page::savePageInfo($this->name, str_getcsv($params['value'], ','));
-    }
 }
 
 ?>
