@@ -1,9 +1,9 @@
 <style scoped>
-BODY { background:transparent !important;}
+BODY { background:transparent !important;color:#B0B0B0;}
 INPUT.input, TEXTAREA.input, SELECT.input { background: rgba(32,32,32,0.95); color:#fff !important; }
 INPUT.reqinput, TEXTAREA.reqinput, SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff !important; }
 </style>
-<div class='infobox'>
+<div class='infobox' style='padding:5px;overflow:auto;'>
 <nobr><span dir='ltr'><span style='float:left;padding-top:8px;'><i><!=url("/")+""+(substr(url("/"),-1)!="/"?"/":"")></i></span><div style='width:50%;'><!field *text page.id></div></nobr><br style='clear:both;'/>
 <div style='width:100%;'><b><!=L('Name')></b><!if quickhelp><small><!L help_pagename></small><!/if><!field *text page.name></div>
 <div style='width:100%;'><b><!=L('Filters')></b><!if quickhelp><small><!L help_filters></small><!/if><!field text page.filter></div>

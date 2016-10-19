@@ -161,7 +161,11 @@ PHPPE Core, PHPPE Pack, PHPPE CMS, PHPPE Extensions as well as PHPPE Developer a
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Author
-------
+Authors
+-------
 
+PHPPE
 zoltan DOT baldaszti AT gmail DOT com
+
+Simple Diff
+Paul Butler 2007 <http://www.paulbutler.org/>

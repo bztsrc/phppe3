@@ -1,4 +1,5 @@
 <?php
 return [
-  "expert"=>false
+  "expert"=>false,
+  "pagehistory"=>true
 ];

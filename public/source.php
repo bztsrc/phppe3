@@ -1637,7 +1637,9 @@ namespace PHPPE {
                     if(empty($u)) $u=Core::$core->url;
                     $data = DS::fetch("a.*,b.ctrl", "pages a LEFT JOIN views b ON a.template=b.id",
                         "(a.id=? OR ? LIKE a.id||'/%') AND ".
-                        "(a.lang='' OR a.lang=?) AND ".
+                        "(a.lang='' OR a.lang=?) AND ".(ClassMap::has("PHPPE\\CMS") &&
+                        get_class(View::getval('app'))=="PHPPE\\Content" &&
+                        Core::$user->has("siteadm|webadm")?"":"a.publishid!=0 AND ").
                         "a.pubd<=CURRENT_TIMESTAMP AND (a.expd='' OR a.expd=0 OR a.expd>CURRENT_TIMESTAMP)",
                         "", "a.id DESC,a.created DESC",
                         [$u, $u, Core::$client->lang]
@@ -1667,7 +1669,7 @@ namespace PHPPE {
                         $this->$k = $v;
                     }
                 }
-                foreach (['id', 'name', 'lang', 'modifyd', 'ctrl'] as $k) {
+                foreach (['id', 'name', 'lang', 'modifyd', 'ctrl', 'publishid'] as $k) {
                     $this->$k = $data[$k];
                 }
                 //! get page specific DDS
@@ -1708,7 +1710,10 @@ namespace PHPPE {
         {
             try {
                 //! special page holds global page parameters and dds'
-                $F = DS::fetch('data,dds', 'pages', "id='frame'", '', 'id DESC,created DESC');
+                $F = DS::fetch('data,dds', 'pages', "id='frame' AND ".(ClassMap::has("PHPPE\\CMS") &&
+                        get_class(View::getval('app'))=="PHPPE\\Content" &&
+                        Core::$user->has("siteadm|webadm")?"":"publishid!=0 AND ").
+                        "(lang='' OR lang=?)", '', 'id DESC,created DESC',[Core::$client->lang]);
                 $E = $F?json_decode($F['data'], true):null;
                 View::assign('frame', $E);
                 //! load global dds
@@ -2972,7 +2977,7 @@ namespace PHPPE {
  * Archive extractor (file can be pkzip,gz,bz2,tar,cpio,pax)
  *
  * @param string        archive file
- * @param string/array  filename to get or [class,method] for callback on every file
+ * @param string/array/callable  filename to get or callback [class,method] or callable
  *
  * @return string       content of the file in archive
  */
@@ -3023,7 +3028,7 @@ namespace PHPPE {
                     }
                     if (is_array($fn) && method_exists($fn[0], $fn[1])) {
                         call_user_func($fn, $zname, $body);
-                    }
+                    } elseif(is_callable($fn)) $fn($zname, $body);
                     zip_entry_close($zip_entry);
                 }
                 zip_close($zip);
@@ -3070,9 +3075,9 @@ namespace PHPPE {
                     return substr($body, 0, $size);
                 }
                 //! if argument was an array with class and method name, call it on every file in the archive
-                if ($size > 0 && is_array($fn) && method_exists($fn[0], $fn[1])) {
+                if (is_array($fn) && method_exists($fn[0], $fn[1])) {
                     call_user_func($fn, $name, substr($body, 0, $size));
-                }
+                } elseif(is_callable($fn)) $fn($name, substr($body, 0, $size));
             }
             $close($f);
         }
@@ -3220,7 +3225,7 @@ class ClassMap extends Extension
     {
         //! generate classmap file if it's not exists,
         //! it's older than extensions directory or forced
-        if (!file_exists(self::$file) || filemtime(self::$file)<filemtime("vendor/phppe") ||
+        if (!file_exists(self::$file) || filemtime(self::$file)<@filemtime("vendor/phppe") ||
             isset($_REQUEST['clear']) || @$_SERVER['argv'][1] == '--diag') {
             self::$map = $this->generate();
         }
@@ -3644,7 +3649,7 @@ class ClassMap extends Extension
                 }
                 if (empty($_SERVER['argv'][1]) || in_array('--help', $_SERVER['argv'])) {
                     $c = chr(27)."[90mphp ".$_SERVER['argv'][0].chr(27)."[0m";
-                    echo(chr(27).'[96mPHP Portal Engine '.VERSION.", LGPL 2016 bzt".chr(27)."[0m\n  $c --help\n  $c --version\n  $c --diag [--gid=x]\n  $c [application [action [item]]] [--dump]\n");
+                    echo(chr(27).'[96mPHP Portal Engine '.VERSION.", LGPL 2016 bzt".chr(27)."[0m\n  $c --help\n  $c --version\n  $c --diag [--gid=x]\n  $c --self-update\n  $c [application [action [item]]] [--dump]\n");
                     foreach(ClassMap::$map as $C=>$v)
                         if(!empty($C::$cli))
                             foreach(is_array($C::$cli)?$C::$cli:[$C::$cli] as $d)
@@ -3655,9 +3660,10 @@ class ClassMap extends Extension
             }
 
             //! detect bootstrap type
-            if (!self::$w && !$islib && @$_SERVER['argv'][1] == '--diag') {
+            $s = @$_SERVER['argv'][1] == '--self-update';
+            if (!self::$w && !$islib && ($s||@$_SERVER['argv'][1] == '--diag')) {
                 // @codeCoverageIgnoreStart
-                $this->bootdiag();
+                $this->bootdiag($s);
                 // @codeCoverageIgnoreEnd
             } else {
                 //! normal bootsrap
@@ -3698,7 +3704,7 @@ class ClassMap extends Extension
  * Run diagnostics and try to fix errors.
  */
         // @codeCoverageIgnoreStart
-        private function bootdiag()
+        private function bootdiag($s)
         {
             //! we'll need some information from the client
             self::$client->init();
@@ -3725,6 +3731,34 @@ class ClassMap extends Extension
             $U = fileowner(__FILE__);
             if ($this->runlevel) {
                 echo "DIAG-I: uid $U gid ".self::$g."\n";
+            }
+            $R = 'http://bztsrc.github.io/phppe3/';
+            //! if called with --self-update
+            if(!empty($s)){
+                $C=file_get_contents("https://raw.githubusercontent.com/bztsrc/phppe3/3.0/public/index.php");
+                if(!empty($C)) {
+                    $c="public/index.php";
+                    echo "DIAG-U: $c\n";
+                    file_put_contents($c,$C);
+                }
+                @mkdir(".tmp");
+                $c=".tmp/archive";
+                foreach(["Core","Extensions","CMS","wyswyg"] as $r) {
+                    self::$w=$r;
+                    $C=file_get_contents($R."phppe3_".strtolower($r).".tgz");
+                    if(!empty($C)){
+                        echo "DIAG-U: $r\n";
+                        file_put_contents($c,$C);
+                        Tools::untar($c,function($n,$b){
+                            if(substr($n,-1)!="/") {
+                                $d="vendor/phppe/".\PHPPE\Core::$w."/".$n;
+                                @mkdir(dirname($d), 0770, true);
+                                file_put_contents($d,$b);
+                            }
+                        });
+                        @unlink($c);
+                    }
+                }
             }
             //! helper function to create files
             function i($c, $r, $f = 0, $a = 0640)
@@ -3823,18 +3857,17 @@ class ClassMap extends Extension
             i('public/.htaccess', "RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n");
             i('public/favicon.ico', '');
             i('vendor/phppe/Core/config.php', '');
-            $U = 'http://bztsrc.github.io/phppe3/';
             $D = 'vendor/phppe/Core/views/';
             $e = '.tpl';
             $c = "<!dump core.req2arr('obj')>";
             i($D."403$e", "<h1>403</h1><!L Access denied>\n<!-- <!L hacker> -->");
             i($D."404$e", "<h1>404</h1><!L Not found>: <b><!=core.url></b>");
             i($D."frame$e", "<div id='content'><!app></div>");
-            i($D."index$e", "<h1>PHPPE works!</h1>Next step: install <a href='".$U."phppe3_core.tgz' target='_new'>PHPPE Pack</a>.<br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
+            i($D."index$e", "<h1>PHPPE works!</h1>Next step: <samp>php public/".basename(__FILE__)." --self-update</samp><br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!L Site is temporarily down for maintenance></h1>");
             i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
-            i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$U\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
+            i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$R\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
             if ($E) {
                 self::log('E', "Wrong permissions:\n$E", 'diag');

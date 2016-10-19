@@ -161,7 +161,7 @@ pe.cms = {
     
     tablesearch:function(obj,id)
     {
-        var r=new RegExp("("+obj.value+")","i");
+        var r=new RegExp("("+obj.value+")+","i");
         var i,j,tbl=document.getElementById(id),pl=document.getElementById('pagelang');
         if(pl!=null&&pl.value!=null) pl=pl.value; else pl='';
         for(j=1;j<tbl.rows.length;j++){
@@ -170,11 +170,26 @@ pe.cms = {
             if(pl!=''&&l!=null&&pl!=l) ok=0;
             for(i=0;i<tbl.rows[j].cells.length;i++){
                 if(tbl.rows[j].cells[i].getAttribute('data-skipsearch')) continue;
-                tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent;
-                if(tbl.rows[j].cells[i].textContent.match(r)) {
-                    tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].textContent.replace(r,"<ins>$1</ins>");
-                    ok=1;
+                tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].innerHTML.replace("<ins>","").replace("</ins>","");
+                if(tbl.rows[j].cells[i].innerHTML.match(r)) {
+					var t=tbl.rows[j].cells[i].firstChild;
+					while(t!=null) {
+						if(t.innerHTML!=null&&t.innerHTML!=''){
+							if(obj.value!='' && t.innerHTML.match(r)) {
+								t.innerHTML=t.innerHTML.replace(r,"<ins>$1</ins>");
+								ok=1;
+							}
+						}
+						if(t.textContent!=null&&t.textContent!=''&&t.tagName==null) {
+							if(obj.value!='' && t.textContent.match(r)) {
+								t.textContent=t.textContent.replace(r,"<ins>$1</ins>");
+								ok=1;
+							}
+						}
+						t=t.nextSibling;
+					}
                 }
+                tbl.rows[j].cells[i].innerHTML=tbl.rows[j].cells[i].innerHTML.replace("&lt;ins&gt;","<ins>").replace("&lt;/ins&gt;","</ins>");
             }
             if(pl!=''&&l!=null&&pl!=l) ok=0;
             tbl.rows[j].style.display=ok?'table-row':'none';
@@ -216,6 +231,14 @@ pe.cms = {
 			return;
     	pe.cms.tag=evt.target;
 		pe.wyswyg.popup(event,"layout_data",'cms/tag?item='+urlencode(evt.target.alt));
+	},
+
+	checkall:function(obj) {
+		var i;
+		for(i=0;i<obj.form.elements.length;i++) {
+			if(obj.form.elements[i].type=='checkbox')
+				obj.form.elements[i].checked=obj.checked;
+		}
 	},
 
     //! called by wyswyg

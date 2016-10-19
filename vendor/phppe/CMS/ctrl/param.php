@@ -76,8 +76,8 @@ class CMSParam
         }
 
         //! save page parameter
-        if (Core::isTry("page") && $this->editable) {
-            $param = Core::req2arr("page");
+        $param = Core::req2arr("page");
+        if (!empty($param) && $this->editable) {
             //! if there was no validation error
             if (!Core::isError())
             {

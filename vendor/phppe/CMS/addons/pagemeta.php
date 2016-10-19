@@ -9,7 +9,6 @@ use \PHPPE\Core as Core;
 class pagemeta extends \PHPPE\AddOn
 {
     public $heightClass = "infobox";
-    public $headerHeight = 30;
     public $forceFull = 50;
 
     function load(&$app)
@@ -38,7 +37,7 @@ class pagemeta extends \PHPPE\AddOn
     {
         $m=Core::lib("CMS")->metas;
         $v=is_array($this->value)?$this->value:json_decode($this->value, true);
-        $r="<div class='infobox'>";
+        $r="<div class='infobox' style='padding:5px;overflow:auto;'>";
         foreach($m as $k)
             $r.="<b>".ucfirst(L($k))."</b><br><input class='input form-control' name='".$this->fld."[".$k."]' value='".htmlspecialchars(!empty($v[$k])?$v[$k]:'')."'>";
         $r.="</div>";

@@ -14,6 +14,8 @@ class pageadd extends \PHPPE\AddOn\pageinfo
             $page = new \PHPPE\Page;
             \PHPPE\View::assign("page", $page);
         }
+        $quickhelp=!Core::lib("CMS")->expert;
+        \PHPPE\View::assign("quickhelp",$quickhelp);
         return \PHPPE\View::template("cms_pageinfo");
     }
 

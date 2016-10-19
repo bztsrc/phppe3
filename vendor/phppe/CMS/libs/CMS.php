@@ -171,7 +171,11 @@ class CMS
         $ret = "";
         if (Core::$user->has("siteadm|webadm")) {
             //! if we are on an editable page
-            if (get_class(\PHPPE\View::getval("app"))=="PHPPE\Content") {
+            $app=\PHPPE\View::getval("app");
+            if (get_class($app)=="PHPPE\Content") {
+                //! unpiblished warning
+                if(!$app->publishid)
+                    $ret.="<a href='".url("cms/pages")."?publish'><span class='btn-danger' style='padding:0px 4px 0px 4px;'>".strtoupper(L("Unpublished"))."</span></a>";
                 //! page info
                 $ret .= self::statIcon("pageinfo");
                 //! page meta
@@ -189,6 +193,30 @@ class CMS
                 "src='images/cms/pagedel.png' ".
                 "alt='[PAGEDEL]' ".
                 "title='".htmlspecialchars(L('pagedel'))."'>";
+            }
+            if (get_class($app)=="PHPPE\Ctrl\CMSArchive" && $this->revert) {
+                $u = Core::$core->url."?created=".urlencode(trim($_REQUEST['created']));
+                //! page version delete
+                $ret .= "<img style='cursor:pointer;' ".
+                "onclick='document.location.href=\"".$u.(isset($_REQUEST['diff'])?'':'&diff')."\";' ".
+                "src='images/cms/pagediff.png' ".
+                "alt='[PAGEDIFF]' ".
+                "title='".htmlspecialchars(L('pagediff'))."'>";
+                //! revert page to version
+                $ret .= "<img style='cursor:pointer;' ".
+                "onclick='document.location.href=\"".$u."&revert\";' ".
+                "src='images/cms/pagerevert.png' ".
+                "alt='[PAGEREVERT]' ".
+                "title='".htmlspecialchars(L('pagerevert'))."'>";
+                //! page history
+                $ret .= self::statIcon("pagehist");
+                //! page version delete
+                $ret .= "<img style='cursor:pointer;' ".
+                "onclick='document.location.href=\"".$u."&pagedel\";' ".
+                "src='images/cms/pagedel.png' ".
+                "alt='[PAGEDEL]' ".
+                "title='".htmlspecialchars(L('pagedel'))."'>";
+
             }
             //! page add
             $ret .= self::statIcon("pageadd");
