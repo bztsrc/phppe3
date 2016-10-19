@@ -3735,12 +3735,14 @@ class ClassMap extends Extension
             $R = 'http://bztsrc.github.io/phppe3/';
             //! if called with --self-update
             if(!empty($s)){
+                //! update the core
                 $C=file_get_contents("https://raw.githubusercontent.com/bztsrc/phppe3/3.0/public/index.php");
                 if(!empty($C)) {
                     $c="public/index.php";
                     echo "DIAG-U: $c\n";
                     file_put_contents($c,$C);
                 }
+                //! update base extensions
                 @mkdir(".tmp");
                 $c=".tmp/archive";
                 foreach(["Core","Extensions","CMS","wyswyg"] as $r) {
@@ -3753,7 +3755,8 @@ class ClassMap extends Extension
                             if(substr($n,-1)!="/") {
                                 $d="vendor/phppe/".\PHPPE\Core::$w."/".$n;
                                 @mkdir(dirname($d), 0770, true);
-                                file_put_contents($d,$b);
+                                if(substr($d,-10)!="config.php"||!file_exists($d))
+                                    file_put_contents($d,$b);
                             }
                         });
                         @unlink($c);
@@ -3856,7 +3859,6 @@ class ClassMap extends Extension
             i('app/init.php', '<'."?php\n//! set your routes here (if any)\n//\\PHPPE\\Http::route('myurl','myClass','myMethod');\n\n//! return service instance (if any)\n//return new myService;\n");
             i('public/.htaccess', "RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.*)\$ index.php/\$1\n");
             i('public/favicon.ico', '');
-            i('vendor/phppe/Core/config.php', '');
             $D = 'vendor/phppe/Core/views/';
             $e = '.tpl';
             $c = "<!dump core.req2arr('obj')>";
