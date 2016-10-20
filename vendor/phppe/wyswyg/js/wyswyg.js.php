@@ -46,6 +46,23 @@ if(!empty(Core::$core->item)){
     if(strtolower(substr($str,0,5))=="<!cms") {
         $bg=imagecolorallocate($im,220,0,0);
         $fg=imagecolorallocate($im, 239, 254, 255);
+    } elseif(strtolower(substr($str,0,5))=="<!app") {
+        $bg=imagecolorallocate($im,0,110,0);
+        $fg=imagecolorallocate($im, 239, 254, 255);
+    } elseif(strtolower(substr($str,0,5))=="<!var"||
+      strtolower(substr($str,0,7))=="<!field"||
+      strtolower(substr($str,0,8))=="<!widget"||
+      strtolower(substr($str,0,3))=="<!="||
+      strtolower(substr($str,0,3))=="<!l"||
+      strtolower(substr($str,0,6))=="<!date"||
+      strtolower(substr($str,0,6))=="<!time"||
+      strtolower(substr($str,0,10))=="<!difftime"
+      ) {
+        $bg=imagecolorallocate($im,0,110,110);
+        $fg=imagecolorallocate($im, 239, 254, 255);
+    } elseif(strtolower(substr($str,0,6))=="<!dump") {
+        $bg=imagecolorallocate($im,110,110,0);
+        $fg=imagecolorallocate($im, 254, 254, 64);
     } else {
         $bg=imagecolorallocate($im,0,0,108);
         $fg=imagecolorallocate($im, 239, 254, 255);
@@ -116,6 +133,7 @@ pe.wyswyg = {
     "video": "glyphicon glyphicon-film",            //L("wyswyg_video")
     "attachment": "glyphicon glyphicon-paperclip",  //L("wyswyg_attachment")
     "tag": "glyphicon glyphicon-cog",               //L("wyswyg_tag")
+    "paste": "glyphicon glyphicon-paste",           //L("wyswyg_paste")
     "undo": "glyphicon glyphicon-step-backward",    //L("wyswyg_undo")
     "redo": "glyphicon glyphicon-step-forward",     //L("wyswyg_redo")
     },
@@ -199,7 +217,7 @@ open: function(source, icons)
         edit.setAttribute('ontouchend','pe.wyswyg.event(event,"'+id+'","select-@TAG");');
         edit.setAttribute('onkeyup','pe.wyswyg.setvalue("'+id+'");');
         edit.setAttribute('onmouseout','pe.wyswyg.setvalue("'+id+'");');
-        edit.setAttribute("ondrop",'pe.wyswyg.drop(event,"'+id+'");');
+        edit.setAttribute("ondrop",'pe.wyswyg.drop(event,"'+id+'","'+(conf[3]!=null?conf[3]:'')+'");');
         edit.setAttribute("contentEditable",true);
         edit.setAttribute("designMode","on");
         source.parentNode.insertBefore(edit,source);
@@ -289,10 +307,6 @@ open: function(source, icons)
         var popup=document.createElement('div');
         popup.setAttribute('id',id+'_popup');
         popup.setAttribute('class','wyswyg_popup');
-        popup.setAttribute('onmousemove','pe_w();');
-        popup.setAttribute('onkeydown','pe_w();');
-        popup.setAttribute('ondragleave','pe_p();');
-        popup.setAttribute('onclick','pe_p();');
         popup.setAttribute('style','position:fixed;display:none;visibility:visible;');
         tb.appendChild(popup);
 
@@ -303,16 +317,23 @@ open: function(source, icons)
     }
 },
 
-drop: function(evt,id)
+drop: function(evt,id,hooks)
 {
     setTimeout(function(){
-        var source=document.getElementById(id);
-        var h,hooks=source.getAttribute('data-drophook');
+        var h,r;
+		while(r=evt.target.innerHTML.match(/<img[^>]+data\-styleguide[^\"]+\"([^\"]+)\"[^>]*>/)){
+			if(r.length<2) break;
+			var t=evt.target.innerHTML.substr(0,r.index);
+			t+="\n"+r[1].replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"")+"\n";
+			t+=evt.target.innerHTML.substr(r.index+r[0].length);
+			evt.target.innerHTML=t;
+		}
         if(hooks!=null) hooks=hooks.split(',');
         for(h in hooks) {
             if(function_exists(hooks[h]))
                 eval(hooks[h]+"(evt,id)");
         }
+		pe.wyswyg.setvalue(id);
     },50);
 },
 
@@ -540,7 +561,7 @@ prevent: function(evt)
 popup:function(evt, id, url)
 {
     var popup=document.getElementById(id+'_popup');
-	popup.style.zIndex=503;
+	popup.style.zIndex=1997;
     popup.innerHTML='';
     pe_p(id+'_popup',null,5);
     var r = new XMLHttpRequest();
@@ -558,6 +579,8 @@ popup:function(evt, id, url)
         } else
             popup.innerHTML=L("wyswyg_nohook");
         var x=document.body.offsetWidth-popup.offsetWidth-5,y=document.body.offsetHeight-popup.offsetHeight-5;
+		if(x<0) { popup.style.width=document.body.offsetWidth-5; x=0; }
+		if(y<0) { popup.style.height=document.body.offsetHeight-5; y=0; }
 	    if(x<parseInt(popup.style.left))
 		    popup.style.left=x+'px';
 	    if(y<parseInt(popup.style.top))

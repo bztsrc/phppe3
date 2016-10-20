@@ -7,6 +7,8 @@ use \PHPPE\Core as Core;
 
 class cmscss extends \PHPPE\AddOn\text
 {
+	public $conf="*";
+
 	function show(  )
 	{
 		$v=$this->toArr($this->value);

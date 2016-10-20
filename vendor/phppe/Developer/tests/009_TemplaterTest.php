@@ -28,9 +28,10 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 
 		$o = \PHPPE\Core::$core->output;
 		\PHPPE\Core::$core->output = "ncurses";
+		$o=trim(\PHPPE\View::e('D',"message","module"));
 		$this->assertEquals(
-			"module-D: message",
-			trim(\PHPPE\View::e('D',"message","module")),
+			"module-D: message".chr(27)."[0m",
+			$o,
 			"error string #1");
 		\PHPPE\Core::$core->output = "html";
 		$this->assertEquals(
@@ -82,7 +83,8 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$core->allowed=["number_format"];
 		$this->assertNotFalse(strpos(\PHPPE\View::_t("<!=sprintf('aaabbb')>"),"BADFNC"),"Expression #5");
 		\PHPPE\Core::$core->allowed=[];
-		$this->assertEquals("aa bb",\PHPPE\View::_t('<!L aa_bb>'),"Language");
+		unset(\PHPPE\Core::$l['aaa_bbb']);
+		$this->assertEquals("aaa bbb",\PHPPE\View::_t('<!L aaa_bbb>'),"Language");
 		$this->assertNotFalse(strpos(\PHPPE\View::_t("<!notag>"),"UNKTAG"),"Unknown tag");
 		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!var noSuchAddon>'),"UNKADDON"),"Unknown AddOn");
 

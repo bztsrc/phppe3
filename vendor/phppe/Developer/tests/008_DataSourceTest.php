@@ -184,6 +184,9 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
 		}
 		$this->assertTrue($wasExc,"save exception no ds");
 
+		$testModel = new TestModel(['id'=>1,'name'=>'one']);
+        $this->assertEquals(1,$testModel->id,"Creating with fields");
+
 		$testModel = new BadModel;
 
 		$wasExc=false;

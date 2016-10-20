@@ -50,9 +50,9 @@
 		<td<!if ownerid> style='color:#800000;'<!/if>><a style='color:inherit;text-decoration;none;' href='<!=url(id=='index'?'/':id)><!if !empty(lang)>?lang=<!=lang><!/if>'><!=name></a></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!=filter></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!if moduser><!=moduser><!else><!if modifyid==-1>admin<!else>?<!/if><!/if></td>
-		<td<!if ownerid> style='color:#800000;'<!/if> dir='ltr'><nobr><!if !modifyd><!difftime strtotime(created)-strtotime(ct)><!else><!difftime strtotime(modifyd)-strtotime(ct)><!/if></nobr></td>
+		<td<!if ownerid> style='color:#800000;'<!/if> dir='ltr' align='right'><nobr><!if !modifyd><!difftime strtotime(created)-core.now><!else><!difftime strtotime(modifyd)-core.now><!/if></nobr></td>
 		<td<!if ownerid> style='color:#800000;'<!/if> align='right'><!=versions></td>
-		<td align='right' dir='ltr' data-skipsearch='1'><nobr><!if ownerid><a href='<!=url('cms','unlock')><!=id>' style='text-decoration:none;color:<!if ownerid>#800000<!else>#000<!/if>;' title='<!=L("Unlock page")>'><!if ownerid==-1>admin<!else><!=lockuser><!/if> <small>(<!difftime strtotime(lockd)-strtotime(ct)>)</small>&nbsp;<img src='images/cms/unlock.png' alt='' align='abscenter'></a><!/if></nobr></td>
+		<td align='right' dir='ltr' data-skipsearch='1' align='right'><nobr><!if ownerid><a href='<!=url('cms','unlock')><!=id>' style='text-decoration:none;color:<!if ownerid>#800000<!else>#000<!/if>;' title='<!=L("Unlock page")>'><!if ownerid==-1>admin<!else><!=lockuser><!/if> <small>(<!difftime strtotime(lockd)-core.now>)</small>&nbsp;<img src='images/cms/unlock.png' alt='' align='abscenter'></a><!/if></nobr></td>
 	</tr>
 <!/if>
 <!/foreach>

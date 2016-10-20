@@ -7,6 +7,8 @@ use \PHPPE\Core as Core;
 
 class cmsdds extends \PHPPE\AddOn
 {
+	public $conf="*";
+
     function show(  )
     {
         $v=is_array($this->value)?$this->value:json_decode($this->value,true);

@@ -27,7 +27,7 @@ class CMSLayouts
 			$this->layout = new \PHPPE\Views($item);
 			$this->numPages = \PHPPE\Page::getNum($item);
 			$layout=Core::req2arr("layout");
-			if(!empty($this->layout->sitebuild)) {
+			if(!empty($this->layout->sitebuild) && !empty($layout)) {
 				Core::$core->noframe=1;
 				$layout['sitebuild']=$layout['name'];
 			}
@@ -36,7 +36,6 @@ class CMSLayouts
 					$this->layout->delete();
 				} else {
 					unset($layout['delete']);
-					\PHPPE\Core::log('A',sprintf(L("Layout %s modified by %s"),$this->id,\PHPPE\Core::$user->name), "cmsaudit");
 					$this->layout = new \PHPPE\Views($layout);
 					$this->layout->save();
 				}

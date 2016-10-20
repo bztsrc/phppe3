@@ -37,12 +37,12 @@ class Extensions {
 		//! global remote configuration to user object if no user specific found
 		if( !empty(Core::$user->id) && empty(Core::$user->data['remote']['host']) ) {
 			if( !empty($cfg['identity']) && !empty($cfg['user']) && !empty($cfg['host']) && !empty($cfg['path']) )
-				Core::$user->data['remote']=$cfg;
+				Core::$user->data['remote']=$_SESSION['pe_u']->data['remote']=$cfg;
 			else
 				Core::log("W","Unable to load global remote configuration from vendor/phppe/Extensions/config.php");
 		}
         if( empty(Core::$user->data['remote']['path']) ) {
-            Core::$user->data['remote']=['identity'=>'','user'=>'','host'=>'localhost','path'=>'/var/www/'];
+            Core::$user->data['remote']['path']='/var/www/';
         }
 	}
 
@@ -177,7 +177,7 @@ class Extensions {
                 //! Community provided Open Source extensions
                 "https://bztsrc.github.io/phppe3/",
                 //! Commertial extensions
-                "https://phppe.org/business/"
+//                "https://phppe.org/business/"
             ];
             //! add user provided repositories
 			if(!empty(Core::$core->repos)) $list=array_merge(Core::$core->repos,$list);

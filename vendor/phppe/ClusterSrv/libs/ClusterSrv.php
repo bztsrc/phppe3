@@ -79,7 +79,7 @@ class ClusterSrv extends \PHPPE\Model
 	public function stat()
 	{
 		return
-			"<div id='pe_cl' class='sub' style='display:none;' onmouseover='return pe_w();'></div>".
+			"<div id='pe_cl' class='sub' style='display:none;'></div>".
 			"<span class='glyphicon glyphicon-cloud' style='color:#808080;' onclick='pe.cluster.getstatus();return pe_p(\"pe_cl\",null,null,-200);'></span>";
 	}
 

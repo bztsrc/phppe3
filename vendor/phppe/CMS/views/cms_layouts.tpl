@@ -25,7 +25,7 @@
 		<td class='row<!=ODD>'><!if css>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if jslib>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if meta>&radic;<!else>&Oslash;<!/if></td>
-		<td class='row<!=ODD>' dir='ltr'><nobr><!if !modifyd><!difftime strtotime(created)-strtotime(ct)><!else><!difftime strtotime(modifyd)-strtotime(ct)><!/if></nobr></td>
+		<td class='row<!=ODD>' dir='ltr' align='right'><nobr><!difftime strtotime(modifyd)-core.now></nobr></td>
 	</tr>
 <!/foreach>
 	<tr>
@@ -38,12 +38,12 @@
 	</tr>
 <!foreach sitebuilds>
 	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()><!=id>";'>
-		<td class='row<!=ODD>' align='center' dir='ltr'><!if id=='frame'><span style='font-weight:bold;color:green;height:14px;padding-top:3px;'>&radic;</span><!else><a class='button' href='<!=url()>?set=<!=urlencode(sitebuild)>' style='height:18px;line-height:16px;padding-top:2px;text-decoration:none;color:#000;'>&Oslash;</a><!/if></td>
+		<td class='row<!=ODD>' align='center' dir='ltr'><!if id=='frame'><span style='color:green;' class='glyphicon glyphicon-check'><!if !core.isInst("bootstrap")>[X]<!/if></span><!else><a href='<!=url()>?set=<!=urlencode(sitebuild)>' style='color:#333;'><span class='glyphicon glyphicon-unchecked'><!if !core.isInst("bootstrap")>[ ]<!/if></span></a><!/if></td>
 		<td class='row<!=ODD>'><!=L(name)></td>
 		<td class='row<!=ODD>'><!if css>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if jslib>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if meta>&radic;<!else>&Oslash;<!/if></td>
-		<td class='row<!=ODD>' dir='ltr'><nobr><!if !modifyd><!difftime strtotime(created)-strtotime(ct)><!else><!difftime strtotime(modifyd)-strtotime(ct)><!/if></nobr></td>
+		<td class='row<!=ODD>' dir='ltr' align='right'><nobr><!if !modifyd><!difftime strtotime(created)-strtotime(ct)><!else><!difftime strtotime(modifyd)-strtotime(ct)><!/if></nobr></td>
 	</tr>
 <!/foreach>
 </table>
@@ -74,7 +74,7 @@
 <!if quickhelp><br/><small>(<!L help_js>)</small><!/if>
 </div>
 </div>
-<div id='layout_edit'><!field wyswyg(0,'pe.cms.image','{"tag":"cms/tag"}') layout.data><!if quickhelp><small>(<!L help_toolbar>)</small><!/if></div>
+<div id='layout_edit'><!field wyswyg(0,'pe.cms.image') layout.data><!if quickhelp><small>(<!L help_toolbar>)</small><!/if></div>
 <div class='toolbar'><!field update Delete pe.cms.layoutdel(event)><!field button Info pe.cms.fieldset(event)><!field update Save></div>
 </form>
 <!/if>

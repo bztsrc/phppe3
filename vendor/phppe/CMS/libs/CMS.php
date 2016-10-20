@@ -30,7 +30,11 @@ class CMS
     public $revert=false;   //!< do we have to keep history for reverting
     public $purge=8;        //!< we have to purge history if bigger than this
     public $metas=[];       //!< meta tags we want to make editable
-    public $wyswyg_toolbar = [ "content"=>"cms/content" ];
+    public $wyswyg_toolbar = [
+    	"content"=>"cms/content",
+    	"tag"=>"cms/tag",
+    	"paste"=>"cms/paste"
+    ];
 
 /**
  * Initialization hook
@@ -174,7 +178,7 @@ class CMS
             $app=\PHPPE\View::getval("app");
             if (get_class($app)=="PHPPE\Content") {
                 //! unpiblished warning
-                if(!$app->publishid)
+                if(isset($app->publishid) && !$app->publishid)
                     $ret.="<a href='".url("cms/pages")."?publish'><span class='btn-warning' style='padding:0px 4px 0px 4px;text-shadow:none;'>".L("UNPUBLISHED")."</span></a>";
                 //! page info
                 $ret .= self::statIcon("pageinfo");

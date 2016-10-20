@@ -110,7 +110,7 @@ class Page extends \PHPPE\Model
         //! check input
         if (!empty($this->id) && $this->id[0]=="/")
             $this->id=substr($this->id, 1);
-		$this->id=strtr($this->id,["\'"=>"","\""=>"","#"=>"","?"=>""]);
+        $this->id=strtr($this->id,["\'"=>"","\""=>"","#"=>"","?"=>""]);
         if (empty($this->id))
             throw new \Exception(L('No page id'));
         if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
@@ -334,6 +334,7 @@ class Page extends \PHPPE\Model
 			return;
         if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|pubadm"))
             throw new \Exception(L('No user id'));
+		$ids[]="frame";
     	$pages = \PHPPE\DS::query("id,lang,max(created) as created",static::$_table,"publishid=0 AND ownerid=0 AND id IN ('".implode("','",$ids)."')","id,lang");
 		foreach($pages as $p) {
         	//! write audit log

@@ -107,3 +107,4 @@ background:rgba(236, 151, 31,0.4);
 #layout_name { margin-top:5px; }
 ins { background:rgba(0,255,0,0.2); }
 del { background:rgba(255,0,0,0.2); }
+.wyswyg_tag IMG { max-height:64px; }
