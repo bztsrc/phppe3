@@ -728,7 +728,7 @@ $ vim phppe/config.php
 It's very likely that you have an $EDITOR environment variable holding default editor's name.
 <h3>5. Install PHPPE Pack (optional)</h3>
 <div class='alert alert-info'><b>NOTE</b>: if you've used <samp>composer create-project</samp>, Pack is already installed. Go to step 6.</div>
-<div class='alert alert-info'><b>NOTE</b>: if you've used <samp>--self-update</samp>, nothing left to do, you're done! Go to step 8.</div>
+<div class='alert alert-info'><b>NOTE</b>: if you've used <samp>--self-update</samp>, nothing left to do, you're done! Go to step 7.</div>
 <p>The diagnostics mode created missing files, among others composer.json. With that you can make PHP Composer to install vendor/phppe/Core from PHPPE Pack:</p>
 <b>With Composer (not using Packagist)</b><br>
 <pre>
@@ -759,8 +759,7 @@ $ composer require phppe/CMS
 <pre>
 $ mkdir vendor/phppe/CMS && curl https://bztsrc.github.io/phppe3/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 </pre>
-<h3>8. That's it!</h3>
-<div class='alert alert-success'>Enjoy using your shiny new PHPPE environment!</div>
+<div class='alert alert-success'><b>That's it!</b> Enjoy <a onclick='tab_switch("usage");'>using your shiny new PHPPE</a> environment!</div>
 In the browser, add "/login" to the URL, and log in as "admin" with password "changeme".
 </div>
 
@@ -1997,9 +1996,9 @@ $ mkdir vendor/<i style='color:red;'>(extension name)</i> && curl <i style='colo
 <h3>Query list of installed Extensions without Manager or Composer</h3>
 <p>Type into your SSH Terminal:</p>
 <p><pre>
-find vendor/phppe -name composer.json -print -exec sh -c "cat {} \| grep -e version[^_]" \;
+find vendor/phppe -name composer.json -print -exec sh -c "cat {} | grep -e \\\"version[^_]" \;
 </pre></p>
-<div class='alert alert-warning'>Depending on your shell, it's possible you'll have to replace <samp>\|</samp> with <samp>|</samp>.</div>
+<div class='alert alert-warning'>Depending on your shell, it's possible you'll have to replace <samp>|</samp> with <samp>\|</samp>.</div>
 <h2>Extensions Manager<sup><small>PHPPE Extensions</small></sup></h2>
 <p>The <a onclick='tab_switch("downloads");'>PHPPE Extensions</a> Manager is a tool to install extensions over a web interface.
 It does not provide the same functionality as PHP Composer, so it's not recommended in development environments.
