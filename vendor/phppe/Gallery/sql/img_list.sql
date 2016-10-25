@@ -6,3 +6,5 @@ CREATE TABLE `img_list` (
   `ordering` int(11) NOT NULL default 0,
   PRIMARY KEY  (`list_id`,`id`)
 );
+
+UPDATE `pages` SET dds='{"carousel":["id", "img_list", "list_id=''@ID''", "", "ordering"]}' WHERE id='index' AND lang='' AND dds='';

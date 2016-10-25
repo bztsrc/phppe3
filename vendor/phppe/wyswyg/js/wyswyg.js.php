@@ -102,7 +102,6 @@ $libs = \PHPPE\Core::lib();
 foreach($libs as $l)
     if(!empty($l->wyswyg_toolbar))
         $toolbar = array_merge($toolbar, $l->wyswyg_toolbar);
-//header("Pragma:no-cache");
 ?>
 pe.wyswyg = {
 <?php if($bs) {?>
@@ -580,6 +579,15 @@ popup:function(evt, id, url, onlyload)
                 a=popup.querySelector("input[type='text']");
             if(a!=null)
                 a.focus();
+            a=popup.querySelector("#labels");
+            if(a!=null) {
+            	for(var k in LANG) {
+            		var o=document.createElement("option");
+            		o.setAttribute("value", k);
+            		o.innerHTML=LANG[k];
+            		a.appendChild(o);
+            	}
+            }
         } else
             popup.innerHTML=L("wyswyg_nohook");
 		if(onlyload==null) {

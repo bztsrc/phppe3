@@ -135,7 +135,7 @@ class Page extends \PHPPE\Model
         }
         $a['publishid'] = static::$_history?0:\PHPPE\Core::$user->id;
         //! write audit log
-        \PHPPE\Core::log('A',sprintf(L("Page %s saved by %s"),$this->id,\PHPPE\Core::$user->name), "cmsaudit");
+        \PHPPE\Core::log('A',sprintf("Page %s saved by %s",$this->id,\PHPPE\Core::$user->name), "cmsaudit");
         //! save page
         if (!\PHPPE\DS::exec((!static::$_history && !$force ?
             'UPDATE '.static::$_table.' SET '.implode('=?,', array_keys($a)).
@@ -170,7 +170,7 @@ class Page extends \PHPPE\Model
         if(@$this->data[$name]!=$value) {
             //! write audit log
             \PHPPE\Core::log('A',
-                sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
+                sprintf("Set page parameter %s for %s by %s",$name,$this->id,\PHPPE\Core::$user->name).
                 (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
                 addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
             //! set parameter
@@ -200,7 +200,7 @@ class Page extends \PHPPE\Model
             if (!$new && !empty($params['pageid']) && $params['pageid'] != $params['id']) {
                 $rename=true;
                 \PHPPE\DS::exec("UPDATE ".static::$_table." SET id=? WHERE id=?", [ $params['id'], $params['pageid'] ] );
-                \PHPPE\Core::log('A',sprintf(L("Page %s renamed to %s by %s"),$params['pageid'],$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
+                \PHPPE\Core::log('A',sprintf("Page %s renamed to %s by %s",$params['pageid'],$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
             }
         }
         //! create page object
@@ -209,7 +209,7 @@ class Page extends \PHPPE\Model
         foreach ($params as $k=>$v)
             if (property_exists($page, $k) && $page->$k!=$v) {
                 \PHPPE\Core::log('A',
-                    sprintf(L("Set page %s for %s by %s"),$k,$params['id'],\PHPPE\Core::$user->name).
+                    sprintf("Set page %s for %s by %s",$k,$params['id'],\PHPPE\Core::$user->name).
                     (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr($page->$k,["\n"=>""]))."' -> '".
                 addslashes(strtr($v,["\n"=>""]))."'":""), "cmsaudit");
                 $page->$k = $v;
@@ -255,8 +255,8 @@ class Page extends \PHPPE\Model
                 (@$d[0]!=@$old[$k][0]||@$d[1]!=@$old[$k][1]||
                 @$d[2]!=@$old[$k][2]||@$d[3]!=@$old[$k][3]||@$d[4]!=@$old[$k][4])) {
                 //! write audit log
-                \PHPPE\Core::log('A',sprintf(L("PageDDS %s for %s modified by %s"),$k,$pageid,\PHPPE\Core::$user->name).
-                    (\PHPPE\Core::$core->runlevel > 2 ?(empty($d[0])?" ".L("deleted"):" '".implode("', '",$d)."'"):""), "cmsaudit");
+                \PHPPE\Core::log('A',sprintf("PageDDS %s for %s modified by %s",$k,$pageid,\PHPPE\Core::$user->name).
+                    (\PHPPE\Core::$core->runlevel > 2 ?(empty($d[0])?" *deleted*":" '".implode("', '",$d)."'"):""), "cmsaudit");
                 $needsave=true;
             }
             if (!empty($d[0])) {
@@ -282,7 +282,7 @@ class Page extends \PHPPE\Model
         if (is_string($pages))
             $pages = str_getcsv($pages, ',');
         //! write audit log
-        \PHPPE\Core::log('A',sprintf(L("Pagelist %s modified by %s"),$name,\PHPPE\Core::$user->name).
+        \PHPPE\Core::log('A',sprintf("Pagelist %s modified by %s",$name,\PHPPE\Core::$user->name).
             (\PHPPE\Core::$core->runlevel > 2 ?:" '".implode("', '",$pages)."'"), "cmsaudit");
         \PHPPE\DS::exec("DELETE FROM ".static::$_table."_list WHERE list_id=?",[$name]);
         foreach($pages as $k=>$v)
@@ -308,7 +308,7 @@ class Page extends \PHPPE\Model
         if(!empty($created))
          $a[]=$created;
         //! write audit log
-        \PHPPE\Core::log('A',sprintf(L("Delete page %s (%s,%s) by %s"),$pageid,\PHPPE\Core::$client->lang,$created,\PHPPE\Core::$user->name), "cmsaudit");
+        \PHPPE\Core::log('A',sprintf("Delete page %s (%s,%s) by %s",$pageid,\PHPPE\Core::$client->lang,$created,\PHPPE\Core::$user->name), "cmsaudit");
         $r = \PHPPE\DS::exec(
             "DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?)".
             (!empty($created)?" AND created=?":""),
@@ -363,7 +363,7 @@ class Page extends \PHPPE\Model
     	$pages = \PHPPE\DS::query("id,lang,max(created) as created",static::$_table,"publishid=0 AND ownerid=0 AND id IN ('".implode("','",$ids)."')","id,lang");
 		foreach($pages as $p) {
         	//! write audit log
-        	\PHPPE\Core::log('A',sprintf(L("Publicate page %s (%s,%s) by %s"),$p['id'],$p['lang'],$p['created'],\PHPPE\Core::$user->name), "cmsaudit");
+        	\PHPPE\Core::log('A',sprintf("Publicate page %s (%s,%s) by %s",$p['id'],$p['lang'],$p['created'],\PHPPE\Core::$user->name), "cmsaudit");
 			// mark newest as active
 			\PHPPE\DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE id=? AND lang=? AND created=?",[\PHPPE\Core::$user->id,$p['id'],$p['lang'],$p['created']]);
 			// purge old active records
@@ -385,7 +385,7 @@ class Page extends \PHPPE\Model
 		if(empty($pages))
 			$pages = self::getPages();
 		//! write audit log
-		\PHPPE\Core::log('A',sprintf(L("Purge page history by %s"),\PHPPE\Core::$user->name), "cmsaudit");
+		\PHPPE\Core::log('A',sprintf("Purge page history by %s",\PHPPE\Core::$user->name), "cmsaudit");
 		//! purge old records
 		foreach($pages as $p) {
 			if($p['versions']>1)

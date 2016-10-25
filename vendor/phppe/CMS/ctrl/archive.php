@@ -29,7 +29,7 @@ class CMSArchive
         }
         if(isset($_REQUEST['revert'])) {
             if(!empty($_REQUEST['created'])) {
-                \PHPPE\Core::log('A',sprintf(L("Page %s reverted to %s by %s"),$item,$_REQUEST['created'],\PHPPE\Core::$user->name), "cmsaudit");
+                \PHPPE\Core::log('A',sprintf("Page %s reverted to %s by %s",$item,$_REQUEST['created'],\PHPPE\Core::$user->name), "cmsaudit");
                 \PHPPE\DS::exec("UPDATE pages set created=CURRENT_TIMESTAMP,modifyd=CURRENT_TIMESTAMP,modifyid=? WHERE id=? AND (lang='' OR lang=?) AND created=?",
                     [Core::$user->id,$item,Core::$client->lang,$_REQUEST['created']]);
             }

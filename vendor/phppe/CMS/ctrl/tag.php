@@ -22,7 +22,7 @@ class CMSTag
             "/form"=>"*variable [url [onsubmitjs",	//L("help_form")
             "/if"=>"*expression",					//L("help_if")
             "else"=>"*",							//L("help_else")
-            "/foreach"=>"*variable",				//L("help_foreach")
+            "/foreach"=>"*dataset",					//L("help_foreach")
             "/template"=>"*",						//L("help_template")
             "include"=>"*view",						//L("help_include")
             "app"=>"*",								//L("help_app")
@@ -90,13 +90,16 @@ class CMSTag
 							continue;
 						echo("<option value='".htmlspecialchars(substr($k,1))."'".(substr($k,1)==$widget?" selected":"")." onmouseover='pe_w();'>".L(substr($k,1))."</option>\n");
 					}
-					echo("</select>\n<input type='text' class='input smallinput' name='acl' onkeyup='pe.cms.settag(\"tageditor\");' onchange='pe.cms.settag(\"tageditor\");' title=\"".L("Access filters")."\" placeholder=\"".L("Access filters")."\" value=\"".htmlspecialchars($acl)."\" list='filters'>");
+					echo("</select>\n<input type='text' class='input smallinput' name='acl' onkeydown='if(event.key==\"Enter\"){event.preventDefault();pe_p();}' onkeyup='pe.cms.settag(\"tageditor\");event.preventDefault();' onchange='pe.cms.settag(\"tageditor\");' title=\"".L("Access filters")."\" placeholder=\"".L("Access filters")."\" value=\"".htmlspecialchars($acl)."\" list='filters'>");
 					echo("<datalist id='filters'>");
 					foreach(\PHPPE\ClassMap::ace() as $b)
 						echo("<option value='".$b."'>".L($b)."</option>");
 					echo("</datalist><br/>\n");
 					$c=@$list["_".$widget];
 				}
+				if(empty($c)||@$item[2]=="/")
+					die(L("Not configurable"));
+
 					if($c[0]=="*")
 						$c=substr($c,1);
 					$c=str_getcsv(preg_replace("/[\ ]+/"," ",strtr($c,["("=>"( ",")"=>" ) ","["=>" [ ","]"=>"",","=>" "]))," ");
@@ -147,9 +150,30 @@ class CMSTag
 							$i++;
 							break;
 						default:
-							echo("$k<input type='text' class='input".$optional."' name='arg".$k."' data-type='".htmlspecialchars($v)."' ".
-							"onkeyup='pe.cms.settag(\"tageditor\");' onchange='pe.cms.settag(\"tageditor\");' title=\"".L($v)."\" placeholder=\"".L($v)."\" ".
-							"value=\"".htmlspecialchars(@$a[$i]==")"?"":@$a[$i++])."\"><br/>\n");
+							echo("<input type='text' class='input".$optional."' name='arg".$k."' data-type='".htmlspecialchars($v)."' ".
+							"onkeyup='pe.cms.settag(\"tageditor\");' onkeydown='if(event.key==\"Enter\"){event.preventDefault();pe_p();}' onchange='pe.cms.settag(\"tageditor\");' title=\"".L($v)."\" placeholder=\"".L($v)."\" ".
+							"value=\"".htmlspecialchars(@$a[$i]==")"?"":@$a[$i++])."\"".($v=="label"||$v=="dataset"?" list=\"".$v."s\"":"")."><br/>\n");
+							if($v=="label"){
+								//! filled in by JavaScript
+								echo("<datalist id=\"labels\"></datalist>\n");
+							}
+							if($v=="dataset"){
+								echo("<datalist id=\"datasets\">\n");
+								$pages=\PHPPE\Page::find([],"","created DESC","dds","id");
+								$dds=[];
+								foreach($pages as $p) {
+									$g=@json_decode(@$p['dds'],true);
+									if(!empty($g) && is_array($g))
+										foreach($g as $G=>$w) {
+											$dds[$G]=$G;
+									}
+								}
+								ksort($dds);
+								foreach($dds as $G) {
+									echo("<option value=\"".htmlspecialchars($G)."\">".L($G)."</option>");
+								}
+								echo("</datalist>\n");
+							}
 						}
 						if($optional=="focus")
 							$optional="";
@@ -158,8 +182,7 @@ class CMSTag
 			die("</div>\n<small>".L(!empty(Core::$l['_'.$d])?'_'.$d:"")."</small>");
 		} else {
 			// tag chooser
-			$u=url("cms/layouts");
-			$onlywidget=(substr($_SERVER['HTTP_REFERER'],0,strlen($u))!=$u);
+			$onlywidget=(strpos($_SERVER['HTTP_REFERER'],"/cms/layouts/")===false);
     	    echo("<input type='text' style='width:98%;' placeholder='".L("Search")."' onkeyup='pe.wyswyg.search(this,this.nextSibling);'>");
         	echo("<div class='wyswyg_tag wyswyg_scroll'>\n");
         	foreach($list as $tag=>$cfg) {
