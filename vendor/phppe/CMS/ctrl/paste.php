@@ -34,7 +34,7 @@ class CMSPaste
         foreach($list as $tag=>$cfg) {
             if($cfg[0]=='*' && $onlywidget)
                 continue;
-            echo("<img class='wyswyg_icon' src='js/wyswyg.js?item=".urlencode($tag)."' alt=\"".strtr($tag,["<"=>"&lt;",">"=>"&gt;","\""=>"&quot;"])."\" data-styleguide=\"".htmlspecialchars($cfg)."\">\n");
+            echo("<img class='wyswyg_icon' src='js/wyswyg.js.php?item=".urlencode($tag)."' alt=\"".strtr($tag,["<"=>"&lt;",">"=>"&gt;","\""=>"&quot;"])."\" data-styleguide=\"".htmlspecialchars($cfg)."\">\n");
         }
         die("</div>");
     }

@@ -16,6 +16,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 	{
         $this->assertTrue(\PHPPE\ClassMap::has("NotLoaded", "oneMethod"), "ClassMap has");
 		@unlink(\PHPPE\ClassMap::$file);
+		@unlink(\PHPPE\ClassMap::$ace);
 		$_SERVER['REQUEST_URI']="";
 		$_SERVER['argv'][1]="test";
 		@$core = new \PHPPE\Core(true);
@@ -27,6 +28,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(\PHPPE\Core::$core->output,$core->output, "Output");
 
 		$this->assertGreaterThan(\PHPPE\Core::$core->now,\PHPPE\Core::started(),"Started");
+        $this->assertNotEmpty(\PHPPE\ClassMap::ace(), "ClassMap access control entries");
 	}
 
 	public function testLib()

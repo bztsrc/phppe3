@@ -200,7 +200,6 @@ function pe_p(i,trg,to,dx)
         o.setAttribute('onkeydown','pe_w();');
         o.setAttribute('ondragleave','pe_p();');
         o.setAttribute('onmouseleave','pe_p();');
-        o.setAttribute('onclick','setTimeout("pe_p();",10);');
     }
     if(pe_t!=null)clearTimeout(pe_t);
 

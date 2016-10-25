@@ -34,8 +34,8 @@ class cmsdds extends \PHPPE\AddOn
 			$f=$h="";
 			if(!empty($lists[$l])) {
 				$f="<select onchange='cms_listhide(this);' onblur='cms_listhide(this);' style='width:95%;margin-left:0px;' class='input form-control'><option value=''>*</option>";
-				foreach($lists as $k=>$li)
-					$f.="<option value='".htmlspecialchars($k)."'".($l==$k?" selected":"").">".$li."</option>";
+				foreach($lists as $n=>$li)
+					$f.="<option value='".htmlspecialchars($n)."'".($l==$n?" selected":"").">".$li."</option>";
 				$f.="</select>";
 				$h=1;
 			}
@@ -63,8 +63,8 @@ class cmsdds extends \PHPPE\AddOn
             "inps[0].value='New'; inps[0].select(); inps[0].focus();"
         );
         \PHPPE\View::js("cms_listhide(obj)",
-            "var i,orig=obj.parentNode.parentNode.getElementsByTagName('INPUT');".
-            "if(obj.value==null||obj.value==''){".
+            "var i,orig=obj.parentNode.parentNode.getElementsByTagName('INPUT');console.log('value',obj.selectedIndex,obj.value);".
+            "if(obj.selectedIndex==0||obj.value==null||obj.value==''){".
 			"obj.setAttribute('style','display:none;');for(i=0;i<orig.length;i++) orig[i].style.display='block';".
             "}else{".
 			"if(obj.value=='pages_list'){orig[0].value='b.*';orig[1].value='pages_list a left join pages b on a.page_id=b.id and b.created=(SELECT MAX(c.created) FROM pages c WHERE c.id=b.id)';orig[2].value=\"a.list_id='@ID'\";orig[3].value='';orig[4].value='ordering';}".

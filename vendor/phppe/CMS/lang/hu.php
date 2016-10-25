@@ -48,7 +48,7 @@ return [
 	"pagediff" => "Különbség",
 	"pagerevert" => "Visszaállít erre a változatra",
 	"help_pagename" => "(ablak fejlécében jelenik meg)",
-	"Filters" => "Szűrők",
+	"Access filters" => "Hozzáférés",
 	"help_filters" => "(acl elé '@' kell, a vagy kapcsolat '|')",
 	"Layout" => "Sablon",
 	"Language" => "Nyelv",

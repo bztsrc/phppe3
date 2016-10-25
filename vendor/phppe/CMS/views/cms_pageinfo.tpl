@@ -6,7 +6,7 @@ INPUT.reqinput, TEXTAREA.reqinput, SELECT.reqinput { background: rgba(48,32,32,0
 <div class='infobox' style='padding:5px;overflow:auto;'>
 <nobr><span dir='ltr'><span style='float:left;padding-top:8px;'><i><!=url("/")+""+(substr(url("/"),-1)!="/"?"/":"")></i></span><div style='width:50%;'><!field *text page.id></div></nobr><br style='clear:both;'/>
 <div style='width:100%;'><b><!=L('Name')></b><!if quickhelp><small><!L help_pagename></small><!/if><!field *text page.name></div>
-<div style='width:100%;'><b><!=L('Filters')></b><!if quickhelp><small><!L help_filters></small><!/if><!field text page.filter></div>
+<div style='width:100%;'><b><!=L('Access filters')></b><!if quickhelp><small><!L help_filters></small><!/if><!field text(255,0,app.ace) page.filter></div>
 <br style='clear:both;'/>
 <div style='width:50%;'><b><!=L('Layout')></b><br><!field *select page.template layouts></div>
 <div style='width:50%;'><b><!=L('Language')></b><br><!field select page.lang langs></div>

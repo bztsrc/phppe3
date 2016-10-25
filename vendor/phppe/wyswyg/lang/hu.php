@@ -1,5 +1,7 @@
 <?php
 return [
+	"wyswyg" => "WYSiWYG Szerkesztő",
+	"_wyswyg" => "Amit látsz, azt kapod szövegszerkesztő. Nem kell érteni a HTML-hez, ha ilyened van.",
 	"wyswyg_import" => "Importálás",
 	"wyswyg_font" => "Stílus",
 	"wyswyg_style" => "Normál",
@@ -35,4 +37,6 @@ return [
 	"wyswyg_htmlonly" => "Csak HTML-t tölts fel!",
 	"wyswyg_source" => "HTML/Forrás",
 	"wyswyg_nohook" => "Nincs megfelelő AJAX kérés",
+	"wyswyg_tag" => "Sablonelem beillesztése",
+	"wyswyg_paste" => "Stílusminta beillesztése",
 ];

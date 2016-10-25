@@ -1,5 +1,7 @@
 <?php
 return [
+	"wyswyg" => "WYSiWYG Editor",
+	"_wyswyg" => "What You See is What You Get word processor. You don\'t have to know HTML if you have this.",
 	"wyswyg_import" => "Import HTML",
 	"wyswyg_font" => "Font Style",
 	"wyswyg_style" => "Normal",
@@ -35,4 +37,6 @@ return [
 	"wyswyg_htmlonly" => "Upload HTML only!",
 	"wyswyg_source" => "Toggle HTML/Source",
 	"wyswyg_nohook" => "Unable to load AJAX hook",
+	"wyswyg_tag" => "Insert templater tag",
+	"wyswyg_paste" => "Insert styleguide pattern",
 ];

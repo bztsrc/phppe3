@@ -1125,7 +1125,7 @@ namespace PHPPE {
                 $i = trim(strtolower(substr($q, 0, 6))) == 'select';
                 //! prepare and execute the statement with arguments
                 $s = $h->prepare($q);
-                $s->execute($a);
+                @$s->execute($a);
                 //! get result, either an array or a number
                 $r = $i ? $s->fetchAll(\PDO::FETCH_ASSOC) : $s->rowCount();
             } catch (\Exception $e) {
@@ -3215,8 +3215,9 @@ namespace PHPPE {
  */
 class ClassMap extends Extension
 {
-    public static $file = '.tmp/.classmap';         //!< map file
-    public static $map = [];                        //!< loaded class map
+    public static $file= '.tmp/.classmap';       //!< classes map file
+    public static $ace = '.tmp/.acemap';         //!< access control entries
+    public static $map = [];                     //!< loaded class map
 
 /**
  * Contructor. Loads the class map and regenerates it if necessary
@@ -3266,6 +3267,26 @@ class ClassMap extends Extension
     }
 
 /**
+ * Return class map.
+ *
+ * @return array  classes
+ */
+    public static function map()
+    {
+        return self::$map;
+    }
+
+/**
+ * Return access control entries map.
+ *
+ * @return array  access control entries
+ */
+    public static function ace()
+    {
+        return json_decode(@file_get_contents(self::$ace));
+    }
+
+/**
  * Generate classmap cache for autoloading.
  *
  * @return array    new map
@@ -3275,17 +3296,27 @@ class ClassMap extends Extension
         //! get list of php files
         $D = [];
         $R = [];
+        $A = ["loggedin"=>1];
         foreach (['*/*', '*/*/*', '*/*/*/*', '*/*/*/*/*', '*/*/*/*/*/*'] as $v) {
             $D += array_fill_keys(@glob('vendor/'.$v.'.php', GLOB_NOSORT), 0);
         }
         //iterate on list
         foreach ($D as $fn => $v) {
+            //! load php code
+            $d = @file_get_contents($fn);
+            //! get access control entries
+            if (strpos($fn, '/tests/') === false &&
+                preg_match_all("/user\-\>has\([\'\"]([^\'\"]+)/ms", $d, $a)) {
+                foreach($a[1] as $l) {
+                    foreach(explode("|",$l) as $r) {
+                        $A[@explode(":",$r)[0]]=1;
+                    }
+                }
+            }
             //! skip directories marked
             if (file_exists(dirname($fn).'/.skipautoload')) {
                 continue;
             }
-            //! load php code
-            $d = @file_get_contents($fn);
             //! skip if file marked
             if (strpos($d, '/*!SKIPAUTOLOAD!*/') !== false) {
                 continue;
@@ -3355,6 +3386,7 @@ class ClassMap extends Extension
         }
         //! sort list of classes alphabetically
         ksort($R);
+        ksort($A);
         //! save new classmap cache
         @mkdir(dirname(self::$file), 0750, true);
         $ret = "";
@@ -3364,6 +3396,8 @@ class ClassMap extends Extension
         //! when running in an unitiliazed environment, there'll be no .tmp directory
         @file_put_contents(self::$file, "{\n".$ret."\n}", LOCK_EX);
         @chmod(self::$file,0664);
+        @file_put_contents(self::$ace, "[\n  \"".implode("\",\n  \"",array_keys($A))."\"\n]", LOCK_EX);
+        @chmod(self::$ace,0664);
         return $R;
     }
 }
@@ -4822,7 +4856,7 @@ namespace PHPPE\AddOn {
  //L("Text")
     class text extends \PHPPE\AddOn
     {
-        public $conf = "*([maxlen[,rows[,isltr]]]) obj.field [onchangejs [cssclass [onkeyupjs [fakevalue [pattern]]]]]";
+        public $conf = "*([maxlen[,rows[,listopts[,isltr]]]]) obj.field [onchangejs [cssclass [onkeyupjs [placeholder [pattern]]]]]";
 
         public function show()
         {
@@ -4834,7 +4868,7 @@ namespace PHPPE\AddOn {
             $a = $t->args;
             $b = $t->attrs;
             $v = trim($t->value);
-            $D = (!empty($a[3]) ? " dir='ltr'" : '');
+            $D = (!empty($a[3]) ? " dir='ltr'" : "").(!empty($a[2])&&is_array($a[2]) ? " list='".$this->fld.":list'" : "");
             if ($v == 'null') {
                 $v = '';
             }
@@ -4845,8 +4879,15 @@ namespace PHPPE\AddOn {
 
                 return '<textarea'.@View::v($t, $b[1], $b[0])." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '')."$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>".$v.'</textarea>';
             }
-
-            return '<input'.@View::v($t, $b[1], $b[0], $a)." type='text'".
+            if (!empty($a[2])&&is_array($a[2])) {
+                $o="<datalist id='".$this->fld.":list'>";
+                foreach($a[2] as $d)
+                    $o.="<option value=\"".htmlspecialchars($d)."\">".L($d)."</option>\n";
+                $o.="</datalist>";
+            } else {
+                $o="";
+            }
+            return $o.'<input'.@View::v($t, $b[1], $b[0], $a)." type='text'".$D.
             (!empty($b[2]) && $b[2] != '-' ? " onkepup='".$b[2]."'" : '').
             " onfocus='this.className=this.className.replace(\" errinput\",\"\")'".
             (!empty($b[3]) && $b[3] != '-' ? ' placeholder="'.htmlspecialchars(L(trim($b[3]))).'"' : '').

@@ -233,6 +233,33 @@ pe.cms = {
 		pe.wyswyg.popup(event,"layout_data",'cms/tag?item='+urlencode(evt.target.alt));
 	},
 
+	settag:function(frm) {
+		var t="",s=" ",i=0,inps=document.getElementById(frm).querySelectorAll("input, select, textarea");
+		t=inps[i++].value+(inps[0].value!="="?" ":"");
+		if(inps[0].value=="var"||inps[0].value=="field"||inps[0].value=="widget"||inps[0].value=="cms") {
+			if(inps[3].value.trim()!='')
+				t+="@"+inps[3].value.trim()+" ";
+			t+=(inps[1].checked?inps[1].value:"")+inps[2].value;
+			i=4;
+			if(inps[i]!=null&&inps[i].value=="(") {
+				t+="(";
+				i++;
+				s=",";
+			} else
+				t+=" ";
+		}
+		for(;i<inps.length;i++) {
+			if(inps[i].value==")") {
+				s=" ";
+				t=t.replace(/[,]+$/,'');
+			}
+			t+=(inps[i].value==''&&s==' '?'-':inps[i].value)+(inps[i+1]!=null&&inps[i+1].value!=")"?s:"");
+		}
+		t="<!"+t.trim().replace("( ","(").replace(" )",")").replace("()","").replace(/([\ ][\-])+$/,"")+">";
+		pe.cms.tag.src='js/wyswyg.js.php?item='+urlencode(t);
+		pe.cms.tag.alt=t;
+	},
+
 	checkall:function(obj) {
 		var i;
 		for(i=0;i<obj.form.elements.length;i++) {

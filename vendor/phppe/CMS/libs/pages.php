@@ -29,11 +29,12 @@ class Page extends \PHPPE\Model
     function __construct($id="",$created="")
     {
         if(!empty($id)) {
-            $this->id = $id;
             if(empty($created))
-                $this->load($id,"","created DESC");
+                $ret=$this->load($id,"","created DESC");
             else
-                $this->load([$id,$created],"id=? AND created=?");
+                $ret=$this->load([$id,$created],"id=? AND created=?");
+            if($ret)
+                $this->id = $id;
         }
         static::$_history = !empty(\PHPPE\Core::lib("CMS")->revert);
     }
@@ -48,7 +49,7 @@ class Page extends \PHPPE\Model
     {
         //! check input
         if(empty($this->id))
-            throw new \Exception(L('No page id'));
+            return true;
         if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
         //! release old locks (locked for more than 10 minutes)
@@ -133,6 +134,8 @@ class Page extends \PHPPE\Model
             }
         }
         $a['publishid'] = static::$_history?0:\PHPPE\Core::$user->id;
+        //! write audit log
+        \PHPPE\Core::log('A',sprintf(L("Page %s saved by %s"),$this->id,\PHPPE\Core::$user->name), "cmsaudit");
         //! save page
         if (!\PHPPE\DS::exec((!static::$_history && !$force ?
             'UPDATE '.static::$_table.' SET '.implode('=?,', array_keys($a)).
@@ -144,7 +147,6 @@ class Page extends \PHPPE\Model
         \PHPPE\DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND lang=? AND publishid!=0 AND created not in (SELECT created FROM ".static::$_table." WHERE id=? AND lang=? ORDER BY created desc limit ".
             (static::$_history ? max([ intval(\PHPPE\Core::lib("CMS")->purge), 1]) : 1).")",
         [$this->id, $this->lang, $this->id, $this->lang]);
-
         return true;
     }
 
@@ -165,13 +167,15 @@ class Page extends \PHPPE\Model
             $name=substr($name,4);
         if(substr($name,0,6)=="frame.")
             $name=substr($name,6);
-        //! write audit log
-        \PHPPE\Core::log('A',
-            sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
-            (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
-            addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
-        //! set parameter
-        $this->data[$name] = $value;
+        if(@$this->data[$name]!=$value) {
+            //! write audit log
+            \PHPPE\Core::log('A',
+                sprintf(L("Set page parameter %s for %s by %s"),$name,$this->id,\PHPPE\Core::$user->name).
+                (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
+                addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
+            //! set parameter
+            $this->data[$name] = $value;
+        }
     }
 
 /**
@@ -187,7 +191,7 @@ class Page extends \PHPPE\Model
         $rename=false;
         //! url checks
         if ($new) {
-            if (!empty(\PHPPE\DS::fetch("id", static::$_table, "id=?", "", "", [ $params['id'] ]))) {
+            if (!empty(\PHPPE\DS::fetch("id", static::$_table, "id=? AND lang=?", "", "", [ $params['id'], $params['lang'] ]))) {
                 \PHPPE\Core::error(L("A page already exists with this url!"), "page.id");
                 return false;
             }
@@ -199,19 +203,26 @@ class Page extends \PHPPE\Model
                 \PHPPE\Core::log('A',sprintf(L("Page %s renamed to %s by %s"),$params['pageid'],$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
             }
         }
-        //! write audit log
-        \PHPPE\Core::log('A',sprintf(L("Page %s modified by %s"),$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
         //! create page object
         $page = new self($params['id']);
+        $needsave=false;
         foreach ($params as $k=>$v)
-            if (property_exists($page, $k))
+            if (property_exists($page, $k) && $page->$k!=$v) {
+                \PHPPE\Core::log('A',
+                    sprintf(L("Set page %s for %s by %s"),$k,$params['id'],\PHPPE\Core::$user->name).
+                    (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr($page->$k,["\n"=>""]))."' -> '".
+                addslashes(strtr($v,["\n"=>""]))."'":""), "cmsaudit");
                 $page->$k = $v;
+                $needsave=true;
+            }
         //! save it
-        if (!$page->save($new))
+        if ($needsave && !$page->save($new)) {
             \PHPPE\Core::error(L("Unable to save page!"));
-        elseif($new || $rename)
+			return false;
+        } elseif($new || $rename)
             //! on successful new add and renames, redirect user to the new page
             die("<html><script>window.parent.document.location.href='".url($params['id'])."';</script></html>");
+		return true;
     }
 
 /**
@@ -224,8 +235,6 @@ class Page extends \PHPPE\Model
  */
     static function saveDDS($pageid, $dds)
     {
-        //! write audit log
-        \PHPPE\Core::log('A',sprintf(L("PageDDS for %s modified by %s"),$pageid,\PHPPE\Core::$user->name), "cmsaudit");
         //! load new dds if given
         if (!empty($dds['_']['name']) && !empty($dds['_'][0])) {
             $k = $dds['_']['name'];
@@ -235,11 +244,25 @@ class Page extends \PHPPE\Model
         unset($dds['_']);
         //! get page
         $page = new self($pageid);
+        if(empty($dds) && empty($page->dds))
+            return true;
+        $old = $page->dds;
         //! update dds
         $page->dds = [];
-        foreach($dds as $k=>$d)
-            if (!empty($d[0]))
+        $needsave=false;
+        foreach($dds as $k=>$d) {
+            if (empty($d[0]) ||
+                (@$d[0]!=@$old[$k][0]||@$d[1]!=@$old[$k][1]||
+                @$d[2]!=@$old[$k][2]||@$d[3]!=@$old[$k][3]||@$d[4]!=@$old[$k][4])) {
+                //! write audit log
+                \PHPPE\Core::log('A',sprintf(L("PageDDS %s for %s modified by %s"),$k,$pageid,\PHPPE\Core::$user->name).
+                    (\PHPPE\Core::$core->runlevel > 2 ?(empty($d[0])?" ".L("deleted"):" '".implode("', '",$d)."'"):""), "cmsaudit");
+                $needsave=true;
+            }
+            if (!empty($d[0])) {
                 $page->dds[$k] = $d;
+            }
+        }
         return $page->save();
     }
 
@@ -259,7 +282,8 @@ class Page extends \PHPPE\Model
         if (is_string($pages))
             $pages = str_getcsv($pages, ',');
         //! write audit log
-        \PHPPE\Core::log('A',sprintf(L("Pagelist %s modified by %s"),$name,\PHPPE\Core::$user->name), "cmsaudit");
+        \PHPPE\Core::log('A',sprintf(L("Pagelist %s modified by %s"),$name,\PHPPE\Core::$user->name).
+            (\PHPPE\Core::$core->runlevel > 2 ?:" '".implode("', '",$pages)."'"), "cmsaudit");
         \PHPPE\DS::exec("DELETE FROM ".static::$_table."_list WHERE list_id=?",[$name]);
         foreach($pages as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
@@ -310,6 +334,7 @@ class Page extends \PHPPE\Model
     {
         return \PHPPE\DS::field("SUM(1)", static::$_table, "template=?", "", "",[$template]);
     }
+
 /**
  * Get complex list of pages with user data
  *
@@ -349,4 +374,24 @@ class Page extends \PHPPE\Model
 		// delete intermediate versions
 		\PHPPE\DS::exec("DELETE FROM pages WHERE publishid=0 AND id IN ('".implode("','",$ids)."')");
     }
+
+	static function cleanUp($pages=null)
+	{
+		//! check input
+		if(!empty(\PHPPE\Core::lib("CMS")->revert))
+			return;
+        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|pubadm"))
+            throw new \Exception(L('No user id'));
+		if(empty($pages))
+			$pages = self::getPages();
+		//! write audit log
+		\PHPPE\Core::log('A',sprintf(L("Purge page history by %s"),\PHPPE\Core::$user->name), "cmsaudit");
+		//! purge old records
+		foreach($pages as $p) {
+			if($p['versions']>1)
+				\PHPPE\DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?) AND created!=?",[$p['id'],$p['lang'],$p['created']]);
+		}
+		//! make it published (without history that feature is off)
+		\PHPPE\DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE publishid=0",[\PHPPE\Core::$user->id]);
+	}
 }

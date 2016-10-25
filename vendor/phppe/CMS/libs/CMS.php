@@ -56,8 +56,8 @@ class CMS
             $this->purge=intval($cfg['purge']);
         if ($this->purge<3)
             $this->purge=8;
-        if ($this->purge>128)
-            $this->purge=128;
+        if ($this->purge>999)
+            $this->purge=999;
         if (!empty($cfg['metas']))
             $this->metas=str_getcsv($cfg['metas'],',');
         else

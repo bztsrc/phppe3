@@ -108,3 +108,8 @@ background:rgba(236, 151, 31,0.4);
 ins { background:rgba(0,255,0,0.2); }
 del { background:rgba(255,0,0,0.2); }
 .wyswyg_tag IMG { max-height:64px; }
+.wyswyg_popup INPUT.input, .wyswyg_popup TEXTAREA.input, .wyswyg_popup SELECT.input { background: rgba(32,32,32,0.95); color:#fff !important; vertical-align:middle;}
+.wyswyg_popup INPUT.reqinput, .wyswyg_popup TEXTAREA.reqinput, .wyswyg_popup SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff;}
+.wyswyg_popup INPUT.errinput, .wyswyg_popup TEXTAREA.errinput, .wyswyg_popup SELECT.errinput { background: rgba(128,32,32,0.95) !important; color:#fff !important;}
+.wyswyg_popup .smallinput { height:14px !important;font-size:10px; }
+.wyswyg_popup INPUT.optional, .wyswyg_popup TEXTAREA.optional, .wyswyg_popup SELECT.optional { background: rgba(64,64,64,0.95); color:#B0B0B0 !important; vertical-align:middle;font-style:italic;}

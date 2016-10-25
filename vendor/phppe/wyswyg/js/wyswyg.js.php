@@ -299,7 +299,7 @@ open: function(source, icons)
         //! add import form
         var impframe=document.createElement('iframe');
         impframe.setAttribute('id',id+':impframe');
-        impframe.setAttribute('src','js/wyswyg.js?impform='+id);
+        impframe.setAttribute('src','js/wyswyg.js.php?impform='+id);
         impframe.setAttribute('style','display:none;');
         tb.appendChild(impframe);
 
@@ -373,7 +373,7 @@ togglesrc: function(toggle,focus,evt)
         var t=tmp.split(' ');
         var url=(t[1]==null?t[0]:t[0]+' '+(t[1].match(/^[a-z]+=['"]/)?t[1].substring(t[1].indexOf('=')+2,t[1].length-1):t[1]))+(t[2]!=null?' '+t[2]+(t[1].substr(0,1)=='@'&&t[3]!=''?' '+t[3]:''):'');
 //+(t[0].substr(1,5)=='field'||t[0].substr(1,3)=='var'&&t[2]!=null&&t[2]?' '+t[2]:''));
-        output=output.replace(tags[i],"<img class='wyswyg_icon' src='js/wyswyg.js?item="+urlencode("<"+url+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
+        output=output.replace(tags[i],"<img class='wyswyg_icon' src='js/wyswyg.js.php?item="+urlencode("<"+url+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
     }
 
         edit.innerHTML=output;
@@ -446,7 +446,7 @@ import:function(evt,id) {document.getElementById(id+':impframe').contentWindow.d
 
 importdone:function(id){
 var choose=choose=document.getElementById(id+':impframe').contentWindow.document.getElementsByTagName('DIV')[0].innerHTML;
-document.getElementById(id+':impframe').src='js/wyswyg.js?impform='+id;
+document.getElementById(id+':impframe').src='js/wyswyg.js.php?impform='+id;
 document.getElementById(id+':edit').innerHTML=choose;
 pe.wyswyg.setvalue(id);
 },
@@ -558,12 +558,14 @@ prevent: function(evt)
     return false;
 },
 
-popup:function(evt, id, url)
+popup:function(evt, id, url, onlyload)
 {
     var popup=document.getElementById(id+'_popup');
-	popup.style.zIndex=1997;
-    popup.innerHTML='';
-    pe_p(id+'_popup',null,5);
+	if(onlyload==null) {
+		popup.style.zIndex=1997;
+    	popup.innerHTML='';
+    	pe_p(id+'_popup',null,30);
+	} else pe_w();
     var r = new XMLHttpRequest();
     r.open('GET', url, true);
     r.onload = function(e) {
@@ -573,20 +575,25 @@ popup:function(evt, id, url)
             for(i=0;i<a.length;i++){
                 a[i].addEventListener( "click", pe.wyswyg.prevent, false );
             }
-            a=popup.querySelector("input[type='text']");
+            a=popup.querySelector("input.focus");
+            if(a==null)
+                a=popup.querySelector("input[type='text']");
             if(a!=null)
                 a.focus();
         } else
             popup.innerHTML=L("wyswyg_nohook");
-        var x=document.body.offsetWidth-popup.offsetWidth-5,y=document.body.offsetHeight-popup.offsetHeight-5;
-		if(x<0) { popup.style.width=document.body.offsetWidth-5; x=0; }
-		if(y<0) { popup.style.height=document.body.offsetHeight-5; y=0; }
-	    if(x<parseInt(popup.style.left))
-		    popup.style.left=x+'px';
-	    if(y<parseInt(popup.style.top))
-		    popup.style.top=y+'px';
+		if(onlyload==null) {
+        	var x=document.body.offsetWidth-popup.offsetWidth-5,y=document.body.offsetHeight-popup.offsetHeight-5;
+			if(x<0) { popup.style.width=document.body.offsetWidth-5; x=0; }
+			if(y<0) { popup.style.height=document.body.offsetHeight-5; y=0; }
+	    	if(x<parseInt(popup.style.left))
+			    popup.style.left=x+'px';
+	    	if(y<parseInt(popup.style.top))
+		    	popup.style.top=y+'px';
+		}
 	};
 	r.send(null);
+	evt.preventDefault();
 },
 
 search:function(inp,div)

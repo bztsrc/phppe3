@@ -42,7 +42,7 @@ return [
 	"pagediff" => "Difference",
 	"pagerevert" => "Revert page to this version",
 	"help_pagename" => "(window title)",
-	"Filters" => "Filters",
+	"Access filters" => "Access filters",
 	"help_filters" => "(prefix acl with '@', use '|' for or)",
 	"Layout" => "Layout",
 	"Language" => "Language",

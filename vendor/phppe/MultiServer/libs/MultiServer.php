@@ -31,7 +31,7 @@ use PHPPE\Core as Core;
  */
 class MultiServer extends Extension
 {
-    public static $cache = ".tmp/multiserver";
+    public static $cache = "data/multiserver";
     public static $servers = [];
 /**
  * Register MultiServer
@@ -49,7 +49,7 @@ class MultiServer extends Extension
 
     public function stat()
     {
-        if (!\PHPPE\Core::$user->has("cluadm")) {
+        if (!\PHPPE\Core::$user->has("remoteadm")) {
             return '';
         }
         $servers = self::load();
@@ -77,7 +77,7 @@ class MultiServer extends Extension
 
     function load()
     {
-        if (!\PHPPE\Core::$user->has("cluadm")) {
+        if (!\PHPPE\Core::$user->has("remoteadm")) {
             return [];
         }
         if(empty(self::$servers)){
@@ -97,7 +97,7 @@ class MultiServer extends Extension
 
     function save()
     {
-        if (!\PHPPE\Core::$user->has("cluadm")) {
+        if (!\PHPPE\Core::$user->has("remoteadm")) {
             return;
         }
         $_SESSION['pe_msrv']=self::$servers;
