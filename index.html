@@ -726,6 +726,11 @@ $ nano phppe/config.php
 $ vim phppe/config.php
 </pre>
 It's very likely that you have an $EDITOR environment variable holding default editor's name.
+<p>You can use the passwd utility to generate masterpassword hashes from command line.</p>
+<pre>$ php public/index.php passwd
+Password? <kbd>You won't see what you type here</kbd>
+$2y$12$VUzOd391c2oYiESz3FSi2eZz1Gk5B9A2Kz66rvuNkkR04xQ/6yp0G
+</pre>
 <h3>5. Install PHPPE Pack (optional)</h3>
 <div class='alert alert-info'><b>NOTE</b>: if you've used <samp>composer create-project</samp>, Pack is already installed. Go to step 6.</div>
 <div class='alert alert-info'><b>NOTE</b>: if you've used <samp>--self-update</samp>, nothing left to do, you're done! Go to step 7.</div>
@@ -818,7 +823,7 @@ these are only the most commonly used ones.</p>
 <tr><td><b>allowed</b></td><td>list of allowed functions in an array, leave it unset for no restrictions.</td></tr>
 <tr><td><b>disabled</b></td><td>list of disabled Extensions</td></tr>
 <tr><td><b>blacklist</b></td><td>list of unwanted domains (for example in email addresses)</td></tr>
-<tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("developer:6");'>passwd</a> utility to generate hash)</td></tr>
+<tr><td><b>masterpasswd</b></td><td>Encrypted password hash for superadmin (see <a onclick='tab_switch("install:6");'>passwd</a> utility to generate hash)</td></tr>
 <tr><td><b>repos</b></td><td>array of third-party repository urls. For details, see <a onclick='tab_switch("repository");'>Extensions repository</a> section.</td></tr>
 <tr><td><b>...</b></td><td>See <a onclick='tab_switch("phppe_core");'>PHPPE\Core</a> for all properties</td></tr>
 </table>
@@ -2019,7 +2024,7 @@ On the other hand if you're running a single user page without Users class, you'
 <pre class='php'>
 <span class='stringconst'>'masterpasswd'</span> => <span class='function'>password_hash</span>(<span class='stringconst'>"changeme"</span>, PASSWORD_BCRYPT),
 </pre></p>
-<div class='alert alert-danger'>Don't ever use password_hash() in config.php (this is just an example), paste only the hash constant there. You can use the "<a onclick='tab_switch("developer:6");'>passwd</a>" utility to get the hash.</div>
+<div class='alert alert-danger'>Don't ever use password_hash() in config.php (this is just an example), paste only the hash constant there. You can use the "<a onclick='tab_switch("install:6");'>passwd</a>" utility to get the hash.</div>
 <p>In lack of user preferences, you'll also need</p>
 <samp>vendor/phppe/Extensions/config.php:</samp>
 <p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br></pre>
@@ -2616,11 +2621,9 @@ UsersTest           0.0001s    2 /  2 2016-06-01 00:46:43  OK
 <p>shows the latest results, and you can run one or all test with:</p>
 <pre>$ php public/index.php tests run <i>testfile</i>
 $ php public/index.php tests run</pre>
-<h3>Passwd utility</h3>
-<p>Is a simple utility to generate password hashes from command line.</p>
-<pre>$ php public/index.php passwd
-Password? <kbd>You won't see what you type here</kbd>
-$2y$12$VUzOd391c2oYiESz3FSi2eZz1Gk5B9A2Kz66rvuNkkR04xQ/6yp0G
+<h3>Pretty</h3>
+<p>You can use this utility to format all your PHP sources in an extension to <a onclick='tab_switch("coding");'>PSR-2 Coding Style</a>.</p>
+<pre>$ php public/index.php pretty <i>extension</i>
 </pre>
 <h3>Lang utility</h3>
 <p>It is a useful helper that scans your extension directory looking for translation references.</p>
@@ -3619,7 +3622,7 @@ password hash is set in <a onclick='tab_switch("configuration");'>configuration<
 As soon as PHPPE Pack is installed under vendor/phppe/Core, that class will be transparently substituted with PHPPE\Users
 (note the prular) which can handle more users.</p>
 <p>This class is a classic Model, it's inherited from <a onclick='tab_switch("phppe_model");'>PHPPE\Model</a> therefore you can use the find() method to list users.</p>
-<div class='alert alert-info'><b>HINT</b>: you can use the "<a onclick='tab_switch("developer:6");'>passwd</a>" utility shipped with PHPPE Developer to generate password hash.</div>
+<div class='alert alert-info'><b>HINT</b>: you can use the "<a onclick='tab_switch("install:6");'>passwd</a>" utility to generate password hash.</div>
 <h3>Properties</h3>
 <table class='table table-striped parameter'>
 <tr><td>int <var>$id</var></td><td>Numeric identifier of the user</td></tr>
