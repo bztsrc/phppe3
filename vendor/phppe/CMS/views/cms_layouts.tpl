@@ -15,7 +15,6 @@
 		<th width='50%'><!=L('Name')></th>
 		<th><!=L('CSS')></th>
 		<th><!=L('JS')></th>
-		<th><nobr><!=L('Meta data')></nobr></th>
 		<th><nobr><!=L('Modified at')></nobr></th>
 	</tr>
 <!foreach layouts>
@@ -24,7 +23,6 @@
 		<td class='row<!=ODD>' width='100%'><!=name></td>
 		<td class='row<!=ODD>'><!if css>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if jslib>&radic;<!else>&Oslash;<!/if></td>
-		<td class='row<!=ODD>'><!if meta>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>' dir='ltr' align='right'><nobr><!difftime strtotime(modifyd)-core.now></nobr></td>
 	</tr>
 <!/foreach>
@@ -33,16 +31,14 @@
 		<th><!=L('Name')></th>
 		<th><!=L('CSS')></th>
 		<th><!=L('JS')></th>
-		<th><!=L('Meta data')></th>
 		<th><!=L('Modified at')></th>
 	</tr>
 <!foreach sitebuilds>
 	<tr style='cursor:pointer;' onclick='document.location.href="<!=url()><!=id>";'>
-		<td class='row<!=ODD>' align='center' dir='ltr'><!if id=='frame'><span style='color:green;' class='glyphicon glyphicon-check'><!if !core.isInst("bootstrap")>[X]<!/if></span><!else><a href='<!=url()>?set=<!=urlencode(sitebuild)>' style='color:#333;'><span class='glyphicon glyphicon-unchecked'><!if !core.isInst("bootstrap")>[ ]<!/if></span></a><!/if></td>
+		<td class='row<!=ODD>' dir='ltr'><!if id=='frame'><span style='color:green;' class='glyphicon glyphicon-check'><!if !core.isInst("bootstrap")>[X]<!/if><!=sitebuild></span><!else><a href='<!=url()>?set=<!=urlencode(sitebuild)>' style='color:#333;'><span class='glyphicon glyphicon-unchecked'><!if !core.isInst("bootstrap")>[ ]<!/if><!=sitebuild></span></a><!/if></td>
 		<td class='row<!=ODD>'><!=L(name)></td>
 		<td class='row<!=ODD>'><!if css>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>'><!if jslib>&radic;<!else>&Oslash;<!/if></td>
-		<td class='row<!=ODD>'><!if meta>&radic;<!else>&Oslash;<!/if></td>
 		<td class='row<!=ODD>' dir='ltr' align='right'><nobr><!if !modifyd><!difftime strtotime(created)-strtotime(ct)><!else><!difftime strtotime(modifyd)-strtotime(ct)><!/if></nobr></td>
 	</tr>
 <!/foreach>

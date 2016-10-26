@@ -47,6 +47,8 @@ class CMSLayouts
 					$this->layout->delete();
 				} else {
 					unset($layout['delete']);
+					if(!empty($this->layout->sitebuild))
+						$layout['sitebuild']=$layout['id'];
 					$this->layout = new \PHPPE\Views($layout);
 					$this->layout->save();
 				}
