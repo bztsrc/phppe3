@@ -1,7 +1,7 @@
 <h1><!=L("Pages")></h1>
 <div style='padding:5px;'>
 <!if !ispublish>
-<button onclick='pe.cms.edit(this,"f95f1f92080432dc901529d428fd32fa12d7b948",0,0,0,0,0,80);' class='btn btn-success'><span class='glyphicon glyphicon-plus-sign'></span>&nbsp;<!=L("pageadd")></button>&nbsp;
+<button onclick='pe.cms.edit(this,"f95f1f92080432dc901529d428fd32fa12d7b948",0,0,0,0,0,50);' class='btn btn-success'><span class='glyphicon glyphicon-plus-sign'></span>&nbsp;<!=L("pageadd")></button>&nbsp;
 <!if needpublish>
 <button onclick='document.location.href="cms/pages?publish";' class='btn btn-warning'><span class='glyphicon glyphicon-cloud-upload'></span>&nbsp;<!=L("Publish")></button>
 <!/if>
@@ -47,7 +47,7 @@
 <!/if>
 		<td<!if ownerid> style='color:#800000;'<!/if> width='25'><img src='images/lang_<!=lang>.png' alt='<!=lang>' title='<!=lang>'></td>
 		<td<!if ownerid> style='color:#800000;'<!/if> dir='ltr'><!if id=='index'><span class='glyphicon glyphicon-home'></span> /<!else><!=id><!/if></td>
-		<td<!if ownerid> style='color:#800000;'<!/if>><a style='color:inherit;text-decoration;none;' href='<!=(app.ispublish?url("cms/archive/"+id)+"?diff":url(id=='index'?'/':id))><!if !empty(lang)>?lang=<!=lang><!/if>' target='_new'><!=name></a></td>
+		<td<!if ownerid> style='color:#800000;'<!/if>><a style='color:inherit;text-decoration;none;'<!if app.ispublish> href='<!=(app.ispublish?url("cms/archive/"+id)+"?diff":url(id=='index'?'/':id))><!if !empty(lang)>?lang=<!=lang><!/if>' target='_new'<!/if>><!=name></a></td>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!=filter></td>
 <!if app.revert><td<!if ownerid> style='color:#800000;'<!/if> align='right'><!=versions></td><!/if>
 		<td<!if ownerid> style='color:#800000;'<!/if>><!if moduser><!=moduser><!else><!if modifyid==-1>admin<!else>?<!/if><!/if></td>

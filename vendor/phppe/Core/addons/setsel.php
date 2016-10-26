@@ -4,7 +4,7 @@ use \PHPPE\Core as Core;
 use \PHPPE\View as View;
 
 class setsel extends \PHPPE\AddOn {
-    public $conf = "*(singleselection,height,filters,itemtemplate,header,titlefield) obj.field options [cssclass [itemcssclass [filterhtml]]]";
+    public $conf = "*(singleselection,height,filters,itemtemplate,header,titlefield) obj.field dataset [cssclass [itemcssclass [filterhtml]]]";
 
     function show()
     {

@@ -12,6 +12,7 @@ return [
 	"Installed" => "מוּתקָן",
 	"Upgrade" => "שדרוג",
 	"Buy" => "לִקְנוֹת",
+	"install" => "לְהַתְקִין",
 	"Install" => "לְהַתְקִין",
 	"Upgrade to" => "שדרג ל",
 	"Downgrade to" => "שדרוג לאחור ל",

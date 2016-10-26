@@ -98,4 +98,7 @@ return [
 	"Required value" => "Required value",
 	"Not configurable" => "Not configurable",
 	"No layout id" => "No layout id",
+	"siteadm" => "Site Admin",
+	"webadm" => "Content Editor",
+	"pubadm" => "Publisher",
 ];

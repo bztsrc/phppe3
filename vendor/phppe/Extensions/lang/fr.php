@@ -12,6 +12,7 @@ return [
 	"Installed" => "Installé",
 	"Upgrade" => "Améliorer",
 	"Buy" => "Acheter",
+	"install" => "Installer",
 	"Install" => "Installer",
 	"Upgrade to" => "Mettre à jour à",
 	"Downgrade to" => "Rétrograder à",

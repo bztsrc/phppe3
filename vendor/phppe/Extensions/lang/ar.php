@@ -12,6 +12,7 @@ return [
 	"Installed" => "تثبيت",
 	"Upgrade" => "الترقية",
 	"Buy" => "شراء",
+	"install" => "التثبيت",
 	"Install" => "التثبيت",
 	"Upgrade to" => "الترقية إلى ",
 	"Downgrade to" => "الرجوع إلى ",

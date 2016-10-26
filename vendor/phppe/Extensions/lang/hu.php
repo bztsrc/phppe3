@@ -12,6 +12,7 @@ return [
 	"Installed" => "Telepített",
 	"Upgrade" => "Frissíthető",
 	"Buy" => "Webboltba",
+	"install" => "Telepítő",
 	"Install" => "Telepítés",
 	"Upgrade to" => "Frissítés erre",
 	"Downgrade to" => "Visszaállítás erre",

@@ -18,4 +18,5 @@ return [
 	"lb" => "elosztó",
 	"worker" => "kiszolgáló",
 	"booting" => "indul",
+	"cluadm" => "Kluszter Admin",
 ];

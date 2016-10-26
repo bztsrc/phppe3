@@ -67,6 +67,7 @@ return [
 	"day" => "天",
 	"days" => "天",
 	"Users" => "用户",
+	"loggedin" => "报到",
 	"Login" => "报到",
 	"Logout" => "查看",
 	"Unlock" => "定制",

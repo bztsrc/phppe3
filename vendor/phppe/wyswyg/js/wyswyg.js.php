@@ -30,7 +30,7 @@ if(!empty(Core::$core->item)){
     header( "Pragma:cache" );
     header( "Cache-Control:cache,public,max-age=86400" );
     header( "Connection:close");
-    $str=str_replace(array("!2F!","!2B!","!2f!","!2b!"),array("/","+","/","+"),urldecode(stripslashes(Core::$core->item)));
+    $str=str_replace(array("!2F!","!2B!","!2f!","!2b!"),array("/","+","/","+"),stripslashes(Core::$core->item));
     if(strtolower(substr($str,0,8))=="<!widget") {
         $d=explode(" ",trim(substr($str,9,strlen($str)-10)));
 		if(!empty($d[0])) {
@@ -358,23 +358,18 @@ togglesrc: function(toggle,focus,evt)
         edit.style.height=(source.offsetHeight)+'px';
         source.style.display='none';
         //! copy textarea value to edit div
-        var output=source.value.toString();//.replace(/<(!?)\/([^>]+)>\n/g,"<$1/$2>").replace(/<\/form>/gi,"<!/form>").replace(/([{};])\n/g,"$1");
-//    output=output.replace(/<(!?)\/([^>]+)>\n/g,"<$1/$2>").replace(/<!-/g,"<span class='comment'>&lt;!-").replace('-->','--></span>').replace(/<\/form>/gi,"<!/form>").replace(/([{};])\n/g,"$1");
-    output=output.replace(/(<table(.|[\r\n])+?\/tr>)[^<]*?(<!for[^>]+>)/im,"$3$1");
-    output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/tbody>)/im,"$2$1");
-    output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/table>)/im,"$2$1");
-    output=output.replace(/(<[uo]l[^>]*?>)[^<]*?(<!for[^>]+>)/im,"$2$1");
-    output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/[uo]l>)/im,"$2$1");
-    tags=output.replace(/=['"][^<>'"]*<!/,"").replace(/=['"]<!/,"");
-    tags=tags.match(/<![^>]+>/gm,"$1");
-    if(tags!=null&&tags.length>0)for(i=0;i<tags.length;i++) {
-        var tmp=tags[i].substring(1,tags[i].length-1);
-        var t=tmp.split(' ');
-        var url=(t[1]==null?t[0]:t[0]+' '+(t[1].match(/^[a-z]+=['"]/)?t[1].substring(t[1].indexOf('=')+2,t[1].length-1):t[1]))+(t[2]!=null?' '+t[2]+(t[1].substr(0,1)=='@'&&t[3]!=''?' '+t[3]:''):'');
-//+(t[0].substr(1,5)=='field'||t[0].substr(1,3)=='var'&&t[2]!=null&&t[2]?' '+t[2]:''));
-        output=output.replace(tags[i],"<img class='wyswyg_icon' src='js/wyswyg.js.php?item="+urlencode("<"+url+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
-    }
-
+        var output=source.value.toString();
+        output=output.replace(/(<table(.|[\r\n])+?\/tr>)[^<]*?(<!for[^>]+>)/im,"$3$1");
+        output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/tbody>)/im,"$2$1");
+        output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/table>)/im,"$2$1");
+        output=output.replace(/(<[uo]l[^>]*?>)[^<]*?(<!for[^>]+>)/im,"$2$1");
+        output=output.replace(/(<!\/for[^>]+>)[^<]*?(<\/[uo]l>)/im,"$2$1");
+        tags=output.replace(/=['"][^<>'"]*<!/,"").replace(/=['"]<!/,"");
+        tags=tags.match(/<![^>]+>/gm,"$1");
+        if(tags!=null&&tags.length>0)for(i=0;i<tags.length;i++) {
+            var tmp=tags[i].substring(1,tags[i].length-1);
+            output=output.replace(tags[i],"<img class='wyswyg_icon' src='js/wyswyg.js.php?item="+urlencode("<"+tmp+">")+"' alt=\"&lt;"+tmp.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;")+"&gt;\">");
+        }
         edit.innerHTML=output;
         if(focus!=null)
             edit.focus();
@@ -387,13 +382,10 @@ setvalue:function(id)
     var edit = source.previousSibling;
     //! copy edit div to textarea
     var output=edit.innerHTML;
-    //rte.value=rte.value.replace(">&quot;\"",">\"").replace(/&lt;!([^-])/gi,"<!$1").replace(/\=\"\"/g,"").replace(/\"\=\"\"/g,"\"").replace(/\=\"\"/g,"").replace(/alt=\"[\ ]+/gmi,"alt=\"").replace(/&lt;img/g,"<img");
-    var i,txt=output.match(/<img class=[\"\'][\ ]?wyswyg_icon[^>]+>([\'\"][^>]*?>)?/gmi,"$1");
-//"
+    var i,txt=output.match(/<img class=[\"\'][\ ]?wyswyg_icon[^>]+>([\'\"][^>]*?>)?/gmi,"$1"); //"
     if(txt!=null&&txt.length>0) for(i=0;i<txt.length;i++) {
-        var tmp=txt[i].match(/alt=\"[^\"]*[\">]?/gmi,"$1");
-//"
-        if(tmp&&tmp[0]) {var t=tmp[0].substring(5,tmp[0].length-1).trim();t=t.replace("<!/form>","</form>");
+        var tmp=txt[i].match(/alt=\"[^\"]*[\">]?/gmi,"$1"); //"
+        if(tmp&&tmp[0]) {var t=tmp[0].substring(5,tmp[0].length-1).trim().replace(/\<\!\/form\>/g,"</form>").replace(/&quot;/g,"\"");
         if(t.charAt(t.length-1)!='>') t=t+'>';
         output=output.replace(txt[i],t).replace("&lt;"+txt[i].substring(1,txt[i].length),t);}
     }
@@ -560,6 +552,7 @@ prevent: function(evt)
 popup:function(evt, id, url, onlyload)
 {
     var popup=document.getElementById(id+'_popup');
+	if(popup==null) alert(id+'_popup');
 	if(onlyload==null) {
 		popup.style.zIndex=1997;
     	popup.innerHTML='';
@@ -587,6 +580,48 @@ popup:function(evt, id, url, onlyload)
             		o.innerHTML=LANG[k];
             		a.appendChild(o);
             	}
+            }
+            a=popup.querySelector("#cssclasss");
+            if(a!=null) {
+				var i,j,cls={},rules,css = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+				for(i=0;i<css.length;i++) {
+            		rules=css[i].styleSheet.cssRules?css[i].styleSheet.cssRules:css[i].cssRules;
+					for(j=0;j<rules.length;j++) {
+						if(rules[j].selectorText) {
+							var n,m=rules[j].selectorText.match(/\.([^\.\:,\ \[\{\(]+)/g);
+							if(m!=null)
+								for(n=0;n<m.length;n++)
+									cls[m[n].substr(1)]=1;
+						}
+					}
+            	}
+            	for(var k in cls) {
+            		var o=document.createElement("option");
+            		o.setAttribute("value", k);
+            		o.innerHTML=k;
+            		a.appendChild(o);
+            	}
+            }
+            a=popup.querySelector("#jss");
+            if(a!=null) {
+				Object.getOwnPropertyNames(window).forEach(function(k) {
+				if(typeof window[k] === 'function') {
+            		var o=document.createElement("option");
+            		o.setAttribute("value", k+'(');
+            		o.innerHTML=window[k].toString().match(/^function([^{]+)/)[1];
+            		a.appendChild(o);
+				}
+				});
+				Object.getOwnPropertyNames(window['pe']).forEach(function(c) {
+					Object.getOwnPropertyNames(window['pe'][c]).forEach(function(k) {
+					if(typeof window['pe'][c][k] === 'function') {
+    	        		var o=document.createElement("option");
+        	    		o.setAttribute("value", 'pe.'+c+'.'+k+'(');
+            			o.innerHTML='pe.'+c+'.'+k+window['pe'][c][k].toString().match(/^function([^{]+)/)[1];
+            			a.appendChild(o);
+					}
+					});
+				});
             }
         } else
             popup.innerHTML=L("wyswyg_nohook");

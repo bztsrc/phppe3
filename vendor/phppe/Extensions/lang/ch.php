@@ -12,6 +12,7 @@ return [
 	"Installed" => "安裝",
 	"Upgrade" => "升級",
 	"Buy" => "購買",
+	"install" => "安裝",
 	"Install" => "安裝",
 	"Upgrade to" => "升級到",
 	"Downgrade to" => "下坡到",

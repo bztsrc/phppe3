@@ -67,6 +67,7 @@ return [
 	"day" => "nap",
 	"days" => "nap",
 	"Users" => "Felhasználók",
+	"loggedin" => "Bejelentkezett",
 	"Login" => "Bejelentkezés",
 	"Logout" => "Kijelentkezés",
 	"Unlock" => "Testreszabás",

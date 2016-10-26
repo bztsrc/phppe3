@@ -31,6 +31,7 @@ return [
 	"upgrade" => "upgrade",
 	"downgrade" => "downgrade",
 	"Buy" => "Buy",
+	"install" => "Install",
 	"Install" => "Install",
 	"Upgrade to" => "Upgrade to",
 	"Downgrade to" => "Downgrade to",

@@ -9,4 +9,5 @@ return [
 	"Identity" => "Identity",
 	"Path" => "Path",
 	"Default" => "Default",
+	"remoteadm" => "Remote Admin",
 ];

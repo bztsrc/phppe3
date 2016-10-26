@@ -8,8 +8,8 @@ class youtube extends \PHPPE\AddOn
 
 	function show()
 	{
-		if($this->args[0]<64) $this->args[0]=380;
-		if($this->args[1]<64) $this->args[1]=265;
+		if(@$this->args[0]<64) $this->args[0]=380;
+		if(@$this->args[1]<64) $this->args[1]=265;
 		return "<iframe width='".$this->args[0]."' height='".$this->args[1]."' src='http://www.youtube.com/embed/".htmlspecialchars(!empty($this->value)?$this->value:$this->name)."?".
 		(!empty($this->args[2])?"autoplay=1":"").
 		(!empty($this->args[3])?"autohide=".intval($this->args[3]):"").

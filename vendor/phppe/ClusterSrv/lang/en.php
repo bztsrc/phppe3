@@ -18,4 +18,5 @@ return [
 	"lb" => "loadbalancer",
 	"worker" => "worker",
 	"booting" => "booting",
+	"cluadm" => "Cluster Admin",
 ];

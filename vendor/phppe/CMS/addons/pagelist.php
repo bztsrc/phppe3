@@ -11,7 +11,7 @@ class pagelist extends \PHPPE\AddOn\setsel
     public $heightClass = "setsel_boxw";
     public $headerHeight = 30;
     public $forceFull = 80;
-    public $conf = "*(views) obj.field options [cssclass]";
+    public $conf = "*(view) dataset";
 
 	function edit()
 	{

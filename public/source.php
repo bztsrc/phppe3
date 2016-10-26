@@ -67,7 +67,7 @@ namespace PHPPE {
     class AddOn
     {
         protected $name;          //!< instance name
-        protected $args;          //!< arguments in pharenthesis after type
+        public $args;             //!< arguments in pharenthesis after type
         public $fld;              //!< field name
         public $value;            //!< object field's value
         protected $attrs;         //!< attributes, everything after the name in tag
@@ -2138,7 +2138,11 @@ namespace PHPPE {
             self::$e = $x.' => '.$r;
             $e=error_reporting();
             error_reporting($e&~E_NOTICE);
-            $R = eval('return '.$r.';');
+            try {
+                $R = eval('return '.$r.';');
+            } catch(\ParseError $e) {
+                $R = $r;
+            }
             error_reporting($e);
             $o = ob_get_clean();
             self::$e = '';
@@ -2590,7 +2594,7 @@ namespace PHPPE {
                         }
                         //! language selector box
                         $O .= "<div id='pe_l'$H><ul>";
-                        if (!empty($_SESSION['pe_ls'])) {
+                        if (!empty($_SESSION['pe_ls']) && count($_SESSION['pe_ls'])>1) {
                             $d = $_SESSION['pe_ls'];
                         } else {
                             //if application has translations, use that list
@@ -4882,7 +4886,7 @@ namespace PHPPE\AddOn {
             if (!empty($a[2])&&is_array($a[2])) {
                 $o="<datalist id='".$this->fld.":list'>";
                 foreach($a[2] as $d)
-                    $o.="<option value=\"".htmlspecialchars($d)."\">".L($d)."</option>\n";
+                    $o.="<option value=\"".htmlspecialchars($d)."\">".L($d[0]=='@'?substr($d,1):$d)."</option>\n";
                 $o.="</datalist>";
             } else {
                 $o="";
@@ -4997,7 +5001,7 @@ namespace PHPPE\AddOn {
  //L("Option list")
     class select extends \PHPPE\AddOn
     {
-        public $conf = "*(size[,ismultiple]) obj.field options [skipids [onchangejs [cssclass]]]";
+        public $conf = "*(size[,ismultiple]) obj.field dataset [skipids [onchangejs [cssclass]]]";
 
         public function show()
         {
@@ -5251,7 +5255,7 @@ namespace PHPPE\AddOn {
 //L("Label")
     class label extends \PHPPE\AddOn
     {
-        public $conf = "*obj.field [cssclass]";
+        public $conf = "*obj.field label [cssclass]";
 
         public function show()
         {

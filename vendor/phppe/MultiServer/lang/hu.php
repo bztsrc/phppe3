@@ -9,4 +9,5 @@ return [
 	"Identity" => "Digitális kulcs",
 	"Path" => "Elérési út",
 	"Default" => "Alapértelmezett",
+	"remoteadm" => "Hozzáférés Admin",
 ];

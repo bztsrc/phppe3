@@ -10,7 +10,7 @@ class img extends \PHPPE\AddOn\setsel
     public $heightClass = "setsel_box";
     public $headerHeight = 30;
     public $forceFull = 80;
-    public $conf = "*(picturesize,itemheight) obj.field options [cssclass]";
+    public $conf = "*(picturesize,itemheight) obj.field dataset [cssclass]";
 
     function edit()
     {

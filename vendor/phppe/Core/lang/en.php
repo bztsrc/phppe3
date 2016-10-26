@@ -92,6 +92,7 @@ return [
 	"day" => "day",
 	"days" => "days",
 	"Users" => "Users",
+	"loggedin" => "Logged in",
 	"Login" => "Login",
 	"Cache" => "Cache",
 	"Press me" => "Press me",

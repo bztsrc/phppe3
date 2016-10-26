@@ -21,6 +21,11 @@ class pageinfo extends \PHPPE\AddOn
         $rec = \PHPPE\Views::find([], "sitebuild=''", "id", "id,name");
         foreach ($rec as $r)
             $app->layouts[$r['id']] = $r['name'];
+        foreach(glob("app/views/*.tpl") as $view) {
+            $w=str_replace(".tpl","",basename($view));
+            if($w!="frame")
+                $app->layouts[$w] = ucfirst($w);
+        }
         unset($rec);
         //! add current template if it's not there
         $page = \PHPPE\View::getval("page");

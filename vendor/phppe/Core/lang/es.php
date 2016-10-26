@@ -67,6 +67,7 @@ return [
 	"day" => "día",
 	"days" => "día",
 	"Users" => "Usuarios",
+	"loggedin" => "Iniciar sesión",
 	"Login" => "Iniciar sesión",
 	"Logout" => "Cerrar sesión",
 	"Unlock" => "Personalización",

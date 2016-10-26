@@ -67,6 +67,7 @@ return [
 	"day" => "jour",
 	"days" => "jour",
 	"Users" => "Utilisateurs",
+	"loggedin" => "Se connecter",
 	"Login" => "Se connecter",
 	"Logout" => "Se déconnecter",
 	"Unlock" => "Personnalisation",

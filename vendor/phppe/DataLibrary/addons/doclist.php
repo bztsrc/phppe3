@@ -10,7 +10,7 @@ class doclist extends \PHPPE\AddOn\setsel
     public $heightClass = "setsel_box";
     public $headerHeight = 30;
     public $forceFull = 80;
-    public $conf = "*obj.field options [cssclass]";
+    public $conf = "*obj.field dataset [cssclass]";
 
 	function edit()
 	{

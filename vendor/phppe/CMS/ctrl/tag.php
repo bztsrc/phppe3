@@ -63,10 +63,13 @@ class CMSTag
 				}
 				if(empty($d))
 					die(\PHPPE\View::e("E",L("Unknown tag")));
-				if($d=="=")
+				if($d=="=") {
 					$d="eval";
-				$a=str_getcsv(preg_replace("/[\ ]+/"," ",strtr(substr($item,2,strlen($item)-3),["(,"=>" - ","("=>" ",")"=>" )",",,"=>" - ",","=>" "]))," ");
-				array_shift($a);
+					$a=[substr($item,3,strlen($item)-4)];
+				} else {
+					$a=str_getcsv(preg_replace("/[\ ]+/"," ",strtr(substr($item,2,strlen($item)-3),["(,"=>" - ","("=>" ",")"=>" )",",,"=>" - ",","=>" "]))," ");
+					array_shift($a);
+				}
 				if(substr($c,0,5)=="addon") {
 					if(@$a[0][0]=="@") {
 						$acl=substr($a[0],1);
@@ -80,7 +83,7 @@ class CMSTag
 					if(empty($widget)) $widget="hidden";
 					$needsel=1;
 				}
-				echo("<b>".L("help_".$d)."</b><br/>\n<div id='tageditor' style='padding:5px;'><input type='hidden' name='tag' value='".htmlspecialchars($d)."'>\n");
+				echo("<b>".L(!empty($widget)&&!empty(Core::$l[$widget])?$widget:"help_".$d)."</b><br/>\n<div id='tageditor' style='padding:5px;'><input type='hidden' name='tag' value='".htmlspecialchars($d)."'>\n");
 				if(substr($c,0,5)=="addon") {
 					$t=$d=="cms"?L("Show value"):L("Required value");
 					echo("<input type='checkbox' class='input' name='required' onchange='pe.cms.settag(\"tageditor\");' title=\"".htmlspecialchars($t)."\" value='*'".($req?" checked":"").">\n");
@@ -94,6 +97,7 @@ class CMSTag
 					echo("<datalist id='filters'>");
 					foreach(\PHPPE\ClassMap::ace() as $b)
 						echo("<option value='".$b."'>".L($b)."</option>");
+					echo("<option value='siteadm|webadm'>".L("Administrator")."</option>");
 					echo("</datalist><br/>\n");
 					$c=@$list["_".$widget];
 				}
@@ -112,7 +116,7 @@ class CMSTag
 						echo("(<input type='hidden' value='('><br/><div style='padding-left:10px;'>");
 					elseif($c[0]==")")
 						array_shift($c);
-					$i=0; $optional=""; $f=1;
+					$i=0; $optional=""; $f=1; $js=0;
 					foreach($c as $k=>$v) {
 						if($v=="[") {
 							$optional=" optional";
@@ -131,12 +135,13 @@ class CMSTag
 						switch($v) {
 						case "":$i++;break;
 						case "view":
-							$views=\PHPPE\Views::find([],"sitebuild=''","name","id,name");
+							$views=\PHPPE\Views::find([],"sitebuild=''","id","id,name");
 							foreach(array_merge(glob("app/views/*.tpl"),glob("vendor/phppe/Core/views/*.tpl")) as $view) {
 								$w=str_replace(".tpl","",basename($view));
 								if($w!="frame")
 									$views[]=['id'=>$w,'name'=>ucfirst($w)];
 							}
+							if($a[$i]==")") $i--;
 							echo("<select class='input".$optional."' name='arg".$k."' data-type='".htmlspecialchars($v)."' ".
 							"onchange='pe.cms.settag(\"tageditor\");' title=\"".L($v)."\">");
 							$w=0;
@@ -145,19 +150,39 @@ class CMSTag
 								if($view['id']==$a[$i]) $w=1;
 							}
 							if(!$w)
-								echo("<option value='".htmlspecialchars($a[$i])."' selected>".(!empty($a[$i])?L($a[$i]):L("None"))."</option>");
+								echo("<option value='".htmlspecialchars($a[$i])."' selected>".(!empty($a[$i])?L($a[$i]):"*")."</option>");
 							echo("</select>\n");
 							$i++;
+							break;
+						case "min":
+						case "max":
+						case "maxlen":
+						case "rows":
+						case "size":
+						case "picturesize":
+						case "iconheight":
+						case "iconwidth":
+						case "itemheight":
+						case "itemwidth":
+						case "num":
+							echo("<input type='number' class='input".$optional."' name='arg".$k."' data-type='".htmlspecialchars($v)."' ".
+							"onkeyup='pe.cms.settag(\"tageditor\");' onkeydown='if(event.key==\"Enter\"){event.preventDefault();pe_p();}' onchange='pe.cms.settag(\"tageditor\");' title=\"".L($v)."\" placeholder=\"".L($v)."\" ".
+							"value=\"".htmlspecialchars(@$a[$i]==")"?"":@$a[$i++])."\"><br/>\n");
 							break;
 						default:
 							echo("<input type='text' class='input".$optional."' name='arg".$k."' data-type='".htmlspecialchars($v)."' ".
 							"onkeyup='pe.cms.settag(\"tageditor\");' onkeydown='if(event.key==\"Enter\"){event.preventDefault();pe_p();}' onchange='pe.cms.settag(\"tageditor\");' title=\"".L($v)."\" placeholder=\"".L($v)."\" ".
-							"value=\"".htmlspecialchars(@$a[$i]==")"?"":@$a[$i++])."\"".($v=="label"||$v=="dataset"?" list=\"".$v."s\"":"")."><br/>\n");
-							if($v=="label"){
+							"value=\"".htmlspecialchars(@$a[$i]==")"?"":@$a[$i++])."\"".($v=="label"||$v=="cssclass"||$v=="dataset"||$v=="listopts"?" list=\"".($v=="listopts"?"dataset":$v)."s\"":(substr($v,-2)=="js"?" list='jss'":""))."><br/>\n");
+							if(substr($v,-2)=="js"&&$js==0){
 								//! filled in by JavaScript
-								echo("<datalist id=\"labels\"></datalist>\n");
+								echo("<datalist id=\"jss\"></datalist>\n");
+								$js=1;
 							}
-							if($v=="dataset"){
+							if($v=="label"||$v=="cssclass"){
+								//! filled in by JavaScript
+								echo("<datalist id=\"".$v."s\"></datalist>\n");
+							}
+							if($v=="dataset"||$v=="listopts"){
 								echo("<datalist id=\"datasets\">\n");
 								$pages=\PHPPE\Page::find([],"","created DESC","dds","id");
 								$dds=[];

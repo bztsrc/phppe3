@@ -159,6 +159,39 @@ class Lang
                     }
                     if($d[$i]=="'" || $d[$i]=='"') { $e=$d[$i]; $i++; }
                 }
+                //! add access control entries to translations too
+                if (substr($d,$i,10)=="user->has("||substr($d,$i,9)=="user.has(") {
+                    $i+=$d[$i+4]=="."?9:10;
+                    if($d[$i]=="'" || $d[$i]=='"') { 
+                        $e=$d[$i]; $i++; $k=$i;
+                        while($i<$l && $d[$i]!=$e) {
+                            $i++;
+                        }
+                        $e="";
+                        foreach(explode("|",substr($d,$k,$i-$k)) as $g) {
+                            //! avoid notice when appending filenames and line numbers
+                            if (!isset($L[$g]) || !empty($lang))
+                                $L[$g] = "";
+                            //! add words or file and line if language not given
+                            $L[$g] .= empty($lang)?
+                                (empty($L[$g])?"":", ").$fn.":".$line :
+                                $g;
+                        }
+                    }
+                     while($i<$l && $d[$i]!=$e) {
+                        if ($d[$i] == ")")
+                            continue 2;
+                        if ($d[$i] == "\n")
+                            $line++;
+                        $i++;
+                    }
+                    $i++; while($i<$l && ($d[$i]==' '||$d[$i]=="\t"||$d[$i]=="\n")) {
+                        if ($d[$i] == "\n")
+                            $line++;
+                        $i++;
+                    }
+                    if($d[$i]=="'" || $d[$i]=='"') { $e=$d[$i]; $i++; }
+                }
                 //! should we look for an ending character?
                 if($e) {
                     $k=$i;while($i<$l&&$d[$i]!=$e) {

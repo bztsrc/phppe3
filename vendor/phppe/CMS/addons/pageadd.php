@@ -12,6 +12,7 @@ class pageadd extends \PHPPE\AddOn\pageinfo
     {
         if (!\PHPPE\Core::isTry()) {
             $page = new \PHPPE\Page;
+            $page->template="simple";
             \PHPPE\View::assign("page", $page);
         }
         $quickhelp=!Core::lib("CMS")->expert;

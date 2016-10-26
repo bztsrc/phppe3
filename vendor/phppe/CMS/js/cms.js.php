@@ -46,8 +46,9 @@ pe.cms = {
             var r=parseInt(ps.getPropertyValue("padding-right"),10); if(r==null||r==NaN) r=0;
             var b=parseInt(ps.getPropertyValue("padding-bottom"),10); if(b==null||b==NaN) b=0;
             rt=icon.parentNode.getBoundingClientRect();
-            x=Math.floor(rt.left)+l;
-            y=Math.floor(rt.top)+t;
+            i=icon.getBoundingClientRect();
+            x=Math.floor(i.left);
+            y=Math.floor(i.top);
             w=icon.parentNode.offsetWidth-l-r; h=icon.parentNode.offsetHeight-t-b;
             this.item=icon.parentNode;
         } else {
@@ -230,11 +231,12 @@ pe.cms = {
     	if(evt.target.className==null||evt.target.alt==null||evt.target.className!="wyswyg_icon")
 			return;
     	pe.cms.tag=evt.target;
-		pe.wyswyg.popup(event,"layout_data",'cms/tag?item='+urlencode(evt.target.alt));
+		pe.wyswyg.popup(event,id,'cms/tag?item='+urlencode(evt.target.alt));
 	},
 
 	settag:function(frm) {
 		var t="",s=" ",i=0,inps=document.getElementById(frm).querySelectorAll("input, select, textarea");
+		if(inps[0].value=="eval") inps[0].value="=";
 		t=inps[i++].value+(inps[0].value!="="?" ":"");
 		if(inps[0].value=="var"||inps[0].value=="field"||inps[0].value=="widget"||inps[0].value=="cms") {
 			if(inps[3].value.trim()!='')
@@ -253,7 +255,7 @@ pe.cms = {
 				s=" ";
 				t=t.replace(/[,]+$/,'');
 			}
-			t+=(inps[i].value==''&&s==' '?'-':inps[i].value)+(inps[i+1]!=null&&inps[i+1].value!=")"?s:"");
+			t+=(inps[i].value==''&&s==' '?'-':(inps[i].value.indexOf(' ')>-1?"\""+inps[i].value.replace("\"","\\\"")+"\"":inps[i].value))+(inps[i+1]!=null&&inps[i+1].value!=")"?s:"");
 		}
 		t="<!"+t.trim().replace("( ","(").replace(" )",")").replace("()","").replace(/([\ ][\-])+$/,"")+">";
 		pe.cms.tag.src='js/wyswyg.js.php?item='+urlencode(t);

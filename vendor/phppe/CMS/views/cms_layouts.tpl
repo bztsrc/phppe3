@@ -1,9 +1,9 @@
 <!if empty(core.item)>
 <h1><!=L("Layouts")></h1>
 <div style='padding:5px;'>
-<!form import>
+<!form import - cms/sitebuild>
 <span style='display:none;'>
-<!field file import.file - this.form.submit()></span>
+<!field file import.file this.form.submit()></span>
 </form>
 <button onclick='document.getElementById("import_file").click();' class='btn'><span class='glyphicon glyphicon-open'></span>&nbsp;<!=L("Import sitebuild zip")></button>
 <button onclick='pe.cms.edit(this,"45233837fc8c595272246ef3d48f311c842ce562",0,0,0,400,160,30);' class='btn btn-success'><span class='glyphicon glyphicon-plus-sign'></span>&nbsp;<!=L("layoutadd")></button>
@@ -83,7 +83,7 @@
 // make sure the editor is not below the toolbar
 setTimeout(function(){
 var e=document.getElementById('layout_edit');
-var p=e.getBoundingClientRect();
-if(p.top<64) e.style.marginTop='24px';
+var p=e!=null?e.getBoundingClientRect():null;
+if(e!=null&&p.top<64) e.style.marginTop='24px';
 },1);
 </script>

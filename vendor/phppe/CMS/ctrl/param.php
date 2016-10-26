@@ -57,6 +57,9 @@ class CMSParam
         //! get the field we're editing
         $F = clone $_SESSION["cms_param"][$item];
         $F->fld="page_value";
+        if(get_class($F)=="PHPPE\\AddOn\\wyswyg")
+        	$F->args=[0,"pe.cms.image"];
+print_r($F->args);
         if (method_exists($F, 'init')) {
             $F->init();
         }

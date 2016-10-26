@@ -67,7 +67,7 @@ function htmlspecialchars(text) {
 }
 
 function urlencode(text) {
-  return encodeURIComponent(text);
+  return encodeURIComponent(text).replace(/\+/,'%2B');
 }
 
 function number_format(number, decimals, dec_point, thousands_sep) {

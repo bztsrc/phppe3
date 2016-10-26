@@ -98,4 +98,7 @@ return [
 	"Required value" => "Kötelező érték",
 	"Not configurable" => "Nem konfigurálható",
 	"No layout id" => "Nincs sablon azonosító",
+	"siteadm" => "Oldal Admin",
+	"webadm" => "Tartalom szerkesztő",
+	"pubadm" => "Tartalom jóváhagyó",
 ];
