@@ -101,4 +101,7 @@ return [
 	"siteadm" => "Oldal Admin",
 	"webadm" => "Tartalom szerkesztő",
 	"pubadm" => "Tartalom jóváhagyó",
+	"Administrator" => "Adminisztrátor",
+	"Choose a html" => "Válassz html-t",
+	"Choose application area" => "Válaszd ki az alkalmazás helyét",
 ];

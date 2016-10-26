@@ -255,7 +255,7 @@ class CMS
  *
  * @param html with marked tags
  * @param id of a tag
- * @param selector: 1=return html after tag, 0=return tag for id, -1=return html before tag
+ * @param selector: 2=return html after tag, 1=return tag for id, 0=return html before tag
  * @return html code
  */
 	static function splithtml($data,$id,$idx=1)

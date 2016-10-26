@@ -3,7 +3,7 @@
  * @file vendor/phppe/CMS/ctrl/pages.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief list pages
  */
 
 namespace PHPPE\Ctrl;

@@ -3,7 +3,7 @@
  * @file vendor/phppe/CMS/ctrl/archive.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief old content diff
  */
 
 namespace PHPPE\Ctrl;

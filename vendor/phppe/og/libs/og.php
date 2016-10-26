@@ -25,7 +25,7 @@ class og
 	    $appObj = View::getval("app");
         foreach ($this->fields as $fld=>$var) {
             if (empty($var)) $var = $fld;
-	        $appObj->meta[$fld] = [!empty($appObj->$var)?$appObj->$var:Registry::get($fld), "property"];
+	        $appObj->meta[$fld] = [!empty($appObj->$var)?$appObj->$var:$var, "property"];
 	    }
 		if(!empty($appObj->meta["description"]))
 			$appObj->meta["og:description"] = [$appObj->meta["description"], "property"];

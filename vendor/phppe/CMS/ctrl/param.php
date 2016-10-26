@@ -3,7 +3,7 @@
  * @file vendor/phppe/CMS/ctrl/param.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief edit page parameter
  */
 
 namespace PHPPE\Ctrl;
@@ -59,7 +59,6 @@ class CMSParam
         $F->fld="page_value";
         if(get_class($F)=="PHPPE\\AddOn\\wyswyg")
         	$F->args=[0,"pe.cms.image"];
-print_r($F->args);
         if (method_exists($F, 'init')) {
             $F->init();
         }

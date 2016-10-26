@@ -65,11 +65,11 @@
 <!=L("ID")>, <!L Name>:<br/><!field text layout.id>
 <!field text layout.name>
 </div>
-<div style='float:left;'>
+<div style='float:left;min-width:300px;'>
 <!L Style sheets>:<br/><!field cmscss layout.css>
 <!if quickhelp><br/><small>(<!L help_css>)</small><!/if>
 </div>
-<div style='float:left;'>
+<div style='float:left;min-width:300px;'>
 <!L JavaScript libraries>:<br/><!field cmsjs layout.jslib>
 <!if quickhelp><br/><small>(<!L help_js>)</small><!/if>
 </div>
@@ -84,6 +84,11 @@
 setTimeout(function(){
 var e=document.getElementById('layout_edit');
 var p=e!=null?e.getBoundingClientRect():null;
-if(e!=null&&p.top<64) e.style.marginTop='24px';
-},1);
+if(e!=null) {
+	if(p!=null && p.top<56) e.style.marginTop=(56-p.top)+'px';
+	var h=((window.innerHeight?window.innerHeight:document.body.offsetHeight)-56)+'px';
+	document.getElementById('layout_data').style.height=h;
+	document.getElementById('layout_data:edit').style.height=h;
+}
+},10);
 </script>

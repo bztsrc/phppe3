@@ -9,6 +9,7 @@ pe.cms = {
     return:null, url:null, reload:false,
     border:null, item:null,
     scrx:null, srcy:null,
+    divchooselast:null,
 
     //! open cms editor box
     edit:function(icon, paramidx, adjust, minw, minh, forcew, forceh, forcefull)
@@ -268,6 +269,28 @@ pe.cms = {
 			if(obj.form.elements[i].type=='checkbox')
 				obj.form.elements[i].checked=obj.checked;
 		}
+	},
+
+	divchoosemove:function(evt)
+	{
+    	var el=document.elementFromPoint(evt.clientX,evt.clientY);
+		evt.preventDefault();
+    	if(pe.cms.divchooselast!=el) {
+        	if(pe.cms.divchooselast!=null)
+            	pe.cms.divchooselast.setAttribute('style',pe.cms.divchooselast.getAttribute('data-style')?pe.cms.divchooselast.getAttribute('data-style'):'');
+        	if(el!=null) {
+            	el.setAttribute('data-style',el.getAttribute('style')?el.getAttribute('style'):'');
+            	el.setAttribute('style','background:#108010;color:#fff;cursor:crosshair;');
+        	}
+        	pe.cms.divchooselast=el;
+    	}
+	},
+
+	divchooseclick:function(evt)
+	{
+    	var el=document.elementFromPoint(evt.clientX,evt.clientY);
+		evt.preventDefault();
+    	document.location.href=document.location.href.replace(/\?chooseid=[0-9]+/g,"")+'?chooseid='+el.getAttribute('data-chooseid');
 	},
 
     //! called by wyswyg

@@ -3,7 +3,7 @@
  * @file vendor/phppe/CMS/ctrl/unlock.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief AJAX hook called to unlock page
  */
 
 namespace PHPPE\Ctrl;

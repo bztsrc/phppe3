@@ -101,4 +101,7 @@ return [
 	"siteadm" => "Site Admin",
 	"webadm" => "Content Editor",
 	"pubadm" => "Publisher",
+	"Administrator" => "Administrator",
+	"Choose a html" => "Choose a html",
+	"Choose application area" => "Choose application area",
 ];

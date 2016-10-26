@@ -1,9 +1,9 @@
 <?php
 /**
- * @file vendor/phppe/CMS/ctrl/layouts.php
+ * @file vendor/phppe/CMS/ctrl/tag.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief tag chooser and editor
  */
 
 namespace PHPPE\Ctrl;

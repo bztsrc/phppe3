@@ -368,7 +368,7 @@ namespace PHPPE {
                 throw new \Exception('no _table');
             }
             //get the records from current datasource
-            return DS::query($f, static::$_table, !empty($w) ? $w : '', !empty($g) ? $g : '', $o, 0, 0, is_array($s) ? $s : [$s]);
+            return DS::query($f, static::$_table, !empty($w) ? $w : (!empty($s)?'id=?':''), !empty($g) ? $g : '', $o, 0, 0, is_array($s) ? $s : [$s]);
         }
 
 /**
@@ -1836,11 +1836,8 @@ namespace PHPPE {
                 self::$hdr['link'][$c] = 'stylesheet';
             } else {
                 //! add a new stylesheet to output
-                $a = self::dir().'/css/'.@explode('?', $c)[0];
-                if (!file_exists($a)) {
-                    $a .= '.php';
-                }
-                if (!isset(self::$hdr['css'][$c]) && file_exists($a)) {
+                $a=@glob("vendor/phppe/*/css/".@explode('?', $c)[0]."*")[0];
+                if (!isset(self::$hdr['css'][$c]) && !empty($a)) {
                     self::$hdr['css'][$c] = realpath($a);
                 }
             }
@@ -1864,11 +1861,8 @@ namespace PHPPE {
                 self::$hdr['jslib'][$l] = sprintf('%02d', $p).$l;
             } else {
                 //! add a new javascript library to output
-                $a = self::dir().'/js/'.@explode('?', $l)[0];
-                if (!file_exists($a)) {
-                    $a .= '.php';
-                }
-                if (!isset(self::$hdr['jslib'][$l]) && file_exists($a)) {
+                $a=@glob("vendor/phppe/*/js/".@explode('?', $c)[0]."*")[0];
+                if (!isset(self::$hdr['jslib'][$l]) && !empty($a)) {
                     self::$hdr['jslib'][$l] = sprintf('%02d', $p).realpath($a);
                 }
             }
@@ -2910,21 +2904,6 @@ namespace PHPPE {
         }
 
 /**
- * Return the base directory for the extension calling.
- *
- * @return string   path
- */
-        private static function dir()
-        {
-            $d = dirname(debug_backtrace()[1]['file']);
-            if (in_array(basename($d), ['ctrl', 'libs', 'js', 'css', 'addons', 'tests'])) {
-                $d = dirname($d);
-            }
-
-            return $d;
-        }
-
-/**
  * Return a timestamp.
  *
  * @param string    timestamp or date
@@ -3150,7 +3129,7 @@ namespace PHPPE {
                 $files[$k] = escapeshellarg($v);
             }
             $r = self::ssh(
-                "tar -xvz ".($dest ? ' -C '.escapeshellarg(Core::$user->data['remote']['path'].'/'.$dest) : '')." 2>\&1",
+                "tar -xvz ".($dest ? ' -C '.escapeshellarg(Core::$user->data['remote']['path'].'/'.$dest) : ''),
                 "",
                 "tar -cz ".implode(' ', $files));
             if (in_array(substr($r, 0, 4), ['ssh:', 'tar:']) || substr($r, 0, 3) == 'sh:') {
@@ -3856,6 +3835,7 @@ class ClassMap extends Extension
                     'vendor/phppe' => 0,
                     'vendor/phppe/Core' => 0,
                     'vendor/phppe/Core/views' => 0,
+                    'public/fonts' => 0,
                     'public/images' => 0,
                     'public/css' => 0,
                     'public/js' => 0,
@@ -3904,7 +3884,7 @@ class ClassMap extends Extension
             }
             //! hide errors here, symlink may be already there
             @symlink('../../app', 'vendor/phppe/app');
-            foreach (['images', 'css', 'js'] as $v) {
+            foreach (['images', 'css', 'js', 'fonts'] as $v) {
                 if (!file_exists("app/$v")) {
                     echo "DIAG-A: app/$v\n";
                 }
@@ -4225,11 +4205,11 @@ class ClassMap extends Extension
                  .strtr($m, ["\n" => '\\n', "\r" => '\\r']).strtr($t, ["\n" => '']));
             } else {
                 //! save message to file
-                $l = 'data/log/'.$n.'.log';
+                $l = dirname(__DIR__).'/data/log/'.$n.'.log';
                 if (!@file_put_contents($l, $p.
                     strtr($m, ["\n" => '\\n', "\r" => '\\r'])."\n".$t, FILE_APPEND | LOCK_EX)) {
                     // @codeCoverageIgnoreStart
-                    $w = $_SERVER['argv'][1] != '--diag' ? 'C' : 'E';
+                    $w = @$_SERVER['argv'][1] != '--diag' ? 'C' : 'E';
                     $g .= (!self::$w ? "\nLOG-C" : "<br/>\n".date('Y-m-d').'T'.date('H:i:s').'Z-C-LOG').': '.L('unable to write')." $l";
                     // @codeCoverageIgnoreEnd
                 }
@@ -5199,9 +5179,9 @@ namespace PHPPE\AddOn {
         {
             //! get field name
             $n = strtr($n,["."=>"_"]);
-            $ok = empty($_FILES[$n]) || $_FILES[$n]['error']==4;
+            $ok = !empty($_FILES[$n]) && (@$_FILES[$n]['error']==0||@$_FILES[$n]['error']==4);
             //! copy data from $_FILES
-            $v = $ok? [] : $_FILES[$n];
+            $v = $ok? $_FILES[$n] : [];
             return [$ok, 'failed to upload file.'];
         }
     }

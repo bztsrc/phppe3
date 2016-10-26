@@ -3,7 +3,7 @@
  * @file vendor/phppe/CMS/ctrl/content.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief page link chooser
  */
 
 namespace PHPPE\Ctrl;

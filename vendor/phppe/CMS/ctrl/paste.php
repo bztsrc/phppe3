@@ -1,9 +1,9 @@
 <?php
 /**
- * @file vendor/phppe/CMS/ctrl/layouts.php
+ * @file vendor/phppe/CMS/ctrl/paste.php
  * @author bzt
  * @date 26 May 2016
- * @brief
+ * @brief insert styleguides into html
  */
 
 namespace PHPPE\Ctrl;
