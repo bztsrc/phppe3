@@ -1526,6 +1526,14 @@ print_r($this);
                 header('HTTP/1.1 404 Not Found');
                 die;
             }
+            //! not a real asset, but no better place
+            if($app=="passwd"&&Core::$client->ip=="CLI") {
+                echo(chr(27)."[96m".L("Password")."? ".chr(27)."[0m");
+                system('stty -echo');
+                $p = rtrim(fgets(STDIN));
+                system('stty echo');
+                die("\n".password_hash($p, PASSWORD_BCRYPT, ['cost'=>12])."\n");
+            }
         }
         // @codeCoverageIgnoreEnd
 
@@ -3666,7 +3674,7 @@ class ClassMap extends Extension
                 }
                 if (empty($_SERVER['argv'][1]) || in_array('--help', $_SERVER['argv'])) {
                     $c = chr(27)."[90mphp ".$_SERVER['argv'][0].chr(27)."[0m";
-                    echo(chr(27).'[96mPHP Portal Engine '.VERSION.", LGPL 2016 bzt".chr(27)."[0m\n  $c --help\n  $c --version\n  $c --diag [--gid=x]\n  $c --self-update\n  $c [application [action [item]]] [--dump]\n");
+                    echo(chr(27).'[96mPHP Portal Engine '.VERSION.", LGPL 2016 bzt".chr(27)."[0m\n  $c --help\n  $c --version\n  $c --diag [--gid=x]\n  $c --self-update\n  $c [application [action [item]]] [--dump]\n  $c passwd\n");
                     foreach(ClassMap::$map as $C=>$v)
                         if(!empty($C::$cli))
                             foreach(is_array($C::$cli)?$C::$cli:[$C::$cli] as $d)
