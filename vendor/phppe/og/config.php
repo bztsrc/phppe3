@@ -7,12 +7,6 @@
  */
 
 return [
-    "fb:app_id" => "fbAppId",
-    "og:title" => "name",
-    "og:type" => "ogType",
-    "og:site_name" => "ogSiteName",
-    "og:image" => "ogImage",
-    "og:audio" => "ogAudio",
-    "og:video" => "ogVideo",
-    "og:description" => "description",
+    "fbAppId" => "Facebook App Id",
+    "ogSiteName" => "Site Name",
 ];
