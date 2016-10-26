@@ -3,7 +3,10 @@
  * Controller for Extension Manager
  */
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Http;
 
 class Extensions extends \PHPPE\Extensions {
 	public $_favicon="images/phppeicon.png";
@@ -12,16 +15,16 @@ class Extensions extends \PHPPE\Extensions {
 	{
 		//! common check for all action handlers
 		if(!Core::$user->has("install")) {
-			\PHPPE\Http::redirect("login", true);
+			Http::redirect("login", true);
 		}
 
 		//! if bootstrap extension not installed, use cdn version
 		if(!Core::isInst("bootstrap"))
-			\PHPPE\View::css("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
+			View::css("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
 
-		\PHPPE\View::css("extensions.css");
-		\PHPPE\View::jslib("sha256.js");
-		\PHPPE\View::jslib("extensions.js");
+		View::css("extensions.css");
+		View::jslib("sha256.js");
+		View::jslib("extensions.js");
 
 	}
 
@@ -66,7 +69,7 @@ class Extensions extends \PHPPE\Extensions {
 	function action($item)
 	{
 		Core::$core->template="";
-		\PHPPE\View::js("init()", "pe.extensions.init();", true);
+		View::js("init()", "pe.extensions.init();", true);
 	}
 }
 ?>

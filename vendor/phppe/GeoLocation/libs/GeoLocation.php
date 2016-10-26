@@ -23,7 +23,6 @@
  * @brief Provides PHPPE::$client->geo array.
  */
 namespace PHPPE;
-use PHPPE\Core as Core;
 
 /**
  * Main class
@@ -60,13 +59,13 @@ class GeoLocation extends Extension
 			}
 			//! 2-client side
 			if($cfg['type']==2)
-				\PHPPE\View::js("init()","if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pe_geo,pe_geo);",true);
+				View::js("init()","if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pe_geo,pe_geo);",true);
 			//! 3-client tracking
 			elseif($cfg['type']==3)
-				\PHPPE\View::js("init()","if(navigator.geolocation)navigator.geolocation.watchPosition(pe_geo,pe_geo);",true);
+				View::js("init()","if(navigator.geolocation)navigator.geolocation.watchPosition(pe_geo,pe_geo);",true);
 			//! 4-remote ipinfo.io
 			elseif($cfg['type']==4 && empty($_SESSION['pe_geoclient'])){
-				$ret=@json_decode(\PHPPE\Http::get("http://ipinfo.io/".Core::$client->ip),true);
+				$ret=@json_decode(Http::get("http://ipinfo.io/".Core::$client->ip),true);
 				if(is_array($ret) && !empty($ret['ip'])) {
 					$r=explode(",",$ret['loc']);
 					$_SESSION['pe_geo']['postal_code']=$ret['postal'];
@@ -80,7 +79,7 @@ class GeoLocation extends Extension
 			}
 			//! both 2 and 3 needs this helper function to make an AJAX call
 			if($cfg['type']==2 && empty($_SESSION['pe_geoclient']) || $cfg['type']==3)
-				\PHPPE\View::js("pe_geo(p)","var s='',k,h=new XMLHttpRequest();if(p.code){if(document.body.getAttribute('data-geowarn')==null){document.body.setAttribute('data-geowarn',1);alert('E-GEO: '+L(p.message));}return;}else{document.body.removeAttribute('data-geowarn');for(k in p.coords)if(p.coords.hasOwnProperty(k)){s+='&'+encodeURIComponent(k)+'='+encodeURIComponent(p.coords[k]);}h.open('GET','".\PHPPE\Http::url("geo")."?pe_s=".urlencode($_SESSION['pe_s']['geo.action'])."&timestamp='+(p.timestamp?p.timestamp:0)+s,true);h.send(null);}");
+				View::js("pe_geo(p)","var s='',k,h=new XMLHttpRequest();if(p.code){if(document.body.getAttribute('data-geowarn')==null){document.body.setAttribute('data-geowarn',1);alert('E-GEO: '+L(p.message));}return;}else{document.body.removeAttribute('data-geowarn');for(k in p.coords)if(p.coords.hasOwnProperty(k)){s+='&'+encodeURIComponent(k)+'='+encodeURIComponent(p.coords[k]);}h.open('GET','".Http::url("geo")."?pe_s=".urlencode($_SESSION['pe_s']['geo.action'])."&timestamp='+(p.timestamp?p.timestamp:0)+s,true);h.send(null);}");
 
 			//! validation
 			if(!is_array($_SESSION['pe_geo']))

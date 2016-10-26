@@ -91,7 +91,7 @@ class CMS
     function ctrl($ctx)
     {
         //! if we are on an editable page
-        if(get_class(\PHPPE\View::getval("app"))=="PHPPE\Content") {
+        if(get_class(View::getval("app"))=="PHPPE\Content") {
             //! clear the list of parameters
             $_SESSION['cms_param'] = [];
             //! save page url for cms/param action handler
@@ -175,7 +175,7 @@ class CMS
         $ret = "";
         if (Core::$user->has("siteadm|webadm")) {
             //! if we are on an editable page
-            $app=\PHPPE\View::getval("app");
+            $app=View::getval("app");
             if (get_class($app)=="PHPPE\Content") {
                 //! unpiblished warning
                 if(isset($app->publishid) && !$app->publishid)

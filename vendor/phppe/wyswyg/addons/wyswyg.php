@@ -3,8 +3,9 @@
  * What You See is What You Get editor Addon
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
-use \PHPPE\View as View;
+
+use PHPPE\Core;
+use PHPPE\View;
 
 class wyswyg extends \PHPPE\AddOn
 {

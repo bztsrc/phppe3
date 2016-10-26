@@ -3,4 +3,4 @@
 	"args": [ "extension", "url", "controller", "action" ],
 	"append": "vendor/phppe/@EXTENSION@/init.php"
 }
-\PHPPE\Http::route("@URL@", "@CONTROLLER@", "@ACTION@");
+Http::route("@URL@", "@CONTROLLER@", "@ACTION@");

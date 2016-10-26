@@ -1,7 +1,8 @@
 <?php
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
-use \PHPPE\View as View;
+
+use PHPPE\Core;
+use PHPPE\View;
 
 class setsel extends \PHPPE\AddOn {
     public $conf = "*(singleselection,height,filters,itemtemplate,header,titlefield) obj.field dataset [cssclass [itemcssclass [filterhtml]]]";

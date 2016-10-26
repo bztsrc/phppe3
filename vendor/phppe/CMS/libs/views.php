@@ -24,12 +24,12 @@ class Views extends \PHPPE\Model
     function save($force=false)
     {
         //! check input
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm"))
             throw new \Exception(L('No user id'));
         //! set up properties
-        $this->modifyd = date("Y-m-d H:i:s", \PHPPE\Core::$core->now);
-        $this->modifyid = \PHPPE\Core::$user->id;
-        \PHPPE\Core::log('A',sprintf("Layout %s modified by %s",$this->id,\PHPPE\Core::$user->name), "cmsaudit");
+        $this->modifyd = date("Y-m-d H:i:s", Core::$core->now);
+        $this->modifyid = Core::$user->id;
+        Core::log('A',sprintf("Layout %s modified by %s",$this->id,Core::$user->name), "cmsaudit");
         return parent::save($force);
     }
 
@@ -41,11 +41,11 @@ class Views extends \PHPPE\Model
         //! check input
         if(empty($this->id))
             throw new \Exception(L('No layout id'));
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm"))
             throw new \Exception(L('No user id'));
-        \PHPPE\Core::log('A',sprintf("Layout %s deleted by %s",$this->id,\PHPPE\Core::$user->name), "cmsaudit");
-        \PHPPE\DS::exec("DELETE FROM ".static::$_table." WHERE id=?",[$this->id]);
-        \PHPPE\DS::exec("DELETE FROM ".\PHPPE\Page::$_table."_list WHERE page_id IN (SELECT id FROM pages WHERE template=?)",[$this->id]);
-        \PHPPE\DS::exec("DELETE FROM ".\PHPPE\Page::$_table." WHERE template=?",[$this->id]);
+        Core::log('A',sprintf("Layout %s deleted by %s",$this->id,Core::$user->name), "cmsaudit");
+        DS::exec("DELETE FROM ".static::$_table." WHERE id=?",[$this->id]);
+        DS::exec("DELETE FROM ".Page::$_table."_list WHERE page_id IN (SELECT id FROM pages WHERE template=?)",[$this->id]);
+        DS::exec("DELETE FROM ".Page::$_table." WHERE template=?",[$this->id]);
     }
 }

@@ -3,7 +3,9 @@
  * Addon to select dynamic data sets for a page
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
 
 class cmsdds extends \PHPPE\AddOn
 {
@@ -50,11 +52,11 @@ class cmsdds extends \PHPPE\AddOn
             $r.="<td width='*' style='padding:0px;'><input style='width:95%;margin-left:0px;' class='input form-control' name='".$this->fld."[_][".$m."]' value=''></td>";
             $r.="<td style='width:37px;'>&nbsp;</td></tr>";
         $r.="</table>";
-        \PHPPE\View::js("cms_cleardds(obj)",
+        View::js("cms_cleardds(obj)",
             "obj.parentNode.parentNode.parentNode.getElementsByTagName('INPUT')[0].value='';".
             "obj.parentNode.parentNode.parentNode.style.display='none';"
         );
-        \PHPPE\View::js("cms_clonedds(obj)",
+        View::js("cms_clonedds(obj)",
             "var i,tbl=obj.parentNode;".
             "while(tbl.tagName!='TABLE') tbl=tbl.parentNode;".
             "var inps=tbl.rows[tbl.rows.length-1].getElementsByTagName('INPUT');".
@@ -62,7 +64,7 @@ class cmsdds extends \PHPPE\AddOn
             "for(i=0;i<orig.length;i++) inps[i+1].value=orig[i].value;".
             "inps[0].value='New'; inps[0].select(); inps[0].focus();"
         );
-        \PHPPE\View::js("cms_listhide(obj)",
+        View::js("cms_listhide(obj)",
             "var i,orig=obj.parentNode.parentNode.getElementsByTagName('INPUT');console.log('value',obj.selectedIndex,obj.value);".
             "if(obj.selectedIndex==0||obj.value==null||obj.value==''){".
 			"obj.setAttribute('style','display:none;');for(i=0;i<orig.length;i++) orig[i].style.display='block';".
@@ -72,7 +74,7 @@ class cmsdds extends \PHPPE\AddOn
 			"if(obj.value=='doc_list'){orig[0].value='id';orig[1].value='doc_list';orig[2].value=\"list_id='@ID'\";orig[3].value='';orig[4].value='ordering';}".
             "}"
         );
-        \PHPPE\View::js("cms_listshow(obj)",
+        View::js("cms_listshow(obj)",
             "var i,orig=obj.parentNode.parentNode.getElementsByTagName('INPUT');".
             "if(obj.value==null||obj.value==''){".
 			"obj.previousSibling.setAttribute('style','display:block;');for(i=0;i<orig.length;i++) orig[i].style.display='none';}"

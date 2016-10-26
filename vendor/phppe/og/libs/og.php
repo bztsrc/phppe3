@@ -7,9 +7,6 @@
  */
 
 namespace PHPPE;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\Registry as Registry;
 
 class og
 {

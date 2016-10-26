@@ -8,16 +8,19 @@
 
 namespace PHPPE\Ctrl;
 
+use PHPPE\Core;
+use PHPPE\Page;
+
 class CMSUnlock
 {
 
 /**
- * default action
+ * default action, loaded via AJAX
  */
 	function action($item)
 	{
         //! called via AJAX, no output required
-	    \PHPPE\Page::unLock(\PHPPE\Core::$user->id);
+	    Page::unLock(Core::$user->id);
         die("<script>top.document.location.href='".url("cms/pages")."';</script>");
 	}
 }

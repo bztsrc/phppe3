@@ -26,26 +26,25 @@
 /*!SKIPAUTOLOAD!*/
 namespace PHPPE;
 
-use PHPPE\Core as Core;
-
 //! register menu
-\PHPPE\View::menu( L("Developer"), [
+View::menu( L("Developer"), [
     L("Tests")=>"tests",
     L("Benchmarks")=>"benchmark"
 ]);
 
 //! this is needed for test cases
-\PHPPE\Http::route("tests/httptest", "Developer", "action_httpget", "get");
-\PHPPE\Http::route("tests/httptest", "Developer", "action_httppost", "post");
+Http::route("tests/httptest", "Developer", "action_httpget", "get");
+Http::route("tests/httptest", "Developer", "action_httppost", "post");
 
 //! register url routes.
-\PHPPE\Http::route("tests", "Developer");
+Http::route("tests", "Developer");
+Http::route("benchmark", "BenchmarkController");
 //! these are CLI only
-\PHPPE\Http::route("mkrepo", "MkRepoController");
-\PHPPE\Http::route("minify", "MinifyController");
-\PHPPE\Http::route("create", "CreateController");
-\PHPPE\Http::route("passwd", "PasswdController");
-\PHPPE\Http::route("lang", "LangController");
+Http::route("mkrepo", "MkRepoController");
+Http::route("minify", "MinifyController");
+Http::route("create", "CreateController");
+Http::route("passwd", "PasswdController");
+Http::route("lang", "LangController");
 
 //for event testing
 return new Testing;

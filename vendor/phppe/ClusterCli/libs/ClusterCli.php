@@ -24,8 +24,6 @@
  */
 
 namespace PHPPE;
-use PHPPE\Core as Core;
-use PHPPE\DS as DS;
 
 class ClusterCli extends \PHPPE\Model
 {
@@ -72,7 +70,7 @@ class ClusterCli extends \PHPPE\Model
 			try {
 				DS::exec("UPDATE ".self::$_table." SET viewd=CURRENT_TIMESTAMP,load=? WHERE id=?",[$l, $this->id]);
 			} catch (\Exception $e) {
-				if(\PHPPE\Core::$client->ip=="CLI")
+				if(Core::$client->ip=="CLI")
 					echo(L("Unable to find cluster table on quorum database.")."\r\n");
 			}
 		}

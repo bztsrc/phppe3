@@ -37,9 +37,9 @@ class CookieAlert extends Extension
  */
 	function init($cfg) {
 		//load assets
-		\PHPPE\View::jslib("cookiealert.js","pe.cookiealert.init(".json_encode($cfg).");");
-		\PHPPE\View::css("cookiealert.css");
-    		return true;
+		View::jslib("cookiealert.js","pe.cookiealert.init(".json_encode($cfg).");");
+		View::css("cookiealert.css");
+		return true;
 	}
 
 }

@@ -23,7 +23,6 @@
  * @brief Interface for Raspberry Pi GPIO
  */
 namespace PHPPE;
-use PHPPE\Core as Core;
 
 /**
  * Exception class

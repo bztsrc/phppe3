@@ -3,7 +3,10 @@
  * Addon for page lists
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Gallery;
 
 class img extends \PHPPE\AddOn\setsel
 {
@@ -15,8 +18,8 @@ class img extends \PHPPE\AddOn\setsel
     function edit()
     {
         $s=!empty($this->args[0])?intval($this->args[0]):0;
-        if (empty(\PHPPE\Gallery::$sizes[$s])) $s=0;
-        $h=!empty($this->args[1])?intval($this->args[1]):\PHPPE\Gallery::$sizes[$s][1];
+        if (empty(Gallery::$sizes[$s])) $s=0;
+        $h=!empty($this->args[1])?intval($this->args[1]):Gallery::$sizes[$s][1];
         if ($h>128) $h=128;
 
         $this->args[0]=1;
@@ -25,15 +28,15 @@ class img extends \PHPPE\AddOn\setsel
         $this->args[3]="<img src='gallery/".$s."/%id%' alt='%id%' height='".$h."' style='margin:2px;'>";
         $this->args[4]=L("Select Image");
         $this->args[5]="id";
-        $this->attrs[0]=\PHPPE\Gallery::getImages();
+        $this->attrs[0]=Gallery::getImages();
         $this->attrs[2]="setsel_img";
-        $this->attrs[3]=\PHPPE\Gallery::uploadBtn();
+        $this->attrs[3]=Gallery::uploadBtn();
         return parent::edit();
     }
 
     function save($params)
     {
-        $page=\PHPPE\View::getval("page");
+        $page=View::getval("page");
         $page->setParameter($this->name, str_getcsv($params['value'],",")[0]);
         return $page->save();
     }

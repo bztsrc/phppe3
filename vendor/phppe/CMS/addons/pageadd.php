@@ -3,27 +3,30 @@
  * Addon for page meta information
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Page;
 
 // L("pageadd")
 class pageadd extends \PHPPE\AddOn\pageinfo
 {
     function edit()
     {
-        if (!\PHPPE\Core::isTry()) {
-            $page = new \PHPPE\Page;
+        if (!Core::isTry()) {
+            $page = new Page;
             $page->template="simple";
-            \PHPPE\View::assign("page", $page);
+            View::assign("page", $page);
         }
         $quickhelp=!Core::lib("CMS")->expert;
-        \PHPPE\View::assign("quickhelp",$quickhelp);
-        return \PHPPE\View::template("cms_pageinfo");
+        View::assign("quickhelp",$quickhelp);
+        return View::template("cms_pageinfo");
     }
 
     function save($params)
     {
         //! save page as new
-        return \PHPPE\Page::savePageInfo($params, true);
+        return Page::savePageInfo($params, true);
     }
 }
 

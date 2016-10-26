@@ -23,7 +23,6 @@
  * @brief Allows to manage multiple servers at once.
  */
 namespace PHPPE;
-use PHPPE\Core as Core;
 
 /**
  * Main class
@@ -43,18 +42,18 @@ class MultiServer extends Extension
 		//if(empty($cfg['type']))
 		//	return false;
 
-        \PHPPE\View::jslib("multiserver.js");
-        \PHPPE\View::css("multiserver.css");
+        View::jslib("multiserver.js");
+        View::css("multiserver.css");
 	}
 
     public function stat()
     {
-        if (!\PHPPE\Core::$user->has("remoteadm")) {
+        if (!Core::$user->has("remoteadm")) {
             return '';
         }
         $servers = self::load();
-        if(!empty(\PHPPE\Core::$user->data['remote'])){
-            $was=0; $d=\PHPPE\Core::$user->data['remote'];
+        if(!empty(Core::$user->data['remote'])){
+            $was=0; $d=Core::$user->data['remote'];
             foreach($servers as $k=>$s){
                 if(@$d['user']==$s['user'] && @$d['host']==$s['host'] && @$d['port']==$s['port'] && @$d['path']==$s['path']) {
                     $was=$k; break;
@@ -77,7 +76,7 @@ class MultiServer extends Extension
 
     function load()
     {
-        if (!\PHPPE\Core::$user->has("remoteadm")) {
+        if (!Core::$user->has("remoteadm")) {
             return [];
         }
         if(empty(self::$servers)){
@@ -97,7 +96,7 @@ class MultiServer extends Extension
 
     function save()
     {
-        if (!\PHPPE\Core::$user->has("remoteadm")) {
+        if (!Core::$user->has("remoteadm")) {
             return;
         }
         $_SESSION['pe_msrv']=self::$servers;
@@ -123,13 +122,13 @@ class MultiServer extends Extension
     {
         self::load();
         if(!empty(self::$servers[$id])) {
-            $_SESSION['pe_u']->data['remote']=\PHPPE\Core::$user->data['remote']=self::$servers[$id];
+            $_SESSION['pe_u']->data['remote']=Core::$user->data['remote']=self::$servers[$id];
         }
     }
 
     function addAction($item)
     {
-        $obj=\PHPPE\Core::req2arr('ms');
+        $obj=Core::req2arr('ms');
         if(!empty($obj['id']) && !empty($obj['host']) && !empty($obj['user']) && !empty($obj['identity']) && !empty($obj['path'])){
             self::add($obj['id'],$obj['host'],$obj['port'],$obj['user'],$obj['identity'],$obj['path']);
             die("OK");

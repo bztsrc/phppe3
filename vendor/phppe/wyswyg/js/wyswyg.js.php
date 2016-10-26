@@ -22,7 +22,8 @@
  * @date 1 Jan 2016
  * @brief HTML5 compatible wyswyg Editor
  */
-use PHPPE\Core as Core;
+use PHPPE\Core;
+use PHPPE\View;
 
 //! convert text to image (neat trick that makes the whole tag draggable in edit mode)
 if(!empty(Core::$core->item)){
@@ -87,7 +88,7 @@ if(isset($_REQUEST['impform'])){
         }
     }
     die("<html><head><meta charset='utf-8'/></head><body>".($choose?"<div>".$choose."</div><script type='text/javascript'>parent.pe.wyswyg.importdone(\"".$_REQUEST['impform']."\");</script>":
-        \PHPPE\View::_t("<!form>").
+        View::_t("<!form>").
         "<input type='hidden' name='impform' value='".$_REQUEST['impform']."'>".
         "<input type='file' name='upload' onchange='this.form.submit();' id='".$_REQUEST['impform'].":import'>".
         ($err?"alert('".$err."');":"").
@@ -98,7 +99,7 @@ $bs = Core::isInst("bootstrap");
 
 //! get toolbars
 $toolbar = [];
-$libs = \PHPPE\Core::lib();
+$libs = Core::lib();
 foreach($libs as $l)
     if(!empty($l->wyswyg_toolbar))
         $toolbar = array_merge($toolbar, $l->wyswyg_toolbar);

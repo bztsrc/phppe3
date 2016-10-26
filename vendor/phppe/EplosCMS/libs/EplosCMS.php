@@ -23,7 +23,6 @@
  * @brief Compatibility layer for EplosCMS contents
  */
 namespace PHPPE;
-use PHPPE\Core as Core;
 
 /**
  * NOTE: normally you never extend a Model from App.
@@ -48,7 +47,7 @@ class EplosCMS extends Extension
 		//! if it's a special sql refresh request
 		if(Core::$core->url == "sqlrefresh" || isset($_REQUEST["sqlrefresh"])) {
 			//look data source
-			if(!\PHPPE\DS::db())
+			if(!DS::db())
 				die("ERROR: no db");
 			//read the changes
 			$sqlFiles = @glob($cfg["sqldir"]."/sqlchanges-*.sql");
@@ -58,7 +57,7 @@ class EplosCMS extends Extension
 				@unlink($sf);
 				//execute one by one
 				foreach($sqls as $query)
-					\PHPPE\DS::exec($query);
+					DS::exec($query);
 			}
 			die("OK");
 		}
@@ -69,7 +68,7 @@ class EplosCMS extends Extension
 			$f=implode("-SLASH-",$c);
 			if( file_exists($cfg["pagesdir"]."/".$f.".php") ) {
 				self::$page = $cfg["pagesdir"]."/".$f.".php";
-				\PHPPE\Http::route(Core::$core->url,"\PHPPE\EplosCMS");
+				Http::route(Core::$core->url,"\PHPPE\EplosCMS");
 				break;
 			}
 			//if not found, put last part in parameters array

@@ -25,8 +25,8 @@
 namespace PHPPE;
 
 //! add your routes here
-//\PHPPE\Http::route("dba", "\\PHPPE\\Ctrl\\DBA", "action");
-\PHPPE\View::menu(L("Database")."@siteadm","dba");
+//Http::route("dba", "\\PHPPE\\Ctrl\\DBA", "action");
+View::menu(L("Database")."@siteadm","dba");
 
 //! return your service class here
 return new DBA;

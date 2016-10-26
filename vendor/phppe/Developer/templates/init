@@ -5,10 +5,11 @@
 }
 <?php
 @@LICENSE
+
 namespace PHPPE;
 
 //! add your routes here
-//\PHPPE\Http::route("@extension@", "\\PHPPE\\Ctrl\\@Extension@", "action");
+//Http::route("@extension@", "\\PHPPE\\Ctrl\\@Extension@", "action");
 
 //! return your service class here
 //return new @EXTENSION@;

@@ -23,14 +23,16 @@
  * @brief Bootstrap CDN integration in PHPPE
  */
 
-if (!\PHPPE\Core::isInst("bootstrap")) {
+namespace PHPPE;
+
+if (!Core::isInst("bootstrap")) {
     //load style sheests
-    \PHPPE\View::css("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
-    \PHPPE\View::css("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css");
+    View::css("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
+    View::css("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css");
 
     //load JavaScript
-    \PHPPE\View::jslib("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js","",1);
+    View::jslib("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js","",1);
 
     //register ourself as bootstrap too
-    \PHPPE\Core::lib("bootstrap", "PHPPE\Extension");
+    Core::lib("bootstrap", "PHPPE\Extension");
 }

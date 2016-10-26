@@ -3,7 +3,10 @@
  * Addon for page meta information
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Page;
 
 // L("pagedds")
 class pagedds extends \PHPPE\AddOn
@@ -14,22 +17,22 @@ class pagedds extends \PHPPE\AddOn
     function load(&$app)
     {
         //! load global dds as well from frame
-        $frame = new \PHPPE\Page("frame");
-        $page = \PHPPE\View::getval("page");
+        $frame = new Page("frame");
+        $page = View::getval("page");
         $page->gdds = $frame->dds;
     }
 
     function edit()
     {
         $quickhelp=!Core::lib("CMS")->expert;
-        \PHPPE\View::assign("quickhelp",$quickhelp);
-        return \PHPPE\View::template("cms_pagedds");
+        View::assign("quickhelp",$quickhelp);
+        return View::template("cms_pagedds");
     }
 
     function save($params)
     {
-        \PHPPE\Page::saveDDS("frame", $params['gdds']);
-        return \PHPPE\Page::saveDDS($params['pageid'], $params['dds']);
+        Page::saveDDS("frame", $params['gdds']);
+        return Page::saveDDS($params['pageid'], $params['dds']);
     }
 }
 

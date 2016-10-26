@@ -36,7 +36,7 @@ class Page extends \PHPPE\Model
             if($ret)
                 $this->id = $id;
         }
-        static::$_history = !empty(\PHPPE\Core::lib("CMS")->revert);
+        static::$_history = !empty(Core::lib("CMS")->revert);
     }
 
 /**
@@ -50,21 +50,21 @@ class Page extends \PHPPE\Model
         //! check input
         if(empty($this->id))
             return true;
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
         //! release old locks (locked for more than 10 minutes)
-        \PHPPE\DS::exec("UPDATE ".static::$_table." SET ownerid=0 WHERE lockd<?",
-            [ date("Y-m-d H:i:s", \PHPPE\Core::$core->now-600) ]);
+        DS::exec("UPDATE ".static::$_table." SET ownerid=0 WHERE lockd<?",
+            [ date("Y-m-d H:i:s", Core::$core->now-600) ]);
         //! try to lock with one atomic query
-        \PHPPE\DS::exec("UPDATE ".static::$_table.
+        DS::exec("UPDATE ".static::$_table.
             " SET ownerid=?,lockd=CURRENT_TIMESTAMP WHERE id=? AND lang=? AND ownerid=0",
-            [\PHPPE\Core::$user->id, $this->id, $this->lang]);
+            [Core::$user->id, $this->id, $this->lang]);
         //! get the new owner
-        $this->ownerid = \PHPPE\DS::field(
+        $this->ownerid = DS::field(
             "ownerid", "pages", "id=? AND lang=?", "", "created DESC",
             [$this->id, $this->lang]);
         //! success if it's the current user
-        return $this->ownerid == \PHPPE\Core::$user->id;
+        return $this->ownerid == Core::$user->id;
     }
 
 /**
@@ -79,7 +79,7 @@ class Page extends \PHPPE\Model
             throw new \Exception(L('No page id'));
         //! release
         $this->ownerid = 0;
-        return \PHPPE\DS::exec("UPDATE ".static::$_table.
+        return DS::exec("UPDATE ".static::$_table.
             " SET ownerid=0,lockd=0 WHERE id=? AND lang=?",
             [ $this->id, $this->lang]) > 0;
     }
@@ -95,7 +95,7 @@ class Page extends \PHPPE\Model
     {
         if(empty($userid))
             return 0;
-        return \PHPPE\DS::exec("UPDATE ".static::$_table." SET ownerid=0 WHERE ownerid=?",
+        return DS::exec("UPDATE ".static::$_table." SET ownerid=0 WHERE ownerid=?",
             [ $userid ]);
     }
 
@@ -114,16 +114,16 @@ class Page extends \PHPPE\Model
         $this->id=strtr($this->id,["\'"=>"","\""=>"","#"=>"","?"=>""]);
         if (empty($this->id))
             throw new \Exception(L('No page id'));
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
-        $d = \PHPPE\DS::db();
+        $d = DS::db();
         if (empty($d))
             throw new \Exception('no ds');
         //! set up properties
         $this->ownerid = 0;
         $this->lockd = "";
-        $this->modifyd = date("Y-m-d H:i:s", \PHPPE\Core::$core->now);
-        $this->modifyid = \PHPPE\Core::$user->id;
+        $this->modifyd = date("Y-m-d H:i:s", Core::$core->now);
+        $this->modifyid = Core::$user->id;
         if (static::$_history || $force)
             $this->created = $this->modifyd;
         //! build the arguments array
@@ -133,19 +133,19 @@ class Page extends \PHPPE\Model
                 $a[$k] = is_scalar($v) ? $v : json_encode($v);
             }
         }
-        $a['publishid'] = static::$_history?0:\PHPPE\Core::$user->id;
+        $a['publishid'] = static::$_history?0:Core::$user->id;
         //! write audit log
-        \PHPPE\Core::log('A',sprintf("Page %s saved by %s",$this->id,\PHPPE\Core::$user->name), "cmsaudit");
+        Core::log('A',sprintf("Page %s saved by %s",$this->id,Core::$user->name), "cmsaudit");
         //! save page
-        if (!\PHPPE\DS::exec((!static::$_history && !$force ?
+        if (!DS::exec((!static::$_history && !$force ?
             'UPDATE '.static::$_table.' SET '.implode('=?,', array_keys($a)).
                 '=? WHERE id='.$d->quote($this->id).' AND lang='.$d->quote($this->lang) :
             'INSERT INTO '.static::$_table.' ('.implode(',', array_keys($a)).') VALUES (?'.str_repeat(',?', count($a) - 1).')'),
             array_values($a)))
             return false;
         //! purge old records
-        \PHPPE\DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND lang=? AND publishid!=0 AND created not in (SELECT created FROM ".static::$_table." WHERE id=? AND lang=? ORDER BY created desc limit ".
-            (static::$_history ? max([ intval(\PHPPE\Core::lib("CMS")->purge), 1]) : 1).")",
+        DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND lang=? AND publishid!=0 AND created not in (SELECT created FROM ".static::$_table." WHERE id=? AND lang=? ORDER BY created desc limit ".
+            (static::$_history ? max([ intval(Core::lib("CMS")->purge), 1]) : 1).")",
         [$this->id, $this->lang, $this->id, $this->lang]);
         return true;
     }
@@ -161,7 +161,7 @@ class Page extends \PHPPE\Model
         //! check input
         if(empty($this->id))
             throw new \Exception(L('No page id'));
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
         if(substr($name,0,4)=="app.")
             $name=substr($name,4);
@@ -169,10 +169,10 @@ class Page extends \PHPPE\Model
             $name=substr($name,6);
         if(@$this->data[$name]!=$value) {
             //! write audit log
-            \PHPPE\Core::log('A',
-                sprintf("Set page parameter %s for %s by %s",$name,$this->id,\PHPPE\Core::$user->name).
-                (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
-                addslashes(strtr(@$this->data[$name],["\n"=>""]))."'":""), "cmsaudit");
+            Core::log('A',
+                sprintf("Set page parameter %s for %s by %s",$name,$this->id,Core::$user->name).
+                (Core::$core->runlevel > 2 ? " '".addslashes(strtr(@$this->data[$name],["\n"=>""]))."' -> '".
+                addslashes(strtr($value,["\n"=>""]))."'":""), "cmsaudit");
             //! set parameter
             $this->data[$name] = $value;
         }
@@ -186,21 +186,21 @@ class Page extends \PHPPE\Model
  */
     static function savePageInfo($params, $new=false)
     {
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
         $rename=false;
         //! url checks
         if ($new) {
-            if (!empty(\PHPPE\DS::fetch("id", static::$_table, "id=? AND lang=?", "", "", [ $params['id'], $params['lang'] ]))) {
-                \PHPPE\Core::error(L("A page already exists with this url!"), "page.id");
+            if (!empty(DS::fetch("id", static::$_table, "id=? AND lang=?", "", "", [ $params['id'], $params['lang'] ]))) {
+                Core::error(L("A page already exists with this url!"), "page.id");
                 return false;
             }
         } else {
             //! if url changed
             if (!$new && !empty($params['pageid']) && $params['pageid'] != $params['id']) {
                 $rename=true;
-                \PHPPE\DS::exec("UPDATE ".static::$_table." SET id=? WHERE id=?", [ $params['id'], $params['pageid'] ] );
-                \PHPPE\Core::log('A',sprintf("Page %s renamed to %s by %s",$params['pageid'],$params['id'],\PHPPE\Core::$user->name), "cmsaudit");
+                DS::exec("UPDATE ".static::$_table." SET id=? WHERE id=?", [ $params['id'], $params['pageid'] ] );
+                Core::log('A',sprintf("Page %s renamed to %s by %s",$params['pageid'],$params['id'],Core::$user->name), "cmsaudit");
             }
         }
         //! create page object
@@ -208,16 +208,16 @@ class Page extends \PHPPE\Model
         $needsave=false;
         foreach ($params as $k=>$v)
             if (property_exists($page, $k) && $page->$k!=$v) {
-                \PHPPE\Core::log('A',
-                    sprintf("Set page %s for %s by %s",$k,$params['id'],\PHPPE\Core::$user->name).
-                    (\PHPPE\Core::$core->runlevel > 2 ? " '".addslashes(strtr($page->$k,["\n"=>""]))."' -> '".
+                Core::log('A',
+                    sprintf("Set page %s for %s by %s",$k,$params['id'],Core::$user->name).
+                    (Core::$core->runlevel > 2 ? " '".addslashes(strtr($page->$k,["\n"=>""]))."' -> '".
                 addslashes(strtr($v,["\n"=>""]))."'":""), "cmsaudit");
                 $page->$k = $v;
                 $needsave=true;
             }
         //! save it
         if ($needsave && !$page->save($new)) {
-            \PHPPE\Core::error(L("Unable to save page!"));
+            Core::error(L("Unable to save page!"));
 			return false;
         } elseif($new || $rename)
             //! on successful new add and renames, redirect user to the new page
@@ -255,8 +255,8 @@ class Page extends \PHPPE\Model
                 (@$d[0]!=@$old[$k][0]||@$d[1]!=@$old[$k][1]||
                 @$d[2]!=@$old[$k][2]||@$d[3]!=@$old[$k][3]||@$d[4]!=@$old[$k][4])) {
                 //! write audit log
-                \PHPPE\Core::log('A',sprintf("PageDDS %s for %s modified by %s",$k,$pageid,\PHPPE\Core::$user->name).
-                    (\PHPPE\Core::$core->runlevel > 2 ?(empty($d[0])?" *deleted*":" '".implode("', '",$d)."'"):""), "cmsaudit");
+                Core::log('A',sprintf("PageDDS %s for %s modified by %s",$k,$pageid,Core::$user->name).
+                    (Core::$core->runlevel > 2 ?(empty($d[0])?" *deleted*":" '".implode("', '",$d)."'"):""), "cmsaudit");
                 $needsave=true;
             }
             if (!empty($d[0])) {
@@ -277,17 +277,17 @@ class Page extends \PHPPE\Model
         //! check input
         if (empty($name))
             throw new \Exception(L('No pagelist name'));
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
         if (is_string($pages))
             $pages = str_getcsv($pages, ',');
         //! write audit log
-        \PHPPE\Core::log('A',sprintf("Pagelist %s modified by %s",$name,\PHPPE\Core::$user->name).
-            (\PHPPE\Core::$core->runlevel > 2 ?:" '".implode("', '",$pages)."'"), "cmsaudit");
-        \PHPPE\DS::exec("DELETE FROM ".static::$_table."_list WHERE list_id=?",[$name]);
+        Core::log('A',sprintf("Pagelist %s modified by %s",$name,Core::$user->name).
+            (Core::$core->runlevel > 2 ?:" '".implode("', '",$pages)."'"), "cmsaudit");
+        DS::exec("DELETE FROM ".static::$_table."_list WHERE list_id=?",[$name]);
         foreach($pages as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
-                \PHPPE\DS::exec("INSERT INTO ".static::$_table."_list (list_id,page_id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
+                DS::exec("INSERT INTO ".static::$_table."_list (list_id,page_id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
         return true;
     }
 
@@ -302,21 +302,21 @@ class Page extends \PHPPE\Model
         //! check input
         if(empty($pageid))
             throw new \Exception(L('No page id'));
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|webadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|webadm"))
             throw new \Exception(L('No user id'));
-        $a = [ $pageid, \PHPPE\Core::$client->lang ];
+        $a = [ $pageid, Core::$client->lang ];
         if(!empty($created))
          $a[]=$created;
         //! write audit log
-        \PHPPE\Core::log('A',sprintf("Delete page %s (%s,%s) by %s",$pageid,\PHPPE\Core::$client->lang,$created,\PHPPE\Core::$user->name), "cmsaudit");
-        $r = \PHPPE\DS::exec(
+        Core::log('A',sprintf("Delete page %s (%s,%s) by %s",$pageid,Core::$client->lang,$created,Core::$user->name), "cmsaudit");
+        $r = DS::exec(
             "DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?)".
             (!empty($created)?" AND created=?":""),
             $a
         ) > 0;
         if (!$r && substr($pageid,-1)=="/") {
             $a[0]=substr($pageid,0,strlen($pageid)-1);
-            $r = \PHPPE\DS::exec(
+            $r = DS::exec(
                 "DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?)".
                 (!empty($created)?" AND created=?":""),
                 $a
@@ -332,7 +332,7 @@ class Page extends \PHPPE\Model
  */
     static function getNum($template)
     {
-        return \PHPPE\DS::field("SUM(1)", static::$_table, "template=?", "", "",[$template]);
+        return DS::field("SUM(1)", static::$_table, "template=?", "", "",[$template]);
     }
 
 /**
@@ -345,7 +345,7 @@ class Page extends \PHPPE\Model
  */
     static function getPages($recent=0, $templates=[])
     {
-        return \PHPPE\DS::query("a.id,a.name,a.template as tid,a.lang,a.ownerid,".
+        return DS::query("a.id,a.name,a.template as tid,a.lang,a.ownerid,".
               "a.modifyid,max(a.modifyd) as created,max(a.lockd) as lockd,count(1) as versions,min(max(a.publishid,-a.publishid)) as publishid,".
               "b.name as lockuser,c.name as moduser,v.name as template, CURRENT_TIMESTAMP as ct",
             "pages a left join users b on a.ownerid=b.id left join users c on a.modifyid=c.id left join views v on a.template=v.id",
@@ -355,43 +355,43 @@ class Page extends \PHPPE\Model
 
     static function publish($ids)
     {
-		if(empty(\PHPPE\Core::lib("CMS")->revert))
+		if(empty(Core::lib("CMS")->revert))
 			return;
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|pubadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|pubadm"))
             throw new \Exception(L('No user id'));
 		$ids[]="frame";
-    	$pages = \PHPPE\DS::query("id,lang,max(created) as created",static::$_table,"publishid=0 AND ownerid=0 AND id IN ('".implode("','",$ids)."')","id,lang");
+    	$pages = DS::query("id,lang,max(created) as created",static::$_table,"publishid=0 AND ownerid=0 AND id IN ('".implode("','",$ids)."')","id,lang");
 		foreach($pages as $p) {
         	//! write audit log
-        	\PHPPE\Core::log('A',sprintf("Publicate page %s (%s,%s) by %s",$p['id'],$p['lang'],$p['created'],\PHPPE\Core::$user->name), "cmsaudit");
+        	Core::log('A',sprintf("Publicate page %s (%s,%s) by %s",$p['id'],$p['lang'],$p['created'],Core::$user->name), "cmsaudit");
 			// mark newest as active
-			\PHPPE\DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE id=? AND lang=? AND created=?",[\PHPPE\Core::$user->id,$p['id'],$p['lang'],$p['created']]);
+			DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE id=? AND lang=? AND created=?",[Core::$user->id,$p['id'],$p['lang'],$p['created']]);
 			// purge old active records
-	        \PHPPE\DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND lang=? AND publishid!=0 AND created not in (SELECT created FROM ".static::$_table." WHERE id=? AND lang=? ORDER BY created desc limit ".
-            max([ intval(\PHPPE\Core::lib("CMS")->purge), 1]).")",
+	        DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND lang=? AND publishid!=0 AND created not in (SELECT created FROM ".static::$_table." WHERE id=? AND lang=? ORDER BY created desc limit ".
+            max([ intval(Core::lib("CMS")->purge), 1]).")",
         [$p['id'], $p['lang'], $p['id'], $p['lang']]);
 		}
 		// delete intermediate versions
-		\PHPPE\DS::exec("DELETE FROM pages WHERE publishid=0 AND id IN ('".implode("','",$ids)."')");
+		DS::exec("DELETE FROM pages WHERE publishid=0 AND id IN ('".implode("','",$ids)."')");
     }
 
 	static function cleanUp($pages=null)
 	{
 		//! check input
-		if(!empty(\PHPPE\Core::lib("CMS")->revert))
+		if(!empty(Core::lib("CMS")->revert))
 			return;
-        if(empty(\PHPPE\Core::$user->id) || !\PHPPE\Core::$user->has("siteadm|pubadm"))
+        if(empty(Core::$user->id) || !Core::$user->has("siteadm|pubadm"))
             throw new \Exception(L('No user id'));
 		if(empty($pages))
 			$pages = self::getPages();
 		//! write audit log
-		\PHPPE\Core::log('A',sprintf("Purge page history by %s",\PHPPE\Core::$user->name), "cmsaudit");
+		Core::log('A',sprintf("Purge page history by %s",Core::$user->name), "cmsaudit");
 		//! purge old records
 		foreach($pages as $p) {
 			if($p['versions']>1)
-				\PHPPE\DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?) AND created!=?",[$p['id'],$p['lang'],$p['created']]);
+				DS::exec("DELETE FROM ".static::$_table." WHERE id=? AND (lang='' OR lang=?) AND created!=?",[$p['id'],$p['lang'],$p['created']]);
 		}
 		//! make it published (without history that feature is off)
-		\PHPPE\DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE publishid=0",[\PHPPE\Core::$user->id]);
+		DS::exec("UPDATE ".static::$_table." SET publishid=? WHERE publishid=0",[Core::$user->id]);
 	}
 }

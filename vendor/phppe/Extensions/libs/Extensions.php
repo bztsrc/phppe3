@@ -23,7 +23,6 @@
  * @brief PHPPE Extension Manager
  */
 namespace PHPPE;
-use PHPPE\Core as Core;
 
 class Extensions {
 
@@ -119,7 +118,7 @@ class Extensions {
 			!empty(Core::$user->data['remote']['path']) ) {
 			//! get list from remote server
 			try {
-				$r=explode("\n", trim(\PHPPE\Tools::ssh(
+				$r=explode("\n", trim(Tools::ssh(
 					"cat ".escapeshellarg(Core::$user->data['remote']['path']."/composer.json")." \|grep name \| head -1 \; find ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/phppe")." -type f -name composer.json -exec sh -c \\'cat {} \\| grep -e name[^_] \\|head -1 \\| tr -d \\\\'\\\\n\\\\' \\; cat {} \\| grep -e version[^_] \\' \\\\\; 2>&1"
 				)));
 			} catch(\Exception $e) {
@@ -130,7 +129,7 @@ class Extensions {
 				$d=explode('"',$r[0]);if(empty($d[3])||$d[3]=="phppe3") $d[3]="No name";
 				$t="{ \"name\": \"".($d[3]=="No name"?L($d[3]):$d[3])."\" }";
 			} else
-				$t="{ \"name\": \"".\PHPPE\View::e("",substr(trim($r[0]),0,4)=="cat:"?L("Run diagnostics first!"):str_replace("\r","",str_replace("\n"," ",trim(empty($r[1])?$r[0]:$r[1]))),"")."\" }";
+				$t="{ \"name\": \"".View::e("",substr(trim($r[0]),0,4)=="cat:"?L("Run diagnostics first!"):str_replace("\r","",str_replace("\n"," ",trim(empty($r[1])?$r[0]:$r[1]))),"")."\" }";
 			if( !self::isErr(@$r[1]) && !self::isErr(@$r[2])) {
 				foreach($r as $v) {
 					$d=explode("\"",$v);
@@ -140,7 +139,7 @@ class Extensions {
 		}
 		//! fallback to local, but without remote it's read only
 		else {
-			$t="{ \"name\": \"".\PHPPE\View::e("",L("configure remote access"),"")."\" }";
+			$t="{ \"name\": \"".View::e("",L("configure remote access"),"")."\" }";
 			$d=glob("vendor/phppe/*"."/composer.json");
             if(file_exists("vendor/phppe/composer.json"))
                 $d[]="vendor/phppe/composer.json";
@@ -190,7 +189,7 @@ class Extensions {
 				$url=$r.(substr($r,-1)!="/"?"/":"")."packages.json";
 				$d2=file_get_contents(file_exists($r)&&!is_dir($r)?$r:$url);
 				if(empty($d2))
-					$d2=\PHPPE\Http::get($url);
+					$d2=Http::get($url);
 				Core::log('D',"Adding repo: ".$url." (".strlen($d2)." bytes)","extensions");
 				$d = json_decode($d2,true,8);
 				if(json_last_error()==4)
@@ -269,7 +268,7 @@ class Extensions {
 		try {
             //! save PHPPE Core
             //! call diagnostics mode, with and without root privileges
-			$r = explode("\n", \PHPPE\Tools::ssh(
+			$r = explode("\n", Tools::ssh(
 				"mkdir -p ".escapeshellarg(Core::$user->data['remote']['path']."/public")." \&\& \( cat \>".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." \) \&\& \( ".
                 "php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag \; sudo php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag \)",
 				$data
@@ -332,7 +331,7 @@ class Extensions {
 		try {
             //! download and untar tarball
 			$dest = escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir);
-			$r = explode("\n", \PHPPE\Tools::ssh(
+			$r = explode("\n", Tools::ssh(
 				"mkdir -p ".$dest." \&\& curl ".(!empty($ca)?"--cacert '/dev/stdin'":"")." -sL ".escapeshellarg($url)." \\| tar -xzv --exclude preview -C ".$dest." \; echo \; php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag",
 				$ca
 			));
@@ -376,7 +375,7 @@ class Extensions {
 
 		try {
             //! remove Extension directory
-			$r=explode("\n", \PHPPE\Tools::ssh(
+			$r=explode("\n", Tools::ssh(
 				"rm -rvf ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir)." \; echo \; php ".escapeshellarg(Core::$user->data['remote']['path']."/public/index.php")." --diag"
 			));
 		} catch(\Exception $e) {
@@ -421,7 +420,7 @@ class Extensions {
 
 		try {
             //! get config.php of Extension
-            $r=\PHPPE\Tools::ssh(
+            $r=Tools::ssh(
                 "cat ".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php")
             );
 		} catch(\Exception $e) {
@@ -459,7 +458,7 @@ class Extensions {
 
 		try {
             //! save new config.php
-            $r = \PHPPE\Tools::ssh(
+            $r = Tools::ssh(
                 "cat \>".escapeshellarg(Core::$user->data['remote']['path']."/vendor/".$dir."/config.php"),
                 $conf
             );

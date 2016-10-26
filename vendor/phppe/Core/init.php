@@ -23,8 +23,10 @@
  * @brief PHPPE Core
  */
 
+namespace PHPPE;
+
 //! add JavaScript library to output with highest priority
-\PHPPE\View::jslib("jquery.min.js","",0);
+View::jslib("jquery.min.js","",0);
 foreach(["toc", "boolean", "resptable"] as $m) {
-    \PHPPE\View::jslib($m.".js","pe.".$m.".init();");
+    View::jslib($m.".js","pe.".$m.".init();");
 }

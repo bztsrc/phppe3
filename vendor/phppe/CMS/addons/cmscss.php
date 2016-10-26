@@ -3,7 +3,6 @@
  * Addon to select stylesheets for a layout
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
 
 class cmscss extends \PHPPE\AddOn\text
 {

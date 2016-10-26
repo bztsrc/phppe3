@@ -7,8 +7,9 @@
 @@BRIEF
 
 namespace PHPPE\AddOn;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
+
+use PHPPE\Core;
+use PHPPE\View;
 
 class @NAME@ extends \PHPPE\AddOn
 {

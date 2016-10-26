@@ -7,12 +7,17 @@
  */
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\Http as Http;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Page;
+use PHPPE\ClassMap;
 
 class CMSParam
 {
+/**
+ * Properties
+ */
     public $field = "";
     public $fieldTitle = "";
     public $editable = false;
@@ -45,8 +50,8 @@ class CMSParam
         if(isset($_REQUEST['scrx']))
             $_SESSION['cms_scroll'] = [$_REQUEST['scrx'], $_REQUEST['scry']];
 
-		//! get access control entries
-		$this->ace = \PHPPE\ClassMap::ace();
+		//! get available access control entries
+		$this->ace = ClassMap::ace();
 		foreach($this->ace as $k=>$v)
 			$this->ace[$k]="@".$v;
 		$this->ace[] = "@siteadm|webadm";
@@ -54,6 +59,7 @@ class CMSParam
 		$this->ace[] = "csrf";
 		$this->ace[] = "get";
 		$this->ace[] = "post";
+
         //! get the field we're editing
         $F = clone $_SESSION["cms_param"][$item];
         $F->fld="page_value";
@@ -68,10 +74,10 @@ class CMSParam
 
         //! get the page we're editing
         //! if parameter name starts with "frame", load frame page instead
-        $page = new \PHPPE\Page(substr($F->name,0,6)=="frame." ? "frame" : @$_SESSION['cms_url']);
+        $page = new Page(substr($F->name,0,6)=="frame." ? "frame" : @$_SESSION['cms_url']);
         $this->editable = $page->lock();
 
-        \PHPPE\View::assign("page", $page);
+        View::assign("page", $page);
         $n = substr($F->name,0,6)=="frame." ? substr($F->name,6) : (substr($F->name,0,4)=="app." ? substr($F->name,4) : $F->name);
         if(!empty($page->data[$n]))
             $F->value=$page->data[$n];
@@ -90,12 +96,12 @@ class CMSParam
                     //! if it's a special field with it's own save mechanism
                     $param['pageid'] = $page->id;
                     if(!$F->save($param))
-                        \PHPPE\Core::error(L("Unable to save page!"));
+                        Core::error(L("Unable to save page!"));
                 } else {
                     //! otherwise standard page parameter
                     $page->setParameter($F->name, $param['value']);
                     if(!$page->save())
-                        \PHPPE\Core::error(L("Unable to save page!"));
+                        Core::error(L("Unable to save page!"));
                 }
                 //! close the modal if save was successful
                 if (!Core::isError()) {
@@ -118,6 +124,6 @@ class CMSParam
         }
 
         //! focus first input
-        \PHPPE\View::js("init()", "var inp=document.querySelector('.reqinput,.input');if(inp!=null){inp.focus();inp.selectionStart=inp.selectionEnd=(inp.value!=null?inp.value:inp.innerHTML).length;}", true);
+        View::js("init()", "var inp=document.querySelector('.reqinput,.input');if(inp!=null){inp.focus();inp.selectionStart=inp.selectionEnd=(inp.value!=null?inp.value:inp.innerHTML).length;}", true);
     }
 }

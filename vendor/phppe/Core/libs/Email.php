@@ -163,8 +163,8 @@ class Email extends Extension
     }
     public function template($template, $args)
     {
-        \PHPPE\View::assign('args', $args);
-        $this->message = trim(str_replace("\r", '', \PHPPE\View::template($template)));
+        View::assign('args', $args);
+        $this->message = trim(str_replace("\r", '', View::template($template)));
 
         return $this;
     }
@@ -245,10 +245,10 @@ class Email extends Extension
                 throw new EmailException(L('DB queue backend without configured datasource!'));
             }
 
-            return DS::exec('INSERT INTO email_queue (data,created) VALUES (?,?);', [$this->get(), \PHPPE\Core::$core->now]) > 0 ? true : false;
+            return DS::exec('INSERT INTO email_queue (data,created) VALUES (?,?);', [$this->get(), Core::$core->now]) > 0 ? true : false;
         } elseif ($this->via == 'phpmailer') {
             //! PHP Mailer
-            if (!\PHPPE\ClassMap::has('PHPMailer')) {
+            if (!ClassMap::has('PHPMailer')) {
                 throw new EmailException(L('PHPMailer not installed!'));
             }
             // @codeCoverageIgnoreStart
@@ -407,7 +407,7 @@ class Email extends Extension
         //! log that we are sending a mail
         Core::log('I', 'To: '.$headers['To'].', Subject: '.$headers['Subject'].', ID: '.$id, 'email');
         //if email directory exists, save the full mime message as well for debug
-        @file_put_contents('phppe/log/email/'.$id, 'Backend: '.$this->via.' '.self::$user.':'.self::$pass.'@'.self::$host.':'.self::$port."\r\n\r\n".$header."\r\n".$message);
+        @file_put_contents('data/log/email/'.$id, 'Backend: '.$this->via.' '.self::$user.':'.self::$pass.'@'.self::$host.':'.self::$port."\r\n\r\n".$header."\r\n".$message);
 
         //! *** handle transport backends ***
         switch ($this->via) {

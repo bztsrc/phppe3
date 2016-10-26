@@ -64,7 +64,7 @@ class Gallery
         }
         //! hangle gallery upload
         if (!empty($_FILES['imglist_upload'])) {
-            \PHPPE\Gallery::uploadImage($_FILES['imglist_upload']);
+            Gallery::uploadImage($_FILES['imglist_upload']);
         }
     }
 
@@ -100,10 +100,10 @@ class Gallery
             throw new \Exception(L('No imglist name'));
         if (is_string($imgs))
             $imgs = str_getcsv($imgs, ",");
-        \PHPPE\DS::exec("DELETE FROM img_list WHERE list_id=?",[$name]);
+        DS::exec("DELETE FROM img_list WHERE list_id=?",[$name]);
         foreach($imgs as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
-                \PHPPE\DS::exec("INSERT INTO img_list (list_id,id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
+                DS::exec("INSERT INTO img_list (list_id,id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
         return true;
     }
 
@@ -128,7 +128,7 @@ class Gallery
             foreach (self::$sizes as $k=>$s) {
                 if (!is_dir("data/gallery/".$k))
                     mkdir("data/gallery/".$k, 0750);
-                \PHPPE\View::picture(
+                View::picture(
                     $file['tmp_name'],
                     "data/gallery/".$k."/".preg_replace("/[^a-zA-Z0-9_\.]/","",basename($file['name'])),
                     $s[0], $s[1], $k!=$l, $s[0]<256, self::$watermark, self::$maxSize, self::$minQuality);
@@ -140,7 +140,7 @@ class Gallery
  */
     static function uploadBtn()
     {
-        \PHPPE\View::js("img_loading()", "var d=document.createElement('div'); d.setAttribute('style','position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;text-align:center;padding-top:50%;');d.innerHTML='<img src=\"images/upload.gif\" style=\"position:fixed;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);\">';document.body.appendChild(d);");
+        View::js("img_loading()", "var d=document.createElement('div'); d.setAttribute('style','position:fixed;display:table-cell;top:0px;left:0px;width:100%;height:100%;z-index:2001;background:#000;opacity:0.4;text-align:center;padding-top:50%;');d.innerHTML='<img src=\"images/upload.gif\" style=\"position:fixed;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);\">';document.body.appendChild(d);");
         return "<input type='file' name='imglist_upload' onchange='img_loading();this.form.submit();' style='display:none;'>".
         "<input type='button' value='".L("Upload")."' class='setsel_button' onclick=\"this.form['pe_f'].value='imglist';this.form['imglist_upload'].click();\">";
     }
@@ -150,7 +150,7 @@ class Gallery
     function image($item)
     {
         $list = self::getImages();
-        echo(\PHPPE\View::_t("<!form imglist>")."<input type='file' name='imglist_upload' onchange='this.form.submit();' style='display:none;'>".
+        echo(View::_t("<!form imglist>")."<input type='file' name='imglist_upload' onchange='this.form.submit();' style='display:none;'>".
         "<input type='button' value='".L("Upload")."' onclick=\"this.previousSibling.click();\"></form>".
         "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='pe.wyswyg.search(this,this.nextSibling);'>");
         echo("<div class='wyswyg_gallery wyswyg_scroll'>\n");
@@ -165,7 +165,7 @@ class Gallery
  */
     function action($item)
     {
-        $url = str_replace("..", "", \PHPPE\Core::$core->url);
+        $url = str_replace("..", "", Core::$core->url);
         if (file_exists("data/".$url)) {
             Http::mime("image/jpeg");
             die(file_get_contents("data/".$url));

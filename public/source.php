@@ -343,11 +343,11 @@ namespace PHPPE {
                     $this->id = $id;
                     $this->load($id);
                 } else {
-                    foreach($this as $k=>$v) {
-                        if($k[0]=="_") continue;
-                        if(isset($id[$k])) $this->$k=$id[$k]; else
-                        if(isset($id->$k)) $this->$k=$id->$k;
+                    foreach($id as $k=>$v) {
+                        if($k[0]!="_")
+                            $this->$k=$v;
                     }
+print_r($this);
                 }
             }
         }

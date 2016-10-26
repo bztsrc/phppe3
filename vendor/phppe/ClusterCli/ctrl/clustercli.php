@@ -7,9 +7,11 @@
  */
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\DS as DS;
+
+use PHPPE\Core;
+use PHPPE\Cache;
+use PHPPE\Http;
+use PHPPE\DS;
 
 class ClusterCli extends \PHPPE\ClusterCli
 {
@@ -61,8 +63,8 @@ class ClusterCli extends \PHPPE\ClusterCli
 
 	function action($item=null)
 	{
-		if(\PHPPE\Core::$client->ip!="CLI")                            
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")                            
+			Http::redirect("403");
 		$node=Core::lib("ClusterCli");
 		echo(chr(27)."[96mThis node is: ".chr(27)."[0m".$node->id." ".(!empty($node->loadbalancer)?"LOADBALANCER":"WORKER")."\n");
 	}

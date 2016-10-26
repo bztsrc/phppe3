@@ -1,5 +1,12 @@
 <?php
-use PHPPE\Core as Core;
+use PHPPE\Core;
+use PHPPE\ClassMap;
+use PHPPE\DS;
+use PHPPE\Client;
+use PHPPE\Content;
+use PHPPE\Tools;
+use PHPPE\Extension;
+use PHPPE\User;
 
 //L("System")
 
@@ -7,28 +14,28 @@ class SystemTest extends PHPUnit_Framework_TestCase
 {
 	public function testEvent()
 	{
-		$this->assertFalse(\PHPPE\Core::lib("Developer")->eventTestRun,"Before event");
-		\PHPPE\Core::event("eventTest");
-		$this->assertTrue(\PHPPE\Core::lib("Developer")->eventTestRun,"After event");
+		$this->assertFalse(Core::lib("Developer")->eventTestRun,"Before event");
+		Core::event("eventTest");
+		$this->assertTrue(Core::lib("Developer")->eventTestRun,"After event");
 	}
 
 	public function testCore()
 	{
-        $this->assertTrue(\PHPPE\ClassMap::has("NotLoaded", "oneMethod"), "ClassMap has");
-		@unlink(\PHPPE\ClassMap::$file);
-		@unlink(\PHPPE\ClassMap::$ace);
+        $this->assertTrue(ClassMap::has("NotLoaded", "oneMethod"), "ClassMap has");
+		@unlink(ClassMap::$file);
+		@unlink(ClassMap::$ace);
 		$_SERVER['REQUEST_URI']="";
 		$_SERVER['argv'][1]="test";
-		@$core = new \PHPPE\Core(true);
+		@$core = new Core(true);
 		$_SERVER['REQUEST_URI']="/test/something/?arg=1";
-		@$core = new \PHPPE\Core(true);
-        $this->assertFileExists(\PHPPE\ClassMap::$file, "New classmap");
+		@$core = new Core(true);
+        $this->assertFileExists(ClassMap::$file, "New classmap");
 		$this->assertNotEmpty($core->base,"Base");
 		$this->assertNotEmpty($core->url,"Url");
-		$this->assertEquals(\PHPPE\Core::$core->output,$core->output, "Output");
+		$this->assertEquals(Core::$core->output,$core->output, "Output");
 
-		$this->assertGreaterThan(\PHPPE\Core::$core->now,\PHPPE\Core::started(),"Started");
-        $this->assertNotEmpty(\PHPPE\ClassMap::ace(), "ClassMap access control entries");
+		$this->assertGreaterThan(Core::$core->now,Core::started(),"Started");
+        $this->assertNotEmpty(ClassMap::ace(), "ClassMap access control entries");
 	}
 
 	public function testLib()
@@ -37,13 +44,13 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEmpty($libs["Developer"],"Autoloading");
 		$this->assertEquals($libs["Developer"],Core::lib("Developer"),"Instance");
 
-		Core::lib( "TestLib1", new \PHPPE\Extension());
+		Core::lib( "TestLib1", new Extension());
 		$libs2 = Core::lib();
 
 		$this->assertGreaterThan(count($libs),count($libs2),"Loaded manually");
 		$this->assertTrue(Core::isInst("TestLib1"),"isInst");
 		
-		Core::lib( "TestLib2", new \PHPPE\Client(), "TestLib1");
+		Core::lib( "TestLib2", new Client(), "TestLib1");
 		$this->assertNotNull(Core::lib("TestLib2"),"Dependency");
 		$this->assertNull(Core::lib("TestLib3"),"No extension");
 
@@ -59,14 +66,14 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$lang = $_SESSION['pe_l'];
 		unset($_SESSION['pe_l']);
 
-		$client = new \PHPPE\Client;
+		$client = new Client;
 		$client->init([]);
 
 		$this->assertNotNull($client->ip,"Client IP");
 		$this->assertNotNull($client->agent,"Client Agent");
 		$this->assertNotNull($client->lang,"Client Lang");
 
-		\PHPPE\Core::$w=true;
+		Core::$w=true;
 		$_SERVER['REMOTE_ADDR']="::1";
 		$_REQUEST['nojs']=true;
 		$_REQUEST['lang']="en";
@@ -78,10 +85,10 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 	public function testUserAccess()
 	{
-		$user = new \PHPPE\User;
+		$user = new User;
 		$this->assertEquals(0,$user->id,"User Id #1");
 		$user->init([]);
-		$this->assertEquals(\PHPPE\Core::$user->id,$user->id,"User Id #2");
+		$this->assertEquals(Core::$user->id,$user->id,"User Id #2");
 		$u = $_SESSION['pe_u'];
 		unset($_SESSION['pe_u']);
 		$user->init([]);
@@ -108,80 +115,80 @@ class SystemTest extends PHPUnit_Framework_TestCase
 	
 	public function testErrors()
 	{
-		$this->assertEmpty(\PHPPE\Core::error(),"Errors");
-		$this->assertFalse(\PHPPE\Core::isError(),"IsError");
+		$this->assertEmpty(Core::error(),"Errors");
+		$this->assertFalse(Core::isError(),"IsError");
 
-		\PHPPE\Core::error("message","obj.field");
+		Core::error("message","obj.field");
 		
-		$this->assertNotEmpty(\PHPPE\Core::error(),"Errors #2");
-		$this->assertTrue(\PHPPE\Core::isError(),"IsError #2");
+		$this->assertNotEmpty(Core::error(),"Errors #2");
+		$this->assertTrue(Core::isError(),"IsError #2");
 
 	}
 
 	public function testLog()
 	{
-		$s = \PHPPE\Core::$core->syslog;
-		$t = \PHPPE\Core::$core->trace;
-		\PHPPE\Core::$core->syslog = true;
-		\PHPPE\Core::$core->trace = true;
-		\PHPPE\Core::log("B","Should be Audit","phpunit");
-		$o = \PHPPE\Core::$core->runlevel;
-		\PHPPE\Core::$core->runlevel = 0;
-		\PHPPE\Core::log("D","Should be skipped","phpunit");
-		\PHPPE\Core::$core->runlevel = $o;
-		\PHPPE\Core::$core->syslog = $s;
-		\PHPPE\Core::$core->trace = $t;
+		$s = Core::$core->syslog;
+		$t = Core::$core->trace;
+		Core::$core->syslog = true;
+		Core::$core->trace = true;
+		Core::log("B","Should be Audit","phpunit");
+		$o = Core::$core->runlevel;
+		Core::$core->runlevel = 0;
+		Core::log("D","Should be skipped","phpunit");
+		Core::$core->runlevel = $o;
+		Core::$core->syslog = $s;
+		Core::$core->trace = $t;
 	}
 
 	public function testContent()
 	{
-		\PHPPE\Core::$core->nocache=true;
+		Core::$core->nocache=true;
 		
 		include_once(__DIR__."/../libs/FailFilter.php");
 
-		\PHPPE\DS::close();
+		DS::close();
 
-		\PHPPE\DS::db("sqlite::memory:");
-		\PHPPE\DS::exec("insert into pages (id,name,template,data,dds,filter) values ('test','Test','testview','{\"body\":\"testbody\"}','{\"testdds\":[\"1\",\"\",\"\"]}','fail');");
-        \PHPPE\DS::exec("insert into views (id,ctrl) values ('testview', 'echo(\"OK\");');");
+		DS::db("sqlite::memory:");
+		DS::exec("insert into pages (id,name,template,data,dds,filter) values ('test','Test','testview','{\"body\":\"testbody\"}','{\"testdds\":[\"1\",\"\",\"\"]}','fail');");
+        DS::exec("insert into views (id,ctrl) values ('testview', 'echo(\"OK\");');");
 
-		$url = \PHPPE\Core::$core->url;
-		$title = \PHPPE\Core::$core->title;
-		$contentApp = new \PHPPE\Content;
+		$url = Core::$core->url;
+		$title = Core::$core->title;
+		$contentApp = new Content;
 		//! no content
-		\PHPPE\Core::$core->title = "NONE";
-		$contentApp = new \PHPPE\Content("no/such/content");
-		$this->assertEquals("NONE",\PHPPE\Core::$core->title,"No content");
+		Core::$core->title = "NONE";
+		$contentApp = new Content("no/such/content");
+		$this->assertEquals("NONE",Core::$core->title,"No content");
 
 		//! filter
-		$contentApp = new \PHPPE\Content("test/");
-		$this->assertEquals("403",\PHPPE\Core::$core->template,"Filtered");
-		\PHPPE\DS::exec("update pages set filter='' where id='test';");
+		$contentApp = new Content("test/");
+		$this->assertEquals("403",Core::$core->template,"Filtered");
+		DS::exec("update pages set filter='' where id='test';");
 
 		//! is content
-		$contentApp = new \PHPPE\Content("test/");
-		$this->assertEquals("Test",\PHPPE\Core::$core->title,"Content");
+		$contentApp = new Content("test/");
+		$this->assertEquals("Test",Core::$core->title,"Content");
 
 		$contentApp->getDDS($contentApp);
 		$this->assertEquals("testbody",$contentApp->body,"Body");
 		$this->assertNotEmpty($contentApp->testdds,"DDS");
 
-		$old = \PHPPE\Core::$core->noctrl;
-		\PHPPE\Core::$core->noctrl = false;
+		$old = Core::$core->noctrl;
+		Core::$core->noctrl = false;
 		$contentApp->ctrl="echo('OK');";
 		$this->assertEquals("OK",$contentApp->action(),"Content controller #1");
 
-		$old = \PHPPE\Core::$core->noctrl;
-		\PHPPE\Core::$core->noctrl = true;
+		$old = Core::$core->noctrl;
+		Core::$core->noctrl = true;
 		$this->assertNull($contentApp->action(),"Content controller #2");
-		\PHPPE\Core::$core->noctrl = $old;
+		Core::$core->noctrl = $old;
 
-		\PHPPE\DS::exec("update pages set dds='{\"testdds2\":[\"nosuchcolumn\",\"\",\"\"]}' where id='test';");
-		$contentApp = new \PHPPE\Content("test/");
+		DS::exec("update pages set dds='{\"testdds2\":[\"nosuchcolumn\",\"\",\"\"]}' where id='test';");
+		$contentApp = new Content("test/");
 		$contentApp->getDDS($contentApp);
 		$this->assertEmpty(@$contentApp->testdds2,"DDS failed");
 
-		\PHPPE\Core::$core->title = $title;
+		Core::$core->title = $title;
 	}
 
 	public function testTools()
@@ -189,7 +196,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(mkdir("data/a/b/c/d/e/f",0775,true),"Creating directories #1");
 		$this->assertTrue(is_dir("data/a/b/c/d/e"),"Creating directories #2");
 		file_put_contents("data/a/b/c/e","aaa");
-		\PHPPE\Tools::rmdir("data/a");
+		Tools::rmdir("data/a");
 		$this->assertFalse(is_dir("data/a"),"Removing directories");
 		
 	}

@@ -1,5 +1,5 @@
 <?php
-use PHPPE\Core as Core;
+use PHPPE\Core;
 
 //check user access
 if( !Core::$user->has("install") )

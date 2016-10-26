@@ -4,20 +4,23 @@
  */
 namespace PHPPE\Ctrl;
 
+use PHPPE\Core;
+use PHPPE\Http;
+use PHPPE\Repository;
+
 class MinifyController {
     static $cli="minify";
 
 	function __construct()
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 
 		//! convert source to deployment format
-		\PHPPE\Repository::compress();
+		Repository::compress();
         //! update document
-        \PHPPE\Repository::updateDoc();
-		die;
+        Repository::updateDoc();
 	}
 
 }

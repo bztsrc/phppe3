@@ -22,7 +22,8 @@
  * @date 1 Jan 2016
  * @brief PHPPE Core JavaScript support
  */
-use PHPPE\Core as Core;
+
+use PHPPE\Core;
 
 //! fallback to english if a specific language translation not found
 $d=array_unique(array_merge(

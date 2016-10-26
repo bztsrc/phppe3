@@ -7,9 +7,6 @@
  */
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\Http as Http;
 
 class CMSPaste
 {

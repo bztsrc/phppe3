@@ -53,14 +53,14 @@ class Users extends \PHPPE\User
         if(!empty($_SESSION['pe_u']->id))
             return;
         // login handler specific part
-        $rec = \PHPPE\DS::fetch("id,pass", static::$_table, "name=? AND active!='0'", "", "", [$name]);
+        $rec = DS::fetch("id,pass", static::$_table, "name=? AND active!='0'", "", "", [$name]);
         // authentication
         if(empty($rec['pass']) || !password_verify($pass, $rec['pass']))
             return;
         // success, save user object in session
         $_SESSION['pe_u']=new self($rec['id']);
         // housekeeping
-        \PHPPE\DS::exec("UPDATE ".static::$_table." SET logind=CURRENT_TIMESTAMP WHERE id=?", [$rec['id']]);
+        DS::exec("UPDATE ".static::$_table." SET logind=CURRENT_TIMESTAMP WHERE id=?", [$rec['id']]);
         return $_SESSION['pe_u'];
     }
 
@@ -69,6 +69,6 @@ class Users extends \PHPPE\User
      */
     public function logout()
     {
-        \PHPPE\DS::exec("UPDATE ".static::$_table." SET logoutd=CURRENT_TIMESTAMP WHERE id=?", [$this->id]);
+        DS::exec("UPDATE ".static::$_table." SET logoutd=CURRENT_TIMESTAMP WHERE id=?", [$this->id]);
     }
 }

@@ -58,9 +58,9 @@ class Repository
 		//! keep license comment
 		$i=strpos($data,"*/")+2;
 		//! make sure minifier is not turned off
-		\PHPPE\Core::$core->nominify=false;
+		Core::$core->nominify=false;
         $code=substr($data,$i);
-		$out=substr($data,0,$i)."\n".\PHPPE\Assets::minify($code,"php");
+		$out=substr($data,0,$i)."\n".Assets::minify($code,"php");
 		$l=strlen($out);
 		if($l>99999)
 			die(chr(27)."[91mfile too big, ".$l." bytes".chr(27)."[0m\n");
@@ -112,8 +112,8 @@ class Repository
 	static function make()
 	{
 		//! repository base url
-		if(substr(\PHPPE\Core::$core->action,0,4)=="http")
-			self::$repoBase=\PHPPE\Core::$core->action;
+		if(substr(Core::$core->action,0,4)=="http")
+			self::$repoBase=Core::$core->action;
 		if(substr(self::$repoBase,-1)!="/")
 			self::$repoBase.="/";
 
@@ -148,7 +148,7 @@ class Repository
 			$dir=dirname($json);
 			$ext=basename($dir);
             $bns=preg_match("/\"Business\"/",file_get_contents($json));
-			$tarball="../../../".($bns?\PHPPE\Core::$client->user:"phppe3")."_".strtolower($ext).".tgz";
+			$tarball="../../../".($bns?Core::$client->user:"phppe3")."_".strtolower($ext).".tgz";
 			echo("  ".sprintf("%-20s",$ext.": "));
 			//! create tarball if not exists or older than extension's files
 			chdir($dir);

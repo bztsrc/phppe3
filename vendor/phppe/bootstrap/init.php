@@ -23,9 +23,11 @@
  * @brief Bootstrap integration in PHPPE
  */
 
+namespace PHPPE;
+
 //load style sheests
-\PHPPE\View::css("bootstrap.min.css");
-\PHPPE\View::css("bootstrap-theme.min.css");
+View::css("bootstrap.min.css");
+View::css("bootstrap-theme.min.css");
 
 //load JavaScript
-\PHPPE\View::jslib("bootstrap.min.js","",1);
+View::jslib("bootstrap.min.js","",1);

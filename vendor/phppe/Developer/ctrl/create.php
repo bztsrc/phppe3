@@ -5,21 +5,24 @@
  */
 namespace PHPPE\Ctrl;
 
+use PHPPE\Core;
+use PHPPE\Http;
+use PHPPE\Templates;
+
 class CreateController {
     static $cli="create <template> [arg1 [arg2...]]";
 
 	function __construct()
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 
 		if(empty($_SERVER['argv'][2]))
-			die(\PHPPE\Templates::getUsage());
+			die(Templates::getUsage());
 
 		//! create file from template
-		\PHPPE\Templates::create($_SERVER['argv'][2]);
-		die;
+		Templates::create($_SERVER['argv'][2]);
 	}
 
 }

@@ -6,7 +6,7 @@
 <?php
 @@BRIEF
 
-use PHPPE\Core as Core;
+use PHPPE\Core;
 
 class @CLASS@Test extends PHPUnit_Framework_TestCase
 {

@@ -3,7 +3,9 @@
  * Addon to edit meta tags of a page
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
 
 // L("pagemeta")
 class pagemeta extends \PHPPE\AddOn
@@ -14,7 +16,7 @@ class pagemeta extends \PHPPE\AddOn
     function load(&$app)
     {
         if (!is_array($this->value)) {
-            $page = \PHPPE\View::getval("page");
+            $page = View::getval("page");
             if (!empty($page->data['meta']))
                 $this->value = $page->data['meta'];
         }

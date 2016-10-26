@@ -24,7 +24,7 @@
  */
 namespace PHPPE;
 
-\PHPPE\View::menu( L("Extensions") ."@install", "extensions" );
+View::menu( L("Extensions") ."@install", "extensions" );
 return new Extensions;
 
 /* make lang utility happy

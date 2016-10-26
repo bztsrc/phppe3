@@ -25,12 +25,12 @@
 namespace PHPPE;
 
 //! add your routes here
-\PHPPE\Http::route("cluster/server", "\\PHPPE\\Ctrl\\ClusterSrv", "server");
-\PHPPE\Http::route("cluster/takeover", "\\PHPPE\\Ctrl\\ClusterSrv", "takeover");
-\PHPPE\Http::route("cluster/flush", "\\PHPPE\\Ctrl\\ClusterSrv", "flush");
-\PHPPE\Http::route("cluster/deploy", "\\PHPPE\\Ctrl\\ClusterSrv", "deploy");
-\PHPPE\Http::route("cluster/help", "\\PHPPE\\Ctrl\\ClusterSrv", "help");
-\PHPPE\Http::route("cluster", "\\PHPPE\\Ctrl\\ClusterSrv", "action");
+Http::route("cluster/server",   "\\PHPPE\\Ctrl\\ClusterSrv", "server");
+Http::route("cluster/takeover", "\\PHPPE\\Ctrl\\ClusterSrv", "takeover");
+Http::route("cluster/flush",    "\\PHPPE\\Ctrl\\ClusterSrv", "flush");
+Http::route("cluster/deploy",   "\\PHPPE\\Ctrl\\ClusterSrv", "deploy");
+Http::route("cluster/help",     "\\PHPPE\\Ctrl\\ClusterSrv", "help");
+Http::route("cluster",          "\\PHPPE\\Ctrl\\ClusterSrv", "action");
 
 //! return your service class here
 //return new ClusterSrv;

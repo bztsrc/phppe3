@@ -32,12 +32,12 @@ class Templates
  */
 	static function getUsage()
 	{
-		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".\PHPPE\Core::$core->app.chr(27)."[92m <template>".chr(27)."[0m [arg1 [arg2 [...]]]\n\n".
+		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".Core::$core->app.chr(27)."[92m <template>".chr(27)."[0m [arg1 [arg2 [...]]]\n\n".
 			chr(27)."[96m".L("Template can be one of").":".chr(27)."[0m\n");
 
 		foreach(self::readTemplates() as $name=>$meta)
-			echo("  ".chr(27)."[92m".sprintf("%-20s",$name).chr(27)."[0m".(!empty($meta["desc_".\PHPPE\Core::$client->lang])?
-				$meta["desc_".\PHPPE\Core::$client->lang]:
+			echo("  ".chr(27)."[92m".sprintf("%-20s",$name).chr(27)."[0m".(!empty($meta["desc_".Core::$client->lang])?
+				$meta["desc_".Core::$client->lang]:
 				$meta["desc_en"])."\n");
 	}
 
@@ -61,13 +61,13 @@ class Templates
 			{
 				if(empty($_SERVER['argv'][$k+3]))
 					die(L("Usage").
-						":\n  php public/index.php ".\PHPPE\Core::$core->app." ".
+						":\n  php public/index.php ".Core::$core->app." ".
 						$template." <".implode("> <",$meta['args']).">\n");
 				self::loadVars($vars,$a,$_SERVER['argv'][$k+3]);
 			}
 		}
 		//! some more variables you can use in templates
-		$vars['@@USERNAME'] = \PHPPE\Core::$client->user;
+		$vars['@@USERNAME'] = Core::$client->user;
 		$vars['@@RFCDATE'] = date("r");
 		$vars['@@ISODATE'] = date("c");
 		$vars['@@DATETIME'] = date("YmdHis");
@@ -117,13 +117,13 @@ class Templates
  *   <http://www.gnu.org/licenses/>
  *
  * @file ".$file."
- * @author ".\PHPPE\Core::$client->user."
+ * @author ".Core::$client->user."
  * @date ".date("d M Y")."
  * @brief
  */";
 			$vars["@@BRIEF"]="/**
  * @file ".$file."
- * @author ".\PHPPE\Core::$client->user."
+ * @author ".Core::$client->user."
  * @date ".date("d M Y")."
  * @brief
  */";

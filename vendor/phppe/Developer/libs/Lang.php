@@ -32,7 +32,7 @@ class Lang
  */
 	static function getUsage()
 	{
-		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".\PHPPE\Core::$core->app." <Extension> [language [--write|--write-all]]\n\n".
+		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".Core::$core->app." <Extension> [language [--write|--write-all]]\n\n".
 			chr(27)."[96m".L("If language not given, detects strings in code, otherwise merges language array. With --write it will store the dictionary. If you specify --write-all, then unused phrases won't be prefixed.").chr(27)."[0m\n\n");
 	}
 

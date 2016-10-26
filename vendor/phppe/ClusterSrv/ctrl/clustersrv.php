@@ -7,9 +7,11 @@
  */
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\DS as DS;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Http;
+use PHPPE\DS;
 
 class ClusterSrv extends \PHPPE\ClusterSrv
 {
@@ -18,8 +20,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function help($item=null)
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 		die("cluster help      - this help\n".
 			"cluster status    - prints the current status\n".
 			"cluster server    - checks management daemon (called from cron)\n".
@@ -34,8 +36,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function takeover($item=null)
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 		$node=Core::lib("ClusterSrv");
 		DS::exec("UPDATE ".self::$_table." SET type='slave',viewd=CURRENT_TIMESTAMP WHERE type='master'");
 		DS::exec("UPDATE ".self::$_table." SET type='master',modifyd=CURRENT_TIMESTAMP WHERE id=?", [$node->id]);
@@ -46,8 +48,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function server($item=null)
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 		$node=Core::lib("ClusterSrv");
 		// get command
 		$cmd=DS::field( "cmd",self::$_table,"id=?","","",[$node->id]);
@@ -92,8 +94,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function flush($item=null)
 	{
 		header("Content-type:text/plain");
-		if (\PHPPE\Core::$client->ip!="CLI" && !\PHPPE\Core::$user->has("cluadm"))
-			\PHPPE\Http::redirect("403");
+		if (Core::$client->ip!="CLI" && !Core::$user->has("cluadm"))
+			Http::redirect("403");
 		$node=Core::lib("ClusterSrv");
 		DS::exec("UPDATE ".self::$_table." SET cmd='invalidate' WHERE type='worker'");
 		DS::exec("UPDATE ".self::$_table." SET cmd='reload' WHERE type='lb'");
@@ -105,8 +107,8 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 	function deploy($item=null)
 	{
 		header("Content-type:text/plain");
-		if (\PHPPE\Core::$client->ip!="CLI" && !\PHPPE\Core::$user->has("cluadm"))
-			\PHPPE\Http::redirect("403");
+		if (Core::$client->ip!="CLI" && !Core::$user->has("cluadm"))
+			Http::redirect("403");
 		if (!file_exists(".tmp/multiserver")) {
 			die("CLUSTER-E: ".L("multiserver not installed")."\n");
 		}
@@ -154,7 +156,7 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
 
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI") {
+		if(Core::$client->ip!="CLI") {
 			header("Content-type:application/json");
 			$loadavg=0.0; $waspeek=0;
 			$minSync="";
@@ -186,7 +188,15 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 					break;
 				}
 			}
-			die(json_encode(["status"=>($loadavg<0.1?"idle":($loadavg>0.5||$waspeek?($loadavg>0.75||$waspeek==2?"error":"warn"):"ok")),"loadavg"=>$loadavg,"peek"=>$waspeek,"master"=>$master,"newfiles"=>$newfiles,"id"=>\PHPPE\Core::lib("ClusterSrv")->id,"nodes"=>$nodes]));
+			die(json_encode([
+				"status"=>($loadavg<0.1?"idle":($loadavg>0.5||$waspeek?($loadavg>0.75||$waspeek==2?"error":"warn"):"ok")),
+				"loadavg"=>$loadavg,
+				"peek"=>$waspeek,
+				"master"=>$master,
+				"newfiles"=>$newfiles,
+				"id"=>Core::lib("ClusterSrv")->id,
+				"nodes"=>$nodes
+			]));
 		} else {
 	        echo(chr(27)."[96mThis node is: ".chr(27)."[0m".$lib->id." ".chr(27)."[".(strtolower(trim($lib->id)) == strtolower(trim($master))?"91mMASTER":"92mSLAVE").chr(27)."[0m\n".chr(27)."[96mCluster nodes:\n");
 			echo(chr(27)."[96m Id              Type        Load  Last seen            Last viewed          Name\n --------------  ---------  -----  -------------------  -------------------  -----------------------------".chr(27)."[0m\n");
@@ -194,7 +204,7 @@ class ClusterSrv extends \PHPPE\ClusterSrv
 				echo(sprintf("%s%-16s%-8s%8s",strtolower(trim($node['id'])) == strtolower(trim($master))?chr(27)."[93m*":" ",$node['id'],$node['type'],$node['load'])."  ".(!empty($node['modifyd'])?$node['modifyd']:sprintf("%-19s",L("booting")))."  ".(!empty($node['viewd'])?$node['viewd']:"????-??-?? ??:??:??")."  ".$node['name'].chr(27)."[0m\n");
 			}
 			echo("\n");
-			if(\PHPPE\Core::$core->action=="action")
+			if(Core::$core->action=="action")
 				$this->help();
 		}
 	}

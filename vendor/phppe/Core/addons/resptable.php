@@ -1,6 +1,7 @@
 <?php
 namespace PHPPE\AddOn;
-use \PHPPE\View as View;
+
+use PHPPE\View;
 
 class resptable extends \PHPPE\AddOn
 {

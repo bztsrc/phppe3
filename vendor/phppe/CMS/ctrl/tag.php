@@ -7,9 +7,12 @@
  */
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\Http as Http;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Views;
+use PHPPE\ClassMap;
+use PHPPE\Page;
 
 class CMSTag
 {
@@ -18,6 +21,7 @@ class CMSTag
  */
     function action($item)
     {
+    		//! available tags
 			$list = [
             "/form"=>"*variable [url [onsubmitjs",	//L("help_form")
             "/if"=>"*expression",					//L("help_if")
@@ -37,7 +41,8 @@ class CMSTag
             "field"=>"*addon ) variable",			//L("help_field")
             "widget"=>"*addon ) variable",			//L("help_widget")
             ];
-            $d=array_merge(get_declared_classes(),array_keys(\PHPPE\ClassMap::$map));
+            //! Add-Ons
+            $d=array_merge(get_declared_classes(),array_keys(ClassMap::$map));
 			foreach($d as $c) {
 				if(strtolower(substr($c,0,12))=="phppe\\addon\\") {
 					$F=new $c([],"dummy",$c,[]);
@@ -50,7 +55,7 @@ class CMSTag
 			//! edit form
 			$acl=$widget="";$req=$needsel=0;
 			if(substr($item,0,2)!="<!") {
-				die(\PHPPE\View::e("E",L("Unknown tag")));
+				die(View::e("E",L("Unknown tag")));
 			} else {
 				$d="";$c="";
 				foreach($list as $k=>$v) {
@@ -62,7 +67,7 @@ class CMSTag
 					}
 				}
 				if(empty($d))
-					die(\PHPPE\View::e("E",L("Unknown tag")));
+					die(View::e("E",L("Unknown tag")));
 				if($d=="=") {
 					$d="eval";
 					$a=[substr($item,3,strlen($item)-4)];
@@ -95,7 +100,7 @@ class CMSTag
 					}
 					echo("</select>\n<input type='text' class='input smallinput' name='acl' onkeydown='if(event.key==\"Enter\"){event.preventDefault();pe_p();}' onkeyup='pe.cms.settag(\"tageditor\");event.preventDefault();' onchange='pe.cms.settag(\"tageditor\");' title=\"".L("Access filters")."\" placeholder=\"".L("Access filters")."\" value=\"".htmlspecialchars($acl)."\" list='filters'>");
 					echo("<datalist id='filters'>");
-					foreach(\PHPPE\ClassMap::ace() as $b)
+					foreach(ClassMap::ace() as $b)
 						echo("<option value='".$b."'>".L($b)."</option>");
 					echo("<option value='siteadm|webadm'>".L("Administrator")."</option>");
 					echo("</datalist><br/>\n");
@@ -135,7 +140,7 @@ class CMSTag
 						switch($v) {
 						case "":$i++;break;
 						case "view":
-							$views=\PHPPE\Views::find([],"sitebuild=''","id","id,name");
+							$views=Views::find([],"sitebuild=''","id","id,name");
 							foreach(array_merge(glob("app/views/*.tpl"),glob("vendor/phppe/Core/views/*.tpl")) as $view) {
 								$w=str_replace(".tpl","",basename($view));
 								if($w!="frame")
@@ -184,7 +189,7 @@ class CMSTag
 							}
 							if($v=="dataset"||$v=="listopts"){
 								echo("<datalist id=\"datasets\">\n");
-								$pages=\PHPPE\Page::find([],"","created DESC","dds","id");
+								$pages=Page::find([],"","created DESC","dds","id");
 								$dds=[];
 								foreach($pages as $p) {
 									$g=@json_decode(@$p['dds'],true);

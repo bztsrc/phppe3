@@ -24,9 +24,9 @@
  */
 namespace PHPPE;
 
-\PHPPE\Http::route("ms/add","MultiServer","addAction");
-\PHPPE\Http::route("ms/remove","MultiServer","removeAction");
-\PHPPE\Http::route("ms/set","MultiServer","setAction");
+Http::route("ms/add","MultiServer","addAction");
+Http::route("ms/remove","MultiServer","removeAction");
+Http::route("ms/set","MultiServer","setAction");
 
 //! return your service class here
 return new MultiServer;

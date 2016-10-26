@@ -3,7 +3,10 @@
  * Addon for page meta information
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Views;
 
 // L("layoutadd")
 class layoutadd extends \PHPPE\AddOn
@@ -13,13 +16,13 @@ class layoutadd extends \PHPPE\AddOn
     function edit()
     {
         $quickhelp=!Core::lib("CMS")->expert;
-        \PHPPE\View::assign("quickhelp",$quickhelp);
-        return \PHPPE\View::template("cms_layoutadd");
+        View::assign("quickhelp",$quickhelp);
+        return View::template("cms_layoutadd");
     }
 
     function save($params)
     {
-        $v = new \PHPPE\Views();
+        $v = new Views();
         $v->id = $params['layoutid'];
         $v->name = $params['layoutname'];
         try {

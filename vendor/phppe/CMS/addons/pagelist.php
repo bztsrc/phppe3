@@ -3,7 +3,8 @@
  * Addon for page lists
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Page;
 
 // L("pagelist")
 class pagelist extends \PHPPE\AddOn\setsel
@@ -28,14 +29,14 @@ class pagelist extends \PHPPE\AddOn\setsel
 		$this->args[2]='lang,tid:template';
 		$this->args[3]="<img src='images/lang_%lang%.png' alt='%lang%' style=''> %name%";
 		$this->args[4]=L("Edit Page List");
-		$this->attrs[0]=\PHPPE\Page::getPages(0,$t);
+		$this->attrs[0]=Page::getPages(0,$t);
         $this->attrs[1]="setsel_boxw";
 		return parent::edit();
 	}
 
     function save($params)
     {
-        return \PHPPE\Page::savePageList($this->name, str_getcsv($params['value'], ','));
+        return Page::savePageList($this->name, str_getcsv($params['value'], ','));
     }
 }
 

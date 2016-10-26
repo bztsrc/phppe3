@@ -40,7 +40,7 @@ class DataLibrary
  */
 	function init($cfg) {
         if(!empty($_FILES['doclist_upload'])) {
-            \PHPPE\DataLibrary::uploadDocument($_FILES['doclist_upload']);
+            DataLibrary::uploadDocument($_FILES['doclist_upload']);
         }
 	}
 
@@ -99,10 +99,10 @@ class DataLibrary
             throw new \Exception(L('No doclist name'));
         if (is_string($docs))
             $docs = str_getcsv($docs, ',');
-        \PHPPE\DS::exec("DELETE FROM doc_list WHERE list_id=?",[$name]);
+        DS::exec("DELETE FROM doc_list WHERE list_id=?",[$name]);
         foreach($docs as $k=>$v)
             if(!empty($v)&&trim($v)!="null")
-                \PHPPE\DS::exec("INSERT INTO doc_list (list_id,id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
+                DS::exec("INSERT INTO doc_list (list_id,id,ordering) values (?,?,?)",[$name,$v,intval($k)]);
         return true;
     }
 
@@ -127,7 +127,7 @@ class DataLibrary
     function attachment($item)
     {
         $list = self::getDocuments();
-        echo(\PHPPE\View::_t("<!form doclist>")."<input type='file' name='doclist_upload' onchange='this.form.submit();' style='display:none;'>".
+        echo(View::_t("<!form doclist>")."<input type='file' name='doclist_upload' onchange='this.form.submit();' style='display:none;'>".
         "<input type='button' value='".L("Upload")."' onclick=\"this.previousSibling.click();\"></form>".
         "<input type='text' style='width:130px;' placeholder='".L("Search")."' onkeyup='pe.wyswyg.search(this,this.nextSibling);'>");
         echo("<div class='wyswyg_docs wyswyg_scroll'>\n");
@@ -142,7 +142,7 @@ class DataLibrary
  */
     function action($item)
     {
-        $url = str_replace("..", "", \PHPPE\Core::$core->url);
+        $url = str_replace("..", "", Core::$core->url);
         if (file_exists("data/".$url)) {
             Http::mime(mime_content_type("data/".$url));
             die(file_get_contents("data/".$url));

@@ -24,5 +24,5 @@
  */
 namespace PHPPE;
 
-\PHPPE\View::css("spectrum.css");
-\PHPPE\View::jslib("spectrum.js");
+View::css("spectrum.css");
+View::jslib("spectrum.js");

@@ -24,9 +24,6 @@
  */
 
 namespace PHPPE;
-use PHPPE\Core as Core;
-use PHPPE\Tools as Tools;
-use PHPPE\DS as DS;
 
 // L("slave") L("master") L("lb") L("worker")
 class ClusterSrv extends \PHPPE\Model

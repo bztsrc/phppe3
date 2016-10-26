@@ -7,9 +7,10 @@
 @@BRIEF
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\Http as Http;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Http;
 
 class @EXTENSION@
 {

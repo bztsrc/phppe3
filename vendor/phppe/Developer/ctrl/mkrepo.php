@@ -4,21 +4,26 @@
  */
 namespace PHPPE\Ctrl;
 
+use PHPPE\Core;
+use PHPPE\Http;
+use PHPPE\Testing;
+use PHPPE\Repository;
+
 class MkRepoController {
     static $cli="mkrepo [--tests]";
 
 	function __construct()
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 
 		//! run tests
 		if(in_array("--tests",$_SERVER['argv']))
 		{
 			echo("Running tests: ");
 			ob_start();
-			$tests = \PHPPE\Testing::doTests();
+			$tests = Testing::doTests();
 			$d = ob_get_clean();
 			if(!$tests)
 				die("FAILED\n$d");
@@ -27,10 +32,10 @@ class MkRepoController {
 		}
 
         //! *** MKREPO Event ***
-        \PHPPE\Core::event("mkrepo");
+        Core::event("mkrepo");
 
 		//! create repository
-		\PHPPE\Repository::make();
+		Repository::make();
 		die;
 	}
 

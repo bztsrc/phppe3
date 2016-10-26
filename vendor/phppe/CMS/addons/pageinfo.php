@@ -3,7 +3,10 @@
  * Addon for page meta information
  */
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Views;
 
 // L("pageinfo")
 class pageinfo extends \PHPPE\AddOn
@@ -18,7 +21,7 @@ class pageinfo extends \PHPPE\AddOn
         foreach (!empty($_SESSION['pe_ls'])?$_SESSION['pe_ls']:['en'=>1] as $l=>$v)
             $app->langs[$l]=L($l);
         //! get views from database
-        $rec = \PHPPE\Views::find([], "sitebuild=''", "id", "id,name");
+        $rec = Views::find([], "sitebuild=''", "id", "id,name");
         foreach ($rec as $r)
             $app->layouts[$r['id']] = $r['name'];
         foreach(glob("app/views/*.tpl") as $view) {
@@ -28,7 +31,7 @@ class pageinfo extends \PHPPE\AddOn
         }
         unset($rec);
         //! add current template if it's not there
-        $page = \PHPPE\View::getval("page");
+        $page = View::getval("page");
         if(empty($app->layouts[$page->template]))
             $app->layouts[$page->template] = L($page->template)==$page->template?ucfirst($page->template):L($page->template);
         ksort($app->layouts);
@@ -37,14 +40,14 @@ class pageinfo extends \PHPPE\AddOn
     function edit()
     {
         $quickhelp=!Core::lib("CMS")->expert;
-        \PHPPE\View::assign("quickhelp",$quickhelp);
-        return \PHPPE\View::template("cms_pageinfo");
+        View::assign("quickhelp",$quickhelp);
+        return View::template("cms_pageinfo");
     }
 
     function save($params)
     {
         //! save page info
-        return \PHPPE\Page::savePageInfo($params);
+        return Page::savePageInfo($params);
     }
 }
 

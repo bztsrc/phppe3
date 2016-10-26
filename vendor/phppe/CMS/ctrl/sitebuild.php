@@ -7,9 +7,13 @@
  */
 
 namespace PHPPE\Ctrl;
-use PHPPE\Core as Core;
-use PHPPE\View as View;
-use PHPPE\Http as Http;
+
+use PHPPE\Core;
+use PHPPE\View;
+use PHPPE\Views;
+use PHPPE\Http;
+use PHPPE\Tools;
+use PHPPE\CMS;
 
 class CMSSitebuild
 {
@@ -34,18 +38,19 @@ class CMSSitebuild
             }
         }
 
+		//! sitebuild import
 		Core::$core->noframe=true;
         $import=Core::req2arr("import");
 
-        //! upload
+        //! uncompress uploaded archive
         if (!empty($import['file']['tmp_name'])) {
-            @\PHPPE\Tools::rmdir(".tmp/".session_id());
+            @Tools::rmdir(".tmp/".session_id());
             @mkdir(".tmp/".session_id()."/i",0750,true);
             @mkdir(".tmp/".session_id()."/c",0750,true);
             @mkdir(".tmp/".session_id()."/j",0750,true);
             @mkdir(".tmp/".session_id()."/f",0750,true);
             @mkdir(".tmp/".session_id()."/h",0750,true);
-            \PHPPE\Tools::untar($import['file']['tmp_name'], function($name, $body){
+            Tools::untar($import['file']['tmp_name'], function($name, $body){
                 $fn="";
                 if(substr($name,-4)==".htm"||substr($name,-5)==".html") {
                     self::$success=true;
@@ -90,6 +95,7 @@ class CMSSitebuild
         $data=preg_replace("/<script.*?\/script>/ims","",file_get_contents($html));
         $files=glob(".tmp/".session_id()."/*/*");
         $assets=["i"=>"images","c"=>"css","j"=>"js","f"=>"fonts"];
+		//! replace urls with temporary ones for the uploaded files
         foreach ($files as $f) {
             if (!empty($assets[basename(dirname($f))])) {
                 $data=preg_replace(
@@ -104,27 +110,32 @@ class CMSSitebuild
                 View::jslib(url("cms/sitebuild")."?assetn=".basename(dirname($f))."/".basename($f));
             }
         }
-        $this->content=\PHPPE\CMS::taghtml($data);
+		//! get the main application tag
+        $this->content=CMS::taghtml($data);
         if (empty($_REQUEST['chooseid']) &&
             preg_match("/(<[^<>]*?id=[\'\"]?content[^>]*?>)/ims",$this->content,$m) &&
             !empty($m[0]) && preg_match("/data\-chooseid=[\'\"]?([0-9]+)/ims",$m[0],$M)){
             $_REQUEST['chooseid']=$M[1];
         }
         if (!empty($_REQUEST['chooseid'])) {
-            $t=\PHPPE\CMS::splithtml($this->content,$_REQUEST['chooseid'],0).
-            "<!app>".\PHPPE\CMS::splithtml($this->content,$_REQUEST['chooseid'],2);
+        	//! replace with <!app>
+            $t=CMS::splithtml($this->content,$_REQUEST['chooseid'],0).
+            "<!app>".CMS::splithtml($this->content,$_REQUEST['chooseid'],2);
+            //! replace temporary urls with final ones
             preg_match_all("/[^=\ \t\r\n\'\",\(\[]+\?assetn=([a-z])\/([^=\ \t\r\n\'\",\)\]]+)/ims",
                 $t,$m,PREG_SET_ORDER);
             foreach($m as $M) {
                 $t=str_replace($M[0],$assets[$M[1]]."/".$M[2],$t);
             }
+			//! figure out sitebuild name
             $name=strtr(basename($html),[".html"=>"",".htm"=>""]);
             if($name=="index"||$name=="frame"||$name=="simple"||$name=="default")
                 $name="sitebuild".Core::$core->now;
-            $views = \PHPPE\Views::find($name);
+            $views = Views::find($name);
             if(!empty($views))
                 $name.=Core::$core->now;
-            $view = new \PHPPE\Views();
+			//! save sitebuild
+            $view = new Views();
             $view->id = $name;
             $view->name = $name;
             $view->sitebuild = $name;
@@ -136,12 +147,15 @@ class CMSSitebuild
                 if (basename(dirname($f))=="j") $view->jslib[]=basename($f);
             }
             if ($view->save(true)) {
+				//! copy temporary files to public directory
                 foreach($assets as $k=>$v) {
                     chdir(".tmp/".session_id()."/".$k);
-                    \PHPPE\Tools::copy(glob("*"),"public/".$v);
+                    Tools::copy(glob("*"),"public/".$v);
                     chdir("../../..");
                 }
-                @\PHPPE\Tools::rmdir(".tmp/".session_id());
+                //! clean up
+                @Tools::rmdir(".tmp/".session_id());
+                //! redirect user to the fresh new sitebuild layout
                 Http::redirect("cms/layouts/".$name);
             }
             Core::error("Unable to save sitebuild!");

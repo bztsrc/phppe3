@@ -1,6 +1,5 @@
 <?php
 namespace PHPPE\AddOn;
-use \PHPPE\Core as Core;
 
 class youtube extends \PHPPE\AddOn
 {

@@ -5,21 +5,24 @@
  */
 namespace PHPPE\Ctrl;
 
+use PHPPE\Core;
+use PHPPE\Http;
+use PHPPE\Lang;
+
 class LangController {
     static $cli="lang <extension> [language [--write]]";
 
 	function __construct()
 	{
 		//! check if executed from CLI
-		if(\PHPPE\Core::$client->ip!="CLI")
-			\PHPPE\Http::redirect("403");
+		if(Core::$client->ip!="CLI")
+			Http::redirect("403");
 
 		if(empty($_SERVER['argv'][2]))
-			die(\PHPPE\Lang::getUsage());
+			die(Lang::getUsage());
 
 		//! parse files for translateable strings
-		\PHPPE\Lang::parse($_SERVER['argv'][2], @$_SERVER['argv'][3], @$_SERVER['argv'][4]);
-		die;
+		Lang::parse($_SERVER['argv'][2], @$_SERVER['argv'][3], @$_SERVER['argv'][4]);
 	}
 
 }
