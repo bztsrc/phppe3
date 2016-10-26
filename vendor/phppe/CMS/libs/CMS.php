@@ -102,8 +102,9 @@ class CMS
                 intval(@$_SESSION['cms_scroll'][1]).
                 ");",9);
             $_SESSION['cms_scroll']=[];
-        } else
+        } else {
             View::jslib("cms.js","",9);
+		}
     }
 
 
@@ -126,8 +127,9 @@ class CMS
         Core::$core->nocache = true;
 
         //! get forced sizes from tag
-        if(!preg_match("/^cms\(([0-9\%]+),?([0-9\%]*),?([0-9\%]*),?([0-9\%]*)\)/", $tag, $sizes))
+        if(!preg_match("/^cms\(([0-9\%]+),?([0-9\%]*),?([0-9\%]*),?([0-9\%]*)\)/", $tag, $sizes)) {
             $sizes=["", 0, 0, 0, 0];
+		}
 
         $title = !empty($addon->name)?$addon->name:$type;
         //! save the page parameter
@@ -178,8 +180,9 @@ class CMS
             $app=View::getval("app");
             if (get_class($app)=="PHPPE\Content") {
                 //! unpiblished warning
-                if(isset($app->publishid) && !$app->publishid)
+                if(isset($app->publishid) && !$app->publishid) {
                     $ret.="<a href='".url("cms/pages")."?publish'><span class='btn-warning' style='padding:0px 4px 0px 4px;text-shadow:none;'>".L("UNPUBLISHED")."</span></a>";
+				}
                 //! page info
                 $ret .= self::statIcon("pageinfo");
                 //! page meta
@@ -240,8 +243,9 @@ class CMS
 				$id=1;
 				for($i=0;$i<strlen($m[1]);$i++){
 					if($m[1][$i]=='<'&&$m[1][$i+1]!='/') {
-						while($m[1][$i]!=''&&$m[1][$i]!=' '&&$m[1][$i]!='>'&&$m[1][$i]!="\t"&&$m[1][$i]!="\n"&&$m[1][$i]!="\r")
+						while($m[1][$i]!=''&&$m[1][$i]!=' '&&$m[1][$i]!='>'&&$m[1][$i]!="\t"&&$m[1][$i]!="\n"&&$m[1][$i]!="\r") {
 							$t.=$m[1][$i++];
+						}
 						$t.=" data-chooseid='".$id++."'";
 					}
 					$t.=$m[1][$i];
@@ -266,8 +270,9 @@ class CMS
 			return $idx==1?preg_replace("| data-chooseid='[0-9]+'|ims","",trim($data)):"";
 		if( preg_match_all( "/<([^\ \t\r\n]+)[\ \t\r\n]data-chooseid='".$id."'[^>]*>/ims", $data,$T,PREG_OFFSET_CAPTURE | PREG_SET_ORDER ) )
 		{
-			if($idx==0)
+			if($idx==0) {
 				return preg_replace("| data-chooseid='[0-9]+'|ims","",trim(substr($data,0,$T[0][0][1])));
+			}
 			$c=0;
 			$i=$T[0][0][1];$lc=$i;while($data[$lc]!=''&&$data[$lc]!='>') $lc++;$lc++;
 			for(;$i<strlen($data);$i++) {
@@ -278,7 +283,9 @@ class CMS
 					return preg_replace("| data-chooseid='[0-9]+'|ims","",trim($idx==1? substr($data,$T[0][0][1],$i-$T[0][0][1]) : substr($data,$i)));
 				}
 			}
-			if($c!=0) return preg_replace("| data-chooseid='[0-9]+'|ims","",trim($idx==1? substr($data,$T[0][0][1],$lc-$T[0][0][1]) : substr($data,$lc)));
+			if($c!=0) {
+				return preg_replace("| data-chooseid='[0-9]+'|ims","",trim($idx==1? substr($data,$T[0][0][1],$lc-$T[0][0][1]) : substr($data,$lc)));
+			}
 		}
 		return "";
 	}

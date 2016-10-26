@@ -43,7 +43,8 @@ Http::route("benchmark", "BenchmarkController");
 Http::route("mkrepo", "MkRepoController");
 Http::route("minify", "MinifyController");
 Http::route("create", "CreateController");
-Http::route("lang", "LangController");
+Http::route("lang",   "LangController");
+Http::route("pretty", "PrettyController");
 
 //for event testing
 return new Testing;
