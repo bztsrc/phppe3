@@ -22,7 +22,7 @@ return [
 	"No match found." => "Pas de correspondance trouvée.",
 	"Product key?" => "Clé de produit?",
 	"Connecting to host" => "Connectez-vous à accueillir",
-	"You are going to remove the Extension Manager itself!" => "Vous allez supprimer l\'extension Directeur lui-même!",
+	"You are going to remove the Extension Manager itself!" => "Vous allez supprimer l'extension Directeur lui-même!",
 	"Diagnostics" => "Diagnostique",
 	"Run diagnostics first!" => "Exécutez les diagnostics premiers!",
 	"Configure" => "Configurer",

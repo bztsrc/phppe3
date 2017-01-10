@@ -58,9 +58,10 @@ class Pretty
 	static function format($file)
 	{
 		$d=file_get_contents($file);
-		$oldsize=strlen($d); $size=0; $new="";
+		$oldsize=strlen($d); $new="";
 		$words=[];
 		$i = $j = 0; $line=1;
+		$d=preg_replace("/else[\ \t\r\n]+if/","elseif",$d);
 		$l = strlen($d);
 		while ($i < $l) {
 			if ($d[$i] == "\n")

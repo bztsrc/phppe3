@@ -16,7 +16,7 @@
 <nobr><!field select pagelang langs - pe.cms.tablesearch(this.nextSibling,"results")>
 <input id='search' class='input form-control' type='text' style='display:inline;width:50%;' onkeyup='return pe.cms.tablesearch(this,"results");' placeholder='<!=L('Search')>'><span style='font-size:20px;padding-left:5px;padding-right:5px;'>⌕</span></nobr>
 </div>
-<table id="results" class="cmstable resptable">
+<table id="results" class="cmstable">
 	<tr>
 		<th><!if ispublish><input type='checkbox' onchange='pe.cms.checkall(this);' checked><!else><!=L("Layout")><!/if></th>
 		<th></th>

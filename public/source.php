@@ -207,7 +207,7 @@ namespace PHPPE {
 
 /**
  * Initialize event. Collects information on client (language, timezone, screen size etc.)
- * 
+ *
  * @param array     configuration
  *
  * @return boolean  false if initialization failed
@@ -296,7 +296,7 @@ namespace PHPPE {
             } else {
                 //! detect values for CLI
                 $T = getenv('TZ');
-                //! this should be a symlink to something 
+                //! this should be a symlink to something
                 //! like /usr/share/zoneinfo/Europe/London
                 $d = explode('/', $T ? $T : @readlink('/etc/localtime'));
                 $c = count($d);
@@ -347,7 +347,6 @@ namespace PHPPE {
                         if($k[0]!="_")
                             $this->$k=$v;
                     }
-print_r($this);
                 }
             }
         }
@@ -518,7 +517,7 @@ print_r($this);
 
 /**
  * Initialize event.
- * 
+ *
  * @param array     configuration array
  *
  * @return boolean  false if initialization failed
@@ -540,7 +539,7 @@ print_r($this);
 /**
  * Route event. We handle login/logout actions here, before routing
  * decision is made.
- * 
+ *
  * @param current application
  * @param current action
  */
@@ -672,7 +671,7 @@ print_r($this);
 
 /**
  * Generate http header with mime info for content.
- * 
+ *
  * @param string    mime type of output
  * @param boolean   client side cache enabled
  */
@@ -914,7 +913,7 @@ print_r($this);
 
 /**
  * Constructor. Initialize primary datasource if any. Called by core.
- * 
+ *
  * @param string    primary datasource uri
  */
         public function __construct($ds = null)
@@ -992,7 +991,7 @@ print_r($this);
 /**
  * return database instance for current selector
  * @usage DS::db()
- * 
+ *
  * initialize a database and make connection available as a data source
  * @usage DS::db(pdodsn)
  *
@@ -1310,7 +1309,7 @@ print_r($this);
  * Constructor. Called by core.
  *
  * @usage configure it in vendor/phppe/Core/config.php
- * 
+ *
  * @param string    cache uri
  */
         public function __construct($cfg = null)
@@ -1450,7 +1449,7 @@ print_r($this);
 
 /**
  * Initialize event.
- * 
+ *
  * @param array     configuration array
  *
  * @return boolean  false if initialization failed
@@ -2421,7 +2420,7 @@ print_r($this);
                                             $w = CMS::icon($g, $f, $F);
                                         //! we use the (otherwise here useless) required marker
                                         //! for showing value in non-edit mode
-                                        $m = $R ? "show" : "";                                        
+                                        $m = $R ? "show" : "";
                                     } else {
                                         //add validators and check for required fields
                                         if ($R || method_exists($d, 'validate')) {
@@ -3062,7 +3061,7 @@ print_r($this);
                 //! if argument was a filename, return it's contents
                 if (!empty($fn) && is_string($fn) && $name == $fn) {
                     $close($f);
-    
+
                     return substr($body, 0, $size);
                 }
                 //! if argument was an array with class and method name, call it on every file in the archive
@@ -3144,7 +3143,7 @@ print_r($this);
                 throw new \Exception(sprintf(L('failed to copy %d files to %s'), count($files), Core::$user->data['remote']['user'].'@'.Core::$user->data['remote']['host'].':'.Core::$user->data['remote']['path'].'/'.$dest)
                     .': '.explode("\n", $r)[0]);
             }
-    
+
             return $r;
         }
 
@@ -3169,14 +3168,14 @@ print_r($this);
                 // server service is not running!
                 if ($pid = pcntl_fork()) {
                     file_put_contents($pidfile, $pid);
-                    return;     // Parent 
-                } if (posix_setsid() < 0) 
+                    return;     // Parent
+                } if (posix_setsid() < 0)
                     return;
-                @ob_end_clean(); // Discard the output buffer and close 
+                @ob_end_clean(); // Discard the output buffer and close
                 set_time_limit(0);
-                fclose(STDIN);  // Close all of the standard 
-                fclose(STDOUT); // file descriptors as we 
-                fclose(STDERR); // are running as a daemon. 
+                fclose(STDIN);  // Close all of the standard
+                fclose(STDOUT); // file descriptors as we
+                fclose(STDERR); // are running as a daemon.
                 $ctrl = new $class;
                 while(1){
                     call_user_func_array([$ctrl, $method], is_array($arg)?$arg:[]);
@@ -4136,7 +4135,7 @@ class ClassMap extends Extension
             //! check for installed library or..
             return isset(self::$core->libs[$n]) || ClassMap::has('\\PHPPE\\'.$n) ||
             //! ...available addon...
-                ClassMap::has('\\PHPPE\\AddOn\\'.$n) || 
+                ClassMap::has('\\PHPPE\\AddOn\\'.$n) ||
             //! ...or any other JS only extension
                 ClassMap::has($n) || is_dir('vendor/phppe/'.$n);
         }
@@ -4242,7 +4241,7 @@ class ClassMap extends Extension
  * Return button number when user tries to save a form.
  *
  * @param string    form name
- * 
+ *
  * @return integer  button number
  */
         public static function isTry($f = '')
@@ -4256,7 +4255,7 @@ class ClassMap extends Extension
  * Query all error messages.
  * @usage Core::error()
  * @return array    array of messages groupped by fields
- * 
+ *
  * Add an error message to output
  * @param string    message
  * @param string    if message is related to a field, it's name
@@ -4291,7 +4290,7 @@ class ClassMap extends Extension
 
 /**
  * Trigger an event.
- * 
+ *
  * @param string    event name
  * @param array     context
  *
@@ -5289,5 +5288,5 @@ namespace {
 
 }
 /* to make lang utility happy
-L("sure") 
+L("sure")
 */

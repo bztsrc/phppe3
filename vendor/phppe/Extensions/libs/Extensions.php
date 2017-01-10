@@ -93,7 +93,7 @@ class Extensions {
 	private static function formatValue($v) {
 		return ($v=="true"||$v=="false"||$v=="null"||
 			$v=="0"||intval($v)!=0||
-			@$v[0]=="["||@$v[0]=="{")? $v : "\'".addslashes($v)."\'";
+			@$v[0]=="["||@$v[0]=="{")? $v : "\"".str_replace("\"","\\\"",$v)."\"";
 	}
 
 
@@ -453,7 +453,7 @@ class Extensions {
 		//! construct new configuration file
 		$conf = "<"."?p"."hp\nreturn [\n";
 		foreach($_POST as $k=>$v)
-			$conf.="\t\"".addslashes($k)."\" => ".$this->formatvalue($v).",\n";
+			$conf.="\t\"".str_replace("\"","\\\"",$k)."\" => ".$this->formatvalue($v).",\n";
 		$conf .= "];\n";
 
 		try {
@@ -470,7 +470,7 @@ class Extensions {
 			Core::log('E',"Failed to set configuration for ".$dir." ".$this->getSiteUrl().", ".str_replace("\n"," ",$r),"extensions");
 			return "PHPPE-E: ".L("Failed set configuration!")."\n\n".str_replace("\n"," ",$r);
 		} else {
-			die(L("Configuration saved.")."\n".$r);
+			die($r);
 		}
 	}
 }

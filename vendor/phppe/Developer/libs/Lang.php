@@ -266,7 +266,7 @@ class Lang
                     continue;
                 if(empty($write))
                     $out.=(isset($extra[$k])?chr(27)."[91m":(!isset($was[$k])?chr(27)."[92m":""));
-                $out.=((isset($extra[$k])&&$write!="--write-all")||isset($K[$k])?"//-":"")."\t\"".addslashes($k)."\" => \"".addslashes($v)."\",\n";
+                $out.=((isset($extra[$k])&&$write!="--write-all")||isset($K[$k])?"//-":"")."\t\"".str_replace("\"","\\\"",$k)."\" => \"".str_replace("\"","\\\"",$v)."\",\n";
                 if(empty($write))
                     $out.=chr(27)."[0m";
             }

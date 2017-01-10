@@ -29,7 +29,6 @@ pe.resptable = {
 
 /* PUBLIC METHODS */
   init: function() {
-return;
     pe.resptable.detect();
     if ( window.addEventListener )
       window.addEventListener( "resize", pe.resptable.recalc, false );
@@ -57,8 +56,8 @@ return;
   {
     var i,ts=document.getElementsByTagName('TABLE'),ox=0,oy=0;
     for(i=0;i<ts.length;i++) if(ts[i].className.indexOf('resptable')>-1) {
-      var l=resptable.instances.length;
-      resptable.instances[resptable.instances.length]=ts[i];
+      var l=pe.resptable.instances.length;
+      pe.resptable.instances[pe.resptable.instances.length]=ts[i];
     var j,f=0,c=0,th=ts[i].getElementsByTagName('TH');
     for(j=0;j<th.length;j++) {
       if(th[j].getAttribute('data-fixed')!=null) f+=th[j].offsetWidth;
@@ -132,7 +131,7 @@ return;
           k.setAttribute('onclick','document.getElementById("resptable'+i+'_popup").style.visibility=document.getElementById("resptable'+i+'_popup").style.visibility=="visible"?"hidden":"visible";')
         }
       }
-      pe.resptable.setwidth(resptable.instances[i]);
+      pe.resptable.setwidth(pe.resptable.instances[i]);
     }
   },
 
@@ -226,7 +225,7 @@ return;
   {
     var i;
     for(i=0;i<pe.resptable.instances.length;i++)
-    pe.resptable.setwidth(resptable.instances[i]);
+    pe.resptable.setwidth(pe.resptable.instances[i]);
   },
 
   touchstart: function(evt)
