@@ -4216,6 +4216,7 @@ class ClassMap extends Extension
                 if (!@file_put_contents($l, $p.
                     strtr($m, ["\n" => '\\n', "\r" => '\\r'])."\n".$t, FILE_APPEND | LOCK_EX)) {
                     // @codeCoverageIgnoreStart
+                    // treat criticals as error with diag. Give a chance to fix the problem
                     $w = @$_SERVER['argv'][1] != '--diag' ? 'C' : 'E';
                     $g .= (!self::$w ? "\nLOG-C" : "<br/>\n".date('Y-m-d').'T'.date('H:i:s').'Z-C-LOG').': '.L('unable to write')." $l";
                     // @codeCoverageIgnoreEnd
