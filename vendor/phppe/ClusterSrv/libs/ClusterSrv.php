@@ -67,9 +67,12 @@ class ClusterSrv extends \PHPPE\Model
 		if(!empty($config['skeleton']) && is_dir($config['skeleton'])) {
 				$this->_rsync=true;
 		}
-		$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
-		$this->_master= strtolower(trim($this->id)) == strtolower(trim($master));
-
+		try {
+			$master=DS::field("id",self::$_table,"type='master' AND modifyd>CURRENT_TIMESTAMP-120");
+			$this->_master= strtolower(trim($this->id)) == strtolower(trim($master));
+		} catch(\Exception $e) {
+			// simply don't set master without datasource
+		}
 		View::jslib("cluster.js","pe.cluster.init();");
 	}
 
