@@ -3858,6 +3858,10 @@ class ClassMap extends Extension
                     $D += array_fill_keys(@glob($d.$v,GLOB_NOSORT), 0);
                 }
             }
+            // set .tmp access rights
+            foreach ($A as $v) {
+                $D += array_fill_keys(@glob(".tmp/".$v,GLOB_NOSORT), $W);
+            }
             //! $D now has all installed files
             foreach ($D as $d => $p) {
                 if (!$p) {
@@ -3890,15 +3894,27 @@ class ClassMap extends Extension
                 }
             }
             //! hide errors here, symlink may be already there
-            @symlink('../../app', 'vendor/phppe/app');
+            $c = 'vendor/phppe/app';
+            @symlink('../../app', $c);
+            if (!@chgrp($c, self::$g) || !@chown($c, $U)) {
+                echo "DIAG-E: chown/chgrp $c\n";
+            }
             foreach (['images', 'css', 'js', 'fonts'] as $v) {
-                if (!file_exists("app/$v")) {
-                    echo "DIAG-A: app/$v\n";
+                $c = "app/$v";
+                if (!file_exists($c)) {
+                    echo "DIAG-A: $c\n";
                 }
-                @symlink("../public/$v", "app/$v");
+                @symlink("../public/$v", $c);
+                if (!@chgrp($c, self::$g) || !@chown($c, $U)) {
+                    echo "DIAG-E: chown/chgrp $c\n";
+                }
             }
             //! hide errors here, target may not exists or the symlink may be already there
-            @symlink('vendor/phppe/Core', 'phppe');
+            $c = 'phppe';
+            @symlink('vendor/phppe/Core', $c);
+            if (!@chgrp($c, self::$g) || !@chown($c, $U)) {
+                echo "DIAG-E: chown/chgrp $c\n";
+            }
             //! create files
             umask(0027);
             i('app/config.php', '');
