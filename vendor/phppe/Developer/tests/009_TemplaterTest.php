@@ -69,6 +69,8 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$obj->spec[0]=new \stdClass; $obj->spec[0]->id=1; $obj->spec[0]->name=[1,2,3];
 		$obj->emptyStr="";
 
+		$this->assertTrue(substr(\PHPPE\View::_t("<!={end>"),0,3)=="{(i","Parse error in template");
+
 		\PHPPE\View::assign("obj",$obj);
 		\PHPPE\View::assign("app",$obj);
 		\PHPPE\View::assign("core",\PHPPE\Core::$core);

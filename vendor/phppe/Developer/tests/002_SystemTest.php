@@ -30,6 +30,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$_SERVER['REQUEST_URI']="/test/something/?arg=1";
 		@$core = new Core(true);
         $this->assertFileExists(ClassMap::$file, "New classmap");
+		$this->assertTrue(is_array(ClassMap::map()),"Base");
 		$this->assertNotEmpty($core->base,"Base");
 		$this->assertNotEmpty($core->url,"Url");
 		$this->assertEquals(Core::$core->output,$core->output, "Output");
