@@ -101,7 +101,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
 
 		file_get_contents($url); //make sure the output gets to the cache
 		$d1 = file_get_contents($url); //this must be served from cache
-		$this->assertNotEmpty(\PHPPE\View::fromCache($N),"Page cache #2 (Configure cache '127.0.0.1:11211' in config.php if fails)");
+		$this->assertNotEmpty(\PHPPE\View::fromCache($N),"Page cache #2 (Configure cache '127.0.0.1:11211' in config.php and make sure memcached is running if fails)");
 
 		$d2 = file_get_contents($url."?skipcache=1"); //trigger nocache flag set in constructor
 
