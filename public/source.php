@@ -250,6 +250,7 @@ namespace PHPPE {
             setlocale(LC_ALL, strtolower($i[0]).'_'.strtoupper(!empty($i[1]) ? $i[1] : $i[0]).'.UTF8');
             //! load dictionary for core
             Core::lang('Core');
+            Core::lang('app');
             $L = 'pe_tz';
             if (Core::$w) {
                 //! Detect values for Web
@@ -4169,7 +4170,8 @@ class ClassMap extends Extension
             $i = explode('_', $L);
             //! get translations
             $la = null;
-            $c = "vendor/phppe/$c/lang/";
+            //! workaround if symlink does not exists
+            $c = $c=="app"? "$c/lang/" : "vendor/phppe/$c/lang/";
             //! first check as is, then first part, finally English
             //! eg.: hu_HU, hu, en; en_US, en
             foreach (array_unique([$L, $i[0], 'en']) as $l) {
@@ -4606,6 +4608,7 @@ class ClassMap extends Extension
         {
             $v = trim(ini_get($i));
             $l = strtolower($v[strlen($v) - 1]);
+            $v = intval($v);
             switch ($l) {
                 case 't' : $v *= 1024;
                 case 'g' : $v *= 1024;
