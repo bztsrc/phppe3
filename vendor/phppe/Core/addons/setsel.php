@@ -51,6 +51,7 @@ class setsel extends \PHPPE\AddOn {
             else
                 $filters[$d[0]]=$v;
         }
+        if(is_array($opts))
         foreach($opts as $k=>$v) {
             $id=$k; $name=$v; $title="";
             $blk="<div";
