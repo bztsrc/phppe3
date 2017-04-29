@@ -3128,7 +3128,7 @@ namespace PHPPE {
  * @param string/array  source files
  * @param string        destination directory on remote server
  */
-        public static function copy($files, $dest = '')
+        public static function copy($files, $dest = '', $opt = '')
         {
             if (is_string($files)) {
                 $files = [$files];
@@ -3136,8 +3136,10 @@ namespace PHPPE {
             foreach ($files as $k => $v) {
                 $files[$k] = escapeshellarg($v);
             }
+            $d=Core::$user->data['remote']['path'];
+            if(substr($d,-1)!='/') $d.='/'; $d.=$dest;
             $r = self::ssh(
-                "tar -xvz ".($dest ? ' -C '.escapeshellarg(Core::$user->data['remote']['path'].'/'.$dest) : ''),
+                "tar -xvz -C ".escapeshellarg($d)." ".$opt,
                 "",
                 "tar -cz ".implode(' ', $files));
             if (in_array(substr($r, 0, 4), ['ssh:', 'tar:']) || substr($r, 0, 3) == 'sh:') {
