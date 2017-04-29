@@ -386,7 +386,7 @@ namespace PHPPE {
                 throw new \Exception('no _table');
             }
             //get the record from current datasource
-            $r = DS::fetch('*', static::$_table, $w ? $w : 'id=?', '', $o, is_array($i) ? $i : [$i ? $i : $this->id]);
+            $r = (array)DS::fetch('*', static::$_table, $w ? $w : 'id=?', '', $o, is_array($i) ? $i : [$i ? $i : $this->id]);
             //update property values. FETCH_INTO not exactly what we want
             if ($r) {
                 foreach (get_object_vars($this) as $k => $v) {
@@ -1643,7 +1643,7 @@ namespace PHPPE {
                 if (empty($data['id'])) {
                     DS::ds(0);
                     if(empty($u)) $u=Core::$core->url;
-                    $data = DS::fetch("a.*,b.ctrl", "pages a LEFT JOIN views b ON a.template=b.id",
+                    $data = (array)DS::fetch("a.*,b.ctrl", "pages a LEFT JOIN views b ON a.template=b.id",
                         "(a.id=? OR ? LIKE a.id||'/%') AND ".
                         "(a.lang='' OR a.lang=?) AND ".(ClassMap::has("PHPPE\\CMS") &&
                         get_class(View::getval('app'))=="PHPPE\\Content" &&
