@@ -25,10 +25,10 @@
 namespace PHPPE;
 
 /**
- * NOTE: normally you never extend a Model from App.
+ * NOTE: normally you never extend a Model from Extension.
  *
  * we do it to allow route() to use the same class as controller
- * this is a hack required by third party CMS
+ * this is a hack required by third party CMS routes
  */
 class EplosCMS extends Extension
 {

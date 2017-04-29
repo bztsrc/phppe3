@@ -5232,7 +5232,30 @@ namespace PHPPE\AddOn {
     }
 
 /**
- * number element. Note you have to specify both min and max values
+ * Date element. Note you have to specify both min and max values
+ */
+ //L("Date")
+    class date extends \PHPPE\AddOn
+    {
+        public $conf = "*obj.field [cssclass]";
+
+        public function show()
+        {
+            return htmlspecialchars($this->value);
+        }
+        public function edit()
+        {
+            return '<input'.@View::v($this, $this->attrs[1], $this->attrs[0])." type='date' value=\"".htmlspecialchars(trim($this->value)).'">';
+        }
+        public static function validate($n, &$v, $a, $t)
+        {
+            $v = strtotime($v);
+            return[$v!=0, 'not a valid date time!'];
+        }
+    }
+
+/**
+ * Date time element. Note you have to specify both min and max values
  */
  //L("Time")
     class time extends \PHPPE\AddOn
