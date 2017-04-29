@@ -1233,7 +1233,7 @@ namespace PHPPE {
             //! return the first record
             $r = self::query($f, $t, $w, $g, $o, 0, 1, $a);
 
-            return empty($r[0]) ? [] : $r[0];
+            return (object)(empty($r[0]) ? [] : $r[0]);
         }
 
 /**
@@ -1718,7 +1718,7 @@ namespace PHPPE {
         {
             try {
                 //! special page holds global page parameters and dds'
-                $F = DS::fetch('data,dds', 'pages', "id='frame' AND ".(ClassMap::has("PHPPE\\CMS") &&
+                $F = (array)DS::fetch('data,dds', 'pages', "id='frame' AND ".(ClassMap::has("PHPPE\\CMS") &&
                         get_class(View::getval('app'))=="PHPPE\\Content" &&
                         Core::$user->has("siteadm|webadm")?"":"publishid!=0 AND ").
                         "(lang='' OR lang=?)", '', 'id DESC,created DESC',[Core::$client->lang]);
@@ -2869,7 +2869,7 @@ namespace PHPPE {
                 if (!empty(DS::db())/* && file_exists("vendor/phppe/Core/sql/$V.sql")*/) {
                     try {
                         foreach ([Core::$core->app.'/'.$n, $n] as $v) {
-                            $p = DS::fetch('*', $V, 'id=?', '', '', [$v]);
+                            $p = (array)DS::fetch('*', $V, 'id=?', '', '', [$v]);
                             if (!empty($p['data'])) {
                                 foreach (['css', 'jslib'] as $c) {
                                     $t = json_decode($p[$c], true);
