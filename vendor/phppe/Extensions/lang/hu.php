@@ -5,7 +5,7 @@ return [
 	"Installed %d files from %s" => "Összesen %d fájl telepítve innen %s",
 	"Failed to install %s" => "Nem sikerült telepíteni a %s-t",
 	"Uninstalled %d files of %s" => "Összesen %d fájl törlése került a %s alapján",
-	"Failed to uninstall %s" => "Nem sikerült eltávolítani a %s-t",
+	"Failed to uninstall %s" => "Nem sikerült eltávolítani a(z) %s-t",
 	"installed" => "telepítve",
 	"upgrade" => "frissíthető",
 	"downgrade" => "visszaállítható",
