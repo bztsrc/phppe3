@@ -3099,7 +3099,7 @@ For jessie PHP 7 backports, you'll find a lot of resouce on the internet, just g
 server {
 	listen 80 default_server;
 	root /var/www/localhost/public;
-	server_name example.org;
+	server_name _;
 
 	location / {
 		try_files $uri $uri/ =404;
@@ -3110,6 +3110,7 @@ server {
 	}
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
+		fastcgi_param  SERVER_NAME $host;
 		fastcgi_pass unix:/var/run/php-fpm.sock;
 	}
 }
