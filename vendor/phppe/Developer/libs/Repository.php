@@ -29,14 +29,14 @@ class Repository
 	//! PHPPE core source and deployment file path
 	static $sourceFile="public/source.php";
 	static $deployFile="public/index.php";
-    //! self test page
-    static $selfTestFile="vendor/phppe/Core/views/index.tpl";
-    //! documentation
-    static $docFile="public/index.html";
+	//! self test page
+	static $selfTestFile="vendor/phppe/Core/views/index.tpl";
+	//! documentation
+	static $docFile="public/index.html";
 	//! This can be overridden from command line
-    static $repoBase="https://bztsrc.github.io/phppe3/";
+	static $repoBase="https://bztsrc.github.io/phppe3/";
 	//static $repoBase="https://raw.githubusercontent.com/bztsrc/phppe3/master/";
-    static $bnsBase="https://phppe.org/business/";
+	static $bnsBase="https://phppe.org/business/";
 	//! valid extension categories
 	static $categories=["Connections","Content","Security","Business","Sales","Office","Games","Banners","Hardware","User Input"];
 
@@ -52,14 +52,14 @@ class Repository
 			die(chr(27)."[91munable to read ".self::$sourceFile.chr(27)."[0m\n");
 		//! uncomment self check
 		$data=str_replace('//$c=__FILE__;if(filesize','$c=__FILE__;if(filesize',$data);
-        //! remove benchmarking code
-        $data=preg_replace('|/\*! BENCHMARK START \*/.*?/\*! BENCHMARK END \*/|ims',"",$data);
-        $data=preg_replace('/(self|Core)::bm\([^;]+;/ims',"",$data);
+		//! remove benchmarking code
+		$data=preg_replace('|/\*! BENCHMARK START \*/.*?/\*! BENCHMARK END \*/|ims',"",$data);
+		$data=preg_replace('/(self|Core)::bm\([^;]+;/ims',"",$data);
 		//! keep license comment
 		$i=strpos($data,"*/")+2;
 		//! make sure minifier is not turned off
 		Core::$core->nominify=false;
-        $code=substr($data,$i);
+		$code=substr($data,$i);
 		$out=substr($data,0,$i)."\n".Assets::minify($code,"php");
 		$l=strlen($out);
 		if($l>99999)
@@ -147,7 +147,7 @@ class Repository
 			//! ***** tarball *****
 			$dir=dirname($json);
 			$ext=basename($dir);
-            $bns=preg_match("/\"Business\"/",file_get_contents($json));
+			$bns=preg_match("/\"Business\"/",file_get_contents($json));
 			$tarball="../../../".($bns?Core::$client->user:"phppe3")."_".strtolower($ext).".tgz";
 			echo("  ".sprintf("%-20s",$ext.": "));
 			//! create tarball if not exists or older than extension's files

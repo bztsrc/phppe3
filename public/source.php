@@ -3182,6 +3182,7 @@ namespace PHPPE {
                 $ctrl = new $class;
                 while(1){
                     call_user_func_array([$ctrl, $method], is_array($arg)?$arg:[]);
+                    if($interval==0) die();
                     sleep($interval>1?$interval:1);
                 }
             }
