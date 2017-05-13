@@ -305,8 +305,8 @@ namespace PHPPE {
                 //! no IP for tty
                 $this->ip = 'CLI';
                 //! query tty size. If you know a better, exec()-less way, let me know!!!
-                $c = exec('tput cols 2>/dev/null') + 0;
-                $d = exec('tput lines 2>/dev/null') + 0;
+                $c = intval(exec('tput cols 2>/dev/null'));
+                $d = intval(exec('tput lines 2>/dev/null'));
                 $this->screen = [$c < 1 ? 80 : $c, $d < 1 ? 25 : $d];
                 //! agent is a terminal
                 $d = getenv('TERM');
