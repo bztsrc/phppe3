@@ -3876,6 +3876,13 @@ class ClassMap extends Extension
                 if (is_file($d)) {
                     $P = fileperms($d) & 0777;
                     $p = $x ? ($d==ClassMap::$file ? 0664 : 0660) : (substr($d,0,10)=="vendor/bin"?$C:0640);
+                    if(substr($d,0,6)=="vendor" && basename(dirname($d))=="bin"){
+                        $p = $C; $c=substr($d,7); $e="vendor/bin/".basename($d);
+                        if (!file_exists($e)) {
+                           symlink("../$c", $e);
+                           echo "DIAG-A: symlink $e -> $c\n";
+                        }
+                    }
                 } else {
                     if ($x) {
                         $p = $W;
@@ -3888,7 +3895,7 @@ class ClassMap extends Extension
                     }
                     $P = fileperms($d) & 0777;
                 }
-                //! if detected and calculated access rights diff
+                //! if detected and calculated access rights differ
                 if ($P != $p) {
                     $E .= sprintf("\t%03o?\t%03o ", $P, $p)."$d\n";
                     @chmod($d, $p);
