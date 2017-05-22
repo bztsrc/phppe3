@@ -3611,7 +3611,7 @@ class ClassMap extends Extension
             //! get current application, action and item.
             //! these can be overriden by url route as well as route events
             foreach ([1 => 'app', 2 => 'action', 3 => 'item'] as $c => $v) {
-                $this->$v = !empty($D[$c]) ? $D[$c] :
+                $this->$v = !empty($D[$c]) ? urldecode($D[$c]) :
                     (!empty($_REQUEST[$v]) ? trim($_REQUEST[$v]) :
                     (!self::$w && !empty($_SERVER['argv'][$c]) &&
                     $_SERVER['argv'][$c] != '--dump' ? trim($_SERVER['argv'][$c]) :
