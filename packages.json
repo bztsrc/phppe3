@@ -1391,9 +1391,9 @@
 				"url":"https://bztsrc.github.io/phppe3/phppe3_smenu.tgz"
 			},
 			"price":"0",
-			"time":"2017-05-31 20:40:19",
-			"size":"7063",
-			"sha1":"ec3669cbc4143c188dfb31f0da1337b73bb142db"
+			"time":"2017-05-31 20:44:35",
+			"size":"7071",
+			"sha1":"50f48c66fd2d4c11858c1a56c9f70fef2e7060da"
 		  }
 		},
 		"phppe/GPIO": {
