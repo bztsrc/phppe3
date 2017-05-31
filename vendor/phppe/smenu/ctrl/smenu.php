@@ -13,10 +13,6 @@ use PHPPE\DS;
 
 class smenu
 {
-function cb()
-{
-    die("table1\tnewcls\tinfo1<br>info2\nvalami\tnewcls2\tinfo3<br>info4\n");
-}
 
 	function add($item)
 	{
