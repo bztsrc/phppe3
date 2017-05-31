@@ -1,11 +1,12 @@
 <?php
-/**
- * @file vendor/phppe/smenu/lang/en.php
- * @author bzt
- * @date 31 May 2017
- * @brief
- */
-
 return [
-    "key" => "value",
+	"smenu" => "Smenu",
+	"_smenu" => "Graphical selection menu with realtime status update capability",
+	"Modify menu" => "Modify menu",
+	"Type" => "Type",
+	"Add new menu" => "Add new menu",
+	"background" => "Change background",
+	"link" => "Menu link",
+	"callback" => "Refresh callback",
+	"refresh" => "Refresh interval",
 ];

@@ -19,9 +19,10 @@ pe.smenu = {
     {
         this.bg = document.getElementById('content');
         if(this.bg==null) this.bg = document.body;
-        if(conf.background==null) conf.background='';
-        if(conf.background.substr(0,6)!='images') conf.background='gallery/3/'+conf.background;
-        this.bg.setAttribute('style','background-image:url(/'+conf.background+');background-repeat:no-repeat;background-size:100%;display:block;width:100%;height:100%;position:absolute;');
+        if(conf.background!=null && conf.background!=''){
+            if(conf.background.substr(0,6)!='images') conf.background='gallery/3/'+conf.background;
+            this.bg.setAttribute('style','background-image:url(/'+conf.background+');background-repeat:no-repeat;background-size:100%;display:block;width:100%;height:100%;position:absolute;');
+        }
         this.url=conf.url;
         var i,id,link,items = pe.smenu.bg.querySelectorAll('[data-smenu]');
         if(conf.link==null) conf.link="";
@@ -36,7 +37,7 @@ pe.smenu = {
                 items[i].setAttribute('onclick',conf.link.replace('@ID',urlencode(items[i].getAttribute('data-id'))).replace('@URL',urlencode(this.url)));
             } else {
                 items[i].setAttribute('onclick','pe.smenu.edit(event,this);');
-                items[i].setAttribute('onselectstart','return true;');
+                items[i].setAttribute('onselectstart','return false;');
                 items[i].setAttribute('onmousedown','pe.smenu.drag(event,"'+items[i].getAttribute('data-id')+'");');
                 items[i].setAttribute('onmousemove','pe.smenu.move(event,"'+items[i].getAttribute('data-id')+'");');
                 items[i].setAttribute('onmouseup','pe.smenu.drop(event,"'+items[i].getAttribute('data-id')+'");');
@@ -159,17 +160,24 @@ pe.smenu = {
     {
         pe.smenu.dragged=id;
         pe.smenu.lx=evt.clientX;pe.smenu.ly=evt.clientY;
+        evt.target.setAttribute('data-pos',evt.target.style.left.replace('px','')+','+evt.target.style.top.replace('px',''));
     },
     move:function(evt,id)
     {
         if(pe.smenu.dragged==null)
             return;
         pe.smenu.moved=true;
-        var x=Math.round(evt.target.style.left.replace('px',''))+evt.clientX-pe.smenu.lx;
-        var y=Math.round(evt.target.style.top.replace('px',''))+evt.clientY-pe.smenu.ly;
+        var pos=evt.target.getAttribute('data-pos').split(',');
+        var x=Math.round(pos[0])+evt.clientX-pe.smenu.lx;
+        var y=Math.round(pos[1])+evt.clientY-pe.smenu.ly;
         if(x<0) x=0; if(y<0) y=0;
         if(x>=pe.smenu.bg.offsetWidth-evt.target.offsetWidth) x=pe.smenu.bg.offsetWidth-evt.target.offsetWidth;
         if(y>=pe.smenu.bg.offsetHeight-evt.target.offsetHeight) y=pe.smenu.bg.offsetHeight-evt.target.offsetHeight;
+        evt.target.setAttribute('data-pos', x+','+y);
+        if(evt.shiftKey){
+            x=Math.round(x/10)*10;
+            y=Math.round(y/10)*10;
+        }
         evt.target.setAttribute('style','top:'+y+'px;left:'+x+'px;cursor:move;');
         pe.smenu.lx=evt.clientX;pe.smenu.ly=evt.clientY;
     },
@@ -190,7 +198,7 @@ pe.smenu = {
     
     add:function()
     {
-        var id=prompt(L("Name?"));
+        var id=prompt(L("Name"));
         if(id!=null&&id!="") {
             var r = new XMLHttpRequest();
             r.open('POST', url('smenu','add'), true);

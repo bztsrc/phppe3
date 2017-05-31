@@ -62,7 +62,7 @@ class Lang
             'tests/*.php', 'tests/*/*.php', 'tests/*/*/*.php', 'tests/*/*/*/*.php',
             'js/*.js', 'js/*/*.js', 'js/*/*/*.js',
             'js/*.php', 'js/*/*.php', 'js/*/*/*.php',
-            'views/*.tpl'
+            'views/*.tpl','sql/*.sql'
             ] as $v) {
                 $D += array_fill_keys(glob('vendor/phppe/'.$extension.'/'.$v), 0);
         }

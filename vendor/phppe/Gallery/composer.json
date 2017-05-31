@@ -12,13 +12,13 @@
 
 	"description": "Provides image upload, resize, watermarking and gallery.",
 	"description_hu": "Képfeltöltés, átméretezés, vízjelezés és galériába szervezés lehetőségével bővíti a rendszert.",
-    "description_ru": "Обеспечивает возможность загрузки изображения, изменять размер, водяные знаки и галереи.",
-    "description_de": "Bietet das Hochladen von Bildern, Größe ändern, Wasserzeichen und Galerie.",
-    "description_es": "Proporciona carga de imágenes, cambiar el tamaño, marcas de agua y galería.",
-    "description_fr": "Fournit le téléchargement d'images, redimensionner, watermarking et galerie.",
-    "description_ch": "提供图片上传，缩放，水印和画廊。",
-    "description_he": "מספק להעלות תמונה, שינוי גודל, watermarking וגלריה.",
-    "description_ar": "يوفر تحميل الصور وتغيير حجمها، بالماء ومعرض.",
+	"description_ru": "Обеспечивает возможность загрузки изображения, изменять размер, водяные знаки и галереи.",
+	"description_de": "Bietet das Hochladen von Bildern, Größe ändern, Wasserzeichen und Galerie.",
+	"description_es": "Proporciona carga de imágenes, cambiar el tamaño, marcas de agua y galería.",
+	"description_fr": "Fournit le téléchargement d'images, redimensionner, watermarking et galerie.",
+	"description_ch": "提供图片上传，缩放，水印和画廊。",
+	"description_he": "מספק להעלות תמונה, שינוי גודל, watermarking וגלריה.",
+	"description_ar": "يوفر تحميل الصور وتغيير حجمها، بالماء ومعرض.",
 
 	"keywords": [ "Content" ],
 
