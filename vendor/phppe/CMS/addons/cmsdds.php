@@ -27,7 +27,7 @@ class cmsdds extends \PHPPE\AddOn
 
     function edit(  )
     {
-		$lists=["pages_list"=>L("Page list"),"img_list"=>L("Picture list"),"doc_list"=>L("Document list")];
+		$lists=["pages_list"=>L("Page list"),"img_list"=>L("Picture list"),"doc_list"=>L("Document list"),"smenu_list"=>L("Smenu")];
         $v=is_array($this->value)?$this->value:json_decode($this->value,true);
         $r="<input type='hidden' name='".$this->fld."'><table width='100%'><tr><td></td><td>".L("SELECT")."</td><td>".L("FROM")."</td><td>".L("WHERE")."</td><td>".L("GROUP BY")."</td><td>".L("ORDER BY")."</td></tr>";
         if(!empty($v)) foreach($v as $k=>$m) {

@@ -67,6 +67,9 @@ function htmlspecialchars(text) {
   return text==null||text==''?'':text.replace(/[&<>\"\']/g, function(m) { return map[m]; });
 }
 
+function url(a,b) {
+    return "<?=url("/")?>"+(a!=null&&a!=""&&(a!="index"||b!=null||b!=""||b!="action")?a+(b!=null&&b!=""&&b!="index"&&b!="action"?"/"+b:""):"");
+}
 function urlencode(text) {
   return encodeURIComponent(text).replace(/\+/,'%2B');
 }

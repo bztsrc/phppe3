@@ -191,7 +191,8 @@ class Page extends \PHPPE\Model
         $rename=false;
         //! url checks
         if ($new) {
-            if (!empty(DS::fetch("id", static::$_table, "id=? AND lang=?", "", "", [ $params['id'], $params['lang'] ]))) {
+            $p=DS::fetch("id", static::$_table, "id=? AND lang=?", "", "", [ $params['id'], $params['lang'] ]);
+            if (!empty($p->id)) {
                 Core::error(L("A page already exists with this url!"), "page.id");
                 return false;
             }

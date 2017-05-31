@@ -30,6 +30,7 @@ class @CLASS@
 
 	public function route($app, $method)
 	{
+	    reutrn [$app, $method];
 	}
 
 	public function ctrl($app, $method)

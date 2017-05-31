@@ -127,16 +127,15 @@ class CMS
         Core::$core->nocache = true;
 
         //! get forced sizes from tag
-        if(!preg_match("/^cms\(([0-9\%]+),?([0-9\%]*),?([0-9\%]*),?([0-9\%]*)\)/", $tag, $sizes)) {
-            $sizes=["", 0, 0, 0, 0];
-		}
-
-        $title = !empty($addon->name)?$addon->name:$type;
+        if(!preg_match("/^cms\(([0-9\%]+),?([0-9\%]*),?([0-9\%]*),?([a-z]*)\)/", $tag, $sizes)) {
+            $sizes=["", 0, 0, 0, ""];
+        }
+        $title = $addon->name!=""?$addon->name:$type;
         //! save the page parameter
         $idx=sha1($type."_".$addon->fld);
         $_SESSION['cms_param'][$idx] = $addon;
+        $icn=$sizes[4]!=""?$sizes[4]:$type;
         //! edit arguments
-        
         //! return icon
         return "<img style='position:absolute;z-index:997;cursor:pointer;opacity:0.7;' ".
             "onclick='pe.cms.edit(this,\"".$idx."\",".
@@ -145,7 +144,7 @@ class CMS
                 intval(!empty($sizes[1])?$sizes[1]:@$addon->forceWidth).",".
                 intval(!empty($sizes[2])?$sizes[2]:@$addon->forceHeight).",".
                 intval(!empty($sizes[3])?$sizes[3]:@$addon->forceFull).");' ".
-            "src='images/cms/".(file_exists(__DIR__."/../images/cms/".$type.".png")?urlencode($type):"edit").".png' ".
+            "src='images/cms/".(file_exists(__DIR__."/../images/cms/".$icn.".png")?urlencode($icn):"edit").".png' ".
             "alt='[".htmlspecialchars(strtoupper($type)." ".$title)."]' ".
             "title='".htmlspecialchars(L($title))."'>";
     }

@@ -1,0 +1,49 @@
+.smenu_popupdiv {
+    color:#D0D0D0;
+    padding:10px;
+    box-shadow: 2px 2px 10px #404040;
+}
+.smenu_popupdiv label {
+    display:inline-block;
+    width:50%;
+    vertical-align:top;
+    text-shadow: #000 2px 2px 3px;
+}
+.smenu_popupdiv h3 {
+    text-shadow: #000 2px 2px 3px;
+}
+.smenu_popupdiv input, .smenu_popupdiv textarea {
+    width:99%;
+    background: rgba(32,32,32,0.95);
+    margin-left:2px;
+    height:24px;
+    color:#D0D0D0;
+    border:#808080 inset 1px;
+}
+
+.smenu_popupdiv textarea {
+    min-height:64px;
+}
+
+.smenu_popupdiv .button {
+    float:right;
+    margin-right:20px;
+    width:50%;
+    color:#D0D0D0;
+    height:24px;
+    background:transparent;
+    border:#808080 outset 1px;
+    border-radius:4px;
+}
+input::-webkit-input-placeholder {
+    color:    #606060;
+}
+input:-moz-placeholder {
+   color:    #606060;
+}
+input::-moz-placeholder {
+   color:    #606060;
+}
+input:-ms-input-placeholder {
+   color:    #606060;
+}
