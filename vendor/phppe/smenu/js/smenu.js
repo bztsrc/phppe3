@@ -30,7 +30,7 @@ pe.smenu = {
             if(conf.link.substr(-1)!='/') conf.link+='/';
             conf.link+='@ID';
         }
-        if(conf.link.substr(0,4)=='http')
+        if(conf.link.substr(0,4)=='http'||conf.link.substr(0,1)=='/')
             conf.link='document.location.href="'+conf.link+'";';
         for(i=0;i < items.length;i++) {
             if(conf.edit==null) {
