@@ -30,7 +30,6 @@
 
 	"require": {
 		"phppe/Core": "3.*"
-		"phppe/Gallery": "*"
 	},
 
 	"maintainer": { "name": "bzt" }
