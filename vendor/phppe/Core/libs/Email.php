@@ -102,10 +102,9 @@ class Email extends Extension
         self::$port = !empty($cfg['port']) ? $cfg['port'] : 25;
         self::$user = !empty($cfg['user']) ? $cfg['user'] : '';
         self::$pass = !empty($cfg['pass']) ? $cfg['pass'] : '';
-        self::$sender =
-            !empty($cfg['sender']) ? $cfg['sender'] :
+        self::$sender = !empty($cfg['sender']) ? $cfg['sender'] :
             'no-reply@'.(!empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] :
-                (!empty(Core::$core->hostname) ? Core::$core->hostname : 'localhost'));
+            (!empty(Core::$core->hostname) ? Core::$core->hostname : 'localhost'));
         self::$forge = !empty($cfg['forge']) ? $cfg['forge'] : '';
     }
     /**
@@ -380,7 +379,7 @@ class Email extends Extension
             $headers['Content-Type'] = "multipart/mixed;\n boundary=\"".$boundary.'"';
             $message = "This is a multi-part message in MIME format.\r\n--".$boundary."\n".$message;
             foreach ($this->attach as $attach) {
-                $data = !empty($attach['data']) ? $attach['data'] : (substr($attach['file'], 0, 4) == 'http' ? Core::get($attach['file']) : file_get_contents(substr($attach['file'], 0, 6) == 'images' ? @glob('vendor/phppe/*/'.$attach['file'])[0] : $attach['file']));
+                $data = !empty($attach['data']) ? $attach['data'] : (substr($attach['file'], 0, 4) == 'http' ? Core::get($attach['file']) : @file_get_contents(substr($attach['file'], 0, 6) == 'images' ? @glob('vendor/phppe/*/'.$attach['file'])[0] : $attach['file']));
                 if (!$data) continue;
                 $message .= '--'.$boundary."\n".
                     'Content-type: '.(!empty($attach['mime']) ? $attach['mime'] : 'application-octet-stream')."\n".
@@ -559,6 +558,8 @@ class Email extends Extension
         //! get items from database
         $lastId = 0;
         while ($row = DS::fetch('*', 'email_queue', 'id>?', '', 'id ASC', [$lastId])) {
+	    if(empty($row->id))
+		break;
             $email = new self($row->data);
             $lastId = $row->id;
             try {

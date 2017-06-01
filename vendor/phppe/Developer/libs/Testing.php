@@ -111,6 +111,7 @@ class Testing extends \PHPPE\Extension {
     function eventTest()
     {
         $this->eventTestRun = true;
+        return [1];
     }
 }
 ?>

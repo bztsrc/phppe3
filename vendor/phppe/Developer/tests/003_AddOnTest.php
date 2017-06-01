@@ -117,6 +117,20 @@ class AddonTest extends PHPUnit_Framework_TestCase
 		$this->assertGreaterThan(0,strpos($fld->edit(),"color"),"Color edit");
 		$this->assertGreaterThan(0,strpos($fld->show(),"2233"),"Color show");
 
+		$value="1970-01-01";
+		$fld = new \PHPPE\AddOn\date([],"obj.fld",$value);
+		$this->assertGreaterThan(0,strpos($fld->edit(),"date"),"Date edit");
+		$this->assertGreaterThan(0,strpos($fld->show(),"01-0"),"Date show");
+		$val = \PHPPE\AddOn\date::validate("obj.fld",$value,[],[]);
+		$this->assertNotFalse($val[0],"Date validate");
+
+		$value="1970-01-01 00:00:00";
+		$fld = new \PHPPE\AddOn\time([],"obj.fld",$value);
+		$this->assertGreaterThan(0,strpos($fld->edit(),"time"),"Time edit");
+		$this->assertGreaterThan(0,strpos($fld->show(),"01-0"),"Time show");
+		$val = \PHPPE\AddOn\time::validate("obj.fld",$value,[],[]);
+		$this->assertNotFalse($val[0],"Time validate");
+
 		$value="";
 		$fld = new \PHPPE\AddOn\label([],"obj.fld",$value,["Label"]);
 		$this->assertGreaterThan(0,strpos($fld->edit(),"Label"),"field label #1");

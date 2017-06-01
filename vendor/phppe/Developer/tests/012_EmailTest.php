@@ -62,6 +62,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($wasExc,"Bad address exception #2");
 
 		$email->to("me@localhost");
+		$email->to("me@localhost");
 		$email->replyTo("me2@localhost");
 		$email->cc("me3@localhost");
 		$email->bcc("me4@localhost");
@@ -94,7 +95,6 @@ class EmailTest extends PHPUnit_Framework_TestCase
 		$email2->send("mail");
 		$email2->send("sendmail");
 		$email2->send("smtp://localhost:25");
-
 		$email2->template("testemail", ["name"=>"something"]);
 
 		$email3 = new \PHPPE\Email;

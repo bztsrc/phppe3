@@ -54,7 +54,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 
 		//! for PHPUnit, as it runs from /usr/local/bin
 //		\PHPPE\Core::$core->base="localhost/";
-		
+
 		$data1=file_get_contents(url("tests","httptest")."?nojs");
 		$data2=file_get_contents(url("tests","httptest")."?nojs",false,stream_context_create(['http'=>[
 			'method'=>'POST',

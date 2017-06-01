@@ -60,6 +60,13 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals("PHPPE\\Extension",Core::lib("TestLib1"),"Extension toString");
 
+		$wasExc=false;
+		try {
+			Core::lib( "TestLib2", new Client(), "TestLib1,NoSuchLib");
+		} catch(\Exception $e) {
+			$wasExc=true;
+		}
+		$this->assertTrue($wasExc,"Failed lib dependency");
 	}
 
 	public function testClient()
@@ -130,13 +137,17 @@ class SystemTest extends PHPUnit_Framework_TestCase
 	{
 		$s = Core::$core->syslog;
 		$t = Core::$core->trace;
+		$o = Core::$w;
 		Core::$core->syslog = true;
 		Core::$core->trace = true;
 		Core::log("B","Should be Audit","phpunit");
-		$o = Core::$core->runlevel;
+		$r = Core::$core->runlevel;
 		Core::$core->runlevel = 0;
-		Core::log("D","Should be skipped","phpunit");
-		Core::$core->runlevel = $o;
+		Core::log("D","Should be skipped");
+		Core::$w = false;
+		Core::log("E","Stderr","phpunit");
+		Core::$w = $o;
+		Core::$core->runlevel = $r;
 		Core::$core->syslog = $s;
 		Core::$core->trace = $t;
 	}

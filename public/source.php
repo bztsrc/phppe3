@@ -254,12 +254,12 @@ namespace PHPPE {
             $L = 'pe_tz';
             if (Core::$w) {
                 //! Detect values for Web
+                // @codeCoverageIgnoreStart
                 if (Core::$core->app == 'index' && empty($_SESSION[$L]) &&
                    !isset($_REQUEST['nojs']) && empty($_REQUEST['cache'])) {
                     //! this is a small JavaScript page that shows up for the first time
                     //! after collecting information it redirects user so fast, he won't
                     //! notice a thing.
-                    // @codeCoverageIgnoreStart
                     $c = L('Enable JavaScript');
                     if (empty($_REQUEST['n'])) {
                         $_SESSION['pe_n'] = sha1(rand());
@@ -282,8 +282,8 @@ namespace PHPPE {
                     } else {
                         die($c);
                     }
-                    // @codeCoverageIgnoreEnd
                 }
+                // @codeCoverageIgnoreEnd
                 //! get client's real ip address
                 $d = 'HTTP_X_FORWARDED_FOR';
                 $this->ip = $i = !empty($_SERVER[$d]) ? $_SERVER[$d] : $_SERVER['REMOTE_ADDR'];
@@ -952,7 +952,9 @@ namespace PHPPE {
             if (!empty(self::$db)) {
                 foreach (self::$db as $d) {
                     if (method_exists($d, 'close')) {
+                        // @codeCoverageIgnoreStart
                         $d->close();
+                        // @codeCoverageIgnoreEnd
                     }
                 }
             }
@@ -1300,6 +1302,7 @@ namespace PHPPE {
     class Cache extends Extension
     {
         private $name;                //!< implementation
+        private static $uri;          //!< cache uri
         public static $mc;            //!< memcache instance
 
 /**
@@ -1316,6 +1319,7 @@ namespace PHPPE {
         public function __construct($cfg = null)
         {
             if (!empty($cfg)) {
+                self::$uri = $cfg;
                 $m = explode(':', $cfg);
                 $d = '\\PHPPE\\Cache\\'.$m[0];
                 if (ClassMap::has($d)) {
@@ -1435,14 +1439,12 @@ namespace PHPPE {
                 return self::$mc->invalidate();
             } else {
                 // fallback
-                $c = Core::$core->cache;
-                if (preg_match("/^([^:]+):([0-9]+)$/",$c,$m)) {
-                    $f = fsockopen($m[1], $m[2], $n, $e, 1);
-                } else {
-                    $f = fopen($c,"wb");
+                $c = !empty(Core::$core->cache) ? Core::$core->cache : self::$uri;
+                if (preg_match("/^([^:]+):?([0-9]*)$/",$c,$m)) {
+                    $f = fsockopen($m[1], $m[2]>0?$m[2]:11211, $n, $e, 1);
+                    fwrite($f,"flush_all\n");
+                    fclose($f);
                 }
-                fwrite($f,"flush_all\n");
-                fclose($f);
             }
 
             return;
@@ -1869,7 +1871,7 @@ namespace PHPPE {
                 self::$hdr['jslib'][$l] = sprintf('%02d', $p).$l;
             } else {
                 //! add a new javascript library to output
-                $a=@glob("vendor/phppe/*/js/".@explode('?', $c)[0]."*")[0];
+                $a=@glob("vendor/phppe/*/js/".@explode('?', $l)[0]."*")[0];
                 if (!isset(self::$hdr['jslib'][$l]) && !empty($a)) {
                     self::$hdr['jslib'][$l] = sprintf('%02d', $p).realpath($a);
                 }
@@ -3475,7 +3477,9 @@ class ClassMap extends Extension
             self::$core = &$this;
             //! patch php, set defaults
             set_exception_handler(function ($e) {
-                self::log('C', get_class($e).' '.$e->getFile().'('.$e->getLine().'): '.$e->getMessage().(\PHPPE\View::$e ? "\n".\PHPPE\View::$e : '').(empty(Core::$core->trace) ? '' : "\n\t".strtr($e->getTraceAsString(), ["\n" => "\n\t"])), $e->getTrace()[0]['function'] == 'getval' ? 'view' : '');
+                    // @codeCoverageIgnoreStart
+                    self::log('C', get_class($e).' '.$e->getFile().'('.$e->getLine().'): '.$e->getMessage().(\PHPPE\View::$e ? "\n".\PHPPE\View::$e : '').(empty(Core::$core->trace) ? '' : "\n\t".strtr($e->getTraceAsString(), ["\n" => "\n\t"])), $e->getTrace()[0]['function'] == 'getval' ? 'view' : '');
+                    // @codeCoverageIgnoreEnd
             });
             ini_set('error_log', dirname(__DIR__).'/data/log/php.log');
             ini_set('log_errors', 1);
@@ -3484,15 +3488,15 @@ class ClassMap extends Extension
                 // @codeCoverageIgnoreStart
                 self::log('C', 'PHP 7.0.0 required, found '.PHP_VERSION);
             }
-                // @codeCoverageIgnoreEnd
-            ini_set('file_uploads', 1);
-            ini_set('upload_tmp_dir', dirname(__DIR__).'/.tmp');
-            ini_set('uploadprogress.file.filename_template', dirname(__DIR__).'/.tmp/upd_%s.txt');
             if(!function_exists('mb_internal_encoding')) {
                 self::log('W', L("no php-mbstring"));
             } else {
                 mb_internal_encoding('utf-8');
             }
+            // @codeCoverageIgnoreEnd
+            ini_set('file_uploads', 1);
+            ini_set('upload_tmp_dir', dirname(__DIR__).'/.tmp');
+            ini_set('uploadprogress.file.filename_template', dirname(__DIR__).'/.tmp/upd_%s.txt');
             //! self check
             //! this will be updated by the Developer extension's
             //! Repository::compress() when called with mkrepo or deploy
@@ -3554,12 +3558,15 @@ class ClassMap extends Extension
             $c = self::toBytes('post_max_size');
             $d = self::toBytes('upload_max_filesize');
             $v = self::toBytes('memory_limit');
-            if ($c > $d && $d) {
-                $c = $d;
-            }
+            if ($c > $d && $d) $c = $d;
             $this->fm = ($c > $v && $v ? $v : $c);
             //! construct base href
             $c = $_SERVER['SCRIPT_NAME'];
+            //dirty hack required when run through phpunit
+            //as it does not call run(), and SCRIPT_FILENAME
+            //won't be public/index.php,
+            //but /usr/local/bin/phpunit.phar
+            if(strpos($c,"phpunit")!==false) $c="";
             $C = dirname($c);
             //! eliminate ./ in some nginx configurations
             // @codeCoverageIgnoreStart
@@ -3570,13 +3577,9 @@ class ClassMap extends Extension
             }
             // @codeCoverageIgnoreEnd
             $d = 'SERVER_NAME';
-            //dirty hack required when run through phpunit
-            //as it does not call run(), and SCRIPT_FILENAME
-            //won't be public/index.php,
-            //but /usr/local/bin/phpunit.phar
-            $this->base = strtr((!empty($this->base) ? $this->base :
+            $this->base = !empty($this->base) ? $this->base :
                 (!empty($_SERVER[$d]) ? $_SERVER[$d] : 'localhost').
-                (@$C[0] != '/' ? '/' : '').$C),["/usr/local/bin"=>""]);
+                (@$C[0] != '/' ? '/' : '').$C;
             //! fix slashes in request
             if (get_magic_quotes_gpc()) {
                 // @codeCoverageIgnoreStart
@@ -3948,7 +3951,9 @@ class ClassMap extends Extension
                 self::log('E', "Wrong permissions:\n$E", 'diag');
             }
             //! *** DIAG Event ***
-            self::event('diag');
+            if (!function_exists('posix_getuid') || posix_getuid() != 0) {
+                self::event('diag');
+            }
             umask($o);
             die("DIAG-I: OK\n");
         }
@@ -4138,10 +4143,8 @@ class ClassMap extends Extension
                         }
                     }
                     if ($f) {
-                        // @codeCoverageIgnoreStart
-                        self::log('C', "$n ".L("depends on").": $f");
+                        throw new \Exception("$n ".L("depends on").": $f");
                     }
-                        // @codeCoverageIgnoreEnd
                 }
                 //! add to list
                 if (empty(self::$core->libs[$n])) {
@@ -4210,11 +4213,11 @@ class ClassMap extends Extension
             if (!in_array($w, ['D', 'I', 'A', 'W', 'E', 'C'])) {
                 $w = 'A';
             }
-            if (!is_string($m) || self::$core->runlevel < 3 && $w == 'D') {
-                return;
-            }
             if (empty($n)) {
                 $n = !empty(self::$core->app) ? self::$core->app : 'core';
+            }
+            if (!is_string($m) || self::$core->runlevel < 3 && $w == 'D') {
+                return;
             }
             $n = str_replace("--", "", $n);
             //! remove sensitive information from message
@@ -4689,16 +4692,16 @@ namespace PHPPE\Cache {
             // @codeCoverageIgnoreEnd
             return $s($key, $compress && function_exists('gzdeflate') ? gzdeflate(json_encode($value)) : $value, $ttl);
         }
-        // @codeCoverageIgnoreStart
         public function invalidate()
         {
+        // @codeCoverageIgnoreStart
             if (function_exists('apcu_clear_cache')) {
                 apcu_clear_cache();
             } else if (function_exists('apc_clear_cache')) {
                 apc_clear_cache("user");
             }
-        }
         // @codeCoverageIgnoreEnd
+        }
     }
 
     //! Plain file cache support
@@ -4877,10 +4880,6 @@ namespace PHPPE\AddOn {
     {
         public $conf = "*([maxlen[,rows[,listopts[,isltr]]]]) obj.field [onchangejs [cssclass [onkeyupjs [placeholder [pattern]]]]]";
 
-        public function show()
-        {
-            return htmlspecialchars($this->value);
-        }
         public function edit()
         {
             $t = $this;
@@ -4972,10 +4971,6 @@ namespace PHPPE\AddOn {
     {
         public $conf = "*([min,max]) obj.field [cssclass]";
 
-        public function show()
-        {
-            return htmlspecialchars($this->value);
-        }
         public function edit()
         {
             $a = $this->args;
@@ -5131,10 +5126,6 @@ namespace PHPPE\AddOn {
     {
         public $conf = "*([maxlen]) obj.field [onchangejs [cssclass]]";
 
-        public function show()
-        {
-            return htmlspecialchars($this->value);
-        }
         public function edit()
         {
             $t = $this;
@@ -5249,10 +5240,6 @@ namespace PHPPE\AddOn {
     {
         public $conf = "*obj.field [cssclass]";
 
-        public function show()
-        {
-            return htmlspecialchars($this->value);
-        }
         public function edit()
         {
             return '<input'.@View::v($this, $this->attrs[1], $this->attrs[0])." type='date' value=\"".htmlspecialchars(trim($this->value)).'">';
@@ -5272,10 +5259,6 @@ namespace PHPPE\AddOn {
     {
         public $conf = "*obj.field [cssclass]";
 
-        public function show()
-        {
-            return htmlspecialchars($this->value);
-        }
         public function edit()
         {
             return '<input'.@View::v($this, $this->attrs[1], $this->attrs[0])." type='datetime-local' value=\"".htmlspecialchars(trim($this->value)).'">';

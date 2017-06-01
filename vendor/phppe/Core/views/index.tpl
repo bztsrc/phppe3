@@ -585,6 +585,30 @@ Color picker
 
     <div class="row">
         <div class="col-sm-2" dir="ltr">
+&lt;!field date obj.datetime1>
+        </div>
+        <div class="col-sm-4">
+<!field date obj.datetime1>
+        </div>
+        <div class="col-sm-6 text-muted small">
+Date picker
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2" dir="ltr">
+&lt;!field time obj.datetime2>
+        </div>
+        <div class="col-sm-4">
+<!field time obj.datetime2>
+        </div>
+        <div class="col-sm-6 text-muted small">
+Date and time picker
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2" dir="ltr">
 &lt;!field something obj.fieldX>
         </div>
         <div class="col-sm-4">

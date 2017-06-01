@@ -13,6 +13,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$this->assertNotNull(\PHPPE\Cache::$mc,"Memcached connection");
 		\PHPPE\Cache::$mc->set("key2","value",false,1);
 		$this->assertEquals("value",\PHPPE\Cache::$mc->get("key2"),"Memcached set/get");
+		$mem->invalidate();
 	}
 
 	public function testAPC()
@@ -22,6 +23,8 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$v = $apc->get("key2");
 		if(!empty($_SERVER["SERVER_NAME"]))
 			$this->assertNotNull($v,"APC");
+		$apc = new \PHPPE\Cache("apc");
+		$apc->invalidate();
 	}
 
 	public function testFiles()

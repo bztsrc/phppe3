@@ -50,6 +50,7 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\DS::exec("UPDATE views SET css='[\"a.css\"]' WHERE id='simple'");
 		$this->assertNotEmpty(\PHPPE\View::get("simple"),"Raw template db");
 		\PHPPE\DS::exec("UPDATE views SET css='' WHERE id='simple'");
+
 	}
 
 	public function testTemplater()
@@ -166,6 +167,7 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 
 		$_SESSION['pe_c']=$_SESSION['pe_e']=false;
 		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!field *text test>'),"required"),"field tag (required)");
+		$this->assertNotFalse(strpos(\PHPPE\View::_t('<!field text(1,0,arr) test>'),"test:list"),"field tag (required)");
 		\PHPPE\Core::$user->id=1;
 		$this->assertEmpty(\PHPPE\View::_t('<!var @noacl test1 test>'),"var tag (noacl)");
 		$this->assertEmpty(\PHPPE\View::_t('<!field @noacl test1 test>'),"field tag (noacl)");
@@ -228,12 +230,13 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\View::menu("ccc",["ccc"=>"ccc/ddd"]);
 
 		//save it to cache
-        $sha = \PHPPE\Core::$core->base . \PHPPE\Core::$core->url."/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
+		$sha = \PHPPE\Core::$core->base . \PHPPE\Core::$core->url."/".\PHPPE\Core::$user->id . "/". \PHPPE\Core::$client->lang;
 		\PHPPE\Cache::set("c_".sha1($sha."_css"),"");
 		\PHPPE\Cache::set("c_".sha1($sha."_js"),"");
 		ob_start();
 		@\PHPPE\View::output($txt);
 		$this->assertEquals(1,preg_match("/div class='menu'/",ob_get_clean()),"Output #2");
+
 		//read from cache
 		ob_start();
 		@\PHPPE\View::output($txt);
@@ -247,6 +250,8 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		@\PHPPE\View::output($txt, "ccc");
 		$this->assertEquals(1,preg_match("/class='menu_a' onclick/",ob_get_clean()),"Active menu #2");
 
+		$addon = new \PHPPE\AddOn([],"addon",$sha);
+		$this->assertEquals($addon."","PHPPE\AddOn(addon)","AddOn dump");
 	}
 }
 ?>
