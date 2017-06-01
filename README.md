@@ -1,6 +1,11 @@
 PHP Portal Engine - single file framework
 =========================================
 
+[![Latest Stable Version](http://bztsrc.github.io/phppe3/stable.svg)](https://packagist.org/packages/bztsrc/phppe3)
+[![PHP Version](http://bztsrc.github.io/phppe3/php.svg)](https://packagist.org/packages/bztsrc/phppe3)
+[![License](http://bztsrc.github.io/phppe3/license.svg)](https://github.com/bztsrc/phppe3/blob/master/LICENSE)
+[![Code Coverage](http://bztsrc.github.io/phppe3/coverage.svg)](http://bztsrc.github.io/phppe3/coverage)
+
 PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only a few kilobytes in size, so small, that it fits on your clipboard!
 Unlike other existing OpenSource PHP frameworks, PHPPE was written with security, [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
 As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and make your life easier.
