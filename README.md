@@ -34,9 +34,9 @@ This 80k bytes of PHP code will give you:
 - Built-in Content Server for CMS support
 - Uses View layer to detect Models (flexibility you've never seen)
 
-Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (another ~80KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.
+Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (~96KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.
 
-For full CMS capability you'll also need the Content Editor in [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (28KiB), because PHPPE Core on it's own only serves contents.
+For full CMS capability you'll also need the Content Editor in [PHPPE CMS](http://bztsrc.github.io/phppe3/phppe3_cms.tgz) (46KiB), because PHPPE Core on it's own only serves contents.
 
 Requirements
 ------------
@@ -45,7 +45,7 @@ Requirements
 - SSH terminal access (use ssh or PuTTY)
 - Apache or nginx with php-fpm on server side
 - Any HTML5 compatible browser on client side
-- No more than 768KiB free space if you install all basic plugins (Pack, CMS, Extensions and Developer)
+- No more than 768KiB free space if you install all extensions
 
 Installation with Packagist
 ---------------------------
