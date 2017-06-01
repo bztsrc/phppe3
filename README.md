@@ -13,7 +13,7 @@ It's not bloated, and with simplicity cames stability and high performance.
 
 Features
 --------
-This 80k bytes of PHP code will give you:
+This ~80k bytes of PHP code will give you:
 - Single file deployment.
 - Stand alone environment, optional dependencies only.
 - [PHP Composer](https://getcomposer.org/) compatibilty
