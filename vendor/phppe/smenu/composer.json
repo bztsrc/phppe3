@@ -1,14 +1,6 @@
 {
 	"name": "phppe/smenu",
 	"name_en": "Smenu",
-	"name_hu": "Smenu",
-	"name_ru": "Smenu",
-	"name_de": "Smenu",
-	"name_es": "Smenu",
-	"name_fr": "Smenu",
-	"name_ch": "Smenu",
-	"name_he": "Smenu",
-	"name_ar": "Smenu",
 
 	"description": "Graphical selection menu with realtime status update capability",
 	"description_hu": "Grafikus választómenü valós idejű státusz visszajelzéssel",
@@ -20,7 +12,7 @@
 	"description_he": "תפריט בחירה גרפי עם יכולת עדכון מצב בזמן אמת",
 	"description_ar": "قائمة اختيار رسومية مع القدرة على تحديث الوضع الحقيقي",
 
-	"keywords": [ "Content" ],
+	"keywords": [ "User Input" ],
 
 	"version": "1.0.0",
 	"version_normalized": "1.0.0.0",

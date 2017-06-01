@@ -3,7 +3,7 @@
  * @file vendor/phppe/smenu/ctrl/smenu.php
  * @author bzt
  * @date 31 May 2017
- * @brief
+ * @brief AJAX hooks for editing menus
  */
 
 namespace PHPPE\Ctrl;
@@ -20,7 +20,7 @@ class smenu
             die(L("Access denied"));
         if(!empty($_POST['url']) && !empty($_POST['id'])) {
             try {
-                DS::exec("INSERT INTO smenu_list (list_id,id,title,posx,posy) VALUES (?,?,?,20,20)",
+                DS::exec("INSERT INTO smenu_list (list_id,id,name,posx,posy) VALUES (?,?,?,20,20)",
                     [$_POST['url'], $_POST['id'], $_POST['id']]);
                 die("OK");
             } catch(\Exception $e) {
@@ -45,8 +45,8 @@ class smenu
         if(!Core::$user->has("siteadm|webadm"))
             die(L("Access denied"));
         if(!empty($_POST['url']) && !empty($_POST['id']))
-            DS::exec("UPDATE smenu_list SET title=?,type=? WHERE list_id=? AND id=?",
-                [$_POST['title'], $_POST['type'], $_POST['url'], $_POST['id']]);
+            DS::exec("UPDATE smenu_list SET name=?,type=? WHERE list_id=? AND id=?",
+                [$_POST['name'], $_POST['type'], $_POST['url'], $_POST['id']]);
 	    die("OK");
 	}
 

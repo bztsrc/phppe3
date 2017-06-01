@@ -4,13 +4,13 @@
 
 	"description": "Bootstrap environment, self hosting version.",
 	"description_hu": "Bootstrap környezet, mindent tartalmazó verzió.",
-    "description_ru": "Bootstrap среда, сам хостинг версия.",
-    "description_de": "Bootstrap-Umgebung, selbst Hosting-Version.",
-    "description_es": "Bootstrap ambiente, auto alojamiento versión.",
-    "description_fr": "Environnement Bootstrap, version auto d'hébergement.",
-    "description_ch": "引导环境，自我托管版本。",
-    "description_he": "סביבת Bootstrap, גרסת אירוח עצמית.",
-    "description_ar": "بيئة التمهيد، واستضافة الذاتي الإصدار.",
+	"description_ru": "Bootstrap среда, сам хостинг версия.",
+	"description_de": "Bootstrap-Umgebung, selbst Hosting-Version.",
+	"description_es": "Bootstrap ambiente, auto alojamiento versión.",
+	"description_fr": "Environnement Bootstrap, version auto d'hébergement.",
+	"description_ch": "引导环境，自我托管版本。",
+	"description_he": "סביבת Bootstrap, גרסת אירוח עצמית.",
+	"description_ar": "بيئة التمهيد، واستضافة الذاتي الإصدار.",
 
 	"version": "3.3.6",
 	"version_normalized": "3.3.6.0",
@@ -22,6 +22,6 @@
 		"twbs/bootstrap": "*"
 	},
 
-    "homepage": "http://getbootstrap.com/",
+	"homepage": "http://getbootstrap.com/",
 	"maintainer": { "name": "bzt" }
 }

@@ -559,16 +559,16 @@ class Email extends Extension
         //! get items from database
         $lastId = 0;
         while ($row = DS::fetch('*', 'email_queue', 'id>?', '', 'id ASC', [$lastId])) {
-            $email = new self($row['data']);
-            $lastId = $row['id'];
+            $email = new self($row->data);
+            $lastId = $row->id;
             try {
                 if (!$email->send(Core::$core->realmailer)) {
                     // @codeCoverageIgnoreStart
                     throw new \Exception('send() returned false');
                 }
-                DS::exec('DELETE FROM email_queue WHERE id=?;', [$row['id']]);
+                DS::exec('DELETE FROM email_queue WHERE id=?;', [$row->id]);
             } catch (\Exception $e) {
-                Core::log('E', sprintf(L('Unable to send #%s from queue'),$row['id']).': '.$e->getMessage());
+                Core::log('E', sprintf(L('Unable to send #%s from queue'),$row->id).': '.$e->getMessage());
             }
                     // @codeCoverageIgnoreEnd
             sleep(1);

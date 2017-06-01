@@ -37,9 +37,9 @@
 	"type": "library",
 	"license": "LGPL-3.0+",
 
-    "suggets": {
-        "phppe/MultiServer": "*"
-    },
-    "homepage": "http://bztsrc.github.io/phppe3/index.html#extensions",
+	"suggets": {
+		"phppe/MultiServer": "*"
+	},
+	"homepage": "http://bztsrc.github.io/phppe3/index.html#extensions",
 	"maintainer": { "name": "bzt" }
 }

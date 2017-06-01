@@ -45,7 +45,7 @@ pe.smenu = {
         }
         this.recalc();
         document.body.onresize=this.recalc;
-        if(conf.callback!=null && conf.callback.substr(0,4)=='http') {
+        if(conf.callback!=null) {
             this.cb=conf.callback.replace('@URL',urlencode(this.url));
             this.refresh();
             if(Math.round(conf.refresh)>0)
@@ -65,9 +65,11 @@ pe.smenu = {
                         if(f[0]!=null && f[0]!="") {
                             var o=document.querySelector('[data-id='+f[0]+']');
                             if(o!=null && o.getAttribute('data-smenu')!=null) {
-                                t=o.getAttribute('data-title')!=''?'<b>'+o.getAttribute('data-title')+'</b><br>':'';
+                                t=o.getAttribute('data-name')!=''?'<b>'+o.getAttribute('data-name')+'</b><br>':'';
+                                if(f[2]!=null && f[2]!='')
+                            	    t+=f[2];
                                 o.className='smenu_item '+f[1];
-                                o.innerHTML=t+f[2];
+                                o.innerHTML=t;
                             }
                         }
                     }
@@ -108,7 +110,7 @@ pe.smenu = {
             document.getElementsByTagName('head')[0].appendChild(l);
         }
         pe.smenu.popupdiv.innerHTML="<h3>"+L("Modify menu")+"</h3>ID: "+evt.target.getAttribute('data-id')+"<input type='hidden' class='input' name='id' value='"+evt.target.getAttribute('data-id')+"'><br>"+
-        "<label>"+L("Name")+"<br><input type='text' class='input' name='title' value='"+evt.target.getAttribute('data-title')+"'></label>"+
+        "<label>"+L("Name")+"<br><input type='text' class='input' name='name' value='"+evt.target.getAttribute('data-name')+"'></label>"+
         "<label>"+L("Type")+"<br><input type='text' class='input' name='type' value='"+evt.target.className.replace('smenu_item ','')+"'></label>"+
         "<br><br><label><input type='button' class='button' value='"+L("Delete")+"' onclick='pe.smenu.del(\""+evt.target.getAttribute('data-id')+"\");'></label>"+
         "<label><input type='button' class='button' value='"+L("Save")+"' onclick='pe.smenu.save(this);'></label>";
@@ -147,7 +149,7 @@ pe.smenu = {
                         alert(r.responseText);
                 }
             };
-            r.send('url='+pe.smenu.url+'&id='+form[0].value+'&title='+urlencode(form[1].value)+
+            r.send('url='+pe.smenu.url+'&id='+form[0].value+'&name='+urlencode(form[1].value)+
                 '&type='+urlencode(form[2].value));
         }
     },

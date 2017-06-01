@@ -24,9 +24,3 @@
  */
 
 namespace PHPPE;
-
-//! add your routes here
-//Http::route("smenu", "\\PHPPE\\Ctrl\\Smenu", "action");
-
-//! return your service class here
-//return new smenu;

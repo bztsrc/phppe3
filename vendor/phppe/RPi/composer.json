@@ -1,0 +1,30 @@
+{
+	"name": "phppe/RPi",
+	"name_en": "RPi",
+
+	"description": "Web interface for monitoring Raspberry Pi.",
+	"description_hu": "Webes felület a Raspberry Pi monitorozására.",
+	"description_ru": "Веб-интерфейс для мониторинга малины Pi.",
+	"description_de": "Web-Schnittstelle zur Überwachung von Raspberry Pi.",
+	"description_es": "Interfaz web para monitorizar Raspberry Pi.",
+	"description_fr": "Interface Web pour la surveillance de Raspberry Pi.",
+	"description_ch": "Web界面监控树莓Pi。",
+	"description_he": "ממשק אינטרנט לניטור פטל פי.",
+	"description_ar": "واجهة الويب لرصد التوت بي.",
+
+	"keywords": [ "Content" ],
+
+	"version": "0.0.1",
+	"version_normalized": "0.0.1.0",
+
+	"type": "library",
+	"license": "LGPL-3.0+",
+
+	"require": {
+		"phppe/Core": "3.*",
+		"phppe/GPIO": "*",
+		"phppe/smenu": "*"
+	},
+
+	"maintainer": { "name": "bzt" }
+}

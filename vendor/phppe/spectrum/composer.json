@@ -28,6 +28,6 @@
 	"type": "library",
 	"license": "MIT",
 
-    "homepage": "http://bgrins.github.io/spectrum/",
+	"homepage": "http://bgrins.github.io/spectrum/",
 	"maintainer": { "name": "Brian Grinstead" }
 }

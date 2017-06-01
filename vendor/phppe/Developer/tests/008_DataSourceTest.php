@@ -88,12 +88,12 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
 			"query empty");
 
 		$this->assertEquals(
-			'a:2:{s:4:"name";s:5:"third";s:8:"parentId";s:1:"1";}',
+			'O:8:"stdClass":2:{s:4:"name";s:5:"third";s:8:"parentId";s:1:"1";}',
 			serialize(\PHPPE\DS::fetch("name,parentId","test","id=?","","",[3])),
 			"fetch record");
 
 		$this->assertEquals(
-			'a:0:{}',
+			'O:8:"stdClass":0:{}',
 			serialize(\PHPPE\DS::fetch("*","test","id=11")),
 			"fetch empty");
 

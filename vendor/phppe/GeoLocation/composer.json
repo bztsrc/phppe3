@@ -12,13 +12,13 @@
 
 	"description": "Adds geo array with longitude, latitude, city etc. information to \\PHPPE\\Core::$client.",
 	"description_hu": "Geo adatokat ad a \\PHPPE\\Core::$client objektumhoz, úgy mint szélesség hosszúság, város stb.",
-    "description_ru": "Добавляет массив гео с широта, долгота, город и т.д. Информация на \\PHPPE\\Core::$client.",
-    "description_de": "Fügt geo-Array mit Länge, Breite, Stadt usw. Informationen zu \\PHPPE\\Core::$client.",
-    "description_es": "Añade variedad geográfica con la longitud, latitud, ciudad, etc. información a \\PHPPE\\Core::$client.",
-    "description_fr": "Ajoute réseau de géo avec la longitude, la latitude, la ville, etc. informations \\PHPPE\\Core::$client.",
-    "description_ch": "添加地理阵列经度，纬度，城市等信息，以\\PHPPE\\Core::$client客户端。",
-    "description_he": "מוסיף מערך מבחינה גיאוגרפית על אורך, רוחב, עיר וכו 'מידע ללקוח \\PHPPE\\Core::$client.",
-    "description_ar": "ويضيف مجموعة الجغرافية مع خطوط الطول والعرض، المدينة الخ المعلومات ل\\PHPPE\\Core::$client العميل.",
+	"description_ru": "Добавляет массив гео с широта, долгота, город и т.д. Информация на \\PHPPE\\Core::$client.",
+	"description_de": "Fügt geo-Array mit Länge, Breite, Stadt usw. Informationen zu \\PHPPE\\Core::$client.",
+	"description_es": "Añade variedad geográfica con la longitud, latitud, ciudad, etc. información a \\PHPPE\\Core::$client.",
+	"description_fr": "Ajoute réseau de géo avec la longitude, la latitude, la ville, etc. informations \\PHPPE\\Core::$client.",
+	"description_ch": "添加地理阵列经度，纬度，城市等信息，以\\PHPPE\\Core::$client客户端。",
+	"description_he": "מוסיף מערך מבחינה גיאוגרפית על אורך, רוחב, עיר וכו 'מידע ללקוח \\PHPPE\\Core::$client.",
+	"description_ar": "ويضيف مجموعة الجغرافية مع خطوط الطول والعرض، المدينة الخ المعلومات ل\\PHPPE\\Core::$client العميل.",
 
 	"keywords": [ "Connections" ],
 

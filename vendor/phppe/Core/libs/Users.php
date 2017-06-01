@@ -55,12 +55,12 @@ class Users extends \PHPPE\User
         // login handler specific part
         $rec = DS::fetch("id,pass", static::$_table, "name=? AND active!='0'", "", "", [$name]);
         // authentication
-        if(empty($rec['pass']) || !password_verify($pass, $rec['pass']))
+        if(empty($rec->pass) || !password_verify($pass, $rec->pass))
             return;
         // success, save user object in session
-        $_SESSION['pe_u']=new self($rec['id']);
+        $_SESSION['pe_u']=new self($rec->id);
         // housekeeping
-        DS::exec("UPDATE ".static::$_table." SET logind=CURRENT_TIMESTAMP WHERE id=?", [$rec['id']]);
+        DS::exec("UPDATE ".static::$_table." SET logind=CURRENT_TIMESTAMP WHERE id=?", [$rec->id]);
         return $_SESSION['pe_u'];
     }
 

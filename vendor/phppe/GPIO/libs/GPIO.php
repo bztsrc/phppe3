@@ -41,6 +41,7 @@ class GPIOException extends \Exception
  */
 class GPIO
 {
+
     const PATH_GPIO = '/sys/class/gpio';
     const PATH_EXPORT = '/sys/class/gpio/export';
     const PATH_UNEXPORT = '/sys/class/gpio/unexport';
@@ -48,6 +49,7 @@ class GPIO
     public $pins=[];
     public $hdlr=[];
     static private $self;
+    static private $emulate = false;
 
 /**
  * Register GPIO, load pin mapping and export them to userspace
@@ -57,11 +59,13 @@ class GPIO
  */
     function init($cfg)
     {
+	if(!empty($cfg['emulate']))
+	    self::$emulate = true;
         //! if kernel interface not exists, unregister ourself
-        if (!@is_dir(self::PATH_GPIO)) return false;
+        if (!@is_dir(self::PATH_GPIO) && !self::$emulate) return false;
         //! if we cannot detect Raspberry Pi revision number, unregister
         $rpi=self::RPiPCB();
-        if (!$rpi) return false;
+        if (!$rpi && !self::$emulate) return false;
         //! save singleton so that you can use methods statically
         self::$self=$this;
         //! get configuration and fallback to hardcoded values
@@ -79,7 +83,7 @@ class GPIO
         foreach ($this->pins as $pin=>$port) {
             if (!is_dir(self::PATH_GPIO.$pin)) {
                 //! Export pin. if cannot do that, unregister the extension
-                if(!@file_put_contents(self::PATH_EXPORT,$pin))
+                if(!@file_put_contents(self::PATH_EXPORT,$pin) && !self::$emulate)
                     return false;
                 //! set it to input mode
                 $this->mode($pin, "in");
@@ -150,9 +154,9 @@ class GPIO
         $dir = strtolower($dir);
         if ($dir!="in"&&$dir!="out") throw new GPIOException(L("bad direction"));
         if (empty(self::$self->pins[$pin])) throw new GPIOException(L("bad pin"));
-        //! if new mode diifers from current one, set it
-        if (trim(@file_get_contents(self::PATH_GPIO.$pin.'/direction'))!=$dir ||
-            @!file_put_contents(self::PATH_GPIO.$pin.'/direction', $dir)) {
+        //! if new mode differs from current one, set it
+        if ((trim(@file_get_contents(self::PATH_GPIO.$pin.'/direction'))!=$dir ||
+            @!file_put_contents(self::PATH_GPIO.$pin.'/direction', $dir)) && !self::$emulate) {
                 throw new GPIOException(L("unable to set direction"));
         }
         self::$self->hdlr[$pin] = $dir;
@@ -171,7 +175,7 @@ class GPIO
         $pin = intval($pin);
         if (empty(self::$self->pins[$pin])) throw new GPIOException(L("bad pin"));
         //! read the value and convert it into boolean
-        return intval(@file_get_contents(self::PATH_GPIO.$pin.'/value'))==1?false:true;
+        return intval(@file_get_contents(self::PATH_GPIO.$pin.'/value'))==1?true:false;
     }
 
 /**
