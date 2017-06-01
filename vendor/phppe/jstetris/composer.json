@@ -1,0 +1,16 @@
+{
+	"name": "phppe/jstetris",
+	"name_en": "Jstetris",
+
+	"description": "JavaScript Tetris http://javascript.internet.com",
+
+	"keywords": [ "Games" ],
+
+	"version": "1.1.0",
+	"version_normalized": "1.1.0.0",
+
+	"type": "library",
+	"license": "BSD",
+
+	"maintainer": { "name": "Cezary Tomczak" }
+}

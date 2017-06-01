@@ -142,6 +142,8 @@ class Templates
 				die(L("Unable to write").": ".$file."\n");
 			echo(L("Writing")." ".$file."\n");
 		}
+		//! very likely we have created new classes, so clear ClassMap cache
+		@unlink(ClassMap::$file);
 	}
 
 /**

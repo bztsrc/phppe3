@@ -209,7 +209,7 @@ class Pretty
 				$new.=str_repeat("    ",$b+$s+$p).$l;
 		} else echo(" SCANFAIL");
 		echo("  ".sprintf("%-40s ".chr(27)."[90m%6d",substr($file,-40), $oldsize));
-		if(!empty($new)/* && file_put_contents($file,$new)*/)
+		if(!empty($new) && file_put_contents($file,$new))
 			echo(sprintf(" %6d ",strlen($new)).chr(27)."[92m".L("OK").chr(27)."[0m\n");
 		else
 			echo(sprintf(" %6d ",0).chr(27)."[91m".L("FAIL").chr(27)."[0m\n");
