@@ -55,6 +55,8 @@ pe.smenu = {
     
     refresh:function()
     {
+            if(pe.smenu.cb==null||pe.smenu.cb=='')
+                return;
             var r = new XMLHttpRequest();
             r.open('GET', pe.smenu.cb, true);
             r.onload = function() {

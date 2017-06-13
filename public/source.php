@@ -255,8 +255,12 @@ namespace PHPPE {
             if (Core::$w) {
                 //! Detect values for Web
                 // @codeCoverageIgnoreStart
+                $d = 'HTTP_USER_AGENT';
+                $c = isset($_REQUEST['nojs'])||empty($_SERVER[$d])||$_SERVER[$d]!="API"||
+                    strpos(strtolower($_SERVER[$d]),"wget")!==false||
+                    strpos(strtolower($_SERVER[$d]),"curl")!==false;
                 if (Core::$core->app == 'index' && empty($_SESSION[$L]) &&
-                   !isset($_REQUEST['nojs']) && empty($_REQUEST['cache'])) {
+                   !$c && empty($_REQUEST['cache'])) {
                     //! this is a small JavaScript page that shows up for the first time
                     //! after collecting information it redirects user so fast, he won't
                     //! notice a thing.
@@ -566,6 +570,7 @@ namespace PHPPE {
                 //! superuser's name
                 $A = 'admin';
                 if (Core::isTry() && !empty($_REQUEST['id'])) {
+                    foreach($_SESSION as $k=>$v) if(substr($k,0,3)!="pe_") unset($_SESSION[$k]);
                     //don't accept password in GET parameter
                     if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) &&
                         password_verify($_POST['pass'], Core::$core->masterpasswd)) {
