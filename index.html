@@ -4554,7 +4554,7 @@ print_r($arr2); // XML
 </ul>
 </div>
 
-<div id='map' class='tab' rel='ace'>
+<div id='map' class='tab'>
 <h1>PHPPE\ClassMap::map()</h1>
 <h2>Synopsis</h2>
 <pre>
@@ -5666,7 +5666,7 @@ In nested layout iterations, you can refer to fields of outter iteration with pr
 <tr><td>string</td><td>Output of the remote command</td></tr>
 </table>
 <h3>Examples</h3>
-<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6</pre>
+<p><pre class='lineno'>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</pre>
 <pre class='php'>
 <span class='comment'>//! execute a command remotely and get it's output</span>
 <span class='variable'>$files</span> = <span class='function'>Tools::ssh</span>(<span class='stringconst'>"ls -la"</span>);
@@ -5675,7 +5675,7 @@ In nested layout iterations, you can refer to fields of outter iteration with pr
 <span class='comment'>//! pipe local command's standard output to remote command's standard input</span>
 <span class='function'>Tools::ssh</span>(<span class='stringconst'>"cat >installedby.txt"</span>, <span class='stringconst'>""</span>, <span class='stringconst'>"whoami"</span>);
 <span class='comment'>//! synchronize directories securely</span>
-<span class='function'>Tools::ssh</span>(<span class='stringconst'>"rsync"</span>, [ <span class='stringconst'>"/usr/git/myRepo"</span>, <span class='stringconst'>"/var/www"</span> ]);
+<span class='function'>Tools::ssh</span>(<span class='stringconst'>"rsync"</span>, [ <span class='stringconst'>"/usr/git/myRepo"</span>, <span class='stringconst'>"/var/www"</span> ], <span class='stringconst'>"/var/production/www"</span>);
 </pre></p>
 <h3>See also</h3>
 <ul>
