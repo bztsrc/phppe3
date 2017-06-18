@@ -2265,12 +2265,13 @@ Short answer: application. If you later on plan to use your code on several site
 <div id='benchmark' class='tab'>
 <h1>Benchmarks</h1>
 <p>PHPPE performance is a very important thing. Therefore you'll find a built-in benchmarker.</p>
-<div class='alert alert-danger'><b>NOTE</b>: only <samp>public/source.php</samp> supports benchmarking! The <samp>public/index.php</samp> for production, where unwanted large files could lead to a DoS attack.</div>
+<div class='alert alert-danger'><b>NOTE</b>: only <samp>public/source.php</samp> supports benchmarking! The minified <samp>public/index.php</samp> version is for production, where unwanted large files could lead to a DoS attack.</div>
 <h3>Accumulate data</h3>
 <p>Append "<code>?benchmark</code>" to the page's url you want to measure. Reload it several times, more samples are the merrier.</p>
 <h3>Displaying the results</h3>
 <p><a onclick='tab_switch("developer");'>PHPPE Developer</a> extension ships a nice web interface to aggregate and display the collected data.
 If everything went well, you should see something similar to this:</p>
+<div class='installpreview'>
 <div style='display:inline-block;'>
 <h2>Rundown</h2>
 <table class='benchmark'>
@@ -2477,6 +2478,8 @@ If everything went well, you should see something similar to this:</p>
 </tr>
 </table>
 </div>
+</div>
+<div style='padding-top:5px;'><p>Neat, huh? :-)</p></div>
 </div>
     
 <div id='templatejson' class='tab'>
