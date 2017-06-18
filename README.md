@@ -39,6 +39,7 @@ This ~80k bytes of PHP code will give you:
 - BiDi multilanguage support
 - Built-in [Content Server](https://bztsrc.github.io/phppe3/#contents) for CMS support
 - Uses View layer to detect Models (flexibility you've never seen)
+- [Benchmarking](https://bztsrc.github.io/phppe3/#benchmark) capability
 
 Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (~96KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.
 
