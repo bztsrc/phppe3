@@ -6,37 +6,38 @@ PHP Portal Engine - single file framework
 [![License](http://bztsrc.github.io/phppe3/license.svg)](https://github.com/bztsrc/phppe3/blob/master/LICENSE)
 [![Code Coverage](http://bztsrc.github.io/phppe3/coverage.svg)](http://bztsrc.github.io/phppe3/coverage)
 
-PHPPE is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only a few kilobytes in size, so small, that it fits on your clipboard!
-Unlike other existing OpenSource PHP frameworks, PHPPE was written with security, [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
+[PHPPE](https://bztsrc.github.io/phppe3/) is a minimalistic, yet feature-full micro-framework and CMS. The framework's core is a single file and only a few kilobytes in size, so small, that it fits on your clipboard!
+Unlike other existing OpenSource PHP frameworks, PHPPE was written with [security](https://bztsrc.github.io/phppe3/#security), [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [KISS principle](http://en.wikipedia.org/wiki/KISS_principle) and no dependency at all in mind.
 As being a micro-framework, it won't solve all of your web-development oriented tasks, but will definitely solve the most common ones and make your life easier.
 It's not bloated, and with simplicity cames stability and high performance.
 
 Features
 --------
 This ~80k bytes of PHP code will give you:
-- Single file deployment.
+- [Single file deployment](https://bztsrc.github.io/phppe3/#install).
 - Stand alone environment, optional dependencies only.
 - [PHP Composer](https://getcomposer.org/) compatibilty
 - [PHPUnit](https://phpunit.de) compatibility with [100% code coverage](http://bztsrc.github.io/phppe3/coverage)
 - [Bootstrap](https://getbootstrap.com/) compatibilty
-- Can be used as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
-- Scalable cluster architecture to face huge loads
+- [Can be used](https://bztsrc.github.io/phppe3/#usage) as CGI (Apache and nginx), from CLI and also as a library just out-of-the-box
+- Clean and well documented API, searchable [library reference](https://bztsrc.github.io/phppe3/#phppe_core) with examples
+- Scalable [cluster architecture](https://bztsrc.github.io/phppe3/#cluster) to face huge loads
 - Very low footprint, ideal on small computers such as [Raspberry Pi](https://www.raspberrypi.org/)
-- Highly modular, easy to expand structure with Class autoloader
+- Highly modular, easy to expand [structure](https://bztsrc.github.io/phppe3/#directory) with [Class autoloader](https://bztsrc.github.io/phppe3/#phppe_classmap)
 - Self consistency check and diagnostics (even fix!)
-- Environment auto-detection (like base url, browser's language, timezone and screen size)
-- Clever, regular expression capable and filterable, class::method routing mechanism
+- [Environment auto-detection](https://bztsrc.github.io/phppe3/#phppe_client) (like base url, browser's language, timezone and screen size)
+- Clever, regular expression capable and filterable, class::method [routing](https://bztsrc.github.io/phppe3/#routing) mechanism
 - PDO driven database layer with transparent on demand scheme installation
-- Convient and easy to use ORM model interface
-- Fast and safe templater system for views
-- Powerful caching with integrated [memcached](http://memcached.org/), APC/APCu and compressed file support
+- Convient and easy to use [ORM model](https://bztsrc.github.io/phppe3/#models) interface
+- Fast and safe [templater](https://bztsrc.github.io/phppe3/#views) system for views
+- [Powerful caching](https://bztsrc.github.io/phppe3/#cache) with integrated [memcached](http://memcached.org/), APC/APCu and compressed file support
 - Automatic form data validation and security checks
 - Access control lists
 - Audit logging to files or syslog
-- Monitoring support (nagios can get performance and status info easily from it's output)
+- [Monitoring support](https://bztsrc.github.io/phppe3/#monitoring) (nagios can get performance and status info easily from it's output)
 - Thumbnail generation and image manipulation support (with libGD)
 - BiDi multilanguage support
-- Built-in Content Server for CMS support
+- Built-in [Content Server](https://bztsrc.github.io/phppe3/#contents) for CMS support
 - Uses View layer to detect Models (flexibility you've never seen)
 
 Of course one single file is limited, so here's the [PHPPE Pack](http://bztsrc.github.io/phppe3/phppe3_core.tgz) (~96KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.
@@ -65,7 +66,7 @@ Installation without Packagist
 ------------------------------
 
 There are many ways to install PHPPE if you don't want Packagist. You can use git, Composer alone, or use curl/wget.
-For detailed instructions and alternatives see [documentation](http://bztsrc.github.io/phppe3/index.html#install).
+For detailed instructions and alternatives see [documentation](http://bztsrc.github.io/phppe3/#install).
 
 1. Create a webserver's document root in your project root
 
@@ -108,12 +109,12 @@ or
 
     $ curl https://bztsrc.github.io/phppe3/phppe3_cms.tgz | tar -xz -C vendor/phppe/CMS
 
-In a scalable environment only one dedicated Content Editor required. See [documentation](http://bztsrc.github.io/phppe3/index.html#contents) for more details on load balancing.
+In a scalable environment only one dedicated Content Editor required. See [documentation](http://bztsrc.github.io/phppe3/#contents) for more details on load balancing.
 
 Extensions
 ----------
 
-If you want a web based interface for extension management, install
+If you want a web based interface for [extension management](https://bztsrc.github.io/phppe3/#extensions), install
 
     $ composer require "phppe/Extensions"
 
@@ -126,7 +127,7 @@ This will give you the standard webadmin feeling you're used to with other frame
 Developing
 ----------
 
-Even if you don't want to contribute to the framework, just using it or writing your own Extensions, it's worth installing the Developer package!
+Even if you don't want to contribute to the framework, just using it or writing your own Extensions, it's worth installing the [Developer](https://bztsrc.github.io/phppe3/#developer) package!
 That will give you a nice templater to generate your php files, an utility to create language dictionaries out of your code, and also ships a minimal, PHPUnit compatible testing framework.
 
     $ composer require "phppe/Developer"
