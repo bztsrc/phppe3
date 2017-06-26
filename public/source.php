@@ -3150,7 +3150,8 @@ namespace PHPPE {
                 "",
                 "tar -cz ".implode(' ', $files));
             if (in_array(substr($r, 0, 4), ['ssh:', 'tar:']) || substr($r, 0, 3) == 'sh:') {
-                throw new \Exception(sprintf(L('failed to copy %d files to %s'), count($files), Core::$user->data['remote']['user'].'@'.Core::$user->data['remote']['host'].':'.Core::$user->data['remote']['path'].'/'.$dest)
+                throw new \Exception(sprintf(L('failed to copy %d files to %s'), count($files),
+                    Core::$user->data['remote']['user'].'@'.Core::$user->data['remote']['host'].':'.$d)
                     .': '.explode("\n", $r)[0]);
             }
 

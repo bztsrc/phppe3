@@ -12,5 +12,5 @@ CREATE TABLE `views` (
   `modifyid` int(11) NOT NULL default 0,
   PRIMARY KEY  (`id`)
 );
-INSERT INTO `views` VALUES ('frame','Default','<div id="header"><!cms *wyswyg frame.header></div><br><div id="menu"><!cms pagelist mainmenu><ul><!foreach mainmenu><li><!=name></li><!/foreach></ul></div><br><div id="content"><!app></div>','','','','default',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,-1);
+INSERT INTO `views` VALUES ('frame','Default','<div id="content"><!app></div>','','','','default',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,-1);
 INSERT INTO `views` VALUES ('simple','Simple','<div class="container-fluid"><h1><!cms *text app.title></h1><!cms *wyswyg app.body></div>','','','','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,-1);
