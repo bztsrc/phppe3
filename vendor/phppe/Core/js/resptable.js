@@ -113,7 +113,7 @@ pe.resptable = {
         var was=0,k=tblhdr.getElementsByTagName('th')[0];
         var popup=document.createElement('div');
         popup.setAttribute('id','resptable'+i+'_popup');
-        popup.setAttribute('style','position:absolute;display:block;background:#fff;visibility:hidden;box-shadow:2px 2px 2px #000;padding:3px;text-align:left;')
+        popup.setAttribute('style','position:absolute;display:block;background:#fff;visibility:hidden;box-shadow:2px 2px 2px #000;padding:3px;text-align:left;');
         for(j=0;j<pe.resptable.instances[i].rows.length;j++) {
           if(pe.resptable.instances[i].rows[j]!=null && pe.resptable.instances[i].rows[j].cells[0].getAttribute('colspan')!=null) {
             var d=document.createElement('div');
