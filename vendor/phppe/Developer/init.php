@@ -45,6 +45,7 @@ Http::route("minify", "MinifyController");
 Http::route("create", "CreateController");
 Http::route("lang",   "LangController");
 Http::route("pretty", "PrettyController");
+Http::route("datauri","DatauriController");
 
 //for event testing
 return new Testing;
