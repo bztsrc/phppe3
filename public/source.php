@@ -178,7 +178,7 @@ namespace PHPPE {
 /**
  * Constructor. Starts user session
  */
-        public function __construct()
+        public function __construct($cfg=[])
         {
             Core::$client = $this;
             //! start user session
@@ -202,6 +202,10 @@ namespace PHPPE {
                 //! redirect user to reload everything
                 Http::redirect();
                 // @codeCoverageIgnoreEnd
+            }
+            //! override autodetected timezone with a fixed one
+            if(!empty($cfg['tz'])) {
+        	$this->tz = $cfg['tz'];
             }
         }
 
@@ -256,7 +260,7 @@ namespace PHPPE {
                 //! Detect values for Web
                 // @codeCoverageIgnoreStart
                 $d = 'HTTP_USER_AGENT';
-                $c = isset($_REQUEST['nojs'])||empty($_SERVER[$d])||$_SERVER[$d]!="API"||
+                $c = isset($_REQUEST['nojs'])||empty($_SERVER[$d])||$_SERVER[$d]=="API"||
                     strpos(strtolower($_SERVER[$d]),"wget")!==false||
                     strpos(strtolower($_SERVER[$d]),"curl")!==false;
                 if (Core::$core->app == 'index' && empty($_SESSION[$L]) &&
@@ -321,7 +325,10 @@ namespace PHPPE {
                 Core::$core->noframe = 1;
             }
             //! set up client's timezone
-            date_default_timezone_set($this->tz = !empty($_SESSION[$L]) ? $_SESSION[$L] : 'UTC');
+            if(empty($this->tz)) {
+        	$this->tz = !empty($_SESSION[$L]) ? $_SESSION[$L] : 'UTC';
+            }
+            date_default_timezone_set($this->tz);
         }
     }
 
@@ -3500,6 +3507,7 @@ class ClassMap extends Extension
                 mb_internal_encoding('utf-8');
             }
             // @codeCoverageIgnoreEnd
+            ini_set('precision',30);
             ini_set('file_uploads', 1);
             ini_set('upload_tmp_dir', dirname(__DIR__).'/.tmp');
             ini_set('uploadprogress.file.filename_template', dirname(__DIR__).'/.tmp/upd_%s.txt');
@@ -3644,7 +3652,7 @@ class ClassMap extends Extension
             $this->libs['ClassMap'] = new ClassMap();
             //! register built-in modules (middleware classes)
             $this->libs['DS'] = new DS($this->db);
-            $this->libs['Client'] = new Client();
+            $this->libs['Client'] = new Client(!empty($this->tz)?['tz'=>$this->tz]:[]);
             $cls = '\\PHPPE\\User';
             //! this code is tricky. Core defines PHPPE\User, while Pack ships PHPPE\Users.
             //! we'll use the later if found, and fallback to the former.
@@ -3708,6 +3716,7 @@ class ClassMap extends Extension
                 $d = 'HTTP_IF_MODIFIED_SINCE';
                 // @codeCoverageIgnoreStart
                 if ($this->runlevel < 2 && isset($_SERVER[$d]) && strtotime($_SERVER[$d]) + $this->cachettl < $this->now) {
+                    self::bm("notmodified");
                     header('HTTP/1.1 304 Not Modified');
                     die;
                 }
@@ -3721,6 +3730,7 @@ class ClassMap extends Extension
                         unset($this->libs[$k]);
                     }
 /*! BENCHMARK START */
+                    //! if benchmark>0 also measure individual modules
                     if(!empty($_REQUEST['benchmark'])) self::bm("init.".$k);
 /*! BENCHMARK END */
                 }
@@ -4036,6 +4046,9 @@ class ClassMap extends Extension
                 if (!ClassMap::has($appCls)) {
                     //! for CLI check if it's a cron job, or fail
                     if (!self::$w) {
+                        if (@in_array('--dump', $_SERVER['argv']) && $this->runlevel > 0) {
+                            View::dump();
+                        }
                         //! *** CRON Event ***
                         die($this->app == 'cron' ?
                             self::event('cron'.ucfirst($this->action), 0) :
