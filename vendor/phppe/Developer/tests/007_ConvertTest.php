@@ -24,29 +24,29 @@ class ConvertTest extends PHPUnit_Framework_TestCase
 		$obj->field1 = "field1";
 		$obj->field2 = "field2's";
 		$obj->field3 = 3;
-		$obj->field4 = 1.2;
+		$obj->field4 = 1.5;
 
 		$this->assertEmpty(
 			\PHPPE\Core::arr2str("aaa"),
 			"arr2str str");
 
 		$this->assertEquals(
-			"field1='field1' field2='field2\\'s' field3='3' field4='1.2'",
+			"field1='field1' field2='field2\\'s' field3='3' field4='1.5'",
 			\PHPPE\Core::arr2str($obj),
 			"arr2str");
 
 		$this->assertEquals(
-			"field1='field1' field2='field2\\'s' field3='3' field4='1.2'",
+			"field1='field1' field2='field2\\'s' field3='3' field4='1.5'",
 			\PHPPE\Core::obj2str($obj),
 			"obj2str space");
 
 		$this->assertEquals(
-			"field1='field1',field2='field2\\'s',field3='3',field4='1.2'",
+			"field1='field1',field2='field2\\'s',field3='3',field4='1.5'",
 			str_replace("''","\\'",\PHPPE\Core::obj2str($obj,"",",")),
 			"obj2str comma");
 
 		$this->assertEquals(
-			"field1='field1' field4='1.2'",
+			"field1='field1' field4='1.5'",
 			\PHPPE\Core::obj2str($obj,"field2,field3"),
 			"obj2str skip");
 

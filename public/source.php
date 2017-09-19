@@ -205,7 +205,9 @@ namespace PHPPE {
             }
             //! override autodetected timezone with a fixed one
             if(!empty($cfg['tz'])) {
-        	$this->tz = $cfg['tz'];
+                // @codeCoverageIgnoreStart
+                $this->tz = $cfg['tz'];
+                // @codeCoverageIgnoreEnd
             }
         }
 
