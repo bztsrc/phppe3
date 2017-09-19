@@ -45,7 +45,8 @@ class DBA
         $ret = [];
         foreach($arr as $r) {
             $v = reset($r);
-            $ret[$v] = $v;
+            if($v!="sqlite_sequence")
+                $ret[$v] = $v;
         }
         return $ret;
     }
