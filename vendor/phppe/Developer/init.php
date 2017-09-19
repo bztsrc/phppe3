@@ -44,8 +44,8 @@ Http::route("mkrepo", "MkRepoController");
 Http::route("minify", "MinifyController");
 Http::route("create", "CreateController");
 Http::route("lang",   "LangController");
-Http::route("pretty", "PrettyController");
-Http::route("datauri","DatauriController");
+Http::route("pretty", "PrettyController","action");
+Http::route("datauri","DatauriController","action");
 
 //for event testing
 return new Testing;

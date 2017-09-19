@@ -24,4 +24,7 @@ class DatauriController {
         die("data:".mime_content_type($_SERVER['argv'][2]).";base64,".base64_encode(file_get_contents($_SERVER['argv'][2]))."\n");
     }
 
+    function action($item)
+    {
+    }
 }
