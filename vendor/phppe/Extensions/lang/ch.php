@@ -2,9 +2,9 @@
 return [
 	"Extensions" => "延期",
 	"_Extensions" => "Web界面远程安装和配置PHPPE扩展。",
-	"Installed %d files from %s" => "来自%2$s安装%1$d个文件",
+	"Installed %d files from %s" => "来自%2\$s安装%1\$d个文件",
 	"Failed to install %s" => "安装失败%s",
-	"Uninstalled %d files of %s" => "%2$s的卸载%1$d个文件",
+	"Uninstalled %d files of %s" => "%2\$s的卸载%1\$d个文件",
 	"Failed to uninstall %s" => "无法卸载%s",
 	"installed" => "安裝",
 	"upgrade" => "升級",
