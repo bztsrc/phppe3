@@ -81,7 +81,7 @@ function tab_back(){var d=tab_history.pop();if(d==null) d='';var d2=d.split(":")
 function tab_getscroll(){var o=document.getElementById('infobox');var s=Math.floor(window.pageYOffset || document.documentElement.scrollTop);var i,h=document.getElementById(tab_current).querySelectorAll("h1, h2, h3, h4");for(i in h){if(h[i].offsetTop+(h[i].offsetParent&&h[i].offsetParent.className!='tab'?h[i].offsetParent.offsetTop:0)<s+42)tab_scroll=i;}var t='#'+tab_current+' :'+tab_scroll;if(o!=null&&o!=undefined) o.innerHTML=t;}
 function tab_permalink(){var d=document.location.href.split("#")[0];document.location.href=d+'#'+tab_current+(tab_scroll>0?':'+Math.floor(tab_scroll):'');}
 function toc_switch(name){var obj=null,toc=document.getElementById('toc');toc.style.height=window.innerHeight+'px';if (typeof name == 'string')obj=document.getElementById(name);else if(name!=null)obj=name.nextSibling.nextSibling;if(obj!=null && obj!=undefined) {if(obj.style.display==null||obj.style.display=='') {obj.style.display='none';}else obj.style.display=(obj.style.display=='block'?'none':'block');}}
-function tab_search(obj){if(tab_tmr!=null) clearTimeout(tab_tmr);tab_tmr=setTimeout('tab_dosearch("'+obj.value+'");',100);}
+function tab_search(obj){if(tab_tmr!=null) clearTimeout(tab_tmr);if(obj.value!=null&&obj.value!="")tab_tmr=setTimeout('tab_dosearch("'+obj.value+'");',100);}
 function tab_activatesearch(e){if(!e)e=window.event;var c=e.keyCode>0?e.keyCode:e.which,s;if(tab_skip && c>=33 && c<=40){tab_closesearch();tab_skip=0;return true;}tab_skip=0;if(c==37 && document.activeElement.id!='search') tab_back();if(c==32) {tab_permalink();return false;}if(c==116) {tab_permalink();return true;}if(c==27||c==38||c==40) {tab_closesearch();return true;}if(c<20||(c>=33&&c<40)||c==46||c==224)return true;s=String.fromCharCode(c);if(document.activeElement.id!='search'){document.getElementById('search').focus();}return true;}
 function tab_dosearch(str){var nr=0,fr="",r="",res=document.getElementById('results');document.getElementById('toc').style.display='none';res.style.display='block';res.style.position=(str!=""?"fixed":"absolute");var i,txt="<i>"+(str!=""?"Search results":"Keyword index")+"</i><br><br>",obj=document.getElementsByTagName("div");for(i=0;i<obj.length;i++){var j,cls=obj[i].getAttribute("class"),id=obj[i].getAttribute("id"),rel=obj[i].getAttribute("rel");if(cls==null || cls.indexOf("tab")==-1 || id==null || (id.indexOf(str)==-1 && (rel==null || rel==undefined || rel.indexOf(str)==-1))||id=='notab') continue;r=id; nr++;if(id==str) fr=id;if(id.indexOf(str)>-1)txt+="&nbsp;&nbsp;<a onclick='tab_switch(\""+id+"\");');'>"+id.replace(str,"<b>"+str+"</b>")+'</a><br>';if(rel!=null && rel!=undefined) {var aliases=rel.split(",");for(j=0;j<aliases.length;j++)if(aliases[j].indexOf(str)>-1)txt+="&nbsp;&nbsp;<a onclick='tab_switch(\""+id+"\");');'>"+aliases[j].replace(str,"<b>"+str+"</b>")+'</a><br>';}}res.innerHTML=txt;if(nr==1 || fr!=''){tab_switch(fr!=''?fr:r);tab_skip=1;}}
 function tab_closes(){if(tab_close!=null) clearTimeout(tab_close);tab_close=setTimeout('tab_closesearch();',3000);}
@@ -300,7 +300,7 @@ It's not bloated, and with simplicity cames stability and high performance.</p>
 enough to set up a working PHPPE environment, internet connection is NOT required at all!</p>
 
 <h2>Features</h2>
-<p>This ~80k bytes of PHP code will give you:</p>
+<p>This ~90k bytes of PHP code will give you:</p>
 <ul>
 <li>Single file deployment.</li>
 <li>Stand alone environment, optional dependencies only.</li>
@@ -327,8 +327,8 @@ enough to set up a working PHPPE environment, internet connection is NOT require
 <li>BiDi multilanguage support</li>
 <li>Uses View layer to detect Models (flexibility you've never seen)</li>
 </ul>
-<p>Of course one single file is limited, so here's the <a href='http://bztsrc.github.io/phppe3/phppe3_core.tgz'>PHPPE Pack</a> (another ~80KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.</p>
-<p>For full CMS capability you'll also need the Content Editor in <a href='http://bztsrc.github.io/phppe3/phppe3_cms.tgz'>PHPPE CMS</a> (28KiB), because PHPPE Core on it's own only serves contents.</p>
+<p>Of course one single file is limited, so here's the <a href='http://bztsrc.github.io/phppe3/phppe3_core.tgz'>PHPPE Pack</a> (another ~90KiB) to save the day and give you an easy start with configuration registry, email services, user management, SQL Query Builder etc.</p>
+<p>For full CMS capability you'll also need the Content Editor in <a href='http://bztsrc.github.io/phppe3/phppe3_cms.tgz'>PHPPE CMS</a> (46KiB), because PHPPE Core on it's own only serves contents.</p>
 
 <h2>Requirements</h2>
 <ul>
@@ -517,7 +517,7 @@ An application is written once, but used many-many times, that should make the p
 <h3>Important files and directories</h3>
 <table class='table table-striped'>
 <tr><td><b>phppe/config.php</b></td><td>the framework's global <a onclick='tab_switch("configuration");'>configuration</a></td></tr>
-<tr><td><b>data/log/<i>extension</i>.log</b></td><td>logs are generated here. The files php.log, db.log, diag.log and validate.log are handled by the Core iself</td></tr>
+<tr><td><b>data/log/<i>extension</i>.log</b></td><td>logs are generated here. The files php.log, phppe.log, db.log, diag.log and validate.log are handled by the Core iself</td></tr>
 <tr><td><b>public/.htaccess</b></td><td>permissions and url rewrite directives (used by Apache webserver. Not needed with nginx)</td></tr>
 <tr><td><b>public/favicon.ico</b></td><td>your project's logo</td></tr>
 <tr><td><b>public/index.php</b></td><td>the framework itself (don't touch)</td></tr>
@@ -571,7 +571,7 @@ The PHPPE concept of how a homepage is organized and should be generated is as f
 </ul>
 <h3>Core</h3>
 This is the heart of the single file framework, defined in <samp><a onclick='tab_switch("phppe_core");'>public/index.php</a></samp>. It's also the name of the first extension, that's located in <samp>vendor/phppe/Core</samp>, so to distingwish between, the latter called Pack.
-If the extension Core is not installed, the built-in Core will create the <a onclick='tab_switch("directory");'>directory structure</a> for it when executed in diagnostics mode.
+If the extension PHPPE Pack is not installed, the built-in Core will create the <a onclick='tab_switch("directory");'>directory structure</a> for it when executed in diagnostics mode.
 <h3>Diagnostics mode</h3>
 This can be <a onclick='tab_switch("running");'>invoked</a> only from CLI by passing the argument "--diag". In this mode Core will examine the ProjectRoot's directory structure, will fix missing files and if run with root
 privileges it will fix file permissions as well. Nonetheless it fires <a onclick='tab_switch("events:3");'>diag event</a>, so that extensions can run their own, specific diagnostic functions.
@@ -933,19 +933,22 @@ $ <span class='keyword'>crontab -e</span>
 *    * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron minute
 */15 * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron quaterly
 0    * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron hourly
+5    0 * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron daily
 */20 * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron myjob1
 */21 * * * * /usr/bin/php <i>(your DocumentRoot)</i>/index.php cron myjob2
 </pre>
-<p>Or, if you're a system administrator, use system wide configuration file</p>
+<p>It's important that in this case the script will be running with <a onclick='tab_switch("security");'>owner</a>'s rights. Or, if you're a system administrator,
+you can use system wide configuration file and specify user</p>
 <samp>/etc/cron.d/phppe_<i>(vhost name)</i>:</samp>
 <pre>
 *    * * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron minute
 */15 * * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron quaterly
 0    * * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron hourly
+5    0 * * * <i>(vhost's user name)</i> /usr/bin/php <i>(vhost's DocumentRoot)</i>/index.php cron daily
 </pre>
 <p>Example action handlers for these commands can be found in <a onclick='tab_switch("events");'>events</a> section. For each job, you'll have to implement <code>cron + ucfirst(jobname) ($arg)</code>, like <code>cronMinute($arg)</code> or <code>cronMyjob1($arg)</code>.</p>
 <h2>Running as webserver</h2>
-<p>You can create background jobs programatically as well with <a onclick='tab_switch("bg");'>Tools</a>.</p>
+<p>You can create background jobs programatically as well with <a onclick='tab_switch("bg");'>Tools</a>. With this interface the scripts will run with the <a onclick='tab_switch("security");'>webserver</a>'s rights.</p>
 <p><pre class='lineno'>1<br>2<br></pre>
 <pre class='php'>
 <span class='comment'>//! call $myClass->myMethod('cleanup','me') every 5 secs.</span>
@@ -955,6 +958,9 @@ $ <span class='keyword'>crontab -e</span>
 
 <div id='webserver' rel='apache,nginx,httpd' class='tab'>
 <h1>Webserver configuration</h1>
+<p>PHPPE is tested under Apache and nginx webservers. Apache is more common, while nginx has better performance.
+Both are capable of url rewriting which is a key feature to hide 'index.php' from the url. Here are two examples
+on how to do it.</p>
 <div class='row'>
     <div class='col-md-6'>
 <h2>Apache example</h2>
@@ -1451,7 +1457,7 @@ function <span class='function'>set</span>( <span class='variable'>$key</span>, 
 </pre></p>
 <p>Zero ttl means keep key in cache forever.<br>
 If the caching mechanism requires connection, it must be initialized in the constructor, using PHPPE\Core::$core->cache as argument.</p>
-PHPPE Core ships APC(u) and Files cache extensions. If you decide to use local files, you'll also need the garbage colletor, which hooked to the "minute" <a onclick='tab_switch("cron");'>background job</a>:
+PHPPE Pack ships APC(u) and Files cache extensions. If you decide to use local files, you'll also need the garbage colletor, which hooked to the "minute" <a onclick='tab_switch("cron");'>background job</a>:
 <pre>
 * * * * * php public/index.php cron minute
 </pre>
@@ -1461,7 +1467,7 @@ PHPPE Core ships APC(u) and Files cache extensions. If you decide to use local f
 
 <div id='cluster' class='tab' rel='loadbalance'>
 <h1>Clustering</h1>
-<p>On workers, install Core and ClusterCli. On the management server, Core, ClusterSrv and <a onclick='tab_switch("contents");'>CMS</a>.</p>
+<p>On workers, install Pack and ClusterCli. On the management server, Core, ClusterSrv and <a onclick='tab_switch("contents");'>CMS</a>.</p>
 <div class='alert alert-warning'>You have to set up <a onclick='tab_switch("cron");'>background jobs</a> properly in order to get Cluster working.</div>
 <h2>Installation</h2>
 <h3>Management nodes</h3>
@@ -1674,7 +1680,7 @@ your code will be called every time the asset queried.</p>
 <div id='contents' class='tab' rel='cms,eplos'>
 <h1>Contents</h1>
 <h3>Content Server</h3>
-<p>PHPPE Core can serve contents (generated by PHPPE CMS) on it's on, but it uses a database table for that. The scheme is supplied by <a onclick='tab_switch("downloads");'>PHPPE Pack</a> (vendor/phppe/Core/sql/pages.sql).</p>
+<p>PHPPE Core can serve contents (generated by PHPPE CMS) on it's own, but it uses a database table for that. The scheme is supplied by <a onclick='tab_switch("downloads");'>PHPPE Pack</a> (vendor/phppe/Core/sql/pages.sql).</p>
 <p>PHPPE\Content will look for pages if <a onclick='tab_switch("routing");'>routing</a> was unable to choose a <a onclick='tab_switch("controllers");'>controller</a>.</p>
 <h3>Content Editor<sup><small>PHPPE CMS</small></sup></h3>
 <p>To be able to create and modify contents on a Content Server site, you'll need to install <a onclick='tab_switch("downloads");'>PHPPE CMS</a> extension by copy'n'pasting one of these commands into your Terminal:</p>
@@ -2234,10 +2240,10 @@ This file is a standard PHP Composer json file, with additional elements:</p>
 
 <div id='coding' class='tab' rel='standards,style,psr-2'>
 <h1>Coding Standards</h1>
-<p>To be extremely small (80k is not a plenty of space for a PHP code you can take my word on that), the Core is compressed. With this only exception, all other PHP files must
+<p>To be extremely small (90k is not a plenty of space for a PHP code you can take my word on that), the Core is compressed. With this only exception, all other PHP files must
 follow <a href='https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md' target='_new'>PSR-2 Coding Style</a>.
-Altering Core's code is only allowed via hooks and url forges, never through file manipulation.
-If your code depends on others, make sure you call <a onclick='tab_switch("lib");'>PHPPE\Core::lib()</a> with proper dependency parameter.</p>
+<div class='alert alert-info'><b>NOTE</b> that PHPPE <a onclick='tab_switch("developer");'>Developer</a> ships a nice little tool that formats sources to PSR-2.</div>
+
 <h3>Comments and logging</h3>
 <p>It is strongly advised to write plenty of descriptive comments in your source. It is also highly recommended to put a lot of debug level <a onclick='tab_switch("log");'>PHPPE\Core::log()</a> call, so that you'll get a clue what is your code doing when it's running.</p>
 <h3>Definitions</h3>
@@ -2247,15 +2253,15 @@ If your code depends on others, make sure you call <a onclick='tab_switch("lib")
 <tr><td><b>(class)-&gt;</b></td><td>property or method of an instance of "class"</td></tr>
 </table>
 <h3>Class names</h3>
-<p>Class names follow StudyCaps. To clearly distinguish Add-Ons from other classes, they're in camelCaps, like "myWidget".
+<p>Class names follow <b>StudyCaps</b>. To clearly distinguish Add-Ons from other classes, they're in <b>camelCaps</b>, like "myWidget".
 Don't ever use underscore in your class names.</p>
 <h3>Method names</h3>
-<p>Method names are in camelCase. Again, don't use underscores in your method names.</p>
+<p>Method names are in <b>camelCase</b>. Again, don't use underscores in your method names.</p>
 <h3>Functions</h3>
 <p>Along with classes and methods, PHPPE Core also provides two widely used functions outside of it's namespace (which by the way are only wrappers around <a onclick='tab_switch("phppe_core");'>PHPPE</a> properties and method calls) for simplicity and to save you typing:</p>
 <ul>
-<li>L() - PHPPE\Core::$l</li>
-<li>url() - PHPPE\Http::url()</li>
+<li><a onclick='tab_switch("l");'>L()</a> - PHPPE\Core::$l</li>
+<li><a onclick='tab_switch("url");'>url()</a> - PHPPE\Http::url()</li>
 </ul>
 <p>The last two are often called in view templates.</p>
 <h3>Application or Extension?</h3>
