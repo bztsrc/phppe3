@@ -109,7 +109,7 @@ ins { background:rgba(0,255,0,0.5); }
 del { background:rgba(255,0,0,0.5); }
 ins img, ins iframe, ins canvas, ins video { border:2px solid rgba(0,255,0,0.5) !important; }
 del img, del iframe, del canvas, del video { border:2px solid rgba(255,0,0,0.5) !important; }
-.wyswyg_tag IMG { max-height:64px; }
+.wyswyg_tag IMG { max-width:128px !important; max-height:32px !important; }
 .wyswyg_popup INPUT.input, .wyswyg_popup TEXTAREA.input, .wyswyg_popup SELECT.input { background: rgba(32,32,32,0.95); color:#fff !important; vertical-align:middle;}
 .wyswyg_popup INPUT.reqinput, .wyswyg_popup TEXTAREA.reqinput, .wyswyg_popup SELECT.reqinput { background: rgba(48,32,32,0.95); color:#fff;}
 .wyswyg_popup INPUT.errinput, .wyswyg_popup TEXTAREA.errinput, .wyswyg_popup SELECT.errinput { background: rgba(128,32,32,0.95) !important; color:#fff !important;}

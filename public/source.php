@@ -1127,6 +1127,7 @@ namespace PHPPE {
             $r = null;
             $h = self::$db[self::$s];
             try {
+                $i = trim(strtolower(substr($q, 0, 6))) == 'select' || trim(strtolower(substr($q, 0, 4))) == 'show';
                 //! to maintain interoperability among different sql implementations, a replace
                 //! array is used with regexp pattern keys and replacement strings as value
                 //! see db() it's initialized there. The array is specified here:
@@ -1138,7 +1139,7 @@ namespace PHPPE {
                         }
                     }
                 }
-                $i = trim(strtolower(substr($q, 0, 6))) == 'select';
+                if(!$i && trim(strtolower(substr($q, 0, 6))) == 'select') $i=1;
                 //! prepare and execute the statement with arguments
                 $s = $h->prepare($q);
                 @$s->execute($a);

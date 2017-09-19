@@ -105,7 +105,9 @@ pe.resptable = {
       tblhdr.className=pe.resptable.instances[i].className;
       tblhdr.setAttribute('style','position:relative;');
       tblhdr.appendChild(ts[i].rows[0].cloneNode(true));
+      try{
       ts[i].rows[1].cells[0].className=ts[i].rows[0].cells[0].className;
+      }catch(e){}
       ts[i].rows[0].style.display='none';
 //      ts[i].style='margin-top:-'+ts[i].rows[0].offsetHeight+'px;';
       pagerdiv.appendChild(tblhdr);

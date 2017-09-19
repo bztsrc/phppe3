@@ -1,0 +1,8 @@
+table.result th { background:#B0B0B0; }
+table.result tr:nth-child(even){background:rgba(255,255,255,0.6);}
+table.result tr:nth-child(odd){background:rgba(240,240,240,0.6);}
+table.result th.dba_key { color:red; }
+table.result td, table.result th { padding:2px; border-left:solid 1px #808080; border-right:solid 1px #808080; border-bottom:solid 1px #808080;}
+table.result tr:hover { background:rgb(220,220,255); cursor:pointer; }
+.resptable_button { cursor:pointer; }
+.resptable_button_inactive { color:#A0A0A0; }

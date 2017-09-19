@@ -1,7 +1,7 @@
 <?php
 return [
-	"show create table" => ".schema",
-	"show tables" => ".tables",
+	"show columns from (.*)" => "pragma table_info(\\1)",
+	"show tables" => "select name from sqlite_master where type='table' order by name",
 	"truncate table" => "drop table"
 ];
 

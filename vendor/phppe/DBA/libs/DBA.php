@@ -26,52 +26,43 @@
 namespace PHPPE;
 
 use PHPPE\Core;
-use PHPPE\View;
-use PHPPE\DB;
-use PHPPE\Registry;
+use PHPPE\DS;
 
 class DBA
 {
     private static $self;
 
-	public function __construct()
-	{
-	}
+    public function __construct()
+    {
+    }
+    
+    function init($config) {
+    }
 
-	function init($config) {
-	}
+    /** Get tables from database */
+    static function tables() {
+        $arr = DS::exec("show tables");
+        $ret = [];
+        foreach($arr as $r) {
+            $v = reset($r);
+            $ret[$v] = $v;
+        }
+        return $ret;
+    }
 
-	public function diag()
-	{
-	}
-
-	public function route($app, $method)
-	{
-	}
-
-	public function ctrl($app, $method)
-	{
-	}
-
-	public function view($html)
-	{
-		return $html;
-	}
-
-	public function stat()
-	{
-	}
-
-	public function cronMinute($item)
-	{
-	}
-
-	public function cronQuoterly($item)
-	{
-	}
-
-	public function cronHourly($item)
-	{
-	}
-
+    /** Get column definitions for a table */
+    static function columns($table) {
+        $arr = DS::exec("show columns from ".$table);
+        $ret = [];
+        foreach($arr as $r) {
+            $name = !empty($r['Field'])? $r['Field'] : $r['name'];
+            $ret[] = [
+                'id' => $name,
+                'name' => ucfirst(L($name)),
+                'type' => strtolower(!empty($r['Type'])? $r['Type'] : $r['type']),
+                'key' => (!empty($r['Key']) && $r['Key']=='PRI') || (!empty($r['pk']) && $r['pk']) ? true : false
+            ];
+        }
+        return $ret;
+    }
 }

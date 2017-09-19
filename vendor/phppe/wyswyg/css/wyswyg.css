@@ -3,7 +3,7 @@ TEXTAREA.wyswyg {
     margin-top:-1px;
 }
 .wyswyg_icon {
-	background: url(../images/wyswyg.png) no-repeat;
+    background: url(../images/wyswyg.png) no-repeat;
     display:inline-block;
 }
 .wyswyg_toolbar BUTTON {
@@ -48,6 +48,7 @@ TEXTAREA.wyswyg {
 .wyswyg_icon-redo {	background-position:-648px 0px; }
 .wyswyg_icon-tag {	background-position:-696px 0px; }
 .wyswyg_icon-paste {	background-position:-720px 0px; }
+.wyswyg_tag IMG { max-width:128px !important; max-height:32px !important; }
 
 .wyswyg IMG[data-zoom] {
     padding: 2px !important;
