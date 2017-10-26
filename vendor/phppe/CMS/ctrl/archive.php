@@ -55,19 +55,19 @@ class CMSArchive
 
         //! load frame page for page parameters and dds
         $frame = DS::fetch("data,dds","pages","id='frame' AND (lang='' OR lang=?) AND created<=?","","",[Core::$client->lang,$_REQUEST['created']]);
-        $frame['dss'] = @json_decode($frame['dds'],true);
-        $frame['data'] = @json_decode($frame['data'],true);
-        View::assign("frame",$frame['data']);
+        $frame->dss = @json_decode($frame->dds,true);
+        $frame->data = @json_decode($frame->data,true);
+        View::assign("frame",$frame->data);
 
         //! load archive version
         //! normally you would use Model, but that would only return the latest version
         $page = DS::fetch( "*", "pages", "(id=? OR ? LIKE id||'/%') AND (lang='' OR lang=?) AND created=?", "", "id DESC,created DESC",[$item,$item,Core::$client->lang,$_REQUEST['created']]);
-        $this->title = $page['name'];
-        $title = L("ARCHIVE")." ".$page['name'];
-        if(is_string($page['data'])) $page['data']=@json_decode($page['data'],true);
-        if(is_array($page['data'])) foreach($page['data'] as $k=>$v) {$this->$k=$v;}
-        foreach(["id","name","lang","filter","template","pubd","expd","dds","ownerid","created"] as $k) $this->$k=$page[$k];
-        $p=@array_merge($frame['dds'],@json_decode($page['dds'],true));
+        $this->title = $page->name;
+        $title = L("ARCHIVE")." ".$page->name;
+        if(is_string($page->data)) $page->data=@json_decode($page->data,true);
+        if(is_array($page->data)) foreach($page->data as $k=>$v) {$this->$k=$v;}
+        foreach(["id","name","lang","filter","template","pubd","expd","dds","ownerid","created"] as $k) $this->$k=$page->$k;
+        $p=@array_merge($frame->dds,@json_decode($page->dds,true));
         if(is_array($p)) {
                 foreach($p as $k => $c)
                         if($k != "dds") {
@@ -84,15 +84,15 @@ class CMSArchive
 
                 //! load current version
                 $frame = DS::fetch("data,dds","pages","id='frame' AND (lang='' OR lang=?) AND publishid!=0","","created DESC",[Core::$client->lang]);
-                $frame['dss'] = @json_decode($frame['dds'],true);
-                $frame['data'] = @json_decode($frame['data'],true);
-                View::assign("frame",$frame['data']);
+                $frame->dss = @json_decode($frame->dds,true);
+                $frame->data = @json_decode($frame->data,true);
+                View::assign("frame",$frame->data);
 
                 $page = DS::fetch( "*", "pages", "id=? OR ? LIKE id||'/%'", "", "id DESC,created DESC",[$item,$item]);
-                if(is_string($page['data'])) $page['data']=@json_decode($page['data'],true);
-                if(is_array($page['data'])) foreach($page['data'] as $k=>$v) {$this->$k=$v;}
-                foreach(["id","name","lang","filter","template","pubd","expd","dds","ownerid","created"] as $k) $this->$k=$page[$k];
-                $p=@array_merge($frame['dds'],@json_decode($page['dds'],true));
+                if(is_string($page->data)) $page->data=@json_decode($page->data,true);
+                if(is_array($page->data)) foreach($page->data as $k=>$v) {$this->$k=$v;}
+                foreach(["id","name","lang","filter","template","pubd","expd","dds","ownerid","created"] as $k) $this->$k=$page->$k;
+                $p=@array_merge($frame->dds,@json_decode($page->dds,true));
                 if(is_array($p)) {
                         foreach($p as $k => $c)
                                 if($k != "dds") {
@@ -101,7 +101,7 @@ class CMSArchive
                                         } catch(\Exception $e) {Core::log("E",$item." ".$e->getMessage()." ".implode(" ",$c),"dds");}
                                 }
                 }
-                $this->title = $page['name'];
+                $this->title = $page->name;
                 $curr = View::template($this->template);
                 //! make sure diff splits on tag end
                 $this->result=htmlDiff(preg_replace("/>([^\ \t\n])/m","> \\1",$old),preg_replace("/>([^\ \t\n])/m","> \\1",$curr));

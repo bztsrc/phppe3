@@ -182,10 +182,10 @@ pe.extensions = {
             t+="</table>";
         }
         if(t==""||!wasinp) return;
-        t="<table id='confhdr"+i+"' width='95%'><tr><td colspan='2' align='center'><h2>"+this.pkgs[i].name+"</h2></td></tr>"+(waserr!=""?"<tr><td colspan='2' style='color:#FEA0A0;background:rgba(128,0,0,0.6);'>"+waserr+"</td></tr>":"")+"<tr><td>"+(isstr?'':tabs)+"</td><td><input type='button' class='button' style='float:"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?'left':'right')+";' value='<?=L("Save")?>'onclick='pe.extensions.saveconf("+i+");'></td></tr></table>"+t+"<table width='95%'><tr><td>";
+        t="<table id='confhdr"+i+"' width='95%'><tr><td colspan='2' align='center'><h2 class='exthdr'>"+this.pkgs[i].name+"</h2></td></tr>"+(waserr!=""?"<tr><td colspan='2' style='color:#FEA0A0;background:rgba(128,0,0,0.6);'>"+waserr+"</td></tr><tr><td colspan='2' style='height:5px!important;'></td></tr>":"")+"<tr><td>"+(isstr?'':tabs)+"</td><td><input type='button' class='button extbtn' style='float:"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?'left':'right')+";' value='<?=L("Save")?>'onclick='pe.extensions.saveconf("+i+");'></td></tr></table>"+t+"<table width='95%'><tr><td>";
         for(p in cfg)
             if(was[p]==null) t+="<input type='hidden' name='"+p+"' value='"+(cfg[p]!=null?cfg[p]:"")+"'>";
-        t+="</td><td><input type='button' class='button' style='float:"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?'left':'right')+";' value='<?=L("Save")?>'onclick='pe.extensions.saveconf("+i+");'></td></tr></table>";
+        t+="</td><td><input type='button' class='button extbtn' style='float:"+(LANG['rtl']!=null&&LANG['rtl']!=''&&LANG['rtl']!=false?'left':'right')+";' value='<?=L("Save")?>'onclick='pe.extensions.saveconf("+i+");'></td></tr></table>";
         document.getElementById('statusbg').style.visibility='visible';
         document.getElementById('status').innerHTML=t;
         document.getElementById('statusbg').style.visibility='visible';

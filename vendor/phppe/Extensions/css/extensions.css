@@ -42,13 +42,19 @@
     padding: 2px !important;
 }
 
-#status .button {
+.extbtn, #status .button {
 	color:#D0D0D0;
 	background:#606060;
 	padding:2px 20px 0px 20px;
 	border:#A0A0A0 outset 1px;
 	border-radius:4px;
 	font-weight:bold;
+}
+
+.exthdr {
+	color:#fff;
+	font-family:helvetica;
+	font-size:24px;
 }
 
 .conftable SELECT, .conftable INPUT, .conftable TEXTAREA {
