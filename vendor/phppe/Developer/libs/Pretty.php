@@ -33,7 +33,7 @@ class Pretty
 	static function getUsage()
 	{
 		echo(chr(27)."[96m".L("Usage").":".chr(27)."[0m\n  php public/index.php ".Core::$core->app." <extension>\n\n".
-			chr(27)."[96m".L("Format a PHP source to PSR-2 Coding Style.").chr(27)."[0m\n\n");
+			chr(27)."[96m".L("Format a PHP source or all PHP files in an extension to PSR-2 Coding Style.").chr(27)."[0m\n\n");
 	}
 
 
@@ -46,13 +46,17 @@ class Pretty
 	static function parse($extension)
 	{
 		$files=[];
-		chdir("vendor/phppe/".$extension);
-		foreach(["*.php", "*/*.php","*/*.js"] as $f)
-			$files=array_merge($files, glob($f));
-		echo(chr(27)."[96m".L("Scanning for files").":".chr(27)."[92m ".count($files).chr(27)."[0m found\n");
-		foreach($files as $f)
-			self::format($f);
-		chdir("../../..");
+		if(file_exists($extension))
+			self::format($extension);
+		else {
+			chdir("vendor/phppe/".$extension);
+			foreach(["*.php", "*/*.php","*/*.js"] as $f)
+				$files=array_merge($files, glob($f));
+			echo(chr(27)."[96m".L("Scanning for files").":".chr(27)."[92m ".count($files).chr(27)."[0m found\n");
+			foreach($files as $f)
+				self::format($f);
+			chdir("../../..");
+		}
 	}
 
 	static function format($file)
@@ -85,6 +89,20 @@ class Pretty
 				$words[]=substr($d,$j,$i-$j); $j=$i;
 				continue;
 			}
+			if ($d[$i] == '>' && $d[$i + 1] == '?') {
+				if($i-$j>0)
+					$words[]=trim(substr($d,$j,$i-$j));
+				$j = $i;
+				$i += 2;
+				while ($i + 1 < $l && ($d[$i] != '<' || $d[$i + 1] != '?')) {
+					if ($d[$i] == "\n")
+						$line++;
+					$i++;
+				}
+				$i+=2;
+				$words[]=substr($d,$j,$i-$j); $j=$i;
+				continue;
+			}
 			 //! comments
 			if ($d[$i] == '/' && $d[$i + 1] == '*') {
 				if($i-$j>0)
@@ -112,11 +130,13 @@ class Pretty
 				continue;
 			}
 			//! operators and other separators
-			if(in_array(substr($d,$i,2),['->','=>','?'.'>','<'.'?','==','!=','+='.'-=','*=','/=','%=','.=','++','--','::','&&','||'])) {
+			if(in_array(substr($d,$i,2),['->','=>','?'.'>','<'.'?','<'.'!','<=','=<','=<','==','!=','+=','-=','*=','/=','%=','.=','++','--','::','&&','||'])) {
 				if($i-$j>0)
 					$words[]=trim(substr($d,$j,$i-$j));
 				$j=$i;
 				if(substr($d,$i,5)=='<'.'?php') $i+=3;
+				if(substr($d,$i,3)=='===') $i++;
+				if(substr($d,$i,3)=='!==') $i++;
 				$i+=2;
 				$words[]=trim(substr($d,$j,$i-$j));
 				$j=$i;

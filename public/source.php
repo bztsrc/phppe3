@@ -328,7 +328,7 @@ namespace PHPPE {
             }
             //! set up client's timezone
             if(empty($this->tz)) {
-        	$this->tz = !empty($_SESSION[$L]) ? $_SESSION[$L] : 'UTC';
+                $this->tz = !empty($_SESSION[$L]) ? $_SESSION[$L] : 'UTC';
             }
             date_default_timezone_set($this->tz);
         }
@@ -1127,7 +1127,7 @@ namespace PHPPE {
             $r = null;
             $h = self::$db[self::$s];
             try {
-                $i = trim(strtolower(substr($q, 0, 6))) == 'select' || trim(strtolower(substr($q, 0, 4))) == 'show';
+                $i = strtolower(substr(trim($q), 0, 6)) == 'select' || strtolower(substr(trim($q), 0, 4)) == 'show';
                 //! to maintain interoperability among different sql implementations, a replace
                 //! array is used with regexp pattern keys and replacement strings as value
                 //! see db() it's initialized there. The array is specified here:
@@ -1138,8 +1138,8 @@ namespace PHPPE {
                             $q = preg_replace('/'.$k.'/ims', $v, $q);
                         }
                     }
+                    if(!$i && strtolower(substr(trim($q), 0, 6)) == 'select') $i=1;
                 }
-                if(!$i && trim(strtolower(substr($q, 0, 6))) == 'select') $i=1;
                 //! prepare and execute the statement with arguments
                 $s = $h->prepare($q);
                 @$s->execute($a);
@@ -1579,6 +1579,16 @@ namespace PHPPE {
             $i = 0;
             $l = strlen($d);
             while ($i < $l) {
+                if ($t == 'php' && ($d[$i] == '?' && $d[$i + 1] == '>')) {
+                    $j = $i;
+                    $i += 2;
+                    while ($i < $l && ($d[$i-1] != '<' || $d[$i] != '?')) {
+                        $i++;
+                    }
+                    $i++;
+                    $n .= substr($d, $j, $i - $j);
+                    continue;
+                }
                 $c = @substr($n, -1);
                 //! string literals
                 if (($d[$i] == "'" || $d[$i] == '"') && $c != '\\') {
@@ -1595,7 +1605,6 @@ namespace PHPPE {
                 }
                 //! remove comments
                 if ($t != 'css' && ($d[$i] == '/' && $d[$i + 1] == '/')) {
-                    $s = $i;
                     $i += 2;
                     while ($i < $l && $d[$i] != "\n") {
                         $i++;
@@ -1603,7 +1612,6 @@ namespace PHPPE {
                     continue;
                 }
                 if ($d[$i] == '/' && $d[$i + 1] == '*') {
-                    $s = $i;
                     $i += 2;
                     while ($i + 1 < $l && ($d[$i] != '*' || $d[$i + 1] != '/')) {
                         $i++;

@@ -7,6 +7,7 @@ namespace PHPPE\AddOn;
 use PHPPE\Core;
 use PHPPE\View;
 use PHPPE\Views;
+use PHPPE\Page;
 
 // L("pageinfo")
 class pageinfo extends \PHPPE\AddOn

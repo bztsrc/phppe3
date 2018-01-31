@@ -41,7 +41,7 @@ Http::route("tests", "Developer");
 Http::route("benchmark", "BenchmarkController");
 //! these are CLI only
 Http::route("mkrepo", "MkRepoController");
-Http::route("minify", "MinifyController");
+Http::route("minify", "MinifyController","action");
 Http::route("create", "CreateController");
 Http::route("lang",   "LangController");
 Http::route("pretty", "PrettyController","action");
