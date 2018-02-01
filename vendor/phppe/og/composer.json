@@ -22,7 +22,7 @@
 	"conf_hu": { "fbAppId":"Facebook Alk. Id", "ogSiteName":"Oldal neve" },
 
 	"type": "library",
-	"license": "LGPL-3.0+",
+	"license": "LGPL-3.0-or-later",
 
 	"require": {
 		"phppe/Core": "3.*"

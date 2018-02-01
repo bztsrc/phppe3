@@ -26,7 +26,7 @@
 	"version_normalized": "3.0.0.0",
 
 	"type": "library",
-	"license": "LGPL-3.0+",
+	"license": "LGPL-3.0-or-later",
 
 	"require": {
 		"phppe/Core": "3.*",

@@ -36,7 +36,7 @@
 	"conf_ar": { "expert":"خبير", "pagehistory":"تاريخ الصفحة", "purge":"التاريخ أقصى حجم","metas":"أسماء ميتا","default 8":"افتراضي 8" },
 
 	"type": "library",
-	"license": "LGPL-3.0+",
+	"license": "LGPL-3.0-or-later",
 
 	"require": {
 		"phppe/Core": "3.*",

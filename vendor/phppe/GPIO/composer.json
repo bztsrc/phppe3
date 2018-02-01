@@ -28,7 +28,7 @@
 	"conf": { "pins":"string", "emulate":"boolean" },
 
 	"type": "library",
-	"license": "LGPL-3.0+",
+	"license": "LGPL-3.0-or-later",
 
 	"homepage": "https://www.raspberrypi.org/documentation/hardware/raspberrypi/gpio/README.md",
 	"maintainer": { "name": "bzt" }

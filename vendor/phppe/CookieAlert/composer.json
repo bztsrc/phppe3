@@ -29,7 +29,7 @@
 	"conf_hu":{"cookiename":"Süti neve","message":"Üzenet","morelabel":"Tovább link felirat","moreurl":"Tovább link url","acceptlabel":"Elfogadom gomb felirat"},
 
 	"type": "library",
-	"license": "LGPL-3.0+",
+	"license": "LGPL-3.0-or-later",
 
 	"maintainer": { "name": "bzt" }
 }

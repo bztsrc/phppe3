@@ -67,7 +67,7 @@
 	"help_hu": { "mailer":"smtp=Beépített SMTP,log=Csak naplóz,mail=PHP mail,sendmail=Sendmail cső,db=Adatbázis sor,phpmailer=PHPMailer,swift=SWIFTmailer","db":"Az adatforrás PDO DSN-je"},
 
 	"type": "library",
-	"license": "LGPL-3.0+",
+	"license": "LGPL-3.0-or-later",
 
 	"require": {
 		"php": ">=7.0"
