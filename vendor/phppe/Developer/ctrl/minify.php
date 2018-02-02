@@ -28,7 +28,7 @@ class MinifyController {
 			if(empty($data))
 				die(chr(27)."[91munable to read ".$_SERVER['argv'][2].chr(27)."[0m\n");
 			$i=strpos($data,"*/")+2;
-			$out=substr($data,0,$i)."\n".Assets::minify(substr($data,$i),"php");
+			$out=substr($data,0,$i)."\n".str_replace("else if","elseif",Assets::minify(substr($data,$i),"php"));
 			$f=!empty($_SERVER['argv'][3])?$_SERVER['argv'][3]:$_SERVER['argv'][2];
 			echo("  ".sprintf("%-40s ".chr(27)."[90m%6d",substr($f,-40), strlen($data)));
 			if(!file_put_contents($f,$out))

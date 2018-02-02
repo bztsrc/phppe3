@@ -3972,7 +3972,7 @@ class ClassMap extends Extension
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!L Site is temporarily down for maintenance></h1>");
             i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
-            i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0+\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$R\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
+            i('composer.json', "{\n\t\"name\":\"phppe3\",\n\t\"version\":\"1.0.0\",\n\t\"keywords\":[\"phppe3\",\"\"],\n\t\"license\":[\"LGPL-3.0-or-later\"],\n\n\t\"type\":\"project\",\n\t\"repositories\":[\n\t\t{\"type\":\"composer\",\"url\":\"$R\"}\n\t],\n\t\"require\":{\"phppe/Core\":\"3.*\"},\n\n\t\"scripts\":{\"post-update-cmd\":\"sudo php public/index.php --diag\"}\n}\n");
             i('.gitignore', ".tmp\nphppe\nvendor\n");
             if ($E) {
                 self::log('E', "Wrong permissions:\n$E", 'diag');
