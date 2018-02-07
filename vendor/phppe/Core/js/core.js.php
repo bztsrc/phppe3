@@ -246,7 +246,6 @@ function pe_w()
 /*
  * PE Plugins
  */
-var pe={};
 
 /*
  *   JS Cookie support

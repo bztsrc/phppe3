@@ -1,0 +1,24 @@
+{
+	"name": "phppe/Captcha",
+	"name_en": "C.A.P.T.C.H.A.",
+
+	"description": "Tell computers from human apart on forms.",
+	"description_hu": "Kiszűri a robotokat az űrlapok kitöltésekor.",
+	"description_ru": "Отфильтруйте компьютеры в формах.",
+	"description_de": "Computer auf Formularen filtern.",
+	"description_es": "Filtra las computadoras en formularios.",
+	"description_fr": "Filtrer les ordinateurs sur les formulaires.",
+	"description_ch": "过滤表单上的计算机。",
+	"description_he": "סנן מחשבים בטפסים.",
+	"description_ar": "تصفية أجهزة الكمبيوتر في النماذج.",
+
+	"version": "3.0.0",
+	"version_normalized": "3.0.0.0",
+
+	"type": "library",
+	"license": "LGPL-3.0-or-later",
+
+	"keywords": [ "User Input" ],
+
+	"maintainer": { "name": "bzt" }
+}

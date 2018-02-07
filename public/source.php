@@ -228,8 +228,13 @@ namespace PHPPE {
             $d = [];
             //! get prefered language from browser or from environment
             if (empty($_SESSION[$L])) {
-                $i = 'HTTP_ACCEPT_LANGUAGE';
-                $d = explode(',', strtr(!empty($_SERVER[$i]) ? $_SERVER[$i] : (getenv('LANG') || 'en'), ['/' => '']));
+                //! user preference
+                if(!empty($_SESSION['pe_u']->data['lang']))
+                    $d=[$_SESSION['pe_u']->data['lang']];
+                else {
+                    $i = 'HTTP_ACCEPT_LANGUAGE';
+                    $d = explode(',', strtr(!empty($_SERVER[$i]) ? $_SERVER[$i] : (getenv('LANG') || 'en'), ['/' => '']));
+                }
             }
             //! this can be overriden from url
             if (!empty($_REQUEST['lang'])) {
@@ -357,8 +362,9 @@ namespace PHPPE {
                     $this->id = $id;
                     $this->load($id);
                 } else {
+                    $d=get_object_vars($this);
                     foreach($id as $k=>$v) {
-                        if($k[0]!="_")
+                        if($k[0]!="_" && array_key_exists($k,$d))
                             $this->$k=$v;
                     }
                 }
@@ -579,21 +585,24 @@ namespace PHPPE {
                 //! superuser's name
                 $A = 'admin';
                 if (Core::isTry() && !empty($_REQUEST['id'])) {
-                    foreach($_SESSION as $k=>$v) if(substr($k,0,3)!="pe_") unset($_SESSION[$k]);
-                    //don't accept password in GET parameter
-                    if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) &&
-                        password_verify($_POST['pass'], Core::$core->masterpasswd)) {
-                        $_SESSION['pe_u']->id = -1;
-                        $_SESSION['pe_u']->name = $A;
-                    } else {
-                        //! *** LOGIN Event ***
-                        Core::event("login", [$_REQUEST['id'],$_POST['pass']]);
-                    }
-                    if(!empty($_SESSION['pe_u']->id)) {
-                        Core::log('A', 'Login '.$_SESSION['pe_u']->name, 'users');
-                        Http::redirect();
-                    } else {
-                        Core::error(L('Bad username or password'), 'id');
+                    Core::req2arr("login");
+                    if(!Core::isError()) {
+                        foreach($_SESSION as $k=>$v) if(substr($k,0,3)!="pe_") unset($_SESSION[$k]);
+                        //don't accept password in GET parameter
+                        if ($_REQUEST['id'] == $A && !empty(Core::$core->masterpasswd) &&
+                            password_verify($_POST['pass'], Core::$core->masterpasswd)) {
+                            $_SESSION['pe_u']->id = -1;
+                            $_SESSION['pe_u']->name = $A;
+                        } else {
+                            //! *** LOGIN Event ***
+                            Core::event("login", [$_REQUEST['id'],$_POST['pass']]);
+                        }
+                        if(!empty($_SESSION['pe_u']->id)) {
+                            Core::log('A', 'Login '.$_SESSION['pe_u']->name, 'users');
+                            Http::redirect();
+                        } else {
+                            Core::error(L('Bad username or password'), 'id');
+                        }
                     }
                 }
             } elseif (Core::$core->app == 'logout') {
@@ -1170,9 +1179,10 @@ namespace PHPPE {
                     if (!empty($f) && file_exists($f)) {
                         $c = file_get_contents($f);
                     }
-                    //! if scheme not found
+                    //! if scheme not found. Only log pages and views missing in debug runlevel
                     if (empty($c)) {
-                        Core::log('E', $E, 'db');
+                        if(($d!="pages"&&$d!="views") || Core::$core->runlevel > 1)
+                            Core::log('E', $E, 'db');
                         throw $e;
                     }
                     if (is_array($h->s)) {
@@ -1624,7 +1634,7 @@ namespace PHPPE {
                     //! add a space to separate words if necessary
                     if (
                         (($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z') || ($c >= '0' && $c <= '9')) &&
-                        ($d[$i + 1] == '\\' || $d[$i + 1] == '/' || $d[$i + 1] == '_' || $d[$i + 1] == '*' || ($d[$i + 1] >= 'a' && $d[$i + 1] <= 'z') || ($d[$i + 1] >= 'A' && $d[$i + 1] <= 'Z') || ($d[$i + 1] >= '0' && $d[$i + 1] <= '9') || $d[$i + 1] == '#')
+                        ($d[$i + 1] == '\\' || $d[$i + 1] == '/' || $d[$i + 1] == '_' || $d[$i + 1] == '*' || ($d[$i + 1] >= 'a' && $d[$i + 1] <= 'z') || ($d[$i + 1] >= 'A' && $d[$i + 1] <= 'Z') || ($d[$i + 1] >= '0' && $d[$i + 1] <= '9') || $d[$i + 1] == '#' || ($t == 'css' && $d[$i+1]=='.'))
                     ) {
                         $n .= ' ';
                     }
@@ -1634,7 +1644,10 @@ namespace PHPPE {
                 //! remove extra spaces
                 if ($d[$i] == ' ' &&
                     (!(($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z') || ($c >= '0' && $c <= '9')) ||
-                    !($d[$i + 1] == '\\' || $d[$i + 1] == '/' || $d[$i + 1] == '_' || ($d[$i + 1] >= 'a' && $d[$i + 1] <= 'z') || ($d[$i + 1] >= 'A' && $d[$i + 1] <= 'Z') || ($d[$i + 1] >= '0' && $d[$i + 1] <= '9') || $d[$i + 1] == '#' || $d[$i + 1] == '*' || ($t == 'js' && $d[$i + 1] == '$')))) {
+                    !($d[$i + 1] == '\\' || $d[$i + 1] == '/' || $d[$i + 1] == '_' || ($d[$i + 1] >= 'a' && $d[$i + 1] <= 'z') || 
+                    ($d[$i + 1] >= 'A' && $d[$i + 1] <= 'Z') || ($d[$i + 1] >= '0' && $d[$i + 1] <= '9') || $d[$i + 1] == '#' || $d[$i + 1] == '*' || 
+                    ($t == 'css' && $d[$i+1]=='.') ||
+                    ($t == 'js' && $d[$i + 1] == '$')))) {
                     ++$i;
                     continue;
                 }
@@ -1671,7 +1684,7 @@ namespace PHPPE {
                     $data = (array)DS::fetch("a.*,b.ctrl", "pages a LEFT JOIN views b ON a.template=b.id",
                         "(a.id=? OR ? LIKE a.id||'/%') AND ".
                         "(a.lang='' OR a.lang=?) AND ".(ClassMap::has("PHPPE\\CMS") &&
-                        get_class(View::getval('app'))=="PHPPE\\Content" &&
+                        @get_class(View::getval('app'))=="PHPPE\\Content" &&
                         Core::$user->has("siteadm|webadm")?"":"a.publishid!=0 AND ").
                         "a.pubd<=CURRENT_TIMESTAMP AND (a.expd='' OR a.expd=0 OR a.expd>CURRENT_TIMESTAMP)",
                         "", "a.id DESC,a.created DESC",
@@ -2332,7 +2345,7 @@ namespace PHPPE {
                             $w = '<form'.(!empty($A[4]) ? " role='form'" : '')." name='".$n."' action='".url(!empty($A[2]) && $A[2] != '-' ? $A[2] : '').
                                 "' class='".(!empty($A[1]) && $A[1] != '-' ? $A[1] : 'form-vertical').
                                 "' method='post' enctype='multipart/form-data'".
-                                (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').
+                                (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').(!empty($A[4])?' '.$A[4]:'').
                                 "><input type='hidden' name='MAX_FILE_SIZE' value='".Core::$core->fm.
                                 "'><input type='hidden' name='pe_s' value='".@$_SESSION['pe_s'][$c].
                                 "'><input type='hidden' name='pe_f' value='".$n."'>".(!empty(Core::$core->item) ?
@@ -2676,7 +2689,7 @@ namespace PHPPE {
                     $d = '<script';
                     $e = "</script>\n";
                     $a = " src='".$I.'js/';
-                    $O = '';
+                    $O = $d.">\nvar pe={};\n".$e;
                     if (!empty(self::$hdr['jslib'])) {
                         //! if aggregation allowed
                         if (!empty(Cache::$mc) && empty(Core::$core->noaggr)) {
@@ -2909,7 +2922,7 @@ namespace PHPPE {
                             }
                         }
                     // @codeCoverageIgnoreStart
-                    } catch (\Exception $e) {
+                    } catch (\Exception $F) {
                     }
                     // @codeCoverageIgnoreEnd
                 }
@@ -3439,7 +3452,7 @@ class ClassMap extends Extension
         public $now;                     //!< current server timestamp, from primary datasource if available
         //configurable properties
         public $title;                   //!< title of the site
-        public $runlevel = 2;            //!< 0-production,1-test,2-development,3-debug
+        public $runlevel = 1;            //!< 0-production,1-test,2-development,3-debug
         public $syslog = false;          //!< send logs to syslog
         public $trace = false;           //!< save trace to log messages
         public $timeout;                 //!< session timeout
@@ -3663,7 +3676,6 @@ class ClassMap extends Extension
             $this->libs['ClassMap'] = new ClassMap();
             //! register built-in modules (middleware classes)
             $this->libs['DS'] = new DS($this->db);
-            $this->libs['Client'] = new Client(!empty($this->tz)?['tz'=>$this->tz]:[]);
             $cls = '\\PHPPE\\User';
             //! this code is tricky. Core defines PHPPE\User, while Pack ships PHPPE\Users.
             //! we'll use the later if found, and fallback to the former.
@@ -3671,6 +3683,8 @@ class ClassMap extends Extension
                 $cls .= 's';
             }
             $this->libs['Users'] = new $cls();
+            $this->libs['Client'] = new Client(['tz'=>!empty($this->tz)?$this->tz:
+                (!empty($_SESSION['pe_u']->data['tz'])?$_SESSION['pe_u']->data['tz']:'')]);
             $this->libs['Cache'] = new Cache($this->cache);
             $this->libs['Assets'] = new Assets();
             $this->libs['Tools'] = new Tools();
@@ -4072,7 +4086,10 @@ class ClassMap extends Extension
 
                 self::bm("routing");
                 //! instantiate application
-                $appObj = new $appCls();
+                $c="vendor/phppe/".$app."/config.php";
+                if(!file_exists($c)) $c="app/config.php";
+                if(file_exists($c)) $c=@include($c);
+                $appObj = new $appCls(is_array($c)?$c:[]);
 
                 View::setPath(self::$paths[strtolower($app)]);
                 View::assign('app', $appObj);
@@ -4100,7 +4117,9 @@ class ClassMap extends Extension
                         $ac = 'action';
                     }
                     if (method_exists($appObj, $ac)) {
-                        !empty($args) ? call_user_func_array([$appObj, $ac], $args) : $appObj->$ac($this->item);
+                        if(empty($args)) $args=array_slice(explode("/",$this->url),2);
+                        if(empty($args)) $args=[$this->item];
+                        call_user_func_array([$appObj, $ac], $args);
                     }
                     self::bm("template");
                     $T = View::generate($this->template, $N);
@@ -4856,11 +4875,11 @@ namespace PHPPE\AddOn {
  //L("Hidden value")
     class hidden extends \PHPPE\AddOn
     {
-        public $conf = "*obj.field";
+        public $conf = "*obj.field [value]";
 
         public function edit()
         {
-            return "<input type='hidden' name='".$this->fld."' value='".htmlspecialchars(trim($this->value))."'>";
+            return "<input type='hidden' name='".$this->fld."' value='".htmlspecialchars(trim(!empty($this->attrs[0])?View::getval($this->attrs[0]):$this->value))."'>";
         }
     }
 
@@ -4925,7 +4944,8 @@ namespace PHPPE\AddOn {
                     View::js('pe_mt(e,m)', 'var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;return(c==8||c==46||o.value.length<=m);');
                 }
 
-                return '<textarea'.@View::v($t, $b[1], $b[0])." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '')."$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>".$v.'</textarea>';
+                return '<textarea'.@View::v($t, $b[1], $b[0])." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '').
+                (!empty($b[2])?" onkeyup='return ".$b[2].";'":'')."$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>".$v.'</textarea>';
             }
             if (!empty($a[2])&&is_array($a[2])) {
                 $o="<datalist id='".$this->fld.":list'>";
@@ -5109,7 +5129,7 @@ namespace PHPPE\AddOn {
             $e = Core::isError($t->name);
 
             return($e ? "<span class='errinput'>" : '').
-            '<label><input'.@View::v($t, empty($a[2]) ? 'checkbox' : $a[2], $a[1])." type='checkbox'".(!empty($t->value) ? ' checked' : '').' value="'.htmlspecialchars(trim(!empty($t->args[0]) ? $t->args[0] : '1')).'">'.
+            '<label><input'.@View::v($t, empty($a[2]) ? 'checkbox' : $a[2], $a[1])." type='checkbox'".(!empty($t->value) ? ' checked' : '').' value="'.htmlspecialchars(trim(!empty($t->args[0]) ? $t->args[0] : '1')).'"> '.
             (!empty($a[0]) ?  L($a[0]) : '').'</label>'.
             ($e ? '</span>' : '');
         }
@@ -5143,7 +5163,7 @@ namespace PHPPE\AddOn {
             $b = $t->attrs;
 
             return '<label><input'.@View::v($t, empty($b[2]) ? 'radiobutton' : $b[2], $b[1], [], '', '_'.sha1($a[0]))." type='radio'".
-            ($t->value == $a[0] ? ' checked' : '').' value="'.htmlspecialchars(trim(!empty($a[0]) ? $a[0] : '1')).'">'.
+            ($t->value == $a[0] ? ' checked' : '').' value="'.htmlspecialchars(trim(!empty($a[0]) ? $a[0] : '1')).'"> '.
             (!empty($b[0]) ? L($b[0]) : '').'</label>';
         }
     }

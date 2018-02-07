@@ -45,6 +45,6 @@
 		"phppe/wyswyg": "*"
 	},
 
-    "homepage": "http://bztsrc.github.io/phppe3/index.html#contents",
+	"homepage": "http://bztsrc.github.io/phppe3/index.html#contents",
 	"maintainer": { "name": "bzt" }
 }
