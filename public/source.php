@@ -267,36 +267,35 @@ namespace PHPPE {
                 //! Detect values for Web
                 // @codeCoverageIgnoreStart
                 $d = 'HTTP_USER_AGENT';
-                $c = isset($_REQUEST['nojs'])||empty($_SERVER[$d])||$_SERVER[$d]=="API"||
+                if (!isset($_REQUEST['nojs']) && empty($_SESSION[$L]) && empty($_REQUEST['cache']) && !(empty($_SERVER[$d])||$_SERVER[$d]=="API"||
                     strpos(strtolower($_SERVER[$d]),"wget")!==false||
-                    strpos(strtolower($_SERVER[$d]),"curl")!==false;
-                if (Core::$core->app == 'index' && empty($_SESSION[$L]) &&
-                   !$c && empty($_REQUEST['cache'])) {
+                    strpos(strtolower($_SERVER[$d]),"curl")!==false)) {
                     //! this is a small JavaScript page that shows up for the first time
                     //! after collecting information it redirects user so fast, he won't
                     //! notice a thing.
-                    $c = L('Enable JavaScript');
                     if (empty($_REQUEST['n'])) {
                         $_SESSION['pe_n'] = sha1(rand());
                         //! save redirection url
-                        Http::_r();
+                        Http::_r();$u=$_SESSION['pe_r'].(strpos($_SERVER['REQUEST_URI'], '?') === false ? '?' : '&');
                         $g = 'getTimezoneOffset()';
                         $d = "var d%=new Date();d%.setDate(1);d%.setMonth(@);d%=parseInt(d%.$g);";
                         die("<html><script type='text/javascript'>var now=new Date();".strtr($d, ['%' => '1', '@' => '1']).
                         strtr($d, ['%' => '2', '@' => '7']).
-                        "txt=now.toString().replace(/[^\(]+\(([^\)]+)\)/,\"$1\");document.location.href=\"".
-                        $_SESSION['pe_r'].
-                        (strpos($_SERVER['REQUEST_URI'], '?') === false ? '?' : '&').
-                        'n='.$_SESSION['pe_n']."&t=\"+(-now.$g*60)+\"&d=\"+(d1==d2||(d1<d2&&d1==parseInt(now.$g))||(d1>d2&&d2==parseInt(now.$g))?\"1\":\"0\")+\"&w=\"+screen.availWidth+\"&h=\"+screen.availHeight;</script>$c</html>");
+                        "txt=now.toString().replace(/[^\(]+\(([^\)]+)\)/,\"$1\");document.location.href=\"".$u.
+                        'n='.$_SESSION['pe_n']."&t=\"+(-now.$g*60)+\"&d=\"+(d1==d2||(d1<d2&&d1==parseInt(now.$g))||(d1>d2&&d2==parseInt(now.$g))?\"1\":\"0\")+\"&w=\"+screen.availWidth+\"&h=\"+screen.availHeight;</script><meta http-equiv='refresh' content='0;".$u."nojs'></html>");
                     } elseif ($_REQUEST['n'] == $_SESSION['pe_n']) {
                         unset($_SESSION['pe_n']);
                         $_SESSION[$L] = timezone_name_from_abbr('', $_REQUEST['t'] + 0, $_REQUEST['d'] + 0);
                         $_SESSION['pe_w'] = floor($_REQUEST['w']);
                         $_SESSION['pe_h'] = floor($_REQUEST['h']);
                         Http::redirect();
-                    } else {
-                        die($c);
                     }
+                }
+                if (isset($_REQUEST['nojs'])||isset($_REQUEST['n'])||!empty($_SESSION['pe_n'])) {
+                    if(empty($_COOKIE)){$t=View::template("nocookies");die($t?$t:L("Enable cookies"));}
+                    unset($_SESSION['pe_n']);
+                    $_SESSION[$L]="UTC";
+                    Http::redirect();
                 }
                 // @codeCoverageIgnoreEnd
                 //! get client's real ip address
@@ -440,7 +439,7 @@ namespace PHPPE {
             //build the arguments array
             $a = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k[0] != '_' && ($f || $k != 'id') && $k != 'created') {
+                if ($k[0] != '_' && ($f || $k != 'id') && ($k != 'created'||!empty($v)) ) {
                     $a[$k] = is_scalar($v) ? $v : json_encode($v);
                 }
             }
@@ -1644,8 +1643,8 @@ namespace PHPPE {
                 //! remove extra spaces
                 if ($d[$i] == ' ' &&
                     (!(($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z') || ($c >= '0' && $c <= '9')) ||
-                    !($d[$i + 1] == '\\' || $d[$i + 1] == '/' || $d[$i + 1] == '_' || ($d[$i + 1] >= 'a' && $d[$i + 1] <= 'z') || 
-                    ($d[$i + 1] >= 'A' && $d[$i + 1] <= 'Z') || ($d[$i + 1] >= '0' && $d[$i + 1] <= '9') || $d[$i + 1] == '#' || $d[$i + 1] == '*' || 
+                    !($d[$i + 1] == '\\' || $d[$i + 1] == '/' || $d[$i + 1] == '_' || ($d[$i + 1] >= 'a' && $d[$i + 1] <= 'z') ||
+                    ($d[$i + 1] >= 'A' && $d[$i + 1] <= 'Z') || ($d[$i + 1] >= '0' && $d[$i + 1] <= '9') || $d[$i + 1] == '#' || $d[$i + 1] == '*' ||
                     ($t == 'css' && $d[$i+1]=='.') ||
                     ($t == 'js' && $d[$i + 1] == '$')))) {
                     ++$i;
@@ -4941,7 +4940,7 @@ namespace PHPPE\AddOn {
             }
             if (!empty($a[1]) && $a[1] > 0) {
                 if ($a[0] > 0) {
-                    View::js('pe_mt(e,m)', 'var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;return(c==8||c==46||o.value.length<=m);');
+                    View::js('pe_mt(e,m)', 'var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;return(c==8||c==46||o.value.length<m);');
                 }
 
                 return '<textarea'.@View::v($t, $b[1], $b[0])." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '').
@@ -5162,8 +5161,8 @@ namespace PHPPE\AddOn {
             $a = $t->args;
             $b = $t->attrs;
 
-            return '<label><input'.@View::v($t, empty($b[2]) ? 'radiobutton' : $b[2], $b[1], [], '', '_'.sha1($a[0]))." type='radio'".
-            ($t->value == $a[0] ? ' checked' : '').' value="'.htmlspecialchars(trim(!empty($a[0]) ? $a[0] : '1')).'"> '.
+            return '<label><input'.@View::v($t, empty($b[2]) ? 'radiobutton' : $b[2], $b[1], [], '', '_'.(is_scalar($a[0])?$a[0]:sha1($a[0])))." type='radio'".
+            ($t->value == $a[0] ? ' checked' : '').' value="'.htmlspecialchars(trim(isset($a[0]) ? $a[0] : '1')).'"> '.
             (!empty($b[0]) ? L($b[0]) : '').'</label>';
         }
     }
