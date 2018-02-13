@@ -279,21 +279,23 @@ namespace PHPPE {
                         Http::_r();$u=$_SESSION['pe_r'].(strpos($_SERVER['REQUEST_URI'], '?') === false ? '?' : '&');
                         $g = 'getTimezoneOffset()';
                         $d = "var d%=new Date();d%.setDate(1);d%.setMonth(@);d%=parseInt(d%.$g);";
-                        die("<html><script type='text/javascript'>var now=new Date();".strtr($d, ['%' => '1', '@' => '1']).
+                        die("<html><script type='text/javascript' style='display:none;'>var now=new Date();".strtr($d, ['%' => '1', '@' => '1']).
                         strtr($d, ['%' => '2', '@' => '7']).
-                        "txt=now.toString().replace(/[^\(]+\(([^\)]+)\)/,\"$1\");document.location.href=\"".$u.
+                        "txt=now.toString().replace(/[^\(]+\(([^\)]+)\)/,\"$1\");document.location.href=\"htt\"+\"".substr($u,3).
                         'n='.$_SESSION['pe_n']."&t=\"+(-now.$g*60)+\"&d=\"+(d1==d2||(d1<d2&&d1==parseInt(now.$g))||(d1>d2&&d2==parseInt(now.$g))?\"1\":\"0\")+\"&w=\"+screen.availWidth+\"&h=\"+screen.availHeight;</script><meta http-equiv='refresh' content='0;".$u."nojs'></html>");
                     } elseif ($_REQUEST['n'] == $_SESSION['pe_n']) {
                         unset($_SESSION['pe_n']);
                         $_SESSION[$L] = timezone_name_from_abbr('', $_REQUEST['t'] + 0, $_REQUEST['d'] + 0);
                         $_SESSION['pe_w'] = floor($_REQUEST['w']);
                         $_SESSION['pe_h'] = floor($_REQUEST['h']);
+                        $_SESSION['pe_j'] = true;
                         Http::redirect();
                     }
                 }
                 if (isset($_REQUEST['nojs'])||isset($_REQUEST['n'])||!empty($_SESSION['pe_n'])) {
-                    if(empty($_COOKIE)){$t=View::template("nocookies");die($t?$t:L("Enable cookies"));}
+                    if(empty($_COOKIE)){$t=View::template("nocookies");die($t?$t:L("Please enable cookies"));}
                     unset($_SESSION['pe_n']);
+                    $_SESSION['pe_j']=false;
                     $_SESSION[$L]="UTC";
                     Http::redirect();
                 }
@@ -308,6 +310,7 @@ namespace PHPPE {
                 //! user is http auth user
                 $d = 'PHP_AUTH_USER';
                 $this->user = !empty($_SERVER[$d]) ? $_SERVER[$d] : '';
+                $this->js = $_SESSION['pe_j'];
             } else {
                 //! detect values for CLI
                 $T = getenv('TZ');
@@ -328,6 +331,7 @@ namespace PHPPE {
                 //! user is standard unix user
                 $d = getenv('USER');
                 $this->user = !empty($d) ? $d : '';
+                $this->js = false;
                 Core::$core->noframe = 1;
             }
             //! set up client's timezone
@@ -2358,7 +2362,7 @@ namespace PHPPE {
                                 Core::$l['dateformat'] : 'Y-m-d').($t == 'time' ? ' H:i:s' : ''), self::ts($v)) : (!empty($A[1]) ? '' : L('Epoch'));
                             break;
                         case 'difftime' :
-                            $w = '';
+                            $w = ''; $l='%s';
                             $v = self::getval($A[0]);
                             if (!empty($A[1])) {
                                 if (!$v) {
@@ -2368,13 +2372,14 @@ namespace PHPPE {
                                 $v -= self::ts(self::getval($A[1]));
                             }
                             if ($v < 0) {
-                                $w = '- ';
+                                if(!empty(Core::$l['%s ago'])) $l=L('%s ago');
+                                else $l = '- %s';
                                 $v = -$v;
                             }
                             $c = floor($v / 86400);
                             $b = floor(($v - $c * 86400) / 3600);
                             $a = floor(($v - $c * 86400 - $b * 3600) / 60);
-                            $w .= $c ? "$c ".L('day'.($c > 1 ? 's' : '')) : ($b ? "$b ".L('hour'.($b > 1 ? 's' : '')) : '').($a || !$b ? ($b ? ', ' : '')."$a ".L('min'.($a > 1 ? 's' : '')) : '');
+                            $w = sprintf($l,$c ? "$c ".L('day'.($c > 1 ? 's' : '')) : ($b ? "$b ".L('hour'.($b > 1 ? 's' : '')) : '').($a || !$b ? ($b ? ', ' : '')."$a ".L('min'.($a > 1 ? 's' : '')) : ''));
                             break;
                         //dump object - this only works if runlevel is at least testing (1)
                         case 'dump' :
@@ -4943,7 +4948,7 @@ namespace PHPPE\AddOn {
                     View::js('pe_mt(e,m)', 'var c,o;if(!e)e=window.event;o=e.target;c=e.keyCode?e.keyCode:e.which;return(c==8||c==46||o.value.length<m);');
                 }
 
-                return '<textarea'.@View::v($t, $b[1], $b[0])." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '').
+                return '<textarea'.@View::v($t, $b[1], $b[0],$a)." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '').
                 (!empty($b[2])?" onkeyup='return ".$b[2].";'":'')."$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>".$v.'</textarea>';
             }
             if (!empty($a[2])&&is_array($a[2])) {

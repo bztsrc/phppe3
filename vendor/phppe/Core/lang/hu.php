@@ -78,7 +78,7 @@ return [
 	"failed to upload file." => "nem sikerült a feltöltés!",
 	"is a required field." => "kötelező mező!",
 	"Access denied" => "Hozzáférés megtagadva",
-	"Enable JavaScript" => "Nincs engedélyezve a JavaScript",
+	"Please enable cookies" => "Kérem engedélyezze a sütiket",
 	"Cache" => "Gyorsítótár",
 	"Press me" => "Kattints",
 	"No action" => "Nincs megadva teendő",

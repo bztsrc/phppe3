@@ -24,10 +24,8 @@ class captcha extends \PHPPE\AddOn
     public function edit()
     {
         // generate image
-        $a=hexdec(substr(session_id(),3,1));
-        $b=hexdec(substr(session_id(),8,1));
-        $c=rand(1,floor(($a>$b?$a:$b)/2));
-        if($a>$b) { $a-=$c; $b+=$c; } else { $a+=$c; $b-=$c; }
+        $a=rand(1,16); $b=rand(1,16);
+        $_SESSION['captcha']=intval($a+$b);
         $t=$a." + ".$b." =";
         $w=(strlen($t)+2)*9;
         $im=imagecreatetruecolor($w,18);
@@ -55,9 +53,7 @@ class captcha extends \PHPPE\AddOn
      */
     public static function validate($n, &$v, $a, $t)
     {
-        return [
-            $v==hexdec(substr(session_id(),3,1))+hexdec(substr(session_id(),8,1)),
-            'is a required field.',
-       ];
+        $c=$_SESSION['captcha']; unset($_SESSION['captcha']);
+        return [ $v==$c, 'is a required field.' ];
     }
 }

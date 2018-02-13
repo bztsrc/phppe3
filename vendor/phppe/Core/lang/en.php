@@ -35,6 +35,7 @@ return [
 	"day4" => "Th",
 	"day5" => "Fr",
 	"day6" => "St",
+	"%s ago" => "%s ago",
 	"hacker" => "Nice try hacker! ::.",
 	"Cancel" => "Cancel",
 	"Okay" => "OK",
