@@ -2372,8 +2372,7 @@ namespace PHPPE {
                                 $v -= self::ts(self::getval($A[1]));
                             }
                             if ($v < 0) {
-                                if(!empty(Core::$l['%s ago'])) $l=L('%s ago');
-                                else $l = '- %s';
+                                $l=!empty(Core::$l['%s ago'])?Core::$l['%s ago']:'- %s';
                                 $v = -$v;
                             }
                             $c = floor($v / 86400);
