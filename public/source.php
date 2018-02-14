@@ -2742,7 +2742,7 @@ namespace PHPPE {
                         $x = 'document.getElementById(';
                         $y = '.style.visibility';
                         $a = "pe_t=setTimeout(function(){pe_p('');},2000)";
-                        $c['L(t)'] = "return t.replace(/_/g,' ');";
+                        $c['L(t)'] = "var i=0,a=Array.prototype.slice.call(arguments,1);return t.replace(/_/g,' ').replace(/%[sd]/g,function(){return a[i++];});";
                         $c['pe_p(i)'] = "var o=i?${x}i):i;if(pe_t!=null)clearTimeout(pe_t);if(pe_c&&pe_c!=i)${x}pe_c)$y='hidden';pe_t=pe_c=null;if(o!=null&&o.style!=null){if(o$y=='visible')o$y='hidden';else{o$y='visible';pe_c=i;$a;}}return false;";
                         $c['pe_w()'] = "if(pe_t!=null)clearTimeout(pe_t);$a;return false;";
                         $a = ',pe_t,pe_c,pe_h=0';
@@ -5351,13 +5351,14 @@ namespace {
 /**
  * Translate a string or code to user's language.
  *
- * @param string    text or code
+ * @param string    text or code, with optional arguments
  *
  * @return string   translated text
  */
-    function L($s)
+    function L()
     {
-        return isset(\PHPPE\Core::$l[$s]) ? \PHPPE\Core::$l[$s] : strtr($s, ['_' => ' ']);
+        $a=func_get_args();$s=array_shift($a);
+        return vsprintf(isset(\PHPPE\Core::$l[$s]) ? \PHPPE\Core::$l[$s] : strtr($s, ['_' => ' ']),$a);
     }
 
 /**

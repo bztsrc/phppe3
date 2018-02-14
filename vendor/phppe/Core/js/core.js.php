@@ -174,13 +174,14 @@ function getpos(obj)
 var LANG=<?=json_encode($lang)?>;
 function L(t)
 {
-  return LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:(t!=null?t.replace(/_/g,' '):'');
+  var i=0,a=Array.prototype.slice.call(arguments,1),t=LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:(t!=null?t.replace(/_/g,' '):'');
+  return t.replace(/%[sd]/g,function(){return a[i++];});
 }
 
 /*
  * PHPPE Core
  */
-var 
+var
 	pe_t=null, //timer
 	pe_c=null, //current item
 	pe_to=2,   //time out
@@ -459,7 +460,7 @@ pe.dnd = {
       items[i].setAttribute('ontouchend',c);
     }
   },
-  
+
 /*PRIVATE METHODS*/
   display: function(e)
   {
