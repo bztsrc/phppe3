@@ -1587,7 +1587,7 @@ namespace PHPPE {
             if ($t == 'css' && class_exists('CSSMin')) return \CSSMin::minify($d);
             if ($t == 'js' && class_exists('JSMin')) return \JSMin::minify($d);
 
-            //! do the stuff ourself (fastest, safest, simpliest, and no dependency required at all...)
+            //! do the stuff ourself (fastest, safest, simpliest, and no dependency required at all... and only 70 SLoC)
             $n = '';
             $i = 0;
             $l = strlen($d);
@@ -1654,6 +1654,7 @@ namespace PHPPE {
                     ++$i;
                     continue;
                 }
+                if($t=="css" && $d[$i]=='(' && (substr($n,-3)=="and"||substr($n,-2)=="or")) $n.=' ';
                 //! copy character to new string
                 $n .= $d[$i++];
             }
@@ -2518,17 +2519,17 @@ namespace PHPPE {
                     if ($I == 'index.php/') $I = '';
                     $d = 'http'.(Core::$core->sec ? 's' : '').'://'.Core::$core->base;
                     //! HTML5 header and title
-                    echo "<!DOCTYPE HTML>\n<html lang='".Core::$client->lang."'".(!empty(Core::$l['rtl']) ? " dir='rtl'" : '').'>'.
+                    echo "<!DOCTYPE HTML><html lang='".Core::$client->lang."'".(!empty(Core::$l['rtl']) ? " dir='rtl'" : '').'>'.
                     '<head><title>'.(!empty(self::$o['app']->title) ? self::$o['app']->title : (
                     Core::$core->title ? Core::$core->title : 'PHPPE'.VERSION)).'</title>'.
-                    "<base href='$d'/><meta charset='utf-8'/>\n<meta name='Generator' content='PHPPE".VERSION."'/>\n";
+                    "<base href='$d'/><meta charset='utf-8'/><meta name='Generator' content='PHPPE".VERSION."'/>";
                     //! meta tags
                     foreach (array_merge(self::$hdr['meta'], !empty(self::$o['app']->meta) ? self::$o['app']->meta : []) as $k => $m) {
                         if (!is_array($m)) {
                             $m=[$m,"name"];
                         }
                         if ($k && !empty($m[0]) && !empty($m[1])) {
-                            echo "<meta ".$m[1]."='$k' content='".htmlspecialchars($m[0])."'/>\n";
+                            echo "<meta ".$m[1]."='$k' content='".htmlspecialchars($m[0])."'/>";
                         }
                     }
                     //! favicon
@@ -2538,12 +2539,12 @@ namespace PHPPE {
                     //! link tags
                     foreach (self::$hdr['link'] as $k => $m) {
                         if (!empty($m) && $m != 'js') {
-                            echo "<link rel='$m' href='".$k."'/>\n";
+                            echo "<link rel='$m' href='".$k."'/>";
                         }
                     }
                     //! add style sheets (async)
-                    $O = "<style media='all'>\n";
-                    $d = "@import url('%s');\n";
+                    $O = "<style media='all'>";
+                    $d = "@import url('%s');";
                     $N = Core::$core->base.Core::$core->url.'/'.Core::$user->id.'/'.Core::$client->lang;
                     $e = 'css';
                     //! admin css if user logged in and has access
@@ -2581,8 +2582,8 @@ namespace PHPPE {
                             }
                         }
                     }
-                    $O .= "</style>\n";
-                    echo "$O</head>\n<body>\n";
+                    $O .= "</style>";
+                    echo "$O</head><body>\n";
                     //! display PHPPE panel
                     if ($P) {
                         $H = " class='sub' style='visibility:hidden;' onmousemove='return pe_w();'";
@@ -2690,9 +2691,9 @@ namespace PHPPE {
                 elseif ($o == 'html') {
                     //! add javascript libraries (async)
                     $d = '<script';
-                    $e = "</script>\n";
+                    $e = "</script>";
                     $a = " src='".$I.'js/';
-                    $O = $d.">\nvar pe={};\n".$e;
+                    $O = $d.">var pe={};".$e;
                     if (!empty(self::$hdr['jslib'])) {
                         //! if aggregation allowed
                         if (!empty(Cache::$mc) && empty(Core::$core->noaggr)) {
@@ -2749,10 +2750,10 @@ namespace PHPPE {
                     }
                     if (!empty($c)) {
                         //! Js variables: pe_i=init executed, pe_ot=offset top
-                        $O .= $d.">\nvar pe_i=0,pe_ot=".($P ? 31 : 0)."$a;\n";
+                        $O .= $d.">var pe_i=0,pe_ot=".($P ? 31 : 0)."$a;";
                         foreach ($c as $fu => $co) {
                             //! make sure init only gets called once
-                            $O .= "function $fu {".($fu=="init()"?"if(pe_i)return;pe_i=1;".(Core::$core->runlevel>2?"console.log('PE Plugins',pe);":""):"").$co."}\n";
+                            $O .= "function ".$fu."{".($fu=="init()"?"if(pe_i)return;pe_i=1;".(Core::$core->runlevel>2?"console.log('PE Plugins',pe);":""):"").$co."}\n";
                         }
                         //! add event listeners to call init() on page load
                         if(!empty(self::$hdr['js']['init()'])) {
@@ -2764,7 +2765,7 @@ namespace PHPPE {
                     $d = 'REQUEST_TIME_FLOAT';
                     $T = !empty($_SERVER[$d]) ? $_SERVER[$d] : $s;
                     echo "\n$O<!-- MONITORING: ".(Core::isError() ? 'ERROR' : (Core::$core->runlevel > 0 ? 'WARNING' : 'OK')).
-                    ', page '.sprintf("%.4f sec, db %.4f sec, server %.4f sec, mem %.4f mb%s -->\n</body>\n</html>\n",
+                    ', page '.sprintf("%.4f sec, db %.4f sec, server %.4f sec, mem %.4f mb%s --></body></html>\n",
                     microtime(1) - $T,
                     DS::bill(), $s - $T, memory_get_peak_usage() / 1024 / 1024, !empty(Cache::$mc) && empty(Core::$core->nocache) ? ', mc' : '');
                 }
@@ -4948,7 +4949,7 @@ namespace PHPPE\AddOn {
                 }
 
                 return '<textarea'.@View::v($t, $b[1], $b[0],$a)." rows='".$a[1]."'".($a[0] > 0 ? " onkeypress='return pe_mt(event,".$a[0].");'" : '').
-                (!empty($b[2])?" onkeyup='return ".$b[2].";'":'')."$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>".$v.'</textarea>';
+                (!empty($b[2])&&$b[2]!="-"?" onkeyup='return ".$b[2].";'":'').(!empty($b[3]) && $b[3] != '-' ? ' placeholder="'.htmlspecialchars(L(trim($b[3]))).'"' : '')."$D wrap='soft' onfocus='this.className=this.className.replace(\" errinput\",\"\")'>".$v.'</textarea>';
             }
             if (!empty($a[2])&&is_array($a[2])) {
                 $o="<datalist id='".$this->fld.":list'>";
@@ -5217,13 +5218,13 @@ namespace PHPPE\AddOn {
             $t = $this;
             $a = $t->attrs;
             $b = 'o.className=o.className.replace(" errinput","")';
-            View::js('pe_oe(o)', "$b;if(o.value!=''&&o.value.match(/^.+\@(\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?)$/i)==null)o.className+=' errinput';");
+            View::js('pe_oe(o)', "$b;if(o.value!=''&&o.value.match(/^.+\@(\[?)[a-z0-9\-\.]+\.([a-z]+|[0-9]{1,3})(\]?)$/i)==null)o.className+=' errinput';");
 
             return '<input'.@View::v($t, $a[1], '', $t->args)." type='email' onfocus='".strtr($b, ['o.' => 'this.'])."' onchange='pe_oe(this);".(!empty($a[0]) && $a[0] != '-' ? $a[0] : '')."' value=\"".htmlspecialchars(trim($t->value)).'">';
         }
         public static function validate($n, &$v, $a, $t)
         {
-            $r=preg_match("/^.+\@((\[?)[a-z0-9\-\.]+\.([a-z]{2,3}|[0-9]{1,3})(\]?))$/i", $v, $m);
+            $r=preg_match("/^.+\@((\[?)[a-z0-9\-\.]+\.([a-z]+|[0-9]{1,3})(\]?))$/i", $v, $m);
             if($r && !empty(Core::$core->blacklist) && in_array($m[1],Core::$core->blacklist)) { $r=0; $v=""; }
             return [
                 $r,

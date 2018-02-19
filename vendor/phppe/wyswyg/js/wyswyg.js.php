@@ -141,6 +141,15 @@ pe.wyswyg = {
     sel:null,
     selImg:null,
 
+isfunc: function(f)
+{
+  try {
+    return eval("typeof "+f)=='function';
+  }catch(e){
+    return false;
+  }
+},
+
 init: function()
 {
     var i, allinstance=document.querySelectorAll("TEXTAREA.wyswyg");
@@ -186,7 +195,7 @@ open: function(source, icons)
         edit.setAttribute('id', id+':edit');
         edit.setAttribute('class', 'input wyswyg');
         edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;background:rgba(255,255,255,0.8);color:#333;display:none;overflow:auto;');
-        if(function_exists('pe.cms.getitem')) {
+        if(pe.wyswyg.isfunc('pe.cms.getitem')) {
             var style=null, item=eval('pe.cms.getitem()');
             if(item!=null) {
                 style=window.getComputedStyle(item, null);
@@ -271,7 +280,7 @@ open: function(source, icons)
                         name=i;
                         ext=",'"+icons[menu][i]+"'";
                     }
-                    if(function_exists('pe.wyswyg.'+func)) {
+                    if(pe.wyswyg.isfunc('pe.wyswyg.'+func)) {
                         var mi = document.createElement('BUTTON');
                         mi.setAttribute('id',id+':'+menu+'_'+func);
                         mi.setAttribute('class',
@@ -330,7 +339,7 @@ drop: function(evt,id,hooks)
 		}
         if(hooks!=null) hooks=hooks.split(',');
         for(h in hooks) {
-            if(function_exists(hooks[h]))
+            if(pe.wyswyg.isfunc(hooks[h]))
                 eval(hooks[h]+"(evt,id)");
         }
 		pe.wyswyg.setvalue(id);
@@ -419,7 +428,7 @@ selected:function(evt, type)
                     html = container.innerHTML;
                 }
         }
-        if(obj==null&&evt!=null) obj=evt.target; 
+        if(obj==null&&evt!=null) obj=evt.target;
         if(type=="sel") return sel; else
         if(type=="txt") return txt; else
         if(type=="html") return html; else
@@ -470,7 +479,7 @@ zoom:function(evt,id) {
     obj=pe.wyswyg.selImg;
     if(obj==null||obj.tagName!="IMG")return;
     if(obj.getAttribute('data-zoom')==null)
-        obj.setAttribute('data-zoom',function_exists("pe.zoom.src")?pe.zoom.src(obj.src):obj.src);
+        obj.setAttribute('data-zoom',pe.wyswyg.isfunc("pe.zoom.src")?pe.zoom.src(obj.src):obj.src);
     else
         obj.removeAttribute('data-zoom');
 },
@@ -538,7 +547,7 @@ event:function(evt,id,name,ctx)
     for(i=0;i<plugins.length;i++) {
         var hooks=plugins[i].getAttribute(hookname).split(",");
         for(var h in hooks)
-            if(function_exists(hooks[h]))
+            if(pe.wyswyg.isfunc(hooks[h]))
                 ret.concat(eval(hooks[h]+"(evt,id,ctx)"));
     }
     return ret;
