@@ -10,7 +10,7 @@ use PHPPE\User;
 
 //L("System")
 
-class SystemTest extends PHPUnit_Framework_TestCase
+class SystemTest extends \PHPUnit\Framework\TestCase
 {
 	public function testEvent()
 	{
@@ -50,7 +50,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 		$this->assertGreaterThan(count($libs),count($libs2),"Loaded manually");
 		$this->assertTrue(Core::isInst("TestLib1"),"isInst");
-		
+
 		Core::lib( "TestLib2", new Client(), "TestLib1");
 		$this->assertNotNull(Core::lib("TestLib2"),"Dependency");
 		$this->assertNull(Core::lib("TestLib3"),"No extension");
@@ -86,8 +86,10 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		$_REQUEST['nojs']=true;
 		$_REQUEST['lang']="en";
 		unset($_SESSION['pe_l']);
-		$client->init([]);
+		$_SESSION['pe_u']->data['lang']='hu';
+		$client->init(['tz'=>'UTC']);
 		$this->assertEquals("en",$client->lang,"Client Lang ow");
+		unset($_SESSION['pe_u']->data['lang']);
 		$_SESSION['pe_l']=$lang;
 	}
 
@@ -120,14 +122,14 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
 		$_SESSION['pe_u'] = $u;
 	}
-	
+
 	public function testErrors()
 	{
 		$this->assertEmpty(Core::error(),"Errors");
 		$this->assertFalse(Core::isError(),"IsError");
 
 		Core::error("message","obj.field");
-		
+
 		$this->assertNotEmpty(Core::error(),"Errors #2");
 		$this->assertTrue(Core::isError(),"IsError #2");
 
@@ -146,6 +148,12 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		Core::log("D","Should be skipped");
 		Core::$w = false;
 		Core::log("E","Stderr","phpunit");
+		Core::$core->runlevel = 1;
+		Core::$core->syslog = false;
+		Core::$w = true;
+		Core::log("E","Stderr","phpunit");
+		$this->assertNotEmpty(file_get_contents("data/log/phpunit.log"),"Audit log");
+		unlink("data/log/phpunit.log");
 		Core::$w = $o;
 		Core::$core->runlevel = $r;
 		Core::$core->syslog = $s;
@@ -155,7 +163,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 	public function testContent()
 	{
 		Core::$core->nocache=true;
-		
+
 		include_once(__DIR__."/../libs/FailFilter.php");
 
 		DS::close();
@@ -210,7 +218,7 @@ class SystemTest extends PHPUnit_Framework_TestCase
 		file_put_contents("data/a/b/c/e","aaa");
 		Tools::rmdir("data/a");
 		$this->assertFalse(is_dir("data/a"),"Removing directories");
-		
+
 	}
 
 }

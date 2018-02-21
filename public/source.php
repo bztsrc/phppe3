@@ -182,8 +182,13 @@ namespace PHPPE {
         {
             Core::$client = $this;
             //! start user session
-            session_name(!empty(Core::$core->sessionvar) ? Core::$core->sessionvar : 'pe_sid');
-            @session_start();
+            if(empty($_SESSION)){
+                // no way we could test this as session is already started when unit tests reach this
+                // @codeCoverageIgnoreStart
+                @session_name(!empty(Core::$core->sessionvar) ? Core::$core->sessionvar : 'pe_sid');
+                @session_start();
+                // @codeCoverageIgnoreEnd
+            }
             //! refresh session cookie
             if (ini_get('session.use_cookies')) {
                 @setcookie(session_name(), session_id(), Core::$core->now + Core::$core->timeout,
@@ -267,9 +272,10 @@ namespace PHPPE {
                 //! Detect values for Web
                 // @codeCoverageIgnoreStart
                 $d = 'HTTP_USER_AGENT';
-                if (!isset($_REQUEST['nojs']) && empty($_SESSION[$L]) && empty($_REQUEST['cache']) && !(empty($_SERVER[$d])||$_SERVER[$d]=="API"||
+                $c = empty($_REQUEST['cache']) && !(empty($_SERVER[$d])||$_SERVER[$d]=="API"||
                     strpos(strtolower($_SERVER[$d]),"wget")!==false||
-                    strpos(strtolower($_SERVER[$d]),"curl")!==false)) {
+                    strpos(strtolower($_SERVER[$d]),"curl")!==false);
+                if (!isset($_REQUEST['nojs']) && empty($_SESSION[$L]) && $c) {
                     //! this is a small JavaScript page that shows up for the first time
                     //! after collecting information it redirects user so fast, he won't
                     //! notice a thing.
@@ -293,11 +299,11 @@ namespace PHPPE {
                     }
                 }
                 if (isset($_REQUEST['nojs'])||isset($_REQUEST['n'])||!empty($_SESSION['pe_n'])) {
-                    if(empty($_COOKIE)){$t=View::template("nocookies");die($t?$t:L("Please enable cookies"));}
+                    if($c && empty($_COOKIE)){$t=View::template("nocookies");die($t?$t:L("Please enable cookies"));}
                     unset($_SESSION['pe_n']);
                     $_SESSION['pe_j']=false;
                     $_SESSION[$L]="UTC";
-                    Http::redirect();
+                    if(!isset($_REQUEST['nojs']))Http::redirect();
                 }
                 // @codeCoverageIgnoreEnd
                 //! get client's real ip address
@@ -310,7 +316,7 @@ namespace PHPPE {
                 //! user is http auth user
                 $d = 'PHP_AUTH_USER';
                 $this->user = !empty($_SERVER[$d]) ? $_SERVER[$d] : '';
-                $this->js = $_SESSION['pe_j'];
+                $this->js = intval(@$_SESSION['pe_j']);
             } else {
                 //! detect values for CLI
                 $T = getenv('TZ');
@@ -587,7 +593,7 @@ namespace PHPPE {
                 }
                 //! superuser's name
                 $A = 'admin';
-                if (Core::isTry() && !empty($_REQUEST['id'])) {
+                if (Core::isBtn() && !empty($_REQUEST['id'])) {
                     Core::req2arr("login");
                     if(!Core::isError()) {
                         foreach($_SESSION as $k=>$v) if(substr($k,0,3)!="pe_") unset($_SESSION[$k]);
@@ -1762,6 +1768,8 @@ namespace PHPPE {
                 //! special page holds global page parameters and dds'
                 $F = (array)DS::fetch('data,dds', 'pages', "id='frame' AND ".(ClassMap::has("PHPPE\\CMS") &&
                         get_class(View::getval('app'))=="PHPPE\\Content" &&
+                        // bug in php-code-coverage, marks unchecked in middle of an AND expression...
+                        // @codeCoverageIgnoreStart
                         Core::$user->has("siteadm|webadm")?"":"publishid!=0 AND ").
                         "(lang='' OR lang=?)", '', 'id DESC,created DESC',[Core::$client->lang]);
                 $E = $F?json_decode($F['data'], true):null;
@@ -1771,7 +1779,6 @@ namespace PHPPE {
                 if (is_array($D)) {
                     self::$dds += $D;
                 }
-            // @codeCoverageIgnoreStart
             } catch (\Exception $e) {
             }
             // @codeCoverageIgnoreEnd
@@ -1783,9 +1790,7 @@ namespace PHPPE {
                         $o[$k] = @DS::query($c[0], @$c[1], strtr(@$c[2], ['@ID' => $k,'@SHA' => sha1($k), '@URL' => Core::$core->url]), @$c[3], @$c[4], @$c[5], View::getval(@$c[6]));
                         foreach ($o[$k] as $i => $v) {
                             $d = @json_decode($v['data'], true);
-                            if (is_array($d)) {
-                                $o[$k][$i] += $d;
-                            }
+                            if (is_array($d)) $o[$k][$i] += $d;
                             unset($o[$k][$i]['data']);
                         }
                     } catch (\Exception $e) {
@@ -2243,7 +2248,7 @@ namespace PHPPE {
             }
             //check if we're in cms edit mode
             $J = ClassMap::has("PHPPE\\CMS") &&
-                get_class(View::getval('app'))=="PHPPE\\Content" &&
+                @get_class(View::getval('app'))=="PHPPE\\Content" &&
                 Core::$user->has("siteadm|webadm");
             //get tags
             if (preg_match_all("/<!([^\[\-][^>]+)>[\r\n]*/ms", $x, $T, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
@@ -2346,10 +2351,10 @@ namespace PHPPE {
                             self::$tc = 0;
                             $c = sha1(url());
                             $n = !empty($A[0]) && $A[0] != '-' ? urlencode($A[0]) : 'form';
-                            $w = '<form'.(!empty($A[4]) ? " role='form'" : '')." name='".$n."' action='".url(!empty($A[2]) && $A[2] != '-' ? $A[2] : '').
+                            $w = '<form'.(!empty($A[5]) ? " role='form'" : '')." name='".$n."' action='".url(!empty($A[2]) && $A[2] != '-' ? $A[2] : '').
                                 "' class='".(!empty($A[1]) && $A[1] != '-' ? $A[1] : 'form-vertical').
                                 "' method='post' enctype='multipart/form-data'".
-                                (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').(!empty($A[4])?' '.$A[4]:'').
+                                (!empty($A[3]) && $A[3] != '-' ? ' onsubmit="'.strtr($A[3], ['"' => '\\"']).'"' : '').(!empty($A[4]) && $A[4] != '-'?' '.$A[4]:'').
                                 "><input type='hidden' name='MAX_FILE_SIZE' value='".Core::$core->fm.
                                 "'><input type='hidden' name='pe_s' value='".@$_SESSION['pe_s'][$c].
                                 "'><input type='hidden' name='pe_f' value='".$n."'>".(!empty(Core::$core->item) ?
@@ -3986,7 +3991,7 @@ class ClassMap extends Extension
             i($D."403$e", "<h1>403</h1><!L Access denied>\n<!-- <!L hacker> -->");
             i($D."404$e", "<h1>404</h1><!L Not found>: <b><!=core.url></b>");
             i($D."frame$e", "<div id='content'><!app></div>");
-            i($D."index$e", "<h1>PHPPE works!</h1>Next step: <samp>php public/".basename(__FILE__)." --self-update</samp><br/><br/><!if core.isTry()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
+            i($D."index$e", "<h1>PHPPE works!</h1>Next step: <samp>php public/".basename(__FILE__)." --self-update</samp><br/><br/><!if core.isBtn()><div style='display:none;'>$c</div><!/if><div style='background:#F0F0F0;padding:3px;'><b>Test form</b></div><!form obj>Text<!field text obj.f0 - - - Example [a-z0-9]+> Pass<!field pass obj.f1> Num(100..999)<!field *num(100,999) obj.f2> Phone<!field phone obj.f3><!field check obj.f4 Check>  File<!field file obj.f5>  <!field submit></form><table width='100%'><tr><td valign='top' width='50%'><!dump _REQUEST><!dump _FILES></td><td>&nbsp;</td><td valign='top'>$c</td></tr></table>\n");
             i($D."login$e", "<!form login><div style='color:red;'><!foreach core.error()><!foreach VALUE><!=VALUE><br/><!/foreach><!/foreach></div><!field text id - - - Username><!field pass pass - Password><!field submit></form>");
             i($D."maintenance$e", "<h1><!L Site is temporarily down for maintenance></h1>");
             i($D."errorbox$e", "<!if core.isError()><div class='alert alert-danger'><!foreach core.error()><!foreach VALUE>&nbsp;&nbsp;<!=VALUE><br/><!/foreach><!/foreach></div><!/if>");
@@ -4105,7 +4110,7 @@ class ClassMap extends Extension
                 //! note that controller constructor may have turned cache off
                 //! so Cache::get() will return a null
                 $N = 'p_'.sha1($this->base.$this->url.'/'.self::$user->id.'/'.self::$client->lang);
-                if (empty($this->nocache) && !self::isTry()) {
+                if (empty($this->nocache) && !self::isBtn()) {
                     $T = View::fromCache($N);
                     self::bm("cache");
                 }
@@ -4327,7 +4332,7 @@ class ClassMap extends Extension
  *
  * @return integer  button number
  */
-        public static function isTry($f = '')
+        public static function isBtn($f = '')
         {
             //! we just return the previously calculated value here
             //! this speeds up things
@@ -4567,7 +4572,7 @@ class ClassMap extends Extension
             //! iterate through array
             foreach ($t as $v) {
                 //! get output size
-                $i = count($d);
+                $i = @count($d);
                 //! look for sub arrays
                 foreach ($v as $k => $w) {
                     if ($k != '_') {
@@ -4862,7 +4867,7 @@ namespace PHPPE\Filter {
     {
         public static function filter()
         {
-            return \PHPPE\Core::isTry();
+            return \PHPPE\Core::isBtn();
         }
     }
 }//namespace

@@ -3,14 +3,14 @@ use PHPPE\Core;
 
 //L("Multilingual")
 
-class MultilingualTest extends PHPUnit_Framework_TestCase
+class MultilingualTest extends \PHPUnit\Framework\TestCase
 {
 	public function testMultilingual()
 	{
 		$cnt = count(Core::$l);
-		
+
 		$this->assertNotEmpty(Core::$l,"Translations");
- 
+
 		//try to load fake language for Developer
 		Core::$client->lang = "xx";
 		Core::lang("Developer");

@@ -19,4 +19,12 @@ return [
 	"Convert" => "לְהַמִיר",
 	"DataSource" => "מקור מידע",
 	"Templater" => "תבנית",
+	"Benchmarks" => "ציוני דרך",
+	"Clear samples" => "נקה דוגמאות",
+	"Rundown" => "מוזנח",
+	"Start" => "הַתחָלָה",
+	"Time consumed" => "זמן רב",
+	"Fluctuation" => "תְנוּדָה",
+	"Min." => "מִינִימוּם",
+	"Max." => "מקסימלי",
 ];

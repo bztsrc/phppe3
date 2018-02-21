@@ -19,4 +19,12 @@ return [
 	"Convert" => "Конвертировать",
 	"DataSource" => "источник данных",
 	"Templater" => "шаблон",
+	"Benchmarks" => "Ориентиры",
+	"Clear samples" => "Очистить образцы",
+	"Rundown" => "Спуститься",
+	"Start" => "Начало",
+	"Time consumed" => "Время",
+	"Fluctuation" => "флуктуация",
+	"Min." => "минимальный",
+	"Max." => "Максимум",
 ];

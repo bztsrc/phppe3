@@ -1,6 +1,6 @@
 <?php
 //L("DataSource")
-class DataSourceTest extends PHPUnit_Framework_TestCase
+class DataSourceTest extends \PHPUnit\Framework\TestCase
 {
 	public function testDataSource()
 	{
@@ -136,7 +136,7 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
 
 		//@\PHPPE\DS::db("mysql:host=localhost;dbname=testdb");
 		@include_once("vendor/phppe/Core/libs/ds_mysql.php");
-		
+
 		\PHPPE\DS::close();
 		\PHPPE\DS::db("sqlite::memory:");
 
@@ -221,7 +221,7 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
 		$ds = new \PHPPE\DS;
 
 		$this->assertNull($ds->diag(),"Diag no ds");
-		
+
 		\PHPPE\DS::db("sqlite::memory:");
 
 		ob_start();

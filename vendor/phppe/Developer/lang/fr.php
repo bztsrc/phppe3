@@ -19,4 +19,12 @@ return [
 	"Convert" => "Convertir",
 	"DataSource" => "La source de données",
 	"Templater" => "Gabarit",
+	"Benchmarks" => "Référence",
+	"Clear samples" => "Effacer les échantillons",
+	"Rundown" => "Fatigué",
+	"Start" => "Début",
+	"Time consumed" => "Le temps consommé",
+	"Fluctuation" => "Fluctuation",
+	"Min." => "Min.",
+	"Max." => "Max.",
 ];

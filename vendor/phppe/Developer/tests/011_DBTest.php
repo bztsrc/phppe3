@@ -2,7 +2,7 @@
 use PHPPE\Core as Core;
 
 //L("DB")
-class DBTest extends PHPUnit_Framework_TestCase
+class DBTest extends \PHPUnit\Framework\TestCase
 {
 	public function testDB()
 	{
@@ -143,7 +143,7 @@ class DBTest extends PHPUnit_Framework_TestCase
 			\PHPPE\DB::select("users")->join("SIMPLE","user_posts","id=id");
 		}catch(\Exception $e){ $wasExc=true; }
 		$this->assertTrue($wasExc,"bad join exception");
-		
+
 		$this->assertEquals(
 			"REPLACE INTO users (id,name) VALUES (?,?) WHERE id=''",
 			\PHPPE\DB::replace("users")->fields(['id','name'])->where("id=''"),

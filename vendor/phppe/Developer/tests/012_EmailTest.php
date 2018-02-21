@@ -2,7 +2,7 @@
 use PHPPE\Core as Core;
 
 //L("Email")
-class EmailTest extends PHPUnit_Framework_TestCase
+class EmailTest extends \PHPUnit\Framework\TestCase
 {
 	public function testEmail()
 	{
@@ -54,7 +54,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
 			$email->to("me");
 		} catch(\Exception $e) {$wasExc=true;}
 		$this->assertTrue($wasExc,"Bad address exception #1");
-		
+
 		$wasExc=false;
 		try {
 			$email->to("me@notld");

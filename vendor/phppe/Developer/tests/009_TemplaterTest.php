@@ -1,6 +1,6 @@
 <?php
 //L("Templater")
-class TemplaterTest extends PHPUnit_Framework_TestCase
+class TemplaterTest extends \PHPUnit\Framework\TestCase
 {
 	public function testHelpers()
 	{
@@ -97,6 +97,7 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		\PHPPE\Core::$l['hours']="hs";
 		\PHPPE\Core::$l['day']="d";
 		\PHPPE\Core::$l['days']="ds";
+		\PHPPE\Core::$l['%s ago']="%s ago";
 		$this->assertEquals("0 m",\PHPPE\View::_t('<!difftime 1>'),"Difftime #1");
 		$this->assertEquals("1 m",\PHPPE\View::_t('<!difftime 60>'),"Difftime #2");
 		$this->assertEquals("2 ms",\PHPPE\View::_t('<!difftime 120>'),"Difftime #3");
@@ -106,7 +107,7 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals("1 d",\PHPPE\View::_t('<!difftime 3600*24>'),"Difftime #7");
 		$this->assertEquals("2 ds",\PHPPE\View::_t('<!difftime 3600*48>'),"Difftime #8");
 		$this->assertEquals("2 ds",\PHPPE\View::_t('<!difftime 3600*50>'),"Difftime #9");
-		$this->assertEquals("- 2 ms",\PHPPE\View::_t('<!difftime -120>'),"Difftime #10");
+		$this->assertEquals("2 ms ago",\PHPPE\View::_t('<!difftime -120>'),"Difftime #10");
 		$this->assertEquals("1 m",\PHPPE\View::_t('<!difftime 3660 3600>'),"Difftime #11");
 		$this->assertEquals("-",\PHPPE\View::_t('<!difftime obj.emptyStr 10>'),"Difftime #12");
 
@@ -141,7 +142,7 @@ class TemplaterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals("b/c/",substr($m[1],-4),"Form #2 url");
 
 		$this->assertEquals(1,preg_match("|<form role='form' name='a' action='([^']+)' class='form-vertical' method='post' enctype='multipart/form-data' onsubmit=\"d\(\)\"><input type='hidden' name='MAX_FILE_SIZE' value='[0-9]+'><input type='hidden' name='pe_s' value='[a-fA-F0-9]*'><input type='hidden' name='pe_f' value='a'>|ims",
-			\PHPPE\View::_t("<!form a - b/c d() role>"),$m),
+			\PHPPE\View::_t("<!form a - b/c d() - role>"),$m),
 			"Form #3");
 		$this->assertEquals("b/c/",substr($m[1],-4),"Form #3 url");
 

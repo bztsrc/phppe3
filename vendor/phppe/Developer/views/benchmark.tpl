@@ -45,9 +45,9 @@
 <table>
 <tr>
     <th><!L Name></th>
-    <th colspan='2'><!L Min></th>
-    <th><!L Avarage></th>
-    <th colspan='2'><!L Max></th>
+    <th colspan='2'><!L Min.></th>
+    <th><!L Avg.time></th>
+    <th colspan='2'><!L Max.></th>
 </tr>
 <!foreach VALUE>
 <!if KEY!='total' && KEY!='delta' && KEY!='count'>

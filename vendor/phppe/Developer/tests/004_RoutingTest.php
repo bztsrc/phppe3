@@ -1,6 +1,6 @@
 <?php
 //L("Routing")
-class RoutingTest extends PHPUnit_Framework_TestCase
+class RoutingTest extends \PHPUnit\Framework\TestCase
 {
 	public function testRoute()
 	{
@@ -49,7 +49,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEmpty($new[sha1("test6|Tests|")],"Object route");
 
 		$this->assertEquals($new[sha1("test7|Tests|action_member")][0],$new[sha1("test7|Tests|action_public")][0],"Same route with and without filter");
-		
+
 		$this->assertEquals(serialize($new[sha1("test7|Tests|action_member")][3]),serialize($new[sha1("test9|Tests|")][3]),"Filter as string and as array");
 
 		//! for PHPUnit, as it runs from /usr/local/bin
@@ -63,7 +63,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
 				'var1'=>'1',
 				'var2'=>'2',
 			])]]));
-
+		$_COOKIE['pe_test']=1;print_r($data1);
 		$this->assertEquals("GET",$data1,"Same url with GET filter");
 		$this->assertEquals("POST",$data2,"Same url with POST filter");
 

@@ -1,6 +1,6 @@
 <?php
 //L("Cache")
-class CacheTest extends PHPUnit_Framework_TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
 	//! driver specific tests
 	public function testMemcache()
@@ -23,6 +23,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$v = $apc->get("key2");
 		if(!empty($_SERVER["SERVER_NAME"]))
 			$this->assertNotNull($v,"APC");
+		$this->assertNotNull(1,"Make phpunit happy");
 		$apc = new \PHPPE\Cache("apc");
 		$apc->invalidate();
 	}

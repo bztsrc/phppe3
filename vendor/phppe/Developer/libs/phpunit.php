@@ -23,7 +23,9 @@
  * @brief A very simple PHPUnit implementation
  */
 
-class PHPUnit_Framework_TestCase
+namespace PHPUnit\Framework;
+
+class TestCase
 {
 	public $numAsserts=0;
 
@@ -40,7 +42,7 @@ class PHPUnit_Framework_TestCase
 				if(substr($mthd,0,4)=="test")
 					$this->$mthd();
 			}
-	    }catch(Exception $e){
+	    }catch(\Exception $e){
 			if($e->getMessage()=="SKIP")
 				return "SKIP";
 			elseif($e->getMessage()=="FAIL")
@@ -57,7 +59,7 @@ class PHPUnit_Framework_TestCase
 
 	public function markTestSkipped()
 	{
-		throw new Exception("SKIP");
+		throw new \Exception("SKIP");
 	}
 
 /**
@@ -72,12 +74,12 @@ class PHPUnit_Framework_TestCase
 		{
 			$d=debug_backtrace();
 			echo("FAIL (".$d[1]['function'].", ".basename($d[1]['file']).":".$d[1]['line']." ".$d[2]['function'].")\n");
-			throw new Exception("FAIL");
+			throw new \Exception("FAIL");
 		}
 		else
 			echo("OK\n");
 	}
- 
+
 /**
  * specific assertions
  */

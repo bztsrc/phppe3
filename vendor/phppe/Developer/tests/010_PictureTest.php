@@ -1,6 +1,6 @@
 <?php
 //L("Picture")
-class PictureTest extends PHPUnit_Framework_TestCase
+class PictureTest extends \PHPUnit\Framework\TestCase
 {
 	public function testPicture()
 	{
@@ -18,7 +18,7 @@ class PictureTest extends PHPUnit_Framework_TestCase
 		\PHPPE\View::picture(__FILE__,"data/test1.png",64,64,true,true,"",64);
 		$this->assertFileExists("data/test1.png","Bad file");
 		unlink("data/test1.png");
-		
+
 		//! test image
 		\PHPPE\View::picture($testImg,"data/test1.png",64,64,true,true,"",64);
 		$this->assertFileExists("data/test1.png","Thumbnail");
@@ -91,7 +91,7 @@ class PictureTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(imagesy($im),256,"Height");
 		unlink("data/test1.png");
 		unlink("data/test2.png");
-	
+
 	}
 }
 ?>

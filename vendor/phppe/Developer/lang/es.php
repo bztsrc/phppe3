@@ -19,4 +19,12 @@ return [
 	"Convert" => "Convertir",
 	"DataSource" => "Fuente de datos",
 	"Templater" => "Plantilla",
+	"Benchmarks" => "Puntos de referencia",
+	"Clear samples" => "Muestras claras",
+	"Rundown" => "Atropellar",
+	"Start" => "Comienzo",
+	"Time consumed" => "Tiempo consumido",
+	"Fluctuation" => "Fluctuación",
+	"Min." => "Min.",
+	"Max." => "Max.",
 ];

@@ -2,7 +2,7 @@
 use PHPPE\Core as Core;
 
 //L("Users")
-class UsersTest extends PHPUnit_Framework_TestCase
+class UsersTest extends \PHPUnit\Framework\TestCase
 {
 	public function testUsers()
 	{
@@ -16,7 +16,7 @@ class UsersTest extends PHPUnit_Framework_TestCase
 
 		$this->assertNull($user->login("admin","changeme"), "Bad username or password");
 		$this->assertNotNull($user->login("bzt","changeme"), "Login");
-		$this->assertNull($user->login("bzt","changeme"), "Already logged in");
+		$this->assertNotNull($user->login("bzt","changeme"), "Already logged in");
 
 		$user->logout();
 	}

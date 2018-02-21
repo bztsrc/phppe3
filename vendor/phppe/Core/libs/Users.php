@@ -49,14 +49,14 @@ class Users extends \PHPPE\User
      */
     public static function login($name, $pass)
     {
+        // if another event handler already logged the user in, do nothing
+        if(!empty($_SESSION['pe_u']->id))
+            return $_SESSION['pe_u'];
         // login handler specific part
         $rec = DS::fetch("id,pass", static::$_table, "name=? AND active!='0'", "", "", [$name]);
         // authentication
         if(empty($rec->pass) || !password_verify($pass, $rec->pass))
             return;
-        // if another event handler already logged the user in, do nothing
-        if(!empty($_SESSION['pe_u']->id))
-            return $_SESSION['pe_u'];
         // success, save user object in session
         $_SESSION['pe_u']=new self($rec->id);
         // housekeeping

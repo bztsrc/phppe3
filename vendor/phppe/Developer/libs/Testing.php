@@ -46,7 +46,7 @@ class Testing extends \PHPPE\Extension {
 				'fn' => $f,
 				'name' => $c[1],
 				'time' => @filemtime("data/tests/".$k),
-				'avg' => !empty($d[0])?floatval($d[0]):0.0,
+				'avg' => sprintf("%.6f",!empty($d[0])?floatval($d[0]):0.0),
 				'executed' => !empty($d[1])?intval($d[1]):0,
 				'asserts' => count($m[0]),
 				'ret' => L(isset($d[2])?($d[2]=='1'?"OK":(!$d[2]?"FAIL":$d[2])):"None"),

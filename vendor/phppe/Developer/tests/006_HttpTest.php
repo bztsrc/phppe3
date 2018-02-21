@@ -1,5 +1,5 @@
 <?php
-class HttpTest extends PHPUnit_Framework_TestCase
+class HttpTest extends \PHPUnit\Framework\TestCase
 {
 	public function testHelpers()
 	{

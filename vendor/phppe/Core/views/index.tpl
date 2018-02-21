@@ -285,7 +285,7 @@ Translate expression. Should read "click me" (no translation specified)
         </div>
         <div class="col-sm-4">
 <!dump core.req2arr('obj')>
-<!if !core.isTry()><span class="text-warning">Press the "Save" button below the form to see it in action.</span><!/if>
+<!if !core.isBtn()><span class="text-warning">Press the "Save" button below the form to see it in action.</span><!/if>
         </div>
         <div class="col-sm-6 text-muted small">
 Built-in object dumper for debugging.

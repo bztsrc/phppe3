@@ -19,4 +19,12 @@ return [
 	"Convert" => "兑换",
 	"DataSource" => "数据源",
 	"Templater" => "模板",
+	"Benchmarks" => "基准",
+	"Clear samples" => "清除样本",
+	"Rundown" => "撞倒",
+	"Start" => "开始",
+	"Time consumed" => "耗时",
+	"Fluctuation" => "波动",
+	"Min." => "敏",
+	"Max." => "马克斯",
 ];

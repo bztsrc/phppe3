@@ -53,7 +53,7 @@ class CMSLayouts
 				Core::$core->noframe=1;
 				$layout['sitebuild']=$layout['id'];
 			}
-			if(Core::isTry("layout")) {
+			if(Core::isBtn("layout")) {
 				//! delete a layout
 				if(!empty($layout['delete'])){
 					$this->layout->delete();

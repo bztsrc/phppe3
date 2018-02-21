@@ -2,7 +2,7 @@
 use PHPPE\Core as Core;
 
 //L("AddOn")
-class AddonTest extends PHPUnit_Framework_TestCase
+class AddonTest extends \PHPUnit\Framework\TestCase
 {
 	public function testBuiltInAddons()
 	{
@@ -64,7 +64,7 @@ class AddonTest extends PHPUnit_Framework_TestCase
 		$obj->txt="a,b,c";
 		$obj->skip="3";
 		\PHPPE\View::assign("obj",$obj);
-		
+
 		$arr="obj.txt"; $value=[1,2];
 		$fld = new \PHPPE\AddOn\select([2,1],"obj.fld",$value,["obj.txt","obj.skip"]);
 		$this->assertGreaterThan(0,strpos($fld->edit(),"option"),"Select multiple edit");
@@ -117,14 +117,14 @@ class AddonTest extends PHPUnit_Framework_TestCase
 		$this->assertGreaterThan(0,strpos($fld->edit(),"color"),"Color edit");
 		$this->assertGreaterThan(0,strpos($fld->show(),"2233"),"Color show");
 
-		$value="1970-01-01";
+		$value="1970-01-02";
 		$fld = new \PHPPE\AddOn\date([],"obj.fld",$value);
 		$this->assertGreaterThan(0,strpos($fld->edit(),"date"),"Date edit");
 		$this->assertGreaterThan(0,strpos($fld->show(),"01-0"),"Date show");
 		$val = \PHPPE\AddOn\date::validate("obj.fld",$value,[],[]);
 		$this->assertNotFalse($val[0],"Date validate");
 
-		$value="1970-01-01 00:00:00";
+		$value="1970-01-01 00:00:01";
 		$fld = new \PHPPE\AddOn\time([],"obj.fld",$value);
 		$this->assertGreaterThan(0,strpos($fld->edit(),"time"),"Time edit");
 		$this->assertGreaterThan(0,strpos($fld->show(),"01-0"),"Time show");

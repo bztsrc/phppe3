@@ -19,4 +19,12 @@ return [
 	"Convert" => "تحول",
 	"DataSource" => "مصدر البيانات",
 	"Templater" => "قالب",
+	"Benchmarks" => "المعايير",
+	"Clear samples" => "مسح عينات",
+	"Rundown" => "انقلب",
+	"Start" => "بداية",
+	"Time consumed" => "الوقت مستهلك",
+	"Fluctuation" => "تقلب",
+	"Min." => "دقيقة",
+	"Max." => "ماكس",
 ];

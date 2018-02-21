@@ -13,7 +13,7 @@ class pageadd extends \PHPPE\AddOn\pageinfo
 {
     function edit()
     {
-        if (!Core::isTry()) {
+        if (!Core::isBtn()) {
             $page = new Page;
             $page->template="simple";
             View::assign("page", $page);

@@ -1,6 +1,6 @@
 <?php
 //L("Convert")
-class ConvertTest extends PHPUnit_Framework_TestCase
+class ConvertTest extends \PHPUnit\Framework\TestCase
 {
 	public function testConvert()
 	{
@@ -142,6 +142,10 @@ class ConvertTest extends PHPUnit_Framework_TestCase
 			"megint'masik  kell'requires extra space //komment A{color:#112233;}",
 			\PHPPE\Assets::minify($txt,"css"),
 			"minify #4");
+		$this->assertEquals(
+			"a b?".">do  not  minify<"."?",
+			\PHPPE\Assets::minify("a  b?".">do  not  minify<"."?","php"),
+			"minify #5");
 
 	}
 }

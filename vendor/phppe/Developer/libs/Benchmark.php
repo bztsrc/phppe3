@@ -86,7 +86,7 @@ class Benchmark
                 $s+=$v['avg'];
             }
         }
-
+        $data[$url]['total']=sprintf("%.f",$data[$url]['total']);
         return $data;
     }
 

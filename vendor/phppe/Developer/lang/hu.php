@@ -49,8 +49,7 @@ return [
 	"Time consumed" => "Futásidő",
 	"Total" => "Teljes",
 	"Fluctuation" => "Ingadozás",
-	"Min" => "Min",
-	"Avarage" => "Közép",
-	"Max" => "Max",
+	"Min." => "Min.",
+	"Max." => "Max.",
 	"Please wait..." => "Kérem várjon...",
 ];
