@@ -9,10 +9,10 @@ class DBTest extends \PHPUnit\Framework\TestCase
 		if(!\PHPPE\ClassMap::has("PHPPE\DB"))
 			$this->markTestSkipped();
 
-        $this->assertEquals(
-            "%some%thing%",
-            \PHPPE\DB::like("some thing"),
-            "like");
+		$this->assertEquals(
+			"%some%thing%",
+			\PHPPE\DB::like("some thing"),
+			"like");
 
 		$this->assertEquals(
 			"SELECT * FROM users",
@@ -218,6 +218,9 @@ class DBTest extends \PHPUnit\Framework\TestCase
 		$this->assertNotEmpty(
 			\PHPPE\DB::select("users")->execute([],1),
 			"execute on ds");
+
+		$a=include("vendor/phppe/Core/libs/ds_mysql.php");
+		$this->assertNotEmpty($a['_init'],"MySQL init");
 	}
 }
 ?>
