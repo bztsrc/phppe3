@@ -29,6 +29,13 @@ class wyswyg extends \PHPPE\AddOn
         "<textarea id='".$this->fld."' name='".$this->fld."' class='".$this->css." wyswyg' dir='ltr' data-conf='".htmlspecialchars(urlencode(json_encode($this->args)))."'>".
         htmlspecialchars($this->value)."</textarea>";
     }
+
+    public static function validate($n, &$v, $a, $t)
+    {
+        $v=preg_replace("/<script.*?script>/ims","",$v);
+        $v=preg_replace("/(<[^>]+)[\t\r\n\ ]+on[a-z]+[\t\r\n\ ]*=[^>]*/ims","\\1",$v);
+        return [1,""];
+    }
 }
 
 ?>
