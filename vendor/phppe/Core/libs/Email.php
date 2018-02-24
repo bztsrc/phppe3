@@ -438,7 +438,7 @@ class Email extends Extension
                     fputs($f, $header."\r\n".$message);
                     pclose($f);
                 } else {
-                    Core::log('E', 'mail() failed, To: '.$headers['To'].', Subject: '.$headers['Subject'].', ID: '.$id, 'email');
+                    Core::log('E', 'sendmail failed, To: '.$headers['To'].', Subject: '.$headers['Subject'].', ID: '.$id, 'email');
 
                     return false;
                 }
@@ -558,8 +558,8 @@ class Email extends Extension
         //! get items from database
         $lastId = 0;
         while ($row = DS::fetch('*', 'email_queue', 'id>?', '', 'id ASC', [$lastId])) {
-	    if(empty($row->id))
-		break;
+            if(empty($row->id))
+                break;
             $email = new self($row->data);
             $lastId = $row->id;
             try {

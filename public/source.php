@@ -2734,20 +2734,19 @@ namespace PHPPE {
                     }
                     //load PHPPE\Users' JS library if it's not aggregated already and PHPPE panel is shown
                     $c = 'users.js';
-                    $i = file_exists('vendor/phppe/Core/js/'.$c.'.php');
-                    if ($P && !isset(self::$hdr['jslib'][$c]) && $i) {
+                    if ($P && !isset(self::$hdr['jslib'][$c]) && file_exists('vendor/phppe/Core/js/'.$c.'.php')) {
                         $O .= "$d$a$c'>$e";
                     }
                     //! add javascript functions
                     $c = self::$hdr['js'];
                     $a = '';
                     //! built-in stuff if core.js is not installed
-                    if (!$i) {
+                    if (!file_exists('vendor/phppe/Core/js/core.js.php')) {
                         // @codeCoverageIgnoreStart
                         $x = 'document.getElementById(';
                         $y = '.style.visibility';
                         $a = "pe_t=setTimeout(function(){pe_p('');},2000)";
-                        $c['L(t)'] = "var i=0,a=Array.prototype.slice.call(arguments,1);return t.replace(/_/g,' ').replace(/%[sd]/g,function(){return a[i++];});";
+                        $c['L(t)'] = "var i=0,a=Array.prototype.slice.call(arguments,1),t=LANG[t]!=null&&LANG[t]!=undefined?LANG[t]:(t!=null?t.replace(/_/g,' '):'');return t.replace(/%[sd]/g,function(){return a[i++];});";
                         $c['pe_p(i)'] = "var o=i?${x}i):i;if(pe_t!=null)clearTimeout(pe_t);if(pe_c&&pe_c!=i)${x}pe_c)$y='hidden';pe_t=pe_c=null;if(o!=null&&o.style!=null){if(o$y=='visible')o$y='hidden';else{o$y='visible';pe_c=i;$a;}}return false;";
                         $c['pe_w()'] = "if(pe_t!=null)clearTimeout(pe_t);$a;return false;";
                         $a = ',pe_t,pe_c,pe_h=0';

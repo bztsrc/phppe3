@@ -103,6 +103,15 @@ $libs = Core::lib();
 foreach($libs as $l)
     if(!empty($l->wyswyg_toolbar))
         $toolbar = array_merge($toolbar, $l->wyswyg_toolbar);
+//! support for multilanguage if core.js not installed
+if(!file_exists("vendor/phppe/Core/js/core.js.php")) {
+    Core::$core->nocache = false;
+    header( "Pragma: cache" );
+    header( "Cache-Control: cache,public,max-age=86400" );
+    $lang = ["lang"=>$_SESSION['pe_l']];
+    $la=include("vendor/phppe/wyswyg/lang/".$_SESSION['pe_l'].".php");if( is_array( $la ) )$lang += $la;
+    echo("var LANG=".json_encode($lang).";\n");
+}
 ?>
 pe.wyswyg = {
 <?php if($bs) {?>
@@ -194,7 +203,7 @@ open: function(source, icons)
         var edit=document.createElement('div');
         edit.setAttribute('id', id+':edit');
         edit.setAttribute('class', 'input wyswyg'+(source.className.match(/reqinput/ig)?' reqinput':'')+(source.className.match(/errinput/ig)?' errinput':''));
-        edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;background:rgba(255,255,255,0.8);color:#333;display:none;overflow:auto;');
+        edit.setAttribute('style', 'height:'+(source.offsetHeight-0)+'px;padding:0px;display:none;overflow:auto;');
         if(pe.wyswyg.isfunc('pe.cms.getitem')) {
             var style=null, item=eval('pe.cms.getitem()');
             if(item!=null) {
