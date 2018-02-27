@@ -250,8 +250,7 @@ namespace PHPPE {
             foreach ($d as $v) {
                 list($a) = explode(';', strtolower(str_replace('-', '_', $v)));
                 if (!empty($a) &&
-                    (file_exists("vendor/phppe/Core/lang/$a.php") ||
-                     file_exists("app/lang/$a.php") || $a == 'en')) {
+                    (!empty(glob("vendor/phppe/*/lang/$a.php",GLOB_NOSORT)) || $a == 'en')) {
                     $_SESSION[$L] = $a;
                     break;
                 }
